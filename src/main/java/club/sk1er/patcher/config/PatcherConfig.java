@@ -39,7 +39,7 @@ public class PatcherConfig extends Vigilant {
             name = "Stop Forcibly Closing Chat",
             description = "Remove the ability for servers to forcibly close chat.",
             category = "Fixes",
-            subcategory = "Screen"
+            subcategory = "Chat"
     )
     public static boolean stopForciblyClosingChat = true;
 
@@ -87,4 +87,13 @@ public class PatcherConfig extends Vigilant {
             subcategory = "Movement"
     )
     public static boolean armPosition = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Head Rotations",
+            description = "Properly rotate the users head while mounting an entity.",
+            category = "Quality of Life",
+            subcategory = "Movement"
+    )
+    public static boolean headRotation = true;
 }

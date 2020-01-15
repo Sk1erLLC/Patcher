@@ -2,7 +2,16 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -16,10 +25,10 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
             String methodName = mapMethodName(classNode, method);
-            if (methodName.equalsIgnoreCase("doRender")) {//TODO mappings stuff
+            if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 /*
-                Find             if (shouldSit && entity.ridingEntity instanceof EntityLivingBase)
+                Find if (shouldSit && entity.ridingEntity instanceof EntityLivingBase)
                     go back to find vars # of f2, f1, f
 
                     go forward until we find the label we jump to if that statement if false, retract 1 insn, then read f2 = f1 -f
@@ -72,15 +81,18 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                                 if (next.equals(node)) {
                                     InsnList insnList = new InsnList();
                                     insnList.add(labelNode);
+                                    insnList.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "headRotation", "Z"));
+                                    LabelNode ifeq = new LabelNode();
+                                    insnList.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
                                     insnList.add(new VarInsnNode(Opcodes.FLOAD, f1));
                                     insnList.add(new VarInsnNode(Opcodes.FLOAD, f));
                                     insnList.add(new InsnNode(Opcodes.FSUB));
                                     insnList.add(new VarInsnNode(Opcodes.FSTORE, f2));
+                                    insnList.add(ifeq);
                                     method.instructions.insertBefore(next, insnList);
                                     return;
                                 }
                             }
-
                         }
                     }
                 }
