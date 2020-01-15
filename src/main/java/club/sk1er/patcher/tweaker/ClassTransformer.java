@@ -1,13 +1,6 @@
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.tweaker.asm.ClientCommandHandlerTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
-import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
-import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
+import club.sk1er.patcher.tweaker.asm.*;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -27,7 +20,7 @@ public class ClassTransformer implements IClassTransformer {
 
     private static final Logger LOGGER = LogManager.getLogger("PatcherTransformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-    private boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    private boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false")) || true;
 
     public ClassTransformer() {
         registerTransformer(new S2EPacketCloseWindowTransformer());
@@ -38,6 +31,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new InventoryEffectRendererTransformer());
         registerTransformer(new EntityLivingBaseTransformer());
         registerTransformer(new RenderPlayerTransformer());
+        registerTransformer(new RendererLivingEntityTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {
