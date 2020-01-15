@@ -32,6 +32,16 @@ public interface PatcherTransformer {
         return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(classNode.name, methodNode.name, methodNode.desc);
     }
 
+    /**
+     * Map the method desc from notch names
+     *
+     * @param methodNode the transformed method node
+     * @return a mapped method desc
+     */
+    default String mapMethodDesc(MethodNode methodNode) {
+        return FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(methodNode.desc);
+    }
+
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
     }

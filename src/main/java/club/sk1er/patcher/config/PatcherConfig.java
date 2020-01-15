@@ -96,4 +96,49 @@ public class PatcherConfig extends Vigilant {
             subcategory = "Movement"
     )
     public static boolean headRotation = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Fullbright",
+            description = "Remove lighting updates, increasing visibility.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean fullbright = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Sky Height",
+            description = "Set the sky height to 0, removing void flickering.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean skyHeight = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Instant World Swapping",
+            description = "Remove waiting times between swapping worlds.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean instantWorldSwapping = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Nausea Effect",
+            description = "Remove the nether portal appearing when clearing nausea.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean nauseaEffect = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Internal Errors",
+            description = "Fix several internal errors.",
+            category = "Fixes",
+            subcategory = "General"
+    )
+    public static boolean patchInternalErrors = true;
 }
