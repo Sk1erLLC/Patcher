@@ -9,14 +9,14 @@ import java.util.function.Consumer;
 
 public class ConfigUtil {
 
-    public static PropertyData createAndRegisterConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, Consumer<Object> onUpdate) {
-        PropertyData config = createConfig(type, category, subCategory, name, description, defaultValue, onUpdate);
+    public static PropertyData createAndRegisterConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, int min, int max, Consumer<Object> onUpdate) {
+        PropertyData config = createConfig(type, category, subCategory, name, description, defaultValue, min, max, onUpdate);
         register(config);
         return config;
     }
 
-    public static PropertyData createConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, Consumer<Object> onUpdate) {
-        Property property = createProperty(type, category, subCategory, name, description);
+    public static PropertyData createConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, int min, int max, Consumer<Object> onUpdate) {
+        Property property = createProperty(type, category, subCategory, name, description, min, max);
         PropertyData data = PropertyData.Companion.withValue(property, defaultValue, PatcherConfig.instance);
 
         if (onUpdate != null) data.setCallbackConsumer(onUpdate);
@@ -27,7 +27,7 @@ public class ConfigUtil {
         PatcherConfig.instance.registerProperty(data);
     }
 
-    public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description) {
+    public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {
         return new Property() {
             /**
              * Returns the annotation type of this annotation.
@@ -61,12 +61,12 @@ public class ConfigUtil {
 
             @Override
             public int min() {
-                return 0;
+                return min;
             }
 
             @Override
             public int max() {
-                return 0;
+                return max;
             }
 
             @Override
