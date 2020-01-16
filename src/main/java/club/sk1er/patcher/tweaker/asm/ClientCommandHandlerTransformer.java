@@ -2,6 +2,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -13,6 +14,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import java.util.ListIterator;
+
 public class ClientCommandHandlerTransformer implements PatcherTransformer {
     /**
      * The class name that's being transformed
@@ -21,7 +24,7 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
      */
     @Override
     public String[] getClassName() {
-        return new String[]{"net.minecraftforge.client.ClientCommandHandler"};
+        return new String[]{"net.minecraftforge.client.ClientCommandHandler", "net.minecraft.command.CommandHandler"};
     }
 
     /**
@@ -36,9 +39,27 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("executeCommand") || methodName.equals("func_71556_a")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+
+                    if (node instanceof InsnNode && node.getOpcode() == Opcodes.AALOAD) {
+                        methodNode.instructions.insertBefore(node.getNext(), makeLowercase());
+                        break;
+                    }
+                }
+
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkForSlash());
             }
         }
+    }
+
+    // todo add config for this
+    private InsnList makeLowercase() {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));
+        return list;
     }
 
     private InsnList checkForSlash() {

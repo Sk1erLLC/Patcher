@@ -63,6 +63,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
             type = PropertyType.SWITCH,
+            name = "Case Insensitive Commands",
+            description = "Allow for case insensitivity.",
+            category = "Fixes",
+            subcategory = "Chat"
+    )
+    public static boolean caseInsensitiveCommands = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
             name = "Inventory Position",
             description = "Stop potion effects from shifting your inventory to the right.",
             category = "Quality of Life",
