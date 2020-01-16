@@ -25,9 +25,7 @@ public class SoundHandler implements IResourceManagerReloadListener {
     public void onSound(PlaySoundEvent event) {
         if (event.result instanceof PositionedSound) {
             PositionedSound result = (PositionedSound) event.result;
-            float volumeMultiplier = getVolumeMultiplier(event.result.getSoundLocation());
-            System.out.println("Multiplier for " + event.result.getSoundLocation() + " " + volumeMultiplier);
-            result.volume *= volumeMultiplier;
+            result.volume *= getVolumeMultiplier(event.result.getSoundLocation());
         }
     }
 
@@ -37,8 +35,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
             Object asAny = propertyData.getAsAny();
             if (asAny instanceof Integer) return ((Integer) asAny).floatValue() / 100F;
         }
-
-
         return 1.0f;
     }
 
