@@ -168,4 +168,15 @@ public class PatcherConfig extends Vigilant {
             subcategory = "Inventory"
     )
     public static boolean disableTransparentBackgrounds = false;
+
+    @Property(
+            type = PropertyType.SLIDER,
+            name = "Fire Height",
+            description = "Change the height at which fire renders at.",
+            category = "Quality of Life",
+            subcategory = "General",
+            min = -200,
+            max = 200
+    )
+    public static int fireHeight;
 }

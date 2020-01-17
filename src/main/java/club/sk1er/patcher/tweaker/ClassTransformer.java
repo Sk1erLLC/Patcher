@@ -9,6 +9,7 @@ import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
@@ -52,6 +53,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ScoreboardTransformer());
         registerTransformer(new GuiAchievementTransformer());
         registerTransformer(new GuiScreenTransformer());
+        registerTransformer(new ItemRendererTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {

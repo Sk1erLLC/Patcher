@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.sk1erllc:vigilance:73e15bfad4'
+    compile 'com.github.sk1erllc:vigilance:6f1d38cbbe'
 }
 
 processResources {
