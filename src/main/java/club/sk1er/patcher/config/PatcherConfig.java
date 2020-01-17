@@ -159,4 +159,13 @@ public class PatcherConfig extends Vigilant {
             subcategory = "General"
     )
     public static boolean disableAchievements = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Container Backgrounds",
+            description = "Remove the dark background inside a container.",
+            category = "Quality of Life",
+            subcategory = "Inventory"
+    )
+    public static boolean disableTransparentBackgrounds = false;
 }
