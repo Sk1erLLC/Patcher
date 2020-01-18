@@ -7,6 +7,7 @@ import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
@@ -54,6 +55,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiAchievementTransformer());
         registerTransformer(new GuiScreenTransformer());
         registerTransformer(new ItemRendererTransformer());
+        registerTransformer(new GuiNewChatTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {

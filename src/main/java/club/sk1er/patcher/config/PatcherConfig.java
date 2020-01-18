@@ -179,4 +179,15 @@ public class PatcherConfig extends Vigilant {
             max = 200
     )
     public static int fireHeight;
+
+    @Property(
+            type = PropertyType.SLIDER,
+            name = "Chat History Length",
+            description = "Change how many messages save in chat.",
+            category = "Quality of Life",
+            subcategory = "General",
+            min = 100,
+            max = 1000
+    )
+    public static int chatHistoryLength = 100;
 }
