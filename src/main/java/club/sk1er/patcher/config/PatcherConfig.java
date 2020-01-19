@@ -190,4 +190,13 @@ public class PatcherConfig extends Vigilant {
             max = 1000
     )
     public static int chatHistoryLength = 100;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Chat Message Length",
+            description = "Change max string length from 100 to 256 on servers that support 1.11+.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean adjustChatMessageLength = true;
 }

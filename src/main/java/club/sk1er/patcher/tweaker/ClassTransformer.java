@@ -56,6 +56,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenTransformer());
         registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
+//        registerTransformer(new GuiChatTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {
