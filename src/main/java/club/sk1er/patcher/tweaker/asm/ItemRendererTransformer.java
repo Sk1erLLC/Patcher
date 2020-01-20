@@ -33,7 +33,7 @@ public class ItemRendererTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderFireInFirstPerson")) {
+            if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeHeight());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), popMatrix());
             }
@@ -42,20 +42,23 @@ public class ItemRendererTransformer implements PatcherTransformer {
 
     private InsnList changeHeight() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "pushMatrix", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", // pushMatrix
+                "()V", false));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fireHeight", "I"));
         list.add(new InsnNode(Opcodes.I2F));
         list.add(new LdcInsnNode(100F));
         list.add(new InsnNode(Opcodes.FDIV));
         list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "translate", "(FFF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
+                "(FFF)V", false));
         return list;
     }
 
     private InsnList popMatrix() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "popMatrix", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", // popMatrix
+                "()V", false));
         return list;
     }
 }

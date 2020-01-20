@@ -39,20 +39,20 @@ public class GuiChatTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-            while (iterator.hasNext()) {
-                AbstractInsnNode node = iterator.next();
-
-                if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setMaxStringLength")) {
-                    methodNode.instructions.remove(node.getPrevious());
-                    methodNode.instructions.remove(node.getPrevious());
-                    methodNode.instructions.remove(node.getPrevious());
-                    methodNode.instructions.remove(node);
-                }
-            }
-
             if (methodName.equals("initGui")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+
+                    if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setMaxStringLength")) {
+                        methodNode.instructions.remove(node.getPrevious());
+                        methodNode.instructions.remove(node.getPrevious());
+                        methodNode.instructions.remove(node.getPrevious());
+                        methodNode.instructions.remove(node);
+                    }
+                }
+
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), adjustMaxLength());
             }
         }
@@ -61,7 +61,8 @@ public class GuiChatTransformer implements PatcherTransformer {
     private InsnList adjustMaxLength() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "inputField", "Lnet/minecraft/client/gui/GuiTextField;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "field_146415_a", // inputField
+                "Lnet/minecraft/client/gui/GuiTextField;"));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "adjustChatMessageLength", "Z"));
         LabelNode l1 = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
@@ -73,7 +74,8 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(l1);
         list.add(new IntInsnNode(Opcodes.BIPUSH, 100));
         list.add(l2);
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiTextField", "setMaxStringLength", "(I)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiTextField", "func_146203_f", // setMaxStringLength
+                "(I)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }
