@@ -17,6 +17,7 @@ import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
+import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -58,6 +59,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new AbstractResourcePackTransformer());
+        registerTransformer(new ServerListTransformer());
 //        registerTransformer(new GuiChatTransformer());
     }
 
