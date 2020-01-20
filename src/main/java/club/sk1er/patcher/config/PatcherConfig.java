@@ -83,7 +83,7 @@ public class PatcherConfig extends Vigilant {
             type = PropertyType.SWITCH,
             name = "Mouse Delay Fix",
             description = "Stop your crosshair being a tick ahead of your actual position.",
-            category = "Quality of Life",
+            category = "Fixes",
             subcategory = "Movement"
     )
     public static boolean mouseDelayFix = true;
@@ -92,7 +92,7 @@ public class PatcherConfig extends Vigilant {
             type = PropertyType.SWITCH,
             name = "Arm Position",
             description = "Reset the player state properly once mounting an entity.",
-            category = "Quality of Life",
+            category = "Fixes",
             subcategory = "Movement"
     )
     public static boolean armPosition = true;
@@ -101,7 +101,7 @@ public class PatcherConfig extends Vigilant {
             type = PropertyType.SWITCH,
             name = "Head Rotations",
             description = "Properly rotate the users head while mounting an entity.",
-            category = "Quality of Life",
+            category = "Fixes",
             subcategory = "Movement"
     )
     public static boolean headRotation = true;
