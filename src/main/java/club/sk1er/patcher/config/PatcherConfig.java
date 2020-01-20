@@ -199,4 +199,13 @@ public class PatcherConfig extends Vigilant {
             subcategory = "General"
     )
     public static boolean adjustChatMessageLength = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Pack Images",
+            description = "Change all pack icons to 64x64 to improve memory usage.",
+            category = "Performance",
+            subcategory = "Packs"
+    )
+    public static boolean packImageOptimization = true;
 }

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
@@ -56,6 +57,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenTransformer());
         registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
+        registerTransformer(new AbstractResourcePackTransformer());
 //        registerTransformer(new GuiChatTransformer());
     }
 
