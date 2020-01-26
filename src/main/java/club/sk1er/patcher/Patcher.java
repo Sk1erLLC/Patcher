@@ -12,11 +12,13 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.0")
@@ -24,16 +26,23 @@ public class Patcher {
 
     public static boolean allowsHigherChatLength;
     private final Logger LOGGER = LogManager.getLogger("Patcher");
+    private PatcherConfig patcherConfig;
+
+    @Mod.Instance("patcher")
+    public static Patcher instance;
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        PatcherConfig.instance.preload();
-        MinecraftForge.EVENT_BUS.register(new ScreenHandler());
+        patcherConfig = new PatcherConfig(new File(Minecraft.getMinecraft().mcDataDir, "patcher.toml"));
+        patcherConfig.preload();
+
         SoundHandler target = new SoundHandler();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
-        MinecraftForge.EVENT_BUS.register(target);
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
+
+        MinecraftForge.EVENT_BUS.register(target);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new ScreenHandler());
     }
 
     @SubscribeEvent
@@ -62,5 +71,9 @@ public class Patcher {
                 e.printStackTrace();
             }
         });
+    }
+
+    public PatcherConfig getPatcherConfig() {
+        return patcherConfig;
     }
 }

@@ -4,16 +4,15 @@ import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 @SuppressWarnings("unused")
 public class PatcherConfig extends Vigilant {
 
-    public static PatcherConfig instance = new PatcherConfig();
-
-    public PatcherConfig() {
-        super(new File(Minecraft.getMinecraft().mcDataDir, "patcher.toml"));
+    public PatcherConfig(@NotNull File file) {
+        super(file);
     }
 
     @Property(
@@ -191,15 +190,17 @@ public class PatcherConfig extends Vigilant {
     )
     public static int chatHistoryLength = 100;
 
-    @Property(
-            type = PropertyType.SWITCH,
-            name = "Chat Message Length",
-            description = "Change max string length from 100 to 256 on servers that support 1.11+.",
-            category = "Quality of Life",
-            subcategory = "General"
-    )
-    public static boolean adjustChatMessageLength = true;
+    // todo
+//    @Property(
+//            type = PropertyType.SWITCH,
+//            name = "Chat Message Length",
+//            description = "Change max string length from 100 to 256 on servers that support 1.11+.",
+//            category = "Quality of Life",
+//            subcategory = "General"
+//    )
+//    public static boolean adjustChatMessageLength = true;
 
+    // todo refresh resourcepack image when toggled
     @Property(
             type = PropertyType.SWITCH,
             name = "Pack Images",

@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProtocolDetector {
 
     public static final ProtocolDetector instance = new ProtocolDetector();
-    private Map<Tuple<String, Integer>, CompletableFuture<Boolean>> futures = new ConcurrentHashMap<>();
+    private final Map<Tuple<String, Integer>, CompletableFuture<Boolean>> futures = new ConcurrentHashMap<>();
 
     public CompletableFuture<Boolean> isCompatibleWithVersion(String ip, int version) {
         CompletableFuture<Boolean> cached = futures.get(new Tuple<>(ip, version));
@@ -47,10 +47,10 @@ public class ProtocolDetector {
 
     private static class VersionCompatibilityStatusState implements INetHandlerStatusClient {
 
-        private CompletableFuture<Boolean> future;
-        private int version;
-        private NetworkManager manager;
-        private Runnable onComplete;
+        private final CompletableFuture<Boolean> future;
+        private final int version;
+        private final NetworkManager manager;
+        private final Runnable onComplete;
         private boolean received;
 
         public VersionCompatibilityStatusState(CompletableFuture<Boolean> future, int version, NetworkManager manager, Runnable onComplete) {

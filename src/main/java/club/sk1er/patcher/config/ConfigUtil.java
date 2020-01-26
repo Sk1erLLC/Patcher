@@ -1,5 +1,6 @@
 package club.sk1er.patcher.config;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyData;
 import club.sk1er.vigilance.data.PropertyType;
@@ -17,14 +18,14 @@ public class ConfigUtil {
 
     public static PropertyData createConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, int min, int max, Consumer<Object> onUpdate) {
         Property property = createProperty(type, category, subCategory, name, description, min, max);
-        PropertyData data = PropertyData.Companion.withValue(property, defaultValue, PatcherConfig.instance);
+        PropertyData data = PropertyData.Companion.withValue(property, defaultValue, Patcher.instance.getPatcherConfig());
 
         if (onUpdate != null) data.setCallbackConsumer(onUpdate);
         return data;
     }
 
     public static void register(PropertyData data) {
-        PatcherConfig.instance.registerProperty(data);
+        Patcher.instance.getPatcherConfig().registerProperty(data);
     }
 
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {

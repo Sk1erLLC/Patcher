@@ -18,8 +18,7 @@ import java.util.Map;
 
 public class SoundHandler implements IResourceManagerReloadListener {
 
-    private HashMap<ResourceLocation, PropertyData> data = new HashMap<>();
-
+    private final HashMap<ResourceLocation, PropertyData> data = new HashMap<>();
 
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
@@ -43,8 +42,19 @@ public class SoundHandler implements IResourceManagerReloadListener {
         Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = Minecraft.getMinecraft().getSoundHandler().sndRegistry.soundRegistry;
         for (ResourceLocation resourceLocation : soundRegistry.keySet()) {
             SoundEventAccessorComposite comp = soundRegistry.get(resourceLocation);
-            data.computeIfAbsent(resourceLocation, location -> ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER, "Sounds", WordUtils.capitalizeFully(comp.getSoundCategory().getCategoryName()), getName(location), "Sound Multiplier for " + location.getResourcePath(), 100, 0, 200, o -> {
-            }));
+            data.computeIfAbsent(resourceLocation, location ->
+                    ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
+                            "Sounds",
+                            WordUtils.capitalizeFully(comp.getSoundCategory().getCategoryName()),
+                            getName(location),
+                            "Sound Multiplier for " + location.getResourcePath(),
+                            100,
+                            0,
+                            200,
+                            o -> {
+                            }
+                    )
+            );
         }
     }
 

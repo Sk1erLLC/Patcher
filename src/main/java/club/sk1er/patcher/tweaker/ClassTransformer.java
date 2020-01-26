@@ -36,9 +36,9 @@ import java.util.Collection;
 
 public class ClassTransformer implements IClassTransformer {
 
-    private static final Logger LOGGER = LogManager.getLogger("PatcherTransformer");
+    private final Logger LOGGER = LogManager.getLogger("PatcherTransformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-    private boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
     public ClassTransformer() {
         registerTransformer(new S2EPacketCloseWindowTransformer());

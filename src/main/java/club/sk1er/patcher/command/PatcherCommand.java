@@ -1,10 +1,9 @@
 package club.sk1er.patcher.command;
 
-import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.scheduler.ScreenHandler;
 import club.sk1er.vigilance.gui.SettingsGui;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 public class PatcherCommand extends CommandBase {
@@ -33,8 +32,8 @@ public class PatcherCommand extends CommandBase {
      * @param args   arguments
      */
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        ScreenHandler.open(new SettingsGui(PatcherConfig.instance.getCategories()));
+    public void processCommand(ICommandSender sender, String[] args) {
+        ScreenHandler.open(new SettingsGui(Patcher.instance.getPatcherConfig().getCategories()));
     }
 
     @Override
