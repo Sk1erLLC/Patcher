@@ -9,6 +9,7 @@ import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
@@ -38,7 +39,7 @@ public class ClassTransformer implements IClassTransformer {
 
     private final Logger LOGGER = LogManager.getLogger("PatcherTransformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-    private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false")) || true;
 
     public ClassTransformer() {
         registerTransformer(new S2EPacketCloseWindowTransformer());
@@ -58,6 +59,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenTransformer());
         registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
+        registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new AbstractResourcePackTransformer());
         registerTransformer(new ServerListTransformer());
 //        registerTransformer(new GuiChatTransformer());

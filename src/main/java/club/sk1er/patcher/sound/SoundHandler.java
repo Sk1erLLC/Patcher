@@ -60,6 +60,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
 
     private String getName(ResourceLocation location) {
         String resourcePath = location.getResourcePath();
-        return WordUtils.capitalizeFully(resourcePath.replace(".", " ".replace("_", " ")));
+        return WordUtils.capitalizeFully(resourcePath.replace(".", " ").replace("_", " "));
     }
 }
