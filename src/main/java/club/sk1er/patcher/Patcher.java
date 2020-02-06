@@ -5,6 +5,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.scheduler.ScreenHandler;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
+import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -43,6 +44,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(target);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ScreenHandler());
+        MinecraftForge.EVENT_BUS.register(new TabToggleHandler());
     }
 
     @SubscribeEvent

@@ -209,4 +209,13 @@ public class PatcherConfig extends Vigilant {
             subcategory = "Packs"
     )
     public static boolean packImageOptimization = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Toggle Tab",
+            description = "Hold tab open with a single keypress.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean toggleTab;
 }
