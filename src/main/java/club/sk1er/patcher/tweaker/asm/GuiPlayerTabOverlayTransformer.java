@@ -24,6 +24,23 @@ public class GuiPlayerTabOverlayTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             String methodName = mapMethodName(classNode, method);
             if (methodName.equalsIgnoreCase("renderPlayerlist")) {//TODO mappings
+
+                // todo: you kinda need a bossbar for a bossbar feature to be checked for huh? how about we uhhhhhh
+                // todo: do that
+                InsnList list = new InsnList();
+                list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",
+                        "pushMatrix", "()V", false));
+                list.add(new InsnNode(Opcodes.FCONST_0));
+                list.add(new LdcInsnNode(12.0f));
+                list.add(new InsnNode(Opcodes.FCONST_0));
+                list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",
+                        "translate", "(FFF)V", false));
+
+                method.instructions.insertBefore(method.instructions.getFirst(), list);
+
+                method.instructions.insertBefore(method.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                        "net/minecraft/client/renderer/GlStateManager", "popMatrix", "()V", false));
+
                 ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 outer:
                 while (iterator.hasNext()) {

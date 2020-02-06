@@ -3,7 +3,6 @@ package club.sk1er.patcher.config;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
-import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

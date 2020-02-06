@@ -33,7 +33,7 @@ public class PatcherCommand extends CommandBase {
      */
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        ScreenHandler.open(new SettingsGui(Patcher.instance.getPatcherConfig().getCategories()));
+        ScreenHandler.open(new SettingsGui(Patcher.instance.getPatcherConfig()));
     }
 
     @Override
