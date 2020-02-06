@@ -63,6 +63,24 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                 }
             }
+
+            // todo: config
+            if (methodName.equals("displayGuiScreen")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+
+                    if (node instanceof FieldInsnNode) {
+                        if (node.getOpcode() == Opcodes.GETFIELD && node.getNext().getOpcode() == Opcodes.INVOKEVIRTUAL && node.getNext().getNext().getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            methodNode.instructions.remove(node.getPrevious());
+                            methodNode.instructions.remove(node.getNext());
+                            methodNode.instructions.remove(node.getNext());
+                            methodNode.instructions.remove(node);
+                        }
+                    }
+                }
+            }
         }
     }
 
