@@ -5,6 +5,8 @@ buildscript {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
+
+        flatDir dirs: 'libs'
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
@@ -32,17 +34,19 @@ minecraft {
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url = 'https://jitpack.io'
+dependencies {
+    provided files("libs/modcore.jar")
+}
+
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/java"
     }
 }
 
-dependencies {
-    compile 'com.github.sk1erllc:vigilance:eeb2f0e29b'
-}
+moveResources.dependsOn processResources
+classes.dependsOn moveResources
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -60,5 +64,16 @@ processResources {
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude "mcmod.info"
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
+                "ModSide": "CLIENT",
+                'FMLAT': 'patcher_at.cfg',
+                "FMLCorePluginContainsFMLMod": "Yes, yes it does"
     }
 }

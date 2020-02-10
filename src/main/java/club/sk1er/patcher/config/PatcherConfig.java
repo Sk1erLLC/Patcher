@@ -3,17 +3,11 @@ package club.sk1er.patcher.config;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 @SuppressWarnings("unused")
 public class PatcherConfig extends Vigilant {
-
-    public PatcherConfig(@NotNull File file) {
-        super(file);
-    }
-
     @Property(
             type = PropertyType.SWITCH,
             name = "Fullscreen Fix",
@@ -217,4 +211,9 @@ public class PatcherConfig extends Vigilant {
             subcategory = "General"
     )
     public static boolean toggleTab;
+
+    public PatcherConfig() {
+        super(new File("./config/patcher.toml"));
+        initialize();
+    }
 }

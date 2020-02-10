@@ -1,5 +1,6 @@
 package club.sk1er.patcher;
 
+import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.scheduler.ScreenHandler;
@@ -13,13 +14,11 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.0")
@@ -34,7 +33,9 @@ public class Patcher {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        patcherConfig = new PatcherConfig(new File(Minecraft.getMinecraft().mcDataDir, "patcher.toml"));
+        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
+
+        patcherConfig = new PatcherConfig();
         patcherConfig.preload();
 
         SoundHandler target = new SoundHandler();
