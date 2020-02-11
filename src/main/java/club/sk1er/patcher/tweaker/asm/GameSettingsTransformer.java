@@ -59,7 +59,8 @@ public class GameSettingsTransformer implements PatcherTransformer {
                     }
                 }
 
-                methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureMap", "setBlurMipmapDirect",
+                methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureMap",
+                        "func_174937_a", // setBlurMipmapDirect
                         "(ZZ)V", false), insertBoolean());
             }
         }
@@ -81,8 +82,9 @@ public class GameSettingsTransformer implements PatcherTransformer {
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "mc", "Lnet/minecraft/client/Minecraft;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "scheduleResourcesRefresh",
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74317_L", // mc
+                "Lnet/minecraft/client/Minecraft;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "func_175603_A", // scheduleResourcesRefresh
                 "()Lcom/google/common/util/concurrent/ListenableFuture;", false));
         list.add(new InsnNode(Opcodes.POP));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));

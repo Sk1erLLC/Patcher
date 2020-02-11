@@ -1,26 +1,48 @@
 package club.sk1er.patcher.test;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiSlot;
 
-import java.util.Arrays;
-import java.util.List;
+public class BytecodeOutput extends GuiSlot {
+    public BytecodeOutput(Minecraft mcIn, int width, int height, int topIn, int bottomIn, int slotHeightIn) {
+        super(mcIn, width, height, topIn, bottomIn, slotHeightIn);
+    }
 
-public class BytecodeOutput {
+    @Override
+    protected int getSize() {
+        return 0;
+    }
 
-    public static boolean render;
-    public static List<Block> grassBlocks = Arrays.asList(Blocks.tallgrass, Blocks.double_plant);
+    /**
+     * The element in the slot that was clicked, boolean for whether it was double clicked or not
+     *
+     * @param slotIndex
+     * @param isDoubleClick
+     * @param mouseX
+     * @param mouseY
+     */
+    @Override
+    protected void elementClicked(int slotIndex, boolean isDoubleClick, int mouseX, int mouseY) {
+        mc.refreshResources();
+    }
 
-    public boolean renderBlock(IBlockState state, BlockPos pos, IBlockAccess blockAccess, WorldRenderer worldRendererIn) {
-        if (grassBlocks.contains(state.getBlock()) && render) {
-            return false;
-        }
+    /**
+     * Returns true if the element passed in is currently selected
+     *
+     * @param slotIndex
+     */
+    @Override
+    protected boolean isSelected(int slotIndex) {
+        return false;
+    }
 
-        System.out.println("H");
-        return true;
+    @Override
+    protected void drawBackground() {
+
+    }
+
+    @Override
+    protected void drawSlot(int entryID, int p_180791_2_, int p_180791_3_, int p_180791_4_, int mouseXIn, int mouseYIn) {
+
     }
 }

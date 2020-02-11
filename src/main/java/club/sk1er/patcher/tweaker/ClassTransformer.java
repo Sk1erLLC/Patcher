@@ -74,6 +74,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiVideoSettingsTransformer());
         registerTransformer(new GameSettingsTransformer());
         registerTransformer(new GuiContainerTransformer());
+        registerTransformer(new GuiLanguageTransformer());
 //        registerTransformer(new GuiChatTransformer());
     }
 
@@ -114,7 +115,7 @@ public class ClassTransformer implements IClassTransformer {
         if (outputBytecode) {
             try {
                 File bytecodeDirectory = new File("bytecode");
-                File bytecodeOutput = new File(bytecodeDirectory, transformedName + ".class");
+                File bytecodeOutput = new File(bytecodeDirectory, transformedName.replace('$', '.') + ".class"); // inner classes suckkkk
 
                 if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
                 if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();

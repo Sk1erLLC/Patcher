@@ -233,7 +233,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Mouse Bind Fix",
-            description = "bruh.",
+            description = "Fix an issue where keybinds bound to mouse buttons do not work in inventories.",
             category = "Quality of Life",
             subcategory = "General"
     )

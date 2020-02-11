@@ -1,6 +1,5 @@
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
