@@ -212,6 +212,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean toggleTab;
 
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Crosshair Perspective",
+            description = "Remove the crosshair when in third person.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean crosshairPerspective;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
