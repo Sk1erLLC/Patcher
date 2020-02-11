@@ -15,6 +15,7 @@ import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
+import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
@@ -64,6 +65,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AbstractResourcePackTransformer());
         registerTransformer(new ServerListTransformer());
         registerTransformer(new GuiIngameTransformer());
+        registerTransformer(new NetHandlerPlayClientTransformer());
 //        registerTransformer(new GuiChatTransformer());
     }
 

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.tweaker.transform;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -42,6 +43,11 @@ public interface PatcherTransformer {
         return FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(methodNode.desc);
     }
 
+    /**
+     * Link to {@link PatcherConfig} in transformers easily
+     *
+     * @return patcher config class
+     */
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
     }
