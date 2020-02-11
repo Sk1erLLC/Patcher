@@ -221,6 +221,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean crosshairPerspective;
 
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Remove Tall Grass",
+            description = "Stop tall grass/double tall plants from rendering.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean removeTallGrass;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
