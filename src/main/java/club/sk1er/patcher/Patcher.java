@@ -42,8 +42,8 @@ public class Patcher {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
 
-        MinecraftForge.EVENT_BUS.register(target);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(target);
         MinecraftForge.EVENT_BUS.register(new ScreenHandler());
         MinecraftForge.EVENT_BUS.register(new TabToggleHandler());
     }
