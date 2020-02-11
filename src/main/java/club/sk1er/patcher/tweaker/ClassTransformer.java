@@ -9,6 +9,7 @@ import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
@@ -72,6 +73,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockRendererDispatcherTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());
         registerTransformer(new GameSettingsTransformer());
+        registerTransformer(new GuiContainerTransformer());
 //        registerTransformer(new GuiChatTransformer());
     }
 

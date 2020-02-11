@@ -230,6 +230,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean removeTallGrass;
 
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Mouse Bind Fix",
+            description = "bruh.",
+            category = "Quality of Life",
+            subcategory = "General"
+    )
+    public static boolean mouseBindFix = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
