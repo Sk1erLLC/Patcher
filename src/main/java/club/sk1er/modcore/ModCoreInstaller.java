@@ -36,6 +36,7 @@ import java.util.Set;
  */
 public class ModCoreInstaller {
 
+
     private static final String VERSION_URL = "https://api.sk1er.club/modcore_versions";
     private static final String className = "club.sk1er.mods.core.ModCore";
     private static boolean errored = false;
@@ -114,12 +115,14 @@ public class ModCoreInstaller {
         }
         JsonHolder jsonHolder = fetchJSON(VERSION_URL);
         String latestRemote = jsonHolder.optString(minecraftVersion);
+        boolean failed = jsonHolder.getKeys().size() == 0 || (jsonHolder.has("success") && !jsonHolder.optBoolean("success"));
 
-        File modcoreFile = new File(dataDir, "Sk1er Modcore-" + latestRemote + " (" + minecraftVersion + ").jar");
         File metadataFile = new File(dataDir, "metadata.json");
         JsonHolder localMetadata = readFile(metadataFile);
+        if (failed) latestRemote = localMetadata.optString(minecraftVersion);
+        File modcoreFile = new File(dataDir, "Sk1er Modcore-" + latestRemote + " (" + minecraftVersion + ").jar");
 
-        if (!modcoreFile.exists() || !localMetadata.optString(minecraftVersion).equalsIgnoreCase(latestRemote)) {
+        if (!modcoreFile.exists() || !localMetadata.optString(minecraftVersion).equalsIgnoreCase(latestRemote) && !failed) {
             //File does not exist, or is out of date, download it
             File old = new File(dataDir, "Sk1er Modcore-" + localMetadata.optString(minecraftVersion) + " (" + minecraftVersion + ").jar");
             if (old.exists()) old.delete();
@@ -183,8 +186,8 @@ public class ModCoreInstaller {
         frame.setVisible(true);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
         Font font = bar.getFont();
-        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() << 2));
-        comp.setFont(new Font(font.getName(), font.getStyle(), font.getSize() << 1));
+        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 4));
+        comp.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
 
         try {
 
