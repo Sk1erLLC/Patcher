@@ -7,6 +7,7 @@ import club.sk1er.patcher.tweaker.asm.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
+import club.sk1er.patcher.tweaker.asm.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.ForgeHooksClientTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
@@ -78,6 +79,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelLoaderTransformer());
         registerTransformer(new ForgeHooksClientTransformer());
         registerTransformer(new ModClassLoaderTransformer());
+        registerTransformer(new FMLClientHandlerTransformer());
 //        registerTransformer(new GuiContainerTransformer());
 //        registerTransformer(new GuiLanguageTransformer());
 //        registerTransformer(new GuiChatTransformer());
