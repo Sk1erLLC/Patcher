@@ -30,6 +30,11 @@ public class ConfigUtil {
 
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {
         return new Property() {
+            @Override
+            public boolean hidden() {
+                return false;
+            }
+
             /**
              * Returns the annotation type of this annotation.
              *
