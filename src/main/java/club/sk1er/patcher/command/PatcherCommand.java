@@ -1,8 +1,7 @@
 package club.sk1er.patcher.command;
 
-import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.scheduler.ScreenHandler;
-import club.sk1er.vigilance.gui.SettingsGui;
+import club.sk1er.mods.core.ModCore;
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -33,7 +32,7 @@ public class PatcherCommand extends CommandBase {
      */
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        ScreenHandler.open(new SettingsGui(Patcher.instance.getPatcherConfig()));
+        ModCore.getInstance().getGuiHandler().open(new PatcherConfig().gui());
     }
 
     @Override

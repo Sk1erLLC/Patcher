@@ -1,6 +1,7 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -37,8 +38,7 @@ public class AnvilChunkLoaderTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
 
-                    // read
-                    if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("func_74794_a")) {
+                    if (next instanceof MethodInsnNode && FMLDeobfuscatingRemapper.INSTANCE.map(((MethodInsnNode) next).name).equals("read")) {
                         methodNode.instructions.insertBefore(next.getNext().getNext(), closeInputStream());
                     }
                 }

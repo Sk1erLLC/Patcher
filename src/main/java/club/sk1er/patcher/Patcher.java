@@ -1,18 +1,16 @@
 package club.sk1er.patcher;
 
 import club.sk1er.modcore.ModCoreInstaller;
+import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.scheduler.ScreenHandler;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
-import club.sk1er.patcher.util.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,7 +43,6 @@ public class Patcher {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(target);
-        MinecraftForge.EVENT_BUS.register(new ScreenHandler());
         MinecraftForge.EVENT_BUS.register(new TabToggleHandler());
     }
 

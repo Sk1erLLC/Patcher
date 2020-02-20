@@ -1,6 +1,6 @@
 package club.sk1er.patcher.status;
 
-import club.sk1er.patcher.util.Multithreading;
+import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.util.Tuple;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.network.EnumConnectionState;
