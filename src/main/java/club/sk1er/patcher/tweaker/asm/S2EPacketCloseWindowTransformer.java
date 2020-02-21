@@ -46,7 +46,7 @@ public class S2EPacketCloseWindowTransformer implements PatcherTransformer {
                 "()Lnet/minecraft/client/Minecraft;", false));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71462_r", // currentScreen
                 "Lnet/minecraft/client/gui/GuiScreen;"));
-        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/cliet/gui/GuiChat"));
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/client/gui/GuiChat"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));
