@@ -42,9 +42,9 @@ public class S2EPacketCloseWindowTransformer implements PatcherTransformer {
 
     private InsnList checkScreen() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft",
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", // getMinecraft
                 "()Lnet/minecraft/client/Minecraft;", false));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "currentScreen",
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71462_r", // currentScreen
                 "Lnet/minecraft/client/gui/GuiScreen;"));
         list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/cliet/gui/GuiChat"));
         LabelNode labelNode = new LabelNode();
