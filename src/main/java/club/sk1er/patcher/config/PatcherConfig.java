@@ -28,15 +28,6 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
             type = PropertyType.SWITCH,
-            name = "Stop Forcibly Closing Chat",
-            description = "Remove the ability for servers to forcibly close chat.",
-            category = "Fixes",
-            subcategory = "Chat"
-    )
-    public static boolean stopForciblyClosingChat = true;
-
-    @Property(
-            type = PropertyType.SWITCH,
             name = "Reset Death Timers",
             description = "Allow for respawning when toggling fullscreen on the \"You Died!\" menu.",
             category = "Fixes",
@@ -229,15 +220,6 @@ public class PatcherConfig extends Vigilant {
             subcategory = "General"
     )
     public static boolean removeTallGrass;
-
-    @Property(
-            type = PropertyType.SWITCH,
-            name = "Mouse Bind Fix",
-            description = "Fix an issue where keybinds bound to mouse buttons do not work in inventories.",
-            category = "Quality of Life",
-            subcategory = "General"
-    )
-    public static boolean mouseBindFix = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

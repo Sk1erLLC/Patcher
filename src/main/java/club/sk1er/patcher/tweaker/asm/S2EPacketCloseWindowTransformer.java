@@ -11,7 +11,6 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 public class S2EPacketCloseWindowTransformer implements PatcherTransformer {
     /**
@@ -36,32 +35,22 @@ public class S2EPacketCloseWindowTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("processPacket") || methodName.equals("func_148833_a")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
-                methodNode.instructions.insert(checkScreen());
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkScreen());
             }
         }
     }
 
     private InsnList checkScreen() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "stopForciblyClosingChat", "Z"));
-        LabelNode ifne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", // getMinecraft
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft",
                 "()Lnet/minecraft/client/Minecraft;", false));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71462_r", // currentScreen
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "currentScreen",
                 "Lnet/minecraft/client/gui/GuiScreen;"));
-        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/client/gui/GuiChat"));
-        LabelNode ifne1 = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne1));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/network/play/INetHandlerPlayClient", "func_147276_a", // handleCloseWindow
-                "(Lnet/minecraft/network/play/server/S2EPacketCloseWindow;)V", true));
-        list.add(ifne);
-        list.add(ifne1);
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/cliet/gui/GuiChat"));
+        LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));
+        list.add(labelNode);
         return list;
     }
 }
