@@ -4,6 +4,7 @@ import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
+import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
@@ -84,6 +85,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new FMLClientHandlerTransformer());
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new GuiModListTransformer());
+        registerTransformer(new FallbackResourceManagerTransformer());
 //        registerTransformer(new GuiContainerTransformer());
 //        registerTransformer(new GuiLanguageTransformer());
 //        registerTransformer(new GuiChatTransformer());
