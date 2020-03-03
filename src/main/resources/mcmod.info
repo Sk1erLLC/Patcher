@@ -3,8 +3,8 @@
     "modid": "patcher",
     "name": "Patcher",
     "description": "A mix of bug fixes, qol changes, and performance enhancements.",
-    "version": "1.0",
-    "mcversion": "1.8.9",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
     "url": "",
     "updateUrl": "",
     "authorList": [

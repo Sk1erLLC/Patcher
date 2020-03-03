@@ -73,7 +73,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new AbstractResourcePackTransformer());
-        registerTransformer(new ServerListTransformer());
+//        registerTransformer(new ServerListTransformer());
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new BlockRendererDispatcherTransformer());
