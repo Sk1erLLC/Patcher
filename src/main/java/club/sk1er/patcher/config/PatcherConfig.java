@@ -220,6 +220,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean transparentChat;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Tab Height",
+        description = "Move the tab overlay down 12 pixels when there's an active bossbar.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean tabHeight = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
