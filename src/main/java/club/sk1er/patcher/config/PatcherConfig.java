@@ -94,7 +94,7 @@ public class PatcherConfig extends Vigilant {
             name = "Fullbright",
             description = "Remove lighting updates, increasing visibility.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "World"
     )
     public static boolean fullbright = true;
 
@@ -103,7 +103,7 @@ public class PatcherConfig extends Vigilant {
             name = "Sky Height",
             description = "Set the sky height to 0, removing void flickering.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "World"
     )
     public static boolean skyHeight = true;
 
@@ -112,7 +112,7 @@ public class PatcherConfig extends Vigilant {
             name = "Instant World Swapping",
             description = "Remove waiting times between swapping worlds.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "World"
     )
     public static boolean instantWorldSwapping = true;
 
@@ -121,7 +121,7 @@ public class PatcherConfig extends Vigilant {
             name = "Nausea Effect",
             description = "Remove the nether portal appearing when clearing nausea.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "Rendering"
     )
     public static boolean nauseaEffect = true;
 
@@ -139,7 +139,7 @@ public class PatcherConfig extends Vigilant {
             name = "Disable Achievements",
             description = "Remove achievement notifications.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "Rendering"
     )
     public static boolean disableAchievements = true;
 
@@ -157,7 +157,7 @@ public class PatcherConfig extends Vigilant {
             name = "Fire Height",
             description = "Change the height at which fire renders at.",
             category = "Quality of Life",
-            subcategory = "General",
+            subcategory = "Rendering",
             min = -200,
             max = 200
     )
@@ -168,21 +168,11 @@ public class PatcherConfig extends Vigilant {
             name = "Chat History Length",
             description = "Change how many messages save in chat.",
             category = "Quality of Life",
-            subcategory = "General",
+            subcategory = "Chat",
             min = 100,
             max = 1000
     )
     public static int chatHistoryLength = 100;
-
-    // todo
-//    @Property(
-//            type = PropertyType.SWITCH,
-//            name = "Chat Message Length",
-//            description = "Change max string length from 100 to 256 on servers that support 1.11+.",
-//            category = "Quality of Life",
-//            subcategory = "General"
-//    )
-//    public static boolean adjustChatMessageLength = true;
 
     // todo refresh resourcepack image when toggled
     @Property(
@@ -213,13 +203,22 @@ public class PatcherConfig extends Vigilant {
     public static boolean crosshairPerspective;
 
     @Property(
-            type = PropertyType.SWITCH,
-            name = "Remove Tall Grass",
-            description = "Stop tall grass/double tall plants from rendering.",
-            category = "Quality of Life",
-            subcategory = "General"
+        type = PropertyType.SWITCH,
+        name = "Remove Tall Grass",
+        description = "Stop tall grass/double tall plants from rendering.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
     )
     public static boolean removeTallGrass;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Transparent Chat",
+        description = "Remove the background from chat.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean transparentChat;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

@@ -1,14 +1,16 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import java.util.Iterator;
+import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.util.ListIterator;
 
 public class GuiNewChatTransformer implements PatcherTransformer {
     /**
@@ -43,6 +45,29 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                         methodNode.instructions.remove(node);
                     }
                 }
+            }
+
+            // by LlamaLad7
+            if (methodName.equals("drawChat") || methodName.equals("func_146230_a")) {
+                Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
+                        LabelNode ifeq = new LabelNode();
+                        methodNode.instructions.insert(node, ifeq);
+                        AbstractInsnNode prevNode = node;
+
+                        for (int i = 0; i < 15; i++) {
+                            prevNode = prevNode.getPrevious();
+                        }
+
+                        methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChat", "Z"));
+                        methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
+                        break;
+                    }
+                }
+
+                break;
             }
         }
     }
