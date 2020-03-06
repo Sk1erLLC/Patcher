@@ -274,6 +274,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean disableEndPortals;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Show Own Nametag",
+        description = "See your own nametag in third person.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean showOwnNametag;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
