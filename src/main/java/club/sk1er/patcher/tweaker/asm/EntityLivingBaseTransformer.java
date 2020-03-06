@@ -37,6 +37,7 @@ public class EntityLivingBaseTransformer implements PatcherTransformer {
 
             if (methodName.equals("getLook") || methodName.equals("func_70676_i")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), returnSpecial());
+                break;
             }
         }
     }

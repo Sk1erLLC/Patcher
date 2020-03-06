@@ -35,6 +35,7 @@ public class GuiGameOverTransformer implements PatcherTransformer {
 
             if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), resetTimer());
+                break;
             }
         }
     }

@@ -40,8 +40,11 @@ public class AnvilChunkLoaderTransformer implements PatcherTransformer {
 
                     if (next instanceof MethodInsnNode && FMLDeobfuscatingRemapper.INSTANCE.map(((MethodInsnNode) next).name).equals("read")) {
                         methodNode.instructions.insertBefore(next.getNext().getNext(), closeInputStream());
+                        break;
                     }
                 }
+
+                break;
             }
         }
     }

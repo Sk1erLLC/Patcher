@@ -51,11 +51,11 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
                 }
 
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkForSlash());
+                break;
             }
         }
     }
 
-    // todo add config for this
     private InsnList makeLowercase() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));

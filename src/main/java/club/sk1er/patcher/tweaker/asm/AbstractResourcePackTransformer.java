@@ -40,6 +40,7 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
 
             if (methodName.equals("getPackImage") || methodName.equals("func_110586_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), downscaleImageSize());
+                break;
             }
         }
     }

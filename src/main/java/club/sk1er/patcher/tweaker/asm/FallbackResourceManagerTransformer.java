@@ -35,6 +35,7 @@ public class FallbackResourceManagerTransformer implements PatcherTransformer {
         methodNode.instructions.clear();
         methodNode.localVariables.clear();
         methodNode.instructions.insert(getFastCache());
+        break;
       }
     }
   }

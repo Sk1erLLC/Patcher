@@ -36,6 +36,7 @@ public class S2EPacketCloseWindowTransformer implements PatcherTransformer {
 
             if (methodName.equals("processPacket") || methodName.equals("func_148833_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkScreen());
+                break;
             }
         }
     }

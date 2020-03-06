@@ -36,6 +36,7 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
 
             if (methodName.equals("updateActivePotionEffects") || methodName.equals("func_175378_g")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), newEffectLogic());
+                break;
             }
         }
     }

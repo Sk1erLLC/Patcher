@@ -36,6 +36,7 @@ public class ItemRendererTransformer implements PatcherTransformer {
             if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeHeight());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), popMatrix());
+                break;
             }
         }
     }

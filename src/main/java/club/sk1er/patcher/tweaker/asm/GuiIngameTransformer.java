@@ -35,6 +35,7 @@ public class GuiIngameTransformer implements PatcherTransformer {
 
             if (methodName.equals("showCrosshair") || methodName.equals("func_175183_b")) {
                 method.instructions.insertBefore(method.instructions.getFirst(), disableCrosshairRendering());
+                break;
             }
         }
     }

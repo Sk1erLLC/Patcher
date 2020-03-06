@@ -37,8 +37,6 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelIfNotSafe());
                 break;
             }
-
-            break;
         }
     }
 

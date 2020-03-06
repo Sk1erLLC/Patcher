@@ -36,6 +36,7 @@ public class BlockRendererDispatcherTransformer implements PatcherTransformer {
 
             if (methodName.equals("renderBlock") || methodName.equals("func_175018_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), dontRender());
+                break;
             }
         }
     }

@@ -33,6 +33,7 @@ public class GuiPlayerTabOverlayTransformer implements PatcherTransformer {
                 "moveTabDownPopMatrix",
                 "()V",
                 false));
+        break;
       }
     }
   }

@@ -62,6 +62,8 @@ public class GameSettingsTransformer implements PatcherTransformer {
                 methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureMap",
                         "func_174937_a", // setBlurMipmapDirect
                         "(ZZ)V", false), insertBoolean());
+
+                break;
             }
         }
     }

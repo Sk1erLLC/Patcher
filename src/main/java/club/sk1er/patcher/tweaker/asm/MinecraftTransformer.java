@@ -46,6 +46,7 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).name.equals("setFullscreen")) {
                         methodNode.instructions.insert(node, resetScreenState());
+                        break;
                     }
                 }
             }
@@ -58,11 +59,11 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
                         methodNode.instructions.insertBefore(node, setSystemTime());
+                        break;
                     }
                 }
             }
 
-            // todo: config
             if (methodName.equals("displayGuiScreen")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -75,6 +76,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             methodNode.instructions.remove(node.getNext());
                             methodNode.instructions.remove(node.getNext());
                             methodNode.instructions.remove(node);
+                            break;
                         }
                     }
                 }

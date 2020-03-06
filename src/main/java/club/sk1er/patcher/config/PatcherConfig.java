@@ -229,6 +229,51 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean tabHeight = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Armorstands",
+        description = "Stop armorstands from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableArmorstands;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Item Frames",
+        description = "Stop item frames from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableItemFrames;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Arrows",
+        description = "Stop arrows shot by a player from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableArrows;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Skulls",
+        description = "Stop skulls from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableSkulls;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable End Portals",
+        description = "Stop end portals from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableEndPortals;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

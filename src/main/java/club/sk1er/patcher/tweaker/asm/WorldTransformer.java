@@ -48,6 +48,7 @@ public class WorldTransformer implements PatcherTransformer {
 
             if (methodName.equals("getHorizon")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setSkyHeight());
+                break;
             }
 
             if (brightness.contains(methodName)) {
