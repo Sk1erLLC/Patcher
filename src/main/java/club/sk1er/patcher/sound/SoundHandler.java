@@ -3,6 +3,7 @@ package club.sk1er.patcher.sound;
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.vigilance.data.PropertyData;
 import club.sk1er.vigilance.data.PropertyType;
+import java.util.Map.Entry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
@@ -40,9 +41,9 @@ public class SoundHandler implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
         Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = Minecraft.getMinecraft().getSoundHandler().sndRegistry.soundRegistry;
-        for (ResourceLocation resourceLocation : soundRegistry.keySet()) {
-            SoundEventAccessorComposite comp = soundRegistry.get(resourceLocation);
-            data.computeIfAbsent(resourceLocation, location ->
+        for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
+            SoundEventAccessorComposite comp = entry.getValue();
+            data.computeIfAbsent(entry.getKey(), location ->
                     ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
                             "Sounds",
                             WordUtils.capitalizeFully(comp.getSoundCategory().getCategoryName()),

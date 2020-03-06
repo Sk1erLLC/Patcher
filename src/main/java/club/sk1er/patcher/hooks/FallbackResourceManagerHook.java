@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -11,11 +12,14 @@ import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.SimpleResource;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
+import org.objectweb.asm.tree.ClassNode;
 
+/** Used in {@link FallbackResourceManagerTransformer#transform(ClassNode, String)} */
+@SuppressWarnings("unused")
 public class FallbackResourceManagerHook {
 
-  public static IResource getCachedResource(FallbackResourceManager manager, ResourceLocation location)
-      throws IOException {
+  public static IResource getCachedResource(
+      FallbackResourceManager manager, ResourceLocation location) throws IOException {
     IResourcePack iresourcepack = null;
     ResourceLocation resourcelocation = FallbackResourceManager.getLocationMcmeta(location);
     ByteArrayOutputStream packInfoCache = null;
