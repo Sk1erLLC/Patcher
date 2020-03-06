@@ -54,8 +54,7 @@ public class EntityRendering {
     GlStateManager.depthMask(false);
     GlStateManager.disableDepth();
     GlStateManager.enableBlend();
-    GlStateManager.tryBlendFuncSeparate(
-        GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+    GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
     int stringWidth = fontRenderer.getStringWidth(name) / 2;
     GlStateManager.disableTexture2D();
     GlStateManager.color(0, 0, 0, .25F);

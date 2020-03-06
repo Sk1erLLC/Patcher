@@ -283,6 +283,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean showOwnNametag;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Mouse Bind Fix",
+        description = "Fixes an issue where keybinds bound to mouse buttons do not work in inventories.",
+        category = "Fixes",
+        subcategory = "General"
+    )
+    public static boolean mouseBindFix = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
