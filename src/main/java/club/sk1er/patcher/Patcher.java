@@ -8,6 +8,7 @@ import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.util.EntityRendering;
+import club.sk1er.patcher.util.FovHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -46,6 +47,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(target);
         MinecraftForge.EVENT_BUS.register(new TabToggleHandler());
         MinecraftForge.EVENT_BUS.register(new EntityRendering());
+        MinecraftForge.EVENT_BUS.register(new FovHandler());
     }
 
     @SubscribeEvent

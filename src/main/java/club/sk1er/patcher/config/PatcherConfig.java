@@ -164,15 +164,59 @@ public class PatcherConfig extends Vigilant {
     public static int fireHeight;
 
     @Property(
-            type = PropertyType.SLIDER,
-            name = "Chat History Length",
-            description = "Change how many messages save in chat.",
-            category = "Quality of Life",
-            subcategory = "Chat",
-            min = 100,
-            max = 10000
+        type = PropertyType.SLIDER,
+        name = "Chat History Length",
+        description = "Change how many messages save in chat.",
+        category = "Quality of Life",
+        subcategory = "Chat",
+        min = 100,
+        max = 10000
     )
     public static int chatHistoryLength = 100;
+
+    @Property(
+        type = PropertyType.SLIDER,
+        name = "Sprinting FOV",
+        description = "Change your FOV when sprinting.",
+        category = "Quality of Life",
+        subcategory = "Field of View",
+        min = -5,
+        max = 5
+    )
+    public static int sprintingFovModifier = 1;
+
+    @Property(
+        type = PropertyType.SLIDER,
+        name = "Bow FOV",
+        description = "Change your FOV when pulling back a bow.",
+        category = "Quality of Life",
+        subcategory = "Field of View",
+        min = -5,
+        max = 5
+    )
+    public static int bowFovModifier = 1;
+
+    @Property(
+        type = PropertyType.SLIDER,
+        name = "Speed FOV",
+        description = "Change your FOV when having the speed effect.",
+        category = "Quality of Life",
+        subcategory = "Field of View",
+        min = -5,
+        max = 5
+    )
+    public static int speedFovModifier = 1;
+
+    @Property(
+        type = PropertyType.SLIDER,
+        name = "Slowness FOV",
+        description = "Change your FOV when having the slowness effect.",
+        category = "Quality of Life",
+        subcategory = "Field of View",
+        min = -5,
+        max = 5
+    )
+    public static int slownessFovModifier = 1;
 
     // todo refresh resourcepack image when toggled
     @Property(
