@@ -18,6 +18,8 @@ import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
@@ -95,6 +97,9 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiModListTransformer());
         registerTransformer(new ModClassLoaderTransformer());
         registerTransformer(new ModelLoaderTransformer());
+
+        // optifine
+        registerTransformer(new InventoryPlayerTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {
@@ -103,38 +108,53 @@ public class ClassTransformer implements IClassTransformer {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static byte[] createTransformer(
+        String transformedName,
+        byte[] bytes,
+        Multimap<String, PatcherTransformer> transformerMap,
+        Logger logger,
+        boolean outputBytecode) {
         if (bytes == null) return null;
 
         Collection<PatcherTransformer> transformers = transformerMap.get(transformedName);
         if (transformers.isEmpty()) return bytes;
 
-        LOGGER.info("Found {} transformers for {}", transformers.size(), transformedName);
+        logger.info("Found {} transformers for {}", transformers.size(), transformedName);
 
         ClassReader classReader = new ClassReader(bytes);
         ClassNode classNode = new ClassNode();
         classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
 
         for (PatcherTransformer transformer : transformers) {
-            LOGGER.info("Applying transformer {} on {}...", transformer.getClass().getName(), transformedName);
+            logger.info(
+                "Applying transformer {} on {}...", transformer.getClass().getName(), transformedName);
             transformer.transform(classNode, transformedName);
         }
 
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter =
+            new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
         try {
             classNode.accept(classWriter);
         } catch (Throwable e) {
-            System.out.println("Exception when transforming " + transformedName + " : " + e.getClass().getSimpleName());
+            System.out.println(
+                "Exception when transforming " + transformedName + " : " + e.getClass().getSimpleName());
             e.printStackTrace();
         }
 
         if (outputBytecode) {
             try {
                 File bytecodeDirectory = new File("bytecode");
-                File bytecodeOutput = new File(bytecodeDirectory, transformedName.replace('$', '.') + ".class"); // inner classes suckkkk
+                File bytecodeOutput =
+                    new File(
+                        bytecodeDirectory,
+                        transformedName.replace('$', '.') + ".class"); // inner classes suckkkk
 
                 if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
                 if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();

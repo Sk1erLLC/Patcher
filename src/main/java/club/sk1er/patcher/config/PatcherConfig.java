@@ -292,6 +292,24 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean mouseBindFix = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "OptiFine Zoom Adjustment",
+        description = "Scroll when using OptiFine's zoom to zoom further/farther.",
+        category = "Quality of Life",
+        subcategory = "OptiFine"
+    )
+    public static boolean scrollToZoom = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Optifine Zoom Sensitivity",
+        description = "Remove the smoothing from OptiFine's zoom.",
+        category = "Quality of Life",
+        subcategory = "OptiFine"
+    )
+    public static boolean normalZoomSensitivity;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
