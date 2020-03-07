@@ -170,7 +170,7 @@ public class PatcherConfig extends Vigilant {
             category = "Quality of Life",
             subcategory = "Chat",
             min = 100,
-            max = 1000
+            max = 10000
     )
     public static int chatHistoryLength = 100;
 
