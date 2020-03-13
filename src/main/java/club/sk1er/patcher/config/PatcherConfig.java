@@ -38,7 +38,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Command Handling",
-            description = "Fix Forge's command handler not checking for a '/' at the start of a command.",
+            description = "Fix Forge's command handler not checking for a '/' at the start of a command.\n§eOriginally by prplz.",
             category = "Fixes",
             subcategory = "Chat"
     )
@@ -65,7 +65,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Mouse Delay Fix",
-            description = "Stop your crosshair being a tick ahead of your actual position.",
+            description = "Stop your crosshair being a tick ahead of your actual position.\n§eOriginally by prplz.",
             category = "Fixes",
             subcategory = "Movement"
     )
@@ -101,7 +101,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Sky Height",
-            description = "Set the sky height to 0, removing void flickering.",
+            description = "Set the sky height to 0, removing void flickering.\n§eOriginally by 2Pi.",
             category = "Quality of Life",
             subcategory = "World"
     )
@@ -222,7 +222,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Pack Images",
-            description = "Change all pack icons to 64x64 to improve memory usage.",
+            description = "Change all pack icons to 64x64 to improve memory usage.\n§eOriginally by prplz.",
             category = "Performance",
             subcategory = "Packs"
     )
@@ -258,7 +258,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Chat",
-        description = "Remove the background from chat.",
+        description = "Remove the background from chat.\n§eDone by LlamaLad7.",
         category = "Quality of Life",
         subcategory = "Chat"
     )
@@ -339,7 +339,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "OptiFine Zoom Adjustment",
-        description = "Scroll when using OptiFine's zoom to zoom further/farther.",
+        description = "Scroll when using OptiFine's zoom to zoom further/farther.\n§eDone by LlamaLad7.",
         category = "Quality of Life",
         subcategory = "OptiFine"
     )
@@ -348,7 +348,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Optifine Zoom Sensitivity",
-        description = "Remove the smoothing from OptiFine's zoom.",
+        description = "Remove the smoothing from OptiFine's zoom.\n§eDone by LlamaLad7.",
         category = "Quality of Life",
         subcategory = "OptiFine"
     )
