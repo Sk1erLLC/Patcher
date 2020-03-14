@@ -37,6 +37,7 @@ public class EnchantmentTransformer implements PatcherTransformer {
       if (methodName.equals("getTranslatedName") || methodName.equals("func_77316_c")) {
         methodNode.instructions.insertBefore(
             methodNode.instructions.getFirst(), getNumericalName());
+        break;
       }
     }
   }

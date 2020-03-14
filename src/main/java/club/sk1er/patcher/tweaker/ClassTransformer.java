@@ -19,6 +19,7 @@ import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
@@ -91,6 +92,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new TileEntityEndPortalRendererTransformer());
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
+        registerTransformer(new MinecraftServerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
