@@ -366,11 +366,20 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Number Ping",
-        description = "Show a readable ping number in tab instead of bars.",
+        description = "Show a readable ping number in tab instead of bars.\n§cMay turn out to be 1 on Hypixel in most cases.",
         category = "Quality of Life",
         subcategory = "Tab"
     )
     public static boolean numberPing = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Numerical Enchantments",
+        description = "Use normal numbers instead of roman numerals on enchants.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean romanNumerals = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

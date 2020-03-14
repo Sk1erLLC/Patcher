@@ -4,6 +4,7 @@ import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
+import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
@@ -89,6 +90,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new TileEntitySkullRendererTransformer());
         registerTransformer(new TileEntityEndPortalRendererTransformer());
         registerTransformer(new GuiContainerTransformer());
+        registerTransformer(new EnchantmentTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
