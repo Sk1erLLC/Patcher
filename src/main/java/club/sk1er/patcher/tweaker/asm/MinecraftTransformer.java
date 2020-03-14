@@ -64,7 +64,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
 
-            if (methodName.equals("displayGuiScreen")) {
+            if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

@@ -1,6 +1,7 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -45,7 +46,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("setOptionFloatValue")) {
+            if (methodName.equals("setOptionFloatValue") || methodName.equals("func_74304_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -53,7 +54,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
 
                     if (node instanceof MethodInsnNode
                             && ((MethodInsnNode) node).owner.equals("net/minecraft/client/Minecraft")
-                            && ((MethodInsnNode) node).name.equals("scheduleResourcesRefresh")
+                            && FMLDeobfuscatingRemapper.INSTANCE.map(((MethodInsnNode) node).name).equals("scheduleResourcesRefresh")
                             && ((MethodInsnNode) node).desc.equals("()Lcom/google/common/util/concurrent/ListenableFuture;")) {
                         methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), insertBoolean());
                     }

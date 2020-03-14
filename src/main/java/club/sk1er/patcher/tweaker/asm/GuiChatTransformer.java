@@ -1,6 +1,7 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -45,7 +46,7 @@ public class GuiChatTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setMaxStringLength")) {
+                    if (node instanceof MethodInsnNode && FMLDeobfuscatingRemapper.INSTANCE.map(((MethodInsnNode) node).name).equals("setMaxStringLength")) {
                         methodNode.instructions.remove(node.getPrevious());
                         methodNode.instructions.remove(node.getPrevious());
                         methodNode.instructions.remove(node.getPrevious());
