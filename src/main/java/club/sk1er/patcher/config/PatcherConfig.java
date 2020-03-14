@@ -233,7 +233,7 @@ public class PatcherConfig extends Vigilant {
             name = "Toggle Tab",
             description = "Hold tab open with a single keypress.",
             category = "Quality of Life",
-            subcategory = "General"
+            subcategory = "Tab"
     )
     public static boolean toggleTab;
 
@@ -269,7 +269,7 @@ public class PatcherConfig extends Vigilant {
         name = "Tab Height",
         description = "Move the tab overlay down 12 pixels when there's an active bossbar.",
         category = "Quality of Life",
-        subcategory = "Rendering"
+        subcategory = "Tab"
     )
     public static boolean tabHeight = true;
 
@@ -362,6 +362,15 @@ public class PatcherConfig extends Vigilant {
         subcategory = "Chat"
     )
     public static boolean compactChat = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Number Ping",
+        description = "Show a readable ping number in tab instead of bars.",
+        category = "Quality of Life",
+        subcategory = "Tab"
+    )
+    public static boolean numberPing = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
