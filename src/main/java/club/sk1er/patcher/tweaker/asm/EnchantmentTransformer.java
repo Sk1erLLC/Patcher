@@ -34,7 +34,7 @@ public class EnchantmentTransformer implements PatcherTransformer {
     for (MethodNode methodNode : classNode.methods) {
       String methodName = mapMethodName(classNode, methodNode);
 
-      if (methodName.equals("getTranslatedName")) {
+      if (methodName.equals("getTranslatedName") || methodName.equals("func_77316_c")) {
         methodNode.instructions.insertBefore(
             methodNode.instructions.getFirst(), getNumericalName());
       }

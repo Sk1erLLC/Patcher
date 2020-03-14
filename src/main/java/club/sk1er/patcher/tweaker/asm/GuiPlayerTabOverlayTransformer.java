@@ -41,7 +41,7 @@ public class GuiPlayerTabOverlayTransformer implements PatcherTransformer {
                 false));
       }
 
-      if (methodName.equals("drawPing")) {
+      if (methodName.equals("drawPing") || methodName.equals("func_175245_a")) {
         method.instructions.insertBefore(method.instructions.getFirst(), drawPatcherPing());
       }
     }
