@@ -1,4 +1,4 @@
-package club.sk1er.patcher.util;
+package club.sk1er.patcher.util.fov;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import java.util.Collection;

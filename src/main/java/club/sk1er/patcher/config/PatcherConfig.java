@@ -354,6 +354,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean normalZoomSensitivity;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Compact Chat",
+        description = "Clean up chat by stacking duplicate messages.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean compactChat = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

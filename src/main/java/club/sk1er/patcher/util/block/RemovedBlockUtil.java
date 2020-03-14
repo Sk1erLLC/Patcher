@@ -1,4 +1,4 @@
-package club.sk1er.patcher.util;
+package club.sk1er.patcher.util.block;
 
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import net.minecraft.block.Block;

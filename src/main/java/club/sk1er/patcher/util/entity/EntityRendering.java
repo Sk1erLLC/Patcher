@@ -1,4 +1,4 @@
-package club.sk1er.patcher.util;
+package club.sk1er.patcher.util.entity;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
