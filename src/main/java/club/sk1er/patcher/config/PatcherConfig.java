@@ -65,7 +65,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Mouse Delay Fix",
-            description = "Stop your crosshair being a tick ahead of your actual position.\n§eOriginally by prplz.",
+            description = "Stop your actual position being a tick ahead of your crosshair.\n§eOriginally by prplz.",
             category = "Fixes",
             subcategory = "Movement"
     )
