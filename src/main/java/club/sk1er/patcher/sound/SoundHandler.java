@@ -3,7 +3,6 @@ package club.sk1er.patcher.sound;
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.vigilance.data.PropertyData;
 import club.sk1er.vigilance.data.PropertyType;
-import java.util.Map.Entry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
@@ -16,6 +15,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class SoundHandler implements IResourceManagerReloadListener {
 
