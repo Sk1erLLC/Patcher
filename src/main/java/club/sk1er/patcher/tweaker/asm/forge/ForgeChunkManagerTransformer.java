@@ -34,7 +34,7 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
   @Override
   public void transform(ClassNode classNode, String name) {
     for (MethodNode methodNode : classNode.methods) {
-      String methodName = mapMethodName(classNode, methodNode);
+      String methodName = methodNode.name;
 
       if (methodName.equals("<clinit>")) {
         ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -52,7 +52,7 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
         }
       }
 
-      if (methodNode.name.equals("unloadWorld")) {
+      if (methodName.equals("unloadWorld")) {
         methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeWorld());
       }
 
