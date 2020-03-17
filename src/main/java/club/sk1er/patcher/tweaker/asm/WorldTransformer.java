@@ -64,17 +64,17 @@ public class WorldTransformer implements PatcherTransformer {
         methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
       }
 
-      if (methodName.equals("updateEntityWithOptionalForce")) {
-        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-        while (iterator.hasNext()) {
-          AbstractInsnNode next = iterator.next();
-
-          if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("getPersistentChunks")) {
-            methodNode.instructions.insertBefore(next.getPrevious(), checkForRemote());
-          }
-        }
-      }
+//      if (methodName.equals("updateEntityWithOptionalForce")) {
+//        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+//
+//        while (iterator.hasNext()) {
+//          AbstractInsnNode next = iterator.next();
+//
+//          if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("getPersistentChunks")) {
+//            methodNode.instructions.insertBefore(next.getPrevious(), checkForRemote());
+//          }
+//        }
+//      }
     }
   }
 

@@ -20,6 +20,7 @@ import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
+import club.sk1er.patcher.tweaker.asm.TextureManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
@@ -95,6 +96,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
+        registerTransformer(new TextureManagerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
