@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class ForgeChunkManagerTransformer implements PatcherTransformer {
 
@@ -21,14 +22,14 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
    */
   @Override
   public String[] getClassName() {
-    return new String[]{"net.minecraftforge.common.ForgeChunkManager"};
+    return new String[] {"net.minecraftforge.common.ForgeChunkManager"};
   }
 
   /**
    * Perform any asm in order to transform code
    *
    * @param classNode the transformed class node
-   * @param name      the transformed class name
+   * @param name the transformed class name
    */
   @Override
   public void transform(ClassNode classNode, String name) {
@@ -50,15 +51,72 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
           }
         }
       }
+
+      if (methodNode.name.equals("unloadWorld")) {
+        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeWorld());
+      }
+
+      if (methodName.equals("getPersistentChunksFor")) {
+        methodNode.instructions.clear();
+        methodNode.localVariables.clear();
+        methodNode.instructions.insert(getHookedChunksMethod());
+      }
     }
+  }
+
+  private InsnList getHookedChunksMethod() {
+    InsnList list = new InsnList();
+    list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+    list.add(
+        new FieldInsnNode(
+            Opcodes.GETSTATIC,
+            "net/minecraftforge/common/ForgeChunkManager",
+            "forcedChunks",
+            "Ljava/util/Map;"));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKESTATIC,
+            "club/sk1er/patcher/hooks/ForgeChunkManagerHook",
+            "getPersistentChunksFor",
+            "(Lnet/minecraft/world/World;Ljava/util/Map;)Lcom/google/common/collect/ImmutableSetMultimap;",
+            false));
+    list.add(new InsnNode(Opcodes.ARETURN));
+    return list;
+  }
+
+  private InsnList removeWorld() {
+    InsnList list = new InsnList();
+    list.add(
+        new FieldInsnNode(
+            Opcodes.GETSTATIC,
+            "net/minecraftforge/common/ForgeChunkManager",
+            "forcedChunks",
+            "Ljava/util/Map;"));
+    list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKEINTERFACE,
+            "java/util/Map",
+            "remove",
+            "(Ljava/lang/Object;)Ljava/lang/Object;",
+            true));
+    list.add(new InsnNode(Opcodes.POP));
+    return list;
   }
 
   private InsnList assignForcedChunks() {
     InsnList list = new InsnList();
     list.add(new TypeInsnNode(Opcodes.NEW, "java/util/WeakHashMap"));
     list.add(new InsnNode(Opcodes.DUP));
-    list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/util/WeakHashMap", "<init>", "()V", false));
-    list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/util/Collections", "synchronizedMap", "(Ljava/util/Map;)Ljava/util/Map;", false));
+    list.add(
+        new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/util/WeakHashMap", "<init>", "()V", false));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKESTATIC,
+            "java/util/Collections",
+            "synchronizedMap",
+            "(Ljava/util/Map;)Ljava/util/Map;",
+            false));
     return list;
   }
 }
