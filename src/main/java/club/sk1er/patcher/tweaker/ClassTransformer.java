@@ -19,13 +19,8 @@ import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
-import club.sk1er.patcher.tweaker.asm.TextureManagerTransformer;
-import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
-import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
@@ -39,10 +34,13 @@ import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeHooksClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -96,7 +94,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
-        registerTransformer(new TextureManagerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
