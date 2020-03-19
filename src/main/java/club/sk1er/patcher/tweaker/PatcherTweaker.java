@@ -19,7 +19,11 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
+  public static long clientLoadTime;
+
   public PatcherTweaker() {
+    clientLoadTime = System.currentTimeMillis();
+
     try {
       FMLLaunchHandler launchHandler =
           ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");

@@ -381,6 +381,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean romanNumerals = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Startup Notification",
+        description = "Notify how long the game took to startup with a notification.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean startupNotification = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

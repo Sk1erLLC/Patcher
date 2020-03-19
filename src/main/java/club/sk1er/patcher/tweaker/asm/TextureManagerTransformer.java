@@ -36,7 +36,7 @@ public class TextureManagerTransformer implements PatcherTransformer {
     for (MethodNode methodNode : classNode.methods) {
       String methodName = mapMethodName(classNode, methodNode);
 
-      if (methodName.equals("deleteTexture")) {
+      if (methodName.equals("deleteTexture") || methodName.equals("func_147645_c")) {
         ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
         while (iterator.hasNext()) {
@@ -57,7 +57,7 @@ public class TextureManagerTransformer implements PatcherTransformer {
         new FieldInsnNode(
             Opcodes.GETFIELD,
             "net/minecraft/client/renderer/texture/TextureManager",
-            "mapTextureObjects",
+            "field_110585_a", // mapTextureObjects
             "Ljava/util/Map;"));
     list.add(new VarInsnNode(Opcodes.ALOAD, 1));
     list.add(

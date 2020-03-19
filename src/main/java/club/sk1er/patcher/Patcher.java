@@ -1,27 +1,30 @@
 package club.sk1er.patcher;
 
 import club.sk1er.modcore.ModCoreInstaller;
+import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
+import club.sk1er.patcher.tweaker.PatcherTweaker;
+import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.fov.FovHandler;
-import club.sk1er.patcher.util.chat.ChatHandler;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.0")
 public class Patcher {
@@ -50,6 +53,18 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new EntityRendering());
         MinecraftForge.EVENT_BUS.register(new FovHandler());
         MinecraftForge.EVENT_BUS.register(new ChatHandler());
+    }
+
+    @EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event) {
+        float time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000f;
+
+        if (PatcherConfig.startupNotification) {
+            Notifications.INSTANCE.pushNotification(
+                "Minecraft Startup", "Minecraft started in " + time + " seconds.");
+        }
+
+        LOGGER.info("Minecraft started in {} seconds.", time);
     }
 
     @SubscribeEvent
