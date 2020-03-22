@@ -38,6 +38,7 @@ public class FontRendererTransformer implements PatcherTransformer {
       if ((methodName.equalsIgnoreCase("renderString") || methodName.equals("func_180455_b"))
           && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
         methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getShadowHook());
+        break;
       }
     }
   }
