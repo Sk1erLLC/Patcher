@@ -392,6 +392,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Keep Shaders on Perspective Change",
+        description = "Keep the shaders you're currently using while also being able to toggle perspective.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "General"
+    )
+    public static boolean keepShadersOnPerspectiveChange = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Disable Shadowed Text",
         description = "Remove the shadow from text, resulting in fewer draw calls.",
         category = "Performance",

@@ -1,7 +1,7 @@
 package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -17,7 +17,7 @@ public class OptifineClassTransformer implements IClassTransformer {
       Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
   public OptifineClassTransformer() {
-    registerTransformer(new EntityRendererTransformer());
+    registerTransformer(new OptifineEntityRendererTransformer());
   }
 
   private void registerTransformer(PatcherTransformer transformer) {

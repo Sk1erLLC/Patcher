@@ -81,6 +81,35 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                 }
             }
+
+            if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
+                boolean foundFirst = false;
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                LabelNode ifne = new LabelNode();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == Opcodes.GETFIELD) {
+                        FieldInsnNode fieldInsnNode = (FieldInsnNode) node;
+                        if (fieldInsnNode.name.equals("thirdPersonView") || fieldInsnNode.name.equals("field_74320_O")) {
+                            if (node.getNext().getOpcode() == Opcodes.IFNE) {
+                                AbstractInsnNode prevNode = node.getPrevious().getPrevious();
+                                methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "keepShadersOnPerspectiveChange", "Z"));
+                                methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifne));
+                            }
+                        }
+                    } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+                        if (methodInsnNode.name.equals("loadEntityShader") || methodInsnNode.name.equals("func_175066_a")) {
+                            if (!foundFirst) {
+                                foundFirst = true;
+                            } else {
+                                methodNode.instructions.insert(node, ifne);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

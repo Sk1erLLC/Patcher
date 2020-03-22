@@ -17,7 +17,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 // By LlamaLad7
-public class EntityRendererTransformer implements PatcherTransformer {
+public class OptifineEntityRendererTransformer implements PatcherTransformer {
   private static final float normalModifier = 4f;
   private static float currentModifier = 4f;
   public static boolean zoomed = false;
