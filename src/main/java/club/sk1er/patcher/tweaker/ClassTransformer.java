@@ -9,6 +9,7 @@ import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
+import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
@@ -94,6 +95,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
+        registerTransformer(new FontRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

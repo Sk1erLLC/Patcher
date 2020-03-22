@@ -390,6 +390,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean startupNotification = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Shadowed Text",
+        description = "Remove the shadow from text, resulting in fewer draw calls.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableShadowedText;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
