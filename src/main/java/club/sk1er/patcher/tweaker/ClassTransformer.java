@@ -15,6 +15,7 @@ import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
@@ -96,6 +97,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
+        registerTransformer(new GuiLanguageListTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
