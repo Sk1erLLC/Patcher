@@ -2,8 +2,8 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -15,7 +15,6 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class WorldTransformer implements PatcherTransformer {
@@ -64,67 +63,26 @@ public class WorldTransformer implements PatcherTransformer {
         methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
       }
 
-//      if (methodName.equals("updateEntityWithOptionalForce")) {
-//        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-//
-//        while (iterator.hasNext()) {
-//          AbstractInsnNode next = iterator.next();
-//
-//          if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("getPersistentChunks")) {
-//            methodNode.instructions.insertBefore(next.getPrevious(), checkForRemote());
-//          }
-//        }
-//      }
+      if (methodName.equals("updateEntityWithOptionalForce") || methodName.equals("func_72866_a")) {
+        Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+        while (iterator.hasNext()) {
+          AbstractInsnNode node = iterator.next();
+          if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+            if (methodInsnNode.name.equals("getPersistentChunks")) {
+              AbstractInsnNode prevNode = node.getPrevious();
+              methodNode.instructions.insertBefore(prevNode, new VarInsnNode(Opcodes.ALOAD, 0));
+              methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", "field_72995_K", "Z"));
+              methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.ICONST_1));
+              methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.IXOR));
+            }
+          } else if (node.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) node).var == 5) {
+            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
+            break;
+          }
+        }
+      }
     }
-  }
-
-  private InsnList checkForRemote() {
-    InsnList list = new InsnList();
-    list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-    list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", "isRemote", "Z"));
-    LabelNode ifne = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-    list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-    list.add(
-        new MethodInsnNode(
-            Opcodes.INVOKEVIRTUAL,
-            "net/minecraft/world/World",
-            "getPersistentChunks",
-            "()Lcom/google/common/collect/ImmutableSetMultimap;",
-            false));
-    list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/world/ChunkCoordIntPair"));
-    list.add(new InsnNode(Opcodes.DUP));
-    list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-    list.add(new InsnNode(Opcodes.ICONST_4));
-    list.add(new InsnNode(Opcodes.ISHR));
-    list.add(new VarInsnNode(Opcodes.ILOAD, 4));
-    list.add(new InsnNode(Opcodes.ICONST_4));
-    list.add(new InsnNode(Opcodes.ISHR));
-    list.add(
-        new MethodInsnNode(
-            Opcodes.INVOKESPECIAL,
-            "net/minecraft/world/ChunkCoordIntPair",
-            "<init>",
-            "(II)V",
-            false));
-    list.add(
-        new MethodInsnNode(
-            Opcodes.INVOKEVIRTUAL,
-            "com/google/common/collect/ImmutableSetMultimap",
-            "containsKey",
-            "(Ljava/lang/Object;)Z",
-            false));
-    LabelNode ifeq = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-    list.add(new InsnNode(Opcodes.ICONST_1));
-    LabelNode gotoInsn = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-    list.add(ifne);
-    list.add(ifeq);
-    list.add(new InsnNode(Opcodes.ICONST_0));
-    list.add(gotoInsn);
-    list.add(new VarInsnNode(Opcodes.ISTORE, 5));
-    return list;
   }
 
   private InsnList setLightLevel() {
