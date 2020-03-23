@@ -46,7 +46,7 @@ public class InventoryPlayerTransformer implements PatcherTransformer {
     list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "scrollToZoom", "Z"));
     list.add(
         new FieldInsnNode(
-            Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "zoomed", "Z"));
+            Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer", "zoomed", "Z"));
     list.add(new InsnNode(Opcodes.IAND));
     LabelNode ifeq = new LabelNode();
     list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
