@@ -9,6 +9,7 @@ import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
+import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.fov.FovHandler;
@@ -29,7 +30,6 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = "patcher", name = "Patcher", version = "1.0")
 public class Patcher {
 
-    public static boolean allowsHigherChatLength;
     private final Logger LOGGER = LogManager.getLogger("Patcher");
     private PatcherConfig patcherConfig;
 
@@ -70,8 +70,8 @@ public class Patcher {
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
-            LOGGER.info("User is in singleplayer.");
-            allowsHigherChatLength = false;
+            LOGGER.info("User is in singleplayer, setting string length to 100.");
+            GuiChatTransformer.maxChatLength = 1;
             return;
         }
 
@@ -83,11 +83,11 @@ public class Patcher {
         Multithreading.runAsync(() -> {
             try {
                 if (future.get()) {
-                    LOGGER.info("Server supports 1.11+!");
-                    allowsHigherChatLength = true;
+                    LOGGER.info("Server supports 1.11+, setting string length to 256.");
+                    GuiChatTransformer.maxChatLength = 10;
                 } else {
-                    LOGGER.info("Server doesn't support 1.11+.");
-                    allowsHigherChatLength = false;
+                    LOGGER.info("Server doesn't support 1.11+, setting string length to 100.");
+                    GuiChatTransformer.maxChatLength = 5;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

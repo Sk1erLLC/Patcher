@@ -401,6 +401,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Better Keybind Handling",
+        description = "Use 1.12+'s keybind handling, in which your key state is taken into account when closing a GUI.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "General"
+    )
+    public static boolean newKeybindHandling = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Disable Shadowed Text",
         description = "Remove the shadow from text, resulting in fewer draw calls.",
         category = "Performance",
