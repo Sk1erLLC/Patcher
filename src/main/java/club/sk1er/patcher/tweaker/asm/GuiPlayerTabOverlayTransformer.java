@@ -1,7 +1,9 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import java.util.Iterator;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -23,6 +25,22 @@ public class GuiPlayerTabOverlayTransformer implements PatcherTransformer {
     for (MethodNode method : classNode.methods) {
       String methodName = mapMethodName(classNode, method);
       if (methodName.equals("renderPlayerlist") || methodName.equals("func_175249_a")) {
+        Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+        while (iterator.hasNext()) {
+          AbstractInsnNode node = iterator.next();
+          if (node.getOpcode() == Opcodes.INVOKESTATIC) {
+            String currName = mapMethodNameFromNode((MethodInsnNode) node);
+            if (currName.equals("drawRect") || currName.equals("func_73734_a")) {
+              method.instructions.insertBefore(node, new MethodInsnNode(
+                  Opcodes.INVOKESTATIC,
+                  "club/sk1er/patcher/hooks/GuiPlayerTabOverlayHook",
+                  "getNewColor",
+                  "(I)I",
+                  false));
+            }
+          }
+        }
+
         method.instructions.insertBefore(
             method.instructions.getFirst(),
             new MethodInsnNode(

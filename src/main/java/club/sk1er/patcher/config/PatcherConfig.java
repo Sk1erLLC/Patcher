@@ -218,6 +218,25 @@ public class PatcherConfig extends Vigilant {
     )
     public static int slownessFovModifier = 1;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Custom Tab Opacity",
+        description = "Allow for customizing tab opacity.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Tab"
+    )
+    public static boolean customTabOpacity = false;
+
+    @Property(
+        type = PropertyType.SLIDER,
+        name = "Tab Opacity",
+        description = "Change the tab list opacity.",
+        category = "Quality of Life",
+        subcategory = "Tab",
+        max = 100
+    )
+    public static int tabOpacity = 100;
+
     // todo refresh resourcepack image when toggled
     @Property(
             type = PropertyType.SWITCH,

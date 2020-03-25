@@ -4,7 +4,9 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.PatcherCommand;
+import club.sk1er.patcher.command.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
@@ -32,6 +34,7 @@ public class Patcher {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher");
     private PatcherConfig patcherConfig;
+    private PatcherSoundConfig patcherSoundConfig;
 
     @Mod.Instance("patcher")
     public static Patcher instance;
@@ -43,9 +46,13 @@ public class Patcher {
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
 
+        patcherSoundConfig = new PatcherSoundConfig();
+        patcherSoundConfig.preload();
+
         SoundHandler target = new SoundHandler();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
+        ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(target);
@@ -97,5 +104,9 @@ public class Patcher {
 
     public PatcherConfig getPatcherConfig() {
         return patcherConfig;
+    }
+
+    public PatcherSoundConfig getPatcherSoundConfig() {
+        return patcherSoundConfig;
     }
 }

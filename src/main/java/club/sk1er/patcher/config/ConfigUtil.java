@@ -18,14 +18,14 @@ public class ConfigUtil {
 
     public static PropertyData createConfig(PropertyType type, String category, String subCategory, String name, String description, Object defaultValue, int min, int max, Consumer<Object> onUpdate) {
         Property property = createProperty(type, category, subCategory, name, description, min, max);
-        PropertyData data = PropertyData.Companion.withValue(property, defaultValue, Patcher.instance.getPatcherConfig());
+        PropertyData data = PropertyData.Companion.withValue(property, defaultValue, Patcher.instance.getPatcherSoundConfig());
 
         if (onUpdate != null) data.setCallbackConsumer(onUpdate);
         return data;
     }
 
     public static void register(PropertyData data) {
-        Patcher.instance.getPatcherConfig().registerProperty(data);
+        Patcher.instance.getPatcherSoundConfig().registerProperty(data);
     }
 
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {

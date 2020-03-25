@@ -27,6 +27,13 @@ public class GuiPlayerTabOverlayHook {
     }
   }
 
+  public static int getNewColor(int color) {
+    if (!PatcherConfig.customTabOpacity) return color;
+    int prevOpacity = Math.abs(color >> 24);
+    int opacity = prevOpacity * PatcherConfig.tabOpacity / 100;
+    return (opacity << 24) | (color & 0xFFFFFF);
+  }
+
   public static void drawPatcherPing(
       int p_175245_1_, int p_175245_2_, int p_175245_3_, NetworkPlayerInfo playerInfo) {
     int ping = playerInfo.getResponseTime();
