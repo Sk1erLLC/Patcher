@@ -15,6 +15,7 @@ import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.fov.FovHandler;
+import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -60,6 +61,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new EntityRendering());
         MinecraftForge.EVENT_BUS.register(new FovHandler());
         MinecraftForge.EVENT_BUS.register(new ChatHandler());
+        MinecraftForge.EVENT_BUS.register(new HotbarItemsHandler());
     }
 
     @EventHandler

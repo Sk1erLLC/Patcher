@@ -436,6 +436,42 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean disableShadowedText;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Damage Glance",
+        description = "View the damage value of a currently held item above your hotbar.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Hotbar Utilities"
+    )
+    public static boolean damageGlance = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Item Count Glance",
+        description = "View the amount of a currently held item you have above your hotbar.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Hotbar Utilities"
+    )
+    public static boolean itemCountGlance = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Enchantment Glance",
+        description = "View the enchantments of the currently held item above your hotbar.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Hotbar Utilities"
+    )
+    public static boolean enchantmentsGlance = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Chat Position",
+        description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean chatPosition = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
