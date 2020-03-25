@@ -13,14 +13,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ChatHandler {
 
-  private final String timeFormat =
-      LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
   private String lastMessage = "";
   private int line, amount;
 
   @SubscribeEvent(priority = EventPriority.LOWEST)
   public void onChat(ClientChatReceivedEvent event) {
     if (!event.isCanceled() && event.type == 0) {
+      String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
       if (PatcherConfig.compactChat) {
         // Get the chat instance
         GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
