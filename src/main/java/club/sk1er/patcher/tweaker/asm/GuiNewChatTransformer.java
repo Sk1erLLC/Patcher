@@ -9,6 +9,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -37,42 +39,73 @@ public class GuiNewChatTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("setChatLine") || methodName.equals("func_146237_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+          switch (methodName) {
+            case "setChatLine":
+            case "func_146237_a": {
+              ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+              while (iterator.hasNext()) {
+                AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
-                        methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatHistoryLength", "I"));
-                        methodNode.instructions.remove(node);
-                    }
+                if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
+                  methodNode.instructions.insertBefore(node,
+                      new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(),
+                          "chatHistoryLength", "I"));
+                  methodNode.instructions.remove(node);
                 }
+              }
+              break;
             }
 
-            // by LlamaLad7
-            if (methodName.equals("drawChat") || methodName.equals("func_146230_a")) {
-                Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                  AbstractInsnNode node = iterator.next();
-                  if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
-                        LabelNode ifeq = new LabelNode();
-                        methodNode.instructions.insert(node, ifeq);
-                        AbstractInsnNode prevNode = node;
+            case "drawChat":
+            case "func_146230_a": {
+              Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+              while (iterator.hasNext()) {
+                AbstractInsnNode node = iterator.next();
+                if (node.getOpcode() == Opcodes.INVOKESTATIC
+                    && node.getPrevious().getOpcode() == Opcodes.ISHL) {
+                  LabelNode ifeq = new LabelNode();
+                  methodNode.instructions.insert(node, ifeq);
+                  AbstractInsnNode prevNode = node;
 
-                        for (int i = 0; i < 15; i++) {
-                            prevNode = prevNode.getPrevious();
-                        }
+                  for (int i = 0; i < 15; i++) {
+                    prevNode = prevNode.getPrevious();
+                  }
 
-                        methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChat", "Z"));
-                        methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
-                        break;
-                    }
+                  methodNode.instructions.insertBefore(prevNode,
+                      new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(),
+                          "transparentChat", "Z"));
+                  methodNode.instructions
+                      .insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
+                  break;
                 }
+              }
 
-              methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer", "moveDownAndPushMatrix", "()V", false));
-              methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer", "popMatrix", "()V", false));
+              methodNode.instructions.insertBefore(methodNode.instructions.getFirst(),
+                  new MethodInsnNode(Opcodes.INVOKESTATIC,
+                      "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer",
+                      "moveDownAndPushMatrix", "()V", false));
+              methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(),
+                  new MethodInsnNode(Opcodes.INVOKESTATIC,
+                      "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer", "popMatrix", "()V",
+                      false));
+              break;
             }
+
+            case "getChatComponent":
+            case "func_146236_a": {
+              Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+              while (iterator.hasNext()) {
+                AbstractInsnNode node = iterator.next();
+                if (node.getOpcode() == Opcodes.ISUB
+                    && node.getPrevious().getOpcode() == Opcodes.BIPUSH) {
+                  methodNode.instructions.insert(node, minus12());
+                  break;
+                }
+              }
+              break;
+            }
+          }
         }
     }
 
@@ -86,5 +119,16 @@ public class GuiNewChatTransformer implements PatcherTransformer {
     if (PatcherConfig.chatPosition) {
       GlStateManager.popMatrix();
     }
+  }
+
+  private InsnList minus12() {
+    InsnList list = new InsnList();
+    LabelNode afterSub = new LabelNode();
+    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
+    list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
+    list.add(new IntInsnNode(Opcodes.BIPUSH, 12));
+    list.add(new InsnNode(Opcodes.ISUB));
+    list.add(afterSub);
+    return list;
   }
 }

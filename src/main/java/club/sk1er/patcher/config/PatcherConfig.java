@@ -472,6 +472,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean chatPosition = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Chat Timestamps",
+        description = "Add timestamps before a message.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean timestamps;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
