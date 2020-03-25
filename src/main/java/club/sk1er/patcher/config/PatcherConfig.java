@@ -421,7 +421,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Better Keybind Handling",
-        description = "Use 1.12+'s keybind handling, in which your key state is taken into account when closing a GUI.\n§eDone by LlamaLad7.",
+        description = "Make keys re-register when closing a GUI, like in 1.12+.\n§eDone by LlamaLad7.",
         category = "Quality of Life",
         subcategory = "General"
     )
