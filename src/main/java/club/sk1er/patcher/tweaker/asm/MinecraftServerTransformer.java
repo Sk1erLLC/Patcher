@@ -1,7 +1,7 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -10,8 +10,6 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
-import java.util.ListIterator;
 
 public class MinecraftServerTransformer implements PatcherTransformer {
   /**
@@ -40,12 +38,17 @@ public class MinecraftServerTransformer implements PatcherTransformer {
 
         while (iterator.hasNext()) {
           AbstractInsnNode next = iterator.next();
-
-          if (next instanceof MethodInsnNode && FMLDeobfuscatingRemapper.INSTANCE.map(((MethodInsnNode) next).name).equals("setFavicon")) {
-            methodNode.instructions.insertBefore(next.getNext(), releaseIcon());
-            break;
+          if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+            MethodInsnNode methodInsnNode = (MethodInsnNode) next;
+            String methodInsnName = mapMethodNameFromNode(methodInsnNode);
+            if (methodInsnName.equals("setFavicon") || methodInsnName.equals("func_151320_a")) {
+              methodNode.instructions.insertBefore(methodInsnNode.getNext(), releaseIcon());
+              break;
+            }
           }
         }
+
+        break;
       }
     }
   }
@@ -53,7 +56,9 @@ public class MinecraftServerTransformer implements PatcherTransformer {
   private InsnList releaseIcon() {
     InsnList list = new InsnList();
     list.add(new VarInsnNode(Opcodes.ALOAD, 5));
-    list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "io/netty/buffer/ByteBuf", "release", "()Z", false));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKEVIRTUAL, "io/netty/buffer/ByteBuf", "release", "()Z", false));
     list.add(new InsnNode(Opcodes.POP));
     return list;
   }

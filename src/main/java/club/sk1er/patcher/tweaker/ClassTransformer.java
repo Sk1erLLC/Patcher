@@ -2,6 +2,7 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.BlockDoublePlantTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
@@ -99,6 +100,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
         registerTransformer(new GuiLanguageListTransformer());
+//        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
