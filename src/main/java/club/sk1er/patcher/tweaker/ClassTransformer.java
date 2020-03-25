@@ -24,8 +24,10 @@ import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
+import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
@@ -100,6 +102,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
         registerTransformer(new GuiLanguageListTransformer());
+        registerTransformer(new LayerCustomHeadTransformer());
+        registerTransformer(new NBTTagCompoundTransformer());
 //        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes
