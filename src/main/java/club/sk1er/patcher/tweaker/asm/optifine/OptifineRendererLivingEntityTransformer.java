@@ -1,4 +1,4 @@
-package club.sk1er.patcher.tweaker.asm;
+package club.sk1er.patcher.tweaker.asm.optifine;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import java.util.ListIterator;
@@ -15,19 +15,30 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class RendererLivingEntityTransformer implements PatcherTransformer {
+public class OptifineRendererLivingEntityTransformer implements PatcherTransformer {
 
+  /**
+   * The class name that's being transformed
+   *
+   * @return the class name
+   */
   @Override
   public String[] getClassName() {
     return new String[]{"net.minecraft.client.renderer.entity.RendererLivingEntity"};
   }
 
+  /**
+   * Perform any asm in order to transform code
+   *
+   * @param classNode the transformed class node
+   * @param name      the transformed class name
+   */
   @Override
   public void transform(ClassNode classNode, String name) {
-    for (MethodNode method : classNode.methods) {
-      String methodName = mapMethodName(classNode, method);
+    for (MethodNode methodNode : classNode.methods) {
+      String methodName = mapMethodName(classNode, methodNode);
       if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
-        ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 /*
                 Find if (shouldSit && entity.ridingEntity instanceof EntityLivingBase)
                     go back to find vars # of f2, f1, f
@@ -42,8 +53,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
         while (iterator.hasNext()) {
           AbstractInsnNode next = iterator.next();
           if (next instanceof TypeInsnNode) {
-            if (next.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode) next).desc
-                .equals("net/minecraft/entity/EntityLivingBase")) {
+            if (next.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode) next).desc.equals("net/minecraft/entity/EntityLivingBase")) {
 
               //Find values of f2,f1,f
               while ((next = next.getPrevious()) != null) {
@@ -102,7 +112,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                   insnList.add(new InsnNode(Opcodes.FSUB));
                   insnList.add(new VarInsnNode(Opcodes.FSTORE, f2));
                   insnList.add(ifeq);
-                  method.instructions.insertBefore(next, insnList);
+                  methodNode.instructions.insertBefore(next, insnList);
                   return;
                 }
               }
@@ -112,7 +122,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
       }
 
       if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
-        makeNametagTransparent(method);
+        makeNametagTransparent(methodNode);
       }
     }
   }

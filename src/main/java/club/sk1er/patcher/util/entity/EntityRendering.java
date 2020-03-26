@@ -57,13 +57,17 @@ public class EntityRendering {
     GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
     int stringWidth = fontRenderer.getStringWidth(name) / 2;
     GlStateManager.disableTexture2D();
-    GlStateManager.color(0, 0, 0, .25F);
-    GL11.glBegin(GL11.GL_QUADS);
-    GL11.glVertex2d(-stringWidth - 1, -1);
-    GL11.glVertex2d(-stringWidth - 1, 8);
-    GL11.glVertex2d(stringWidth + 1, 8);
-    GL11.glVertex2d(stringWidth + 1, -1);
-    GL11.glEnd();
+
+    if (!PatcherConfig.transparentNameTags) {
+      GlStateManager.color(0, 0, 0, .25F);
+      GL11.glBegin(GL11.GL_QUADS);
+      GL11.glVertex2d(-stringWidth - 1, -1);
+      GL11.glVertex2d(-stringWidth - 1, 8);
+      GL11.glVertex2d(stringWidth + 1, 8);
+      GL11.glVertex2d(stringWidth + 1, -1);
+      GL11.glEnd();
+    }
+
     GlStateManager.enableTexture2D();
     fontRenderer.drawString(name, -stringWidth, 0, 553648127);
     GlStateManager.enableDepth();

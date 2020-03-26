@@ -2,7 +2,6 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockDoublePlantTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
@@ -13,7 +12,6 @@ import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
@@ -75,7 +73,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new InventoryEffectRendererTransformer());
         registerTransformer(new EntityLivingBaseTransformer());
         registerTransformer(new RenderPlayerTransformer());
-        registerTransformer(new RendererLivingEntityTransformer());
         registerTransformer(new WorldTransformer());
         registerTransformer(new ChunkTransformer());
         registerTransformer(new EntityPlayerSPTransformer());
@@ -94,6 +91,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new FallbackResourceManagerTransformer());
         registerTransformer(new RenderArrowTransformer());
+        registerTransformer(new RendererLivingEntityTransformer());
         registerTransformer(new RenderItemFrameTransformer());
         registerTransformer(new TileEntitySkullRendererTransformer());
         registerTransformer(new TileEntityEndPortalRendererTransformer());

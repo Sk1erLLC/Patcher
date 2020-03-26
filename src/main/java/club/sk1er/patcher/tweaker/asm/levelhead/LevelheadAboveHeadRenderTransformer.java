@@ -1,4 +1,4 @@
-package club.sk1er.patcher.tweaker.asm;
+package club.sk1er.patcher.tweaker.asm.levelhead;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import java.util.ListIterator;
@@ -6,14 +6,12 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class RenderItemFrameTransformer implements PatcherTransformer {
+public class LevelheadAboveHeadRenderTransformer implements PatcherTransformer {
 
   /**
    * The class name that's being transformed
@@ -22,7 +20,7 @@ public class RenderItemFrameTransformer implements PatcherTransformer {
    */
   @Override
   public String[] getClassName() {
-    return new String[]{"net.minecraft.client.renderer.tileentity.RenderItemFrame"};
+    return new String[]{"club.sk1er.mods.levelhead.renderer.LevelheadAboveHeadRender"};
   }
 
   /**
@@ -34,27 +32,11 @@ public class RenderItemFrameTransformer implements PatcherTransformer {
   @Override
   public void transform(ClassNode classNode, String name) {
     for (MethodNode methodNode : classNode.methods) {
-      String methodName = mapMethodName(classNode, methodNode);
-
-      if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
-        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
-      }
-
-      if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+      if (methodNode.name.equals("renderName")) {
         makeNametagTransparent(methodNode);
+        break;
       }
     }
-  }
-
-  private InsnList cancelRendering() {
-    InsnList list = new InsnList();
-    list.add(
-        new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableItemFrames", "Z"));
-    LabelNode ifeq = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-    list.add(new InsnNode(Opcodes.RETURN));
-    list.add(ifeq);
-    return list;
   }
 
   private void makeNametagTransparent(MethodNode methodNode) {

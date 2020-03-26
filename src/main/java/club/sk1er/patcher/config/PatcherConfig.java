@@ -481,6 +481,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean timestamps;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Transparent Nametags",
+        description = "Remove the box around a nametag.\n§eDone by LlamaLad7.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean transparentNameTags;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
