@@ -3,6 +3,7 @@ package club.sk1er.patcher;
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -54,6 +55,7 @@ public class Patcher {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
+        ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(target);
