@@ -20,14 +20,14 @@ public class GuiChatTransformer implements PatcherTransformer {
    */
   @Override
   public String[] getClassName() {
-    return new String[] {"net.minecraft.client.gui.GuiChat"};
+    return new String[]{"net.minecraft.client.gui.GuiChat"};
   }
 
   /**
    * Perform any asm in order to transform code
    *
    * @param classNode the transformed class node
-   * @param name the transformed class name
+   * @param name      the transformed class name
    */
   @Override
   public void transform(ClassNode classNode, String name) {
@@ -35,21 +35,7 @@ public class GuiChatTransformer implements PatcherTransformer {
       String methodName = mapMethodName(classNode, methodNode);
 
       if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
-        Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-        while (iterator.hasNext()) {
-          AbstractInsnNode node = iterator.next();
-          if (node.getOpcode() == Opcodes.BIPUSH && ((IntInsnNode) node).operand == 100) {
-            methodNode.instructions.insertBefore(
-                node,
-                new FieldInsnNode(
-                    Opcodes.GETSTATIC,
-                    "club/sk1er/patcher/tweaker/asm/GuiChatTransformer",
-                    "maxChatLength",
-                    "I"));
-            methodNode.instructions.remove(node);
-            break;
-          }
-        }
+        C01PacketChatMessageTransformer.extendChatLength(methodNode);
         break;
       }
     }

@@ -3,6 +3,7 @@ package club.sk1er.patcher.tweaker;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
+import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
@@ -12,6 +13,7 @@ import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
@@ -104,6 +106,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new ScreenShotHelperTransformer());
+        registerTransformer(new GuiChatTransformer());
+        registerTransformer(new C01PacketChatMessageTransformer());
 //        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes

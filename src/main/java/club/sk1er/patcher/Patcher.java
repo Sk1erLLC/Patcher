@@ -81,8 +81,8 @@ public class Patcher {
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
-            LOGGER.info("User is in singleplayer, setting string length to 100.");
-            GuiChatTransformer.maxChatLength = 1;
+            LOGGER.info("User is in singleplayer, setting string length to 256.");
+            GuiChatTransformer.maxChatLength = 256;
             return;
         }
 
@@ -95,10 +95,10 @@ public class Patcher {
             try {
                 if (future.get()) {
                     LOGGER.info("Server supports 1.11+, setting string length to 256.");
-                    GuiChatTransformer.maxChatLength = 10;
+                    GuiChatTransformer.maxChatLength = 256;
                 } else {
                     LOGGER.info("Server doesn't support 1.11+, setting string length to 100.");
-                    GuiChatTransformer.maxChatLength = 5;
+                    GuiChatTransformer.maxChatLength = 100;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
