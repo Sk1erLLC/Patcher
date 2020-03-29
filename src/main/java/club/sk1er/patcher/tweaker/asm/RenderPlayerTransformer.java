@@ -45,12 +45,22 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         while (iterator.hasNext()) {
           AbstractInsnNode node = iterator.next();
 
-          if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ALOAD
+          if (node instanceof MethodInsnNode) {
+            if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
+              String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+              if (methodInsnName.equals("setModelVisibilities") || methodInsnName
+                  .equals("func_177137_d")) {
+                methodNode.instructions.insertBefore(node.getNext(), enableBlend());
+              }
+            }
+          } else if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ALOAD
               && ((VarInsnNode) node).var == 3 && node.getNext().getOpcode() == Opcodes.ICONST_0) {
             methodNode.instructions.insertBefore(node, newArmLogic());
-            break;
           }
         }
+
+        methodNode.instructions
+            .insertBefore(methodNode.instructions.getLast().getPrevious(), disableBlend());
       }
 
       if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
@@ -62,10 +72,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
           if (next instanceof MethodInsnNode) {
             String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
             if (methodInsnName.equals("doRender") || methodInsnName.equals("func_76986_a")) {
-              methodNode.instructions.insertBefore(next.getNext(),
-                  new MethodInsnNode(Opcodes.INVOKESTATIC,
-                      "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", // disableBlend
-                      false));
+              methodNode.instructions.insertBefore(next.getNext(), disableBlend());
             } else if (methodInsnName.equals("setModelVisibilities") || methodInsnName
                 .equals("func_177137_d")) {
               methodNode.instructions.insertBefore(next.getNext(), enableBlend());
@@ -74,6 +81,11 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         }
       }
     }
+  }
+
+  private MethodInsnNode disableBlend() {
+    return new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",
+        "func_179084_k", "()V", false);
   }
 
   private InsnList enableBlend() {
@@ -90,6 +102,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
             "func_179120_a", "(IIII)V", false)); // tryBlendFuncSeparate
     return list;
   }
+
 
   private InsnList newArmLogic() {
     InsnList list = new InsnList();
