@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class RenderArrowTransformer implements PatcherTransformer {
 
@@ -42,11 +43,29 @@ public class RenderArrowTransformer implements PatcherTransformer {
 
   private InsnList cancelRendering() {
     InsnList list = new InsnList();
-    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableArrows", "Z"));
-    LabelNode ifeq = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableMovingArrows", "Z"));
+    LabelNode labelNode = new LabelNode();
+    list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+    list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+    list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/projectile/EntityArrow", "field_70254_i", "Z")); // inGround
+    LabelNode labelNode1 = new LabelNode();
+    list.add(new JumpInsnNode(Opcodes.IFNE, labelNode1));
+    list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+    list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/projectile/EntityArrow", "field_70159_w", "D")); // motionX
+    list.add(new InsnNode(Opcodes.DCONST_0));
+    list.add(new InsnNode(Opcodes.DCMPL));
+    list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
     list.add(new InsnNode(Opcodes.RETURN));
-    list.add(ifeq);
+    list.add(labelNode);
+    list.add(labelNode1);
+    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableGroundedArrows", "Z"));
+    LabelNode ifeq2 = new LabelNode();
+    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq2));
+    list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+    list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/projectile/EntityArrow", "field_70254_i", "Z"));
+    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq2));
+    list.add(new InsnNode(Opcodes.RETURN));
+    list.add(ifeq2);
     return list;
   }
 }

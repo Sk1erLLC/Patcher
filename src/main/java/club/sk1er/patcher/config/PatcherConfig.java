@@ -312,12 +312,30 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
-        name = "Disable Arrows",
-        description = "Stop arrows shot by a player from rendering.",
+        name = "Disable Grounded Arrows",
+        description = "Stop arrows that are in the ground from rendering.",
         category = "Performance",
         subcategory = "Rendering"
     )
-    public static boolean disableArrows;
+    public static boolean disableGroundedArrows;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Attached Arrows",
+        description = "Stop arrows that are attached to a player from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableAttachedArrows;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable Moving Arrows",
+        description = "Stop arrows that are airborne from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableMovingArrows;
 
     @Property(
         type = PropertyType.SWITCH,
@@ -489,6 +507,15 @@ public class PatcherConfig extends Vigilant {
         subcategory = "Rendering"
     )
     public static boolean transparentNameTags;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Arrow Lighting",
+        description = "Stop attached arrows from lighting up other entities.",
+        category = "Fixes",
+        subcategory = "Entities"
+    )
+    public static boolean fixArrowLighting;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

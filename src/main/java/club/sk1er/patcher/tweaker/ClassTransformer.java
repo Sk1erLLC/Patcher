@@ -24,6 +24,7 @@ import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
@@ -108,6 +109,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
+        registerTransformer(new LayerArrowTransformer());
 //        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes
