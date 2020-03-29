@@ -127,8 +127,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
             type = PropertyType.SWITCH,
-            name = "Internal Errors",
-            description = "Fix several internal errors.",
+            name = "Scoreboard Patch",
+            description = "Fix scoreboard spamming logs with errors.",
             category = "Fixes",
             subcategory = "General"
     )
@@ -155,7 +155,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SLIDER,
             name = "Fire Height",
-            description = "Change the height at which fire renders at.",
+            description = "Change the height of the ingame fire overlay.",
             category = "Quality of Life",
             subcategory = "Rendering",
             min = -200,
@@ -166,7 +166,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SLIDER,
         name = "Chat History Length",
-        description = "Change how many messages save in chat.",
+        description = "Change how many messages you can scroll back past.",
         category = "Quality of Life",
         subcategory = "Chat",
         min = 100,
@@ -376,7 +376,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "OptiFine Zoom Adjustment",
-        description = "Scroll when using OptiFine's zoom to zoom further/farther.",
+        description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
         category = "Quality of Life",
         subcategory = "OptiFine"
     )
@@ -448,7 +448,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Disable Shadowed Text",
-        description = "Remove the shadow from text, resulting in fewer draw calls.",
+        description = "Remove shadows from text.",
         category = "Performance",
         subcategory = "Rendering"
     )
@@ -457,7 +457,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Damage Glance",
-        description = "View the damage value of a currently held item above your hotbar.",
+        description = "View the damage value of the currently held item above your hotbar.",
         category = "Quality of Life",
         subcategory = "Hotbar Utilities"
     )
@@ -466,7 +466,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Item Count Glance",
-        description = "View the amount of a currently held item you have above your hotbar.",
+        description = "View the amount of the currently held item you have above your hotbar.",
         category = "Quality of Life",
         subcategory = "Hotbar Utilities"
     )
@@ -502,7 +502,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Nametags",
-        description = "Remove the box around a nametag.",
+        description = "Remove boxes around nametags.",
         category = "Quality of Life",
         subcategory = "Rendering"
     )
