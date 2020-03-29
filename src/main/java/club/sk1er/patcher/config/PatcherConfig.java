@@ -92,7 +92,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Fullbright",
-            description = "Remove lighting updates, increasing visibility.",
+            description = "Remove lighting updates, increasing visibility.\n§eMay improve performance.",
             category = "Quality of Life",
             subcategory = "World"
     )
@@ -277,7 +277,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Chat",
-        description = "Remove the background from chat.",
+        description = "Remove the background from chat.\n§eMay improve performance.",
         category = "Quality of Life",
         subcategory = "Chat"
     )
@@ -502,7 +502,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Nametags",
-        description = "Remove boxes around nametags.",
+        description = "Remove boxes around nametags.\n§eMay improve performance.",
         category = "Quality of Life",
         subcategory = "Rendering"
     )

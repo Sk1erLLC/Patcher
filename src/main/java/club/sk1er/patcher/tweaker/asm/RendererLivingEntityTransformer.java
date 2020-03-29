@@ -103,7 +103,6 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                   insnList.add(new VarInsnNode(Opcodes.FSTORE, f2));
                   insnList.add(ifeq);
                   method.instructions.insertBefore(next, insnList);
-                  return;
                 }
               }
             }
@@ -112,9 +111,31 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
       }
 
       if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+        ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+
+        while (iterator.hasNext()) {
+          AbstractInsnNode node = iterator.next();
+
+          if (node.getOpcode() == Opcodes.GETFIELD) {
+            String fieldName = mapFieldNameFromNode((FieldInsnNode) node);
+            if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
+              method.instructions.insert(node, timesByModifier());
+            }
+          }
+        }
+
         makeNametagTransparent(method);
       }
     }
+  }
+
+  private InsnList timesByModifier() {
+    InsnList list = new InsnList();
+    list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+        "club/sk1er/patcher/tweaker/asm/optifine/OptifineRenderTransformer", "checkPerspective",
+        "()F", false));
+    list.add(new InsnNode(Opcodes.FMUL));
+    return list;
   }
 
   public void makeNametagTransparent(MethodNode methodNode) {
@@ -132,7 +153,6 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
           methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, afterDraw));
         } else if (nodeName.equals("draw") || nodeName.equals("func_78381_a")) {
           methodNode.instructions.insert(node, afterDraw);
-          break;
         }
       }
     }
