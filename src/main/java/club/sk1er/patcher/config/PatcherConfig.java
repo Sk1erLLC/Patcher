@@ -38,7 +38,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Command Handling",
-            description = "Fix Forge's command handler not checking for a '/' at the start of a command.\n§eOriginally by prplz.",
+            description = "Fix Forge's command handler not checking for a '/' at the start of a command.",
             category = "Fixes",
             subcategory = "Chat"
     )
@@ -65,7 +65,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Mouse Delay Fix",
-            description = "Stop your actual position being a tick ahead of your crosshair.\n§eOriginally by prplz.",
+            description = "Stop your actual position being a tick ahead of your crosshair.",
             category = "Fixes",
             subcategory = "Movement"
     )
@@ -101,7 +101,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Sky Height",
-            description = "Set the sky height to 0, removing void flickering.\n§eOriginally by 2Pi.",
+            description = "Set the sky height to 0, removing void flickering.",
             category = "Quality of Life",
             subcategory = "World"
     )
@@ -221,7 +221,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Custom Tab Opacity",
-        description = "Allow for customizing tab opacity.\n§eDone by LlamaLad7.",
+        description = "Allow for customizing tab opacity.",
         category = "Quality of Life",
         subcategory = "Tab"
     )
@@ -241,7 +241,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
             type = PropertyType.SWITCH,
             name = "Pack Images",
-            description = "Change all pack icons to 64x64 to improve memory usage.\n§eOriginally by prplz.",
+            description = "Change all pack icons to 64x64 to improve memory usage.",
             category = "Performance",
             subcategory = "Packs"
     )
@@ -277,7 +277,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Chat",
-        description = "Remove the background from chat.\n§eDone by LlamaLad7.",
+        description = "Remove the background from chat.",
         category = "Quality of Life",
         subcategory = "Chat"
     )
@@ -358,7 +358,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "OptiFine Zoom Adjustment",
-        description = "Scroll when using OptiFine's zoom to zoom further/farther.\n§eDone by LlamaLad7.",
+        description = "Scroll when using OptiFine's zoom to zoom further/farther.",
         category = "Quality of Life",
         subcategory = "OptiFine"
     )
@@ -367,7 +367,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Optifine Zoom Sensitivity",
-        description = "Remove the smoothing from OptiFine's zoom.\n§eDone by LlamaLad7.",
+        description = "Remove the smoothing from OptiFine's zoom.",
         category = "Quality of Life",
         subcategory = "OptiFine"
     )
@@ -412,7 +412,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Keep Shaders on Perspective Change",
-        description = "Keep the shaders you're currently using while also being able to toggle perspective.\n§eDone by LlamaLad7.",
+        description = "Keep the shaders you're currently using while also being able to toggle perspective.",
         category = "Quality of Life",
         subcategory = "General"
     )
@@ -421,7 +421,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Better Keybind Handling",
-        description = "Make keys re-register when closing a GUI, like in 1.12+.\n§eDone by LlamaLad7.",
+        description = "Make keys re-register when closing a GUI, like in 1.12+.",
         category = "Quality of Life",
         subcategory = "General"
     )
@@ -439,7 +439,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Damage Glance",
-        description = "View the damage value of a currently held item above your hotbar.\n§eDone by LlamaLad7.",
+        description = "View the damage value of a currently held item above your hotbar.",
         category = "Quality of Life",
         subcategory = "Hotbar Utilities"
     )
@@ -448,7 +448,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Item Count Glance",
-        description = "View the amount of a currently held item you have above your hotbar.\n§eDone by LlamaLad7.",
+        description = "View the amount of a currently held item you have above your hotbar.",
         category = "Quality of Life",
         subcategory = "Hotbar Utilities"
     )
@@ -457,7 +457,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Enchantment Glance",
-        description = "View the enchantments of the currently held item above your hotbar.\n§eDone by LlamaLad7.",
+        description = "View the enchantments of the currently held item above your hotbar.",
         category = "Quality of Life",
         subcategory = "Hotbar Utilities"
     )
@@ -466,7 +466,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Chat Position",
-        description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.\n§eDone by LlamaLad7.",
+        description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.",
         category = "Quality of Life",
         subcategory = "Chat"
     )
@@ -475,7 +475,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Chat Timestamps",
-        description = "Add timestamps before a message.\n§eDone by LlamaLad7.",
+        description = "Add timestamps before a message.",
         category = "Quality of Life",
         subcategory = "Chat"
     )
@@ -484,7 +484,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Transparent Nametags",
-        description = "Remove the box around a nametag.\n§eDone by LlamaLad7.",
+        description = "Remove the box around a nametag.",
         category = "Quality of Life",
         subcategory = "Rendering"
     )
