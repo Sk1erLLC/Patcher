@@ -38,7 +38,7 @@ public class EntityRendering {
     float nametagScale = 0.016666668F * playerHeight;
     GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
     GlStateManager.pushMatrix();
-    GlStateManager.translate(0, (double) 0 + entity.height + 0.5f, 0);
+    GlStateManager.translate(0, entity.height + 0.5f, 0);
     GL11.glNormal3f(0, 1, 0);
     GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
 
