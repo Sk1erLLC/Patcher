@@ -75,6 +75,7 @@ jar {
         attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
                 "ModSide": "CLIENT",
                 'FMLAT': 'patcher_at.cfg',
-                "FMLCorePluginContainsFMLMod": "Yes, yes it does"
+                "FMLCorePluginContainsFMLMod": "Yes, yes it does",
+                "Main-Class": "club.sk1er.container.ContainerMessage"
     }
 }
