@@ -17,7 +17,5 @@ public class ContainerMessage {
             + "\nIf you don't know how to install a Forge mod, search 'Forge Mod Installation Tutorials' online."
             + "\nIf you are still lost, join us at discord.gg/sk1er.",
         "This is not the proper installation method.", JOptionPane.INFORMATION_MESSAGE);
-
-    System.exit(0);
   }
 }
