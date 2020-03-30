@@ -19,6 +19,8 @@ public class FovHandler {
 
   @SubscribeEvent
   public void fovChange(FOVUpdateEvent event) {
+    if (!PatcherConfig.allowFovModifying) return;
+
     float base = 1.0F;
 
     if (event.entity.isSprinting()) {

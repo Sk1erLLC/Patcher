@@ -175,6 +175,15 @@ public class PatcherConfig extends Vigilant {
     public static int chatHistoryLength = 100;
 
     @Property(
+        type = PropertyType.SWITCH,
+        name = "FOV Modifier",
+        description = "Allow for modifying FOV change states.",
+        category = "Quality of Life",
+        subcategory = "Field of View"
+    )
+    public static boolean allowFovModifying = true;
+
+    @Property(
         type = PropertyType.SLIDER,
         name = "Sprinting FOV",
         description = "Change your FOV when sprinting.",
