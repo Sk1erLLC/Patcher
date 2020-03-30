@@ -28,17 +28,17 @@ public class EntityRendering {
   @SubscribeEvent
   public void renderNametag(RenderLivingEvent.Specials.Pre<EntityPlayerSP> event) {
     if (event.entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
-      renderTag(event.entity, 0, 0, 0);
+      renderTag(event.entity);
     }
   }
 
-  private void renderTag(EntityLivingBase entity, double x, double y, double z) {
+  private void renderTag(EntityLivingBase entity) {
     String name = entity.getDisplayName().getFormattedText();
     float playerHeight = 1.6f;
     float nametagScale = 0.016666668F * playerHeight;
     GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
     GlStateManager.pushMatrix();
-    GlStateManager.translate(x, y + entity.height + 0.5f, z);
+    GlStateManager.translate(0, (double) 0 + entity.height + 0.5f, 0);
     GL11.glNormal3f(0, 1, 0);
     GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
 
@@ -74,17 +74,15 @@ public class EntityRendering {
     }
 
     GlStateManager.enableTexture2D();
+    GlStateManager.enableDepth();
+    GlStateManager.depthMask(true);
 
     if (entity.isSneaking()) {
-      GlStateManager.depthMask(true);
       fontRenderer.drawString(name, -stringWidth, 0, 553648127);
     } else {
-      fontRenderer.drawString(name, -stringWidth, 0, 553648127);
-      GlStateManager.depthMask(true);
       fontRenderer.drawString(name, -stringWidth, 0, -1);
     }
 
-    GlStateManager.enableDepth();
     GlStateManager.enableLighting();
     GlStateManager.disableBlend();
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
