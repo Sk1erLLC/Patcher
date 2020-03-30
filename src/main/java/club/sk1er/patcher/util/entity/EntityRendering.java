@@ -50,6 +50,11 @@ public class EntityRendering {
 
     GlStateManager.rotate(renderManager.playerViewX * xMultiplier, 1, 0, 0);
     GlStateManager.scale(-nametagScale, -nametagScale, nametagScale);
+
+    if (entity.isSneaking()) {
+      GlStateManager.translate(0, 9.374999f, 0);
+    }
+
     GlStateManager.disableLighting();
     GlStateManager.depthMask(false);
     GlStateManager.disableDepth();
@@ -69,10 +74,17 @@ public class EntityRendering {
     }
 
     GlStateManager.enableTexture2D();
-    fontRenderer.drawString(name, -stringWidth, 0, 553648127);
+
+    if (entity.isSneaking()) {
+      GlStateManager.depthMask(true);
+      fontRenderer.drawString(name, -stringWidth, 0, 553648127);
+    } else {
+      fontRenderer.drawString(name, -stringWidth, 0, 553648127);
+      GlStateManager.depthMask(true);
+      fontRenderer.drawString(name, -stringWidth, 0, -1);
+    }
+
     GlStateManager.enableDepth();
-    GlStateManager.depthMask(true);
-    fontRenderer.drawString(name, -stringWidth, 0, -1);
     GlStateManager.enableLighting();
     GlStateManager.disableBlend();
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
