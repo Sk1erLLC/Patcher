@@ -47,6 +47,8 @@ public class ScreenShotHelperTransformer implements PatcherTransformer {
             break;
           }
         }
+
+        break;
       }
     }
   }

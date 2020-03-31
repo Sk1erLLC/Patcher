@@ -24,7 +24,7 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
      */
     @Override
     public String[] getClassName() {
-        return new String[]{"net.minecraftforge.client.ClientCommandHandler", "net.minecraft.command.CommandHandler"};
+        return new String[]{"net.minecraftforge.client.ClientCommandHandler"};
     }
 
     /**
@@ -56,7 +56,7 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList makeLowercase() {
+    public static InsnList makeLowercase() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));
         return list;
