@@ -7,5 +7,6 @@ public class PatcherSoundConfig extends Vigilant {
 
   public PatcherSoundConfig() {
     super(new File("./config/patcher_sounds.toml"));
+    initialize();
   }
 }
