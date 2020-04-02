@@ -17,7 +17,7 @@ public class GuiPlayerTabOverlayHook {
   public static void moveTabDownPushMatrix() {
     if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeight) {
       GlStateManager.pushMatrix();
-      GlStateManager.translate(0, 12, 0);
+      GlStateManager.translate(0, 16, 0);
     }
   }
 
