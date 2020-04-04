@@ -107,7 +107,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiLanguageListTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
-        registerTransformer(new ScreenShotHelperTransformer());
+//        registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
         registerTransformer(new LayerArrowTransformer());
