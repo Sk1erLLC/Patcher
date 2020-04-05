@@ -2,7 +2,7 @@
   {
     "modid": "patcher",
     "name": "Patcher",
-    "description": "A mix of Vanilla bug fixes, Quality of Life improvements, and performance enhancements.\n§eLlamaLad7's contributions§r:\n- Custom Tab Opacity\n- Transparent Chat\n- Optifine Zoom Adjustment/Sensitivity\n- Keep Shaders on Perspective Change\n- Better Keybind Handling\n- Damage/Item Count/Enchantment Glance\n- Chat Position\n- Chat Timestamps\n- Transparent Nametags\n\n§eAdapted from prplz§r:\n- Command Handling §7(Skypixel)\n- Mouse Delay Fix\n- Pack Images §7(Memory Fix)\n\n§eAdapted from 2pi§r:\n- Sky Height §7(Void Flicker Fix)",
+    "description": "A Forge mod full of Vanilla bug fixes, Quality of Life improvements, and performance enhancements.\n§eLlamaLad7's contributions§r:\n- Custom Tab Opacity\n- Transparent Chat\n- Optifine Zoom Adjustment/Sensitivity\n- Keep Shaders on Perspective Change\n- Better Keybind Handling\n- Damage/Item Count/Enchantment Glance\n- Chat Position\n- Chat Timestamps\n- Transparent Nametags\n\n§eAdapted from prplz§r:\n- Command Handling §7(Skypixel)\n- Mouse Delay Fix\n- Pack Images §7(Memory Fix)\n\n§eAdapted from 2pi§r:\n- Sky Height §7(Void Flicker Fix)",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",
