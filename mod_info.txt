@@ -20,6 +20,7 @@
 <br>
 <b>Patcher contains the following features.</b>
 <ul>
+  <li>Sound Customization - Change the volume of any sound available, from 0 to 2x the normal volume. Accessible by /patchersounds</li>
   <li>Fullscreen Fix - Allow the screen to be resized after toggling fullscreen.</li>
   <li>Item Searching - Minecraft doesn't stop searching for other items to combine despite being a full stack. </li>
   <li>Reset Death Timers - Allow for respawning when toggling fullscreen on the "You Died!" menu.</li>
