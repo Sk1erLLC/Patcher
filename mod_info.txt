@@ -3,19 +3,19 @@
 <br>
 <b>Patcher replaces the following mods.</b>
 <ul>
-  <li>Case Commands</li>
-  <li>Command Patcher</li>
-  <li>Compact Chat</li>
-  <li>CrossChat</li>
-  <li>FastChat</li>
-  <li>Item Optimizations</li>
-  <li>Memory Fix</li>
-  <li>Mouse Bind Fix</li>
-  <li>Mouse Delay Fix</li>
-  <li>NoCloseMyChat</li>
-  <li>Resource Exploit Fix</li>
-  <li>Vanilla Enhancements</li>
-  <li>VoidChat</li>
+  <li><a href="https://sk1er.club/mods/case_commands">Case Commands</a></li>
+  <li><a href="https://sk1er.club/mods/command_patcher">Command Patcher</a></li>
+  <li><a href="https://sk1er.club/mods/compactchat">Compact Chat</a></li>
+  <li><a href="https://sk1er.club/mods/cross_chat">CrossChat</a></li>
+  <li><a href="https://2pi.pw/mods/fastchat">FastChat</a></li>
+  <li><a href="https://sk1er.club/mods/item_optimization">Item Optimizations</a></li>
+  <li><a href="https://prplz.io/memoryfix/">Memory Fix</a></li>
+  <li><a href="https://sk1er.club/mods/mousebindfix">Mouse Bind Fix</a></li>
+  <li><a href="https://prplz.io/mousedelayfix/">Mouse Delay Fix</a></li>
+  <li><a href="https://hypixel.net/threads/forge-modification-noclosemychat-for-mc-1-8.1260752/">NoCloseMyChat</a></li>
+  <li><a href="https://sk1er.club/mods/resourceexploitfix">Resource Exploit Fix</a></li>
+  <li><a href="https://www.curseforge.com/minecraft/mc-mods/vanilla-enhancements">Vanilla Enhancements</a></li>
+  <li><a href="https://skyerzz.com/minecraft/mods/voidchat/">VoidChat</a></li>
 </ul>
 <br>
 <b>Patcher contains the following features.</b>
