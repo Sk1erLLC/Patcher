@@ -526,6 +526,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean fixArrowLighting;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Item Frame Culling",
+        description = "Stop item frames that aren't visible to the player from rendering.",
+        category = "Performance",
+        subcategory = "Culling"
+    )
+    public static boolean itemFrameCulling;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

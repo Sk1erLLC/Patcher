@@ -14,6 +14,7 @@ import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.util.chat.ChatHandler;
+import club.sk1er.patcher.util.culling.EntityCulling;
 import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
@@ -64,6 +65,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new FovHandler());
         MinecraftForge.EVENT_BUS.register(new ChatHandler());
         MinecraftForge.EVENT_BUS.register(new HotbarItemsHandler());
+        MinecraftForge.EVENT_BUS.register(new EntityCulling());
     }
 
     @EventHandler
