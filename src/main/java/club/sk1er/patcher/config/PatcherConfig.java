@@ -533,7 +533,7 @@ public class PatcherConfig extends Vigilant {
         category = "Performance",
         subcategory = "Culling"
     )
-    public static boolean itemFrameCulling;
+    public static boolean itemFrameCulling = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
