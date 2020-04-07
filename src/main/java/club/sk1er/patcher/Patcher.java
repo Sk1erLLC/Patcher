@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "patcher", name = "Patcher", version = "1.0")
+@Mod(modid = "patcher", name = "Patcher", version = "1.1")
 public class Patcher {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher");
