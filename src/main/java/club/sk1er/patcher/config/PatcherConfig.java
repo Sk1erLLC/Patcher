@@ -528,12 +528,12 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
-        name = "Item Frame Culling",
-        description = "Stop item frames that aren't visible to the player from rendering.",
+        name = "Entity Culling",
+        description = "Stop entities that aren't visible to the player from rendering.",
         category = "Performance",
         subcategory = "Culling"
     )
-    public static boolean itemFrameCulling = true;
+    public static boolean entityCulling = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
