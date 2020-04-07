@@ -6,6 +6,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class EntityCulling {
 
   @SubscribeEvent
-  public void shouldRenderEntity(RenderLivingEvent.Pre event) {
+  public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
     if (!PatcherConfig.entityCulling) return;
 
     World theWorld = event.renderer.getRenderManager().worldObj;
@@ -42,9 +43,12 @@ public class EntityCulling {
           return;
         }
         event.setCanceled(true);
+
+        if (PatcherConfig.dontCullNametags) {
+          event.renderer.renderName(event.entity, event.x, event.y, event.z);
+        }
       }
     }
-
   }
 
   private boolean doesRayHitEntity(World worldObj, Entity player, double x, double y, double z) {

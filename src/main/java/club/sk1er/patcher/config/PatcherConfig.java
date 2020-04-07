@@ -535,6 +535,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean entityCulling = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Don't Cull Nametags",
+        description = "Render nametags even with entity culling enabled.",
+        category = "Performance",
+        subcategory = "Culling"
+    )
+    public static boolean dontCullNametags;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
