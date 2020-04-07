@@ -157,7 +157,7 @@ public class PatcherConfig extends Vigilant {
             name = "Fire Height",
             description = "Change the height of the ingame fire overlay.",
             category = "Quality of Life",
-            subcategory = "Rendering",
+            subcategory = "Overlay",
             min = -200,
             max = 200
     )
@@ -543,6 +543,15 @@ public class PatcherConfig extends Vigilant {
         subcategory = "Culling"
     )
     public static boolean dontCullNametags;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Remove Water Overlay",
+        description = "Remove the water texture overlay when underwater.",
+        category = "Quality of Life",
+        subcategory = "Overlay"
+    )
+    public static boolean removeWaterOverlay;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

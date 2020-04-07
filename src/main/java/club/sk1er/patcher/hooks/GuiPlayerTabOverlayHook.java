@@ -34,11 +34,10 @@ public class GuiPlayerTabOverlayHook {
     return (opacity << 24) | (color & 0xFFFFFF);
   }
 
-  public static void drawPatcherPing(
-      int p_175245_1_, int p_175245_2_, int p_175245_3_, NetworkPlayerInfo playerInfo) {
-    int ping = playerInfo.getResponseTime();
-    int x = p_175245_2_ + p_175245_1_ - (mc.fontRendererObj.getStringWidth(ping + "") >> 1) - 2;
-    int y = p_175245_3_ + (mc.fontRendererObj.FONT_HEIGHT >> 2);
+  public static void drawPatcherPing(int offset, int xPosition, int yPosition, NetworkPlayerInfo info) {
+    int ping = info.getResponseTime();
+    int x = xPosition + offset - (mc.fontRendererObj.getStringWidth(ping + "") >> 1) - 2;
+    int y = yPosition + (mc.fontRendererObj.FONT_HEIGHT >> 2);
 
     int color;
 

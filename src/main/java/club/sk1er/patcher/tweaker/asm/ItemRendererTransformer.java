@@ -6,10 +6,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 
 public class ItemRendererTransformer implements PatcherTransformer {
     /**
@@ -33,12 +34,25 @@ public class ItemRendererTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
+            if (methodName.equals("renderWaterOverlayTexture") || methodName.equals("func_78448_c")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeOverlay());
+            }
+
             if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeHeight());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), popMatrix());
-                break;
             }
         }
+    }
+
+    private InsnList removeOverlay() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeWaterOverlay", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList changeHeight() {
