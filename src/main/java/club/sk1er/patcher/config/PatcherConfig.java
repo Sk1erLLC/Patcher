@@ -468,7 +468,7 @@ public class PatcherConfig extends Vigilant {
         name = "Damage Glance",
         description = "View the damage value of the currently held item above your hotbar.",
         category = "Quality of Life",
-        subcategory = "Hotbar Utilities"
+        subcategory = "Combat Utilities"
     )
     public static boolean damageGlance = true;
 
@@ -477,7 +477,7 @@ public class PatcherConfig extends Vigilant {
         name = "Item Count Glance",
         description = "View the amount of the currently held item you have above your hotbar.",
         category = "Quality of Life",
-        subcategory = "Hotbar Utilities"
+        subcategory = "Combat Utilities"
     )
     public static boolean itemCountGlance = true;
 
@@ -486,9 +486,27 @@ public class PatcherConfig extends Vigilant {
         name = "Enchantment Glance",
         description = "View the enchantments of the currently held item above your hotbar.",
         category = "Quality of Life",
-        subcategory = "Hotbar Utilities"
+        subcategory = "Combat Utilities"
     )
     public static boolean enchantmentsGlance = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Protection Percentage",
+        description = "View how much total protection you have inside the inventory menu.",
+        category = "Quality of Life",
+        subcategory = "Combat Utilities"
+    )
+    public static boolean protectionPercentage = true;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Projectile Protection Percentage",
+        description = "View how much total projectile protection you have inside the inventory menu.",
+        category = "Quality of Life",
+        subcategory = "Combat Utilities"
+    )
+    public static boolean projectileProtectionPercentage = true;
 
     @Property(
         type = PropertyType.SWITCH,

@@ -13,6 +13,7 @@ import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
+import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.culling.EntityCulling;
 import club.sk1er.patcher.util.entity.EntityRendering;
@@ -66,6 +67,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new ChatHandler());
         MinecraftForge.EVENT_BUS.register(new HotbarItemsHandler());
         MinecraftForge.EVENT_BUS.register(new EntityCulling());
+        MinecraftForge.EVENT_BUS.register(new ArmorStatusRenderer());
     }
 
     @EventHandler
