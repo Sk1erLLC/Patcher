@@ -475,7 +475,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH,
         name = "Item Count Glance",
-        description = "View the amount of the currently held item you have above your hotbar.",
+        description = "View the amount of the currently held item above your hotbar.",
         category = "Quality of Life",
         subcategory = "Combat Utilities"
     )
