@@ -11,7 +11,7 @@ public class KeybindDropStack {
 
   private final KeyBinding dropKey = KeybindBuilder.buildKeybind(
       "Drop Entire Stack",
-      Keyboard.KEY_V
+      Keyboard.KEY_NONE
   );
   private final Minecraft mc = Minecraft.getMinecraft();
 
