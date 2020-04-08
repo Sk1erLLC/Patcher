@@ -8,6 +8,7 @@ import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
+import club.sk1er.patcher.keybind.KeybindDropStack;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
@@ -68,6 +69,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new HotbarItemsHandler());
         MinecraftForge.EVENT_BUS.register(new EntityCulling());
         MinecraftForge.EVENT_BUS.register(new ArmorStatusRenderer());
+        MinecraftForge.EVENT_BUS.register(new KeybindDropStack());
     }
 
     @EventHandler
