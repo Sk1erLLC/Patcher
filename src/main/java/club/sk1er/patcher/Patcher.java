@@ -4,6 +4,7 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.FovChangerCommand;
+import club.sk1er.patcher.command.NameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -18,18 +19,21 @@ import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.culling.EntityCulling;
 import club.sk1er.patcher.util.entity.EntityRendering;
+import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +63,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
+        ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(target);
@@ -70,6 +75,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new EntityCulling());
         MinecraftForge.EVENT_BUS.register(new ArmorStatusRenderer());
         MinecraftForge.EVENT_BUS.register(new KeybindDropStack());
+        MinecraftForge.EVENT_BUS.register(new EntityTrace());
     }
 
     @EventHandler
@@ -118,5 +124,9 @@ public class Patcher {
 
     public PatcherSoundConfig getPatcherSoundConfig() {
         return patcherSoundConfig;
+    }
+
+    public Logger getLogger() {
+        return LOGGER;
     }
 }
