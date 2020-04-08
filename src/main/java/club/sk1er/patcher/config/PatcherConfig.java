@@ -154,7 +154,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
             type = PropertyType.SLIDER,
-            name = "Fire Height",
+            name = "Fire Overlay Height",
             description = "Change the height of the ingame fire overlay.",
             category = "Quality of Life",
             subcategory = "Overlay",
