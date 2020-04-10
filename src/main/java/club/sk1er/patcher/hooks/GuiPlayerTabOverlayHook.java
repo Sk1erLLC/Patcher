@@ -60,7 +60,7 @@ public class GuiPlayerTabOverlayHook {
     if (ping >= 0 && ping < 10000) {
       GlStateManager.pushMatrix();
       GlStateManager.scale(0.5f, 0.5f, 0.5f);
-      mc.fontRendererObj.drawString("   " + ping + "", (2 * x) - 10, (2 * y), color);
+      mc.fontRendererObj.drawStringWithShadow("   " + ping + "", (2 * x) - 10, (2 * y), color);
       GlStateManager.scale(2.0f, 2.0f, 2.0f);
       GlStateManager.popMatrix();
     }
