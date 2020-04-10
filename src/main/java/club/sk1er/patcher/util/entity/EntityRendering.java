@@ -1,6 +1,8 @@
 package club.sk1er.patcher.util.entity;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -8,8 +10,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.opengl.GL11;
 
 public class EntityRendering {
@@ -17,6 +23,8 @@ public class EntityRendering {
   private final Minecraft mc = Minecraft.getMinecraft();
   private final FontRenderer fontRenderer = mc.fontRendererObj;
   private final RenderManager renderManager = mc.getRenderManager();
+  private final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
+  private WeakReference<EntityLivingBase> reference;
 
   @SubscribeEvent
   public void cancelRendering(RenderLivingEvent.Pre<EntityArmorStand> event) {
@@ -29,6 +37,37 @@ public class EntityRendering {
   public void renderNametag(RenderLivingEvent.Specials.Pre<EntityPlayerSP> event) {
     if (event.entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
       renderTag(event.entity);
+    }
+  }
+
+  @SubscribeEvent
+  public void tickClient(ClientTickEvent event) {
+    if (!PatcherConfig.cleanView) return;
+
+    if (event.phase == Phase.START) {
+      EntityLivingBase entity = (EntityLivingBase) mc.getRenderViewEntity();
+      EntityLivingBase previousEntity = (reference != null) ? reference.get() : null;
+      if (previousEntity != entity) {
+        if (previousEntity != null && previousEntity.getEntityData().getBoolean(key)) {
+          Collection<PotionEffect> effects = previousEntity.getActivePotionEffects();
+          if (!effects.isEmpty()) {
+            previousEntity
+                .getDataWatcher()
+                .updateObject(7, PotionHelper.calcPotionLiquidColor(effects));
+          }
+
+          previousEntity.getEntityData().removeTag(key);
+        }
+
+        reference = (entity != null) ? new WeakReference<>(entity) : null;
+      }
+
+      if (entity != null) {
+        entity.getDataWatcher().updateObject(7, 0);
+        if (!entity.getEntityData().getBoolean(key)) {
+          entity.getEntityData().setBoolean(key, true);
+        }
+      }
     }
   }
 
@@ -59,7 +98,8 @@ public class EntityRendering {
     GlStateManager.depthMask(false);
     GlStateManager.disableDepth();
     GlStateManager.enableBlend();
-    GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+    GlStateManager.tryBlendFuncSeparate(
+        GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
     int stringWidth = fontRenderer.getStringWidth(name) / 2;
     GlStateManager.disableTexture2D();
 

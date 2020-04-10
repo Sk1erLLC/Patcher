@@ -31,7 +31,7 @@ public class ChatHandler {
           chat.deleteChatLine(line);
 
           // Increase the amount of times it's been sent
-          amount++;
+          ++amount;
 
           // Set the last message to be the newly posted message
           lastMessage = event.message.getUnformattedText();
@@ -60,7 +60,7 @@ public class ChatHandler {
         }
 
         // Increase the line the message was on
-        line++;
+        ++line;
 
         // Check if the event wasn't cancelled
         if (!event.isCanceled()) {

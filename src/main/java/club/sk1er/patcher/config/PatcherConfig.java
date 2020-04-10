@@ -580,6 +580,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean removeWaterOverlay;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "CleanView",
+        description = "Stop self-potion effects from rendering.",
+        category = "Quality of Life",
+        subcategory = "Rendering"
+    )
+    public static boolean cleanView;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
