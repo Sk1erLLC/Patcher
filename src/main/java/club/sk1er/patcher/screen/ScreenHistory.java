@@ -15,6 +15,7 @@ import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class ScreenHistory extends GuiScreen {
 
@@ -138,5 +139,22 @@ public class ScreenHistory extends GuiScreen {
     names.clear();
     super.onGuiClosed();
     Keyboard.enableRepeatEvents(false);
+  }
+
+  @Override
+  public void handleMouseInput() throws IOException {
+    super.handleMouseInput();
+    int i = Mouse.getEventDWheel();
+    if (i < 0) {
+      // works out length of scrollable area
+      int length = height / 5 - (names.size() * fontRendererObj.FONT_HEIGHT);
+
+      if (offset - length + 1 > -names.size() && length <= names.size()) {
+        // regions it cant exceed
+        offset -= 10;
+      }
+    } else if (i > 0 && offset < 0) {
+      offset += 10;
+    }
   }
 }
