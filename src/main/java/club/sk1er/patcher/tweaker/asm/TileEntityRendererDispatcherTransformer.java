@@ -31,16 +31,14 @@ public class TileEntityRendererDispatcherTransformer implements PatcherTransform
     for (MethodNode methodNode : classNode.methods) {
       String methodName = mapMethodName(classNode, methodNode);
 
-      if (methodName.equals("renderTileEntity")) {
+      if (methodName.equals("renderTileEntity") || methodName.equals("func_180546_a")) {
         ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
         while (iterator.hasNext()) {
           AbstractInsnNode next = iterator.next();
 
           if (next instanceof MethodInsnNode) {
             if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-              String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-              if (methodInsnName.equals("hasFastRenderer")) {
+              if (((MethodInsnNode) next).name.equals("hasFastRenderer")) {
                 methodNode.instructions.insertBefore(
                     next.getNext().getNext(),
                     new MethodInsnNode(
