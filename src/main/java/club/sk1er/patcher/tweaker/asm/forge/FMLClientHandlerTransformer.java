@@ -1,7 +1,9 @@
 package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -42,11 +44,31 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
         classNode.fields.add(disallowedCharMatcherField);
 
         for (MethodNode methodNode : classNode.methods) {
-            if (methodNode.name.equals("<init>")) {
+            String methodName = methodNode.name;
+            if (methodName.equals("<init>")) {
                 methodNode.instructions.insert(initializeDisallowedChars());
             }
 
-            if (methodNode.name.equals("stripSpecialChars")) {
+            if (methodName.equals("finishMinecraftLoading")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode) {
+                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
+                                methodNode.instructions.remove(next.getPrevious());
+                                methodNode.instructions.remove(next.getPrevious());
+                                methodNode.instructions.remove(next);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (methodName.equals("stripSpecialChars")) {
                 methodNode.instructions.clear();
                 methodNode.localVariables.clear();
                 methodNode.instructions.insert(fasterSpecialChars());
