@@ -294,6 +294,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Transparent Chat Field",
+        description = "Remove the background from chat's input field.\n§eMay improve performance.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean transparentChatInputField;
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Tab Height",
         description = "Move the tab overlay down 16 pixels when there's an active bossbar.",
         category = "Quality of Life",
