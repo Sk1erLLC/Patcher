@@ -39,6 +39,7 @@ import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
@@ -112,6 +113,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new C01PacketChatMessageTransformer());
         registerTransformer(new LayerArrowTransformer());
         registerTransformer(new CommandHandlerTransformer());
+        registerTransformer(new TileEntityRendererDispatcherTransformer());
 //        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes
