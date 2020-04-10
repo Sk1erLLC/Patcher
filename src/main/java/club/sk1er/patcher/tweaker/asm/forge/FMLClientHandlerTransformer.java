@@ -45,33 +45,35 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
 
         for (MethodNode methodNode : classNode.methods) {
             String methodName = methodNode.name;
-            if (methodName.equals("<init>")) {
-                methodNode.instructions.insert(initializeDisallowedChars());
-            }
+            switch (methodName) {
+                case "<init>":
+                    methodNode.instructions.insert(initializeDisallowedChars());
+                    break;
+                case "finishMinecraftLoading":
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-            if (methodName.equals("finishMinecraftLoading")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode) {
+                            if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                String methodInsnName = mapMethodNameFromNode(
+                                    (MethodInsnNode) next);
 
-                    if (next instanceof MethodInsnNode) {
-                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-                            if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.remove(next);
+                                if (methodInsnName.equals("refreshResources") || methodInsnName
+                                    .equals("func_110436_a")) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                    methodNode.instructions.remove(next.getPrevious());
+                                    methodNode.instructions.remove(next);
+                                }
                             }
                         }
                     }
-                }
-            }
-
-            if (methodName.equals("stripSpecialChars")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
-                methodNode.instructions.insert(fasterSpecialChars());
+                    break;
+                case "stripSpecialChars":
+                    methodNode.instructions.clear();
+                    methodNode.localVariables.clear();
+                    methodNode.instructions.insert(fasterSpecialChars());
+                    break;
             }
         }
     }
