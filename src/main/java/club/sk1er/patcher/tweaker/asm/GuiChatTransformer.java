@@ -2,11 +2,17 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import java.util.Iterator;
+import java.util.ListIterator;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class GuiChatTransformer implements PatcherTransformer {
@@ -36,8 +42,33 @@ public class GuiChatTransformer implements PatcherTransformer {
 
       if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
         C01PacketChatMessageTransformer.extendChatLength(methodNode);
-        break;
+      } else if (methodName.equals("drawScreen") || methodName.equals("func_73863_a")) {
+        LabelNode ifne = new LabelNode();
+        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getOption(ifne));
+
+        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+        while (iterator.hasNext()) {
+          AbstractInsnNode next = iterator.next();
+
+          if (next instanceof MethodInsnNode) {
+            if (next.getOpcode() == Opcodes.INVOKESTATIC) {
+              String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+              if (methodInsnName.equals("drawRect") || methodInsnName.equals("func_73734_a")) {
+                methodNode.instructions.insertBefore(next.getNext(), ifne);
+              }
+            }
+          }
+        }
       }
     }
+  }
+
+  private InsnList getOption(LabelNode ifne) {
+    InsnList list = new InsnList();
+    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChat", "Z"));
+    list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+    return list;
   }
 }
