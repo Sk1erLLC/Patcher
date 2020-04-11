@@ -92,7 +92,11 @@ public class Patcher {
 
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (event.isLocal) {
+        if (Minecraft.getMinecraft().getCurrentServerData().serverIP.contains("mineplex")) {
+            LOGGER.info("Mineplex doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+            GuiChatTransformer.maxChatLength = 100;
+            return;
+        } else if (event.isLocal) {
             LOGGER.info("User is in singleplayer, setting string length to 256.");
             GuiChatTransformer.maxChatLength = 256;
             return;
