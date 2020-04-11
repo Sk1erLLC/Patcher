@@ -19,17 +19,28 @@ import org.lwjgl.input.Mouse;
 
 public class ScreenHistory extends GuiScreen {
 
+  // add usernames to a list
   private final List<String> names = new ArrayList<>();
+
+  // should the input field for name searching be focused on init?
+  private final boolean focus;
+
+  // input field
   private GuiTextField nameField;
+
+  // inserted name
   private String name;
+
+  // height offset
   private int offset;
 
   public ScreenHistory() {
-    this("");
+    this("", true);
   }
 
-  public ScreenHistory(String name) {
+  public ScreenHistory(String name, boolean focus) {
     this.name = name;
+    this.focus = focus;
     getNameHistory(name);
   }
 
@@ -71,7 +82,7 @@ public class ScreenHistory extends GuiScreen {
     nameField = new GuiTextField(0, mc.fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115,
         20);
     nameField.setText(name);
-    nameField.setFocused(true);
+    nameField.setFocused(focus);
     nameField.setMaxStringLength(16);
     Keyboard.enableRepeatEvents(true);
   }

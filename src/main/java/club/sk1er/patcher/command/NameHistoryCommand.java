@@ -29,7 +29,7 @@ public class NameHistoryCommand extends CommandBase {
         break;
 
       case 1:
-        ModCore.getInstance().getGuiHandler().open(new ScreenHistory(strings[0]));
+        ModCore.getInstance().getGuiHandler().open(new ScreenHistory(strings[0], false));
         break;
 
       default:

@@ -26,14 +26,12 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,18 +90,21 @@ public class Patcher {
 
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (Minecraft.getMinecraft().getCurrentServerData().serverIP.contains("mineplex")) {
-            LOGGER.info("Mineplex doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
-            GuiChatTransformer.maxChatLength = 100;
-            return;
-        } else if (event.isLocal) {
+        if (event.isLocal) {
             LOGGER.info("User is in singleplayer, setting string length to 256.");
             GuiChatTransformer.maxChatLength = 256;
             return;
         }
 
+        String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+        if (serverIP.contains("mineplex")) {
+            LOGGER.info("Mineplex doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+            GuiChatTransformer.maxChatLength = 100;
+            return;
+        }
+
         CompletableFuture<Boolean> future = ProtocolDetector.instance.isCompatibleWithVersion(
-                Minecraft.getMinecraft().getCurrentServerData().serverIP,
+            serverIP,
                 315 // 1.11
         );
 

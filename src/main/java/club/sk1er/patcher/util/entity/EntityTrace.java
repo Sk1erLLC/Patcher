@@ -35,7 +35,7 @@ public class EntityTrace {
     if (event.phase.equals(Phase.START) && KeybindNameHistory.searchPlayer.isKeyDown()
         && mc.currentScreen == null && targetEntity != null
         && targetEntity instanceof EntityPlayer) {
-      ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName()));
+      ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
     }
   }
 
