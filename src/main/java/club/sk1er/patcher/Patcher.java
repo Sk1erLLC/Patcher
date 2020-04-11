@@ -47,12 +47,6 @@ public class Patcher {
 
     @Mod.Instance("patcher")
     public static Patcher instance;
-    private int cloudTickCounter;
-
-    public void renderClouds(float partialTicks, int pass) {
-        if (Patcher.instance.getCloudHandler().renderClouds(cloudTickCounter, partialTicks)) return;
-    System.out.println("h");
-    }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
