@@ -105,7 +105,7 @@ public class Patcher {
 
         CompletableFuture<Boolean> future = ProtocolDetector.instance.isCompatibleWithVersion(
             serverIP,
-                315 // 1.11
+            315 // 1.11
         );
 
         Multithreading.runAsync(() -> {
