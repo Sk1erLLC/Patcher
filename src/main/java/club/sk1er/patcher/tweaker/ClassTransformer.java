@@ -38,7 +38,6 @@ import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
-import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
@@ -181,10 +180,7 @@ public class ClassTransformer implements IClassTransformer {
         if (outputBytecode) {
             try {
                 File bytecodeDirectory = new File("bytecode");
-                File bytecodeOutput =
-                    new File(
-                        bytecodeDirectory,
-                        transformedName.replace('$', '.') + ".class"); // inner classes suckkkk
+                File bytecodeOutput = new File(bytecodeDirectory, transformedName + ".class");
 
                 if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
                 if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();

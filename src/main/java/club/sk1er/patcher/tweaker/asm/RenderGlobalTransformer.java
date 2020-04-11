@@ -35,15 +35,55 @@ public class RenderGlobalTransformer implements PatcherTransformer {
     for (MethodNode methodNode : classNode.methods) {
       String methodName = mapMethodName(classNode, methodNode);
 
-      if (methodName.equals("setWorldAndLoadRenderers") || methodName.equals("func_72732_a")) {
+      if (methodName.equals("renderClouds") || methodName.equals("func_180447_b")) {
         methodNode.instructions.insertBefore(
-            methodNode.instructions.getLast().getPrevious(), fixFrustumLeak());
-        break;
+            methodNode.instructions.getFirst(), patcherCloudRenderer());
+      } else if (methodName.equals("setWorldAndLoadRenderers")
+          || methodName.equals("func_72732_a")) {
+        methodNode.instructions.insertBefore(
+            methodNode.instructions.getLast().getPrevious(), fixResourceLeak());
       }
     }
   }
 
-  private InsnList fixFrustumLeak() {
+  private InsnList patcherCloudRenderer() {
+    InsnList list = new InsnList();
+    list.add(
+        new FieldInsnNode(
+            Opcodes.GETSTATIC,
+            "club/sk1er/patcher/Patcher",
+            "instance",
+            "Lclub/sk1er/patcher/Patcher;"));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKEVIRTUAL,
+            "club/sk1er/patcher/Patcher",
+            "getCloudHandler",
+            "()Lclub/sk1er/patcher/util/cloud/CloudHandler;",
+            false));
+    list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+    list.add(
+        new FieldInsnNode(
+            Opcodes.GETFIELD,
+            "net/minecraft/client/renderer/RenderGlobal",
+            "field_72773_u", // cloudTickCounter
+            "I"));
+    list.add(new VarInsnNode(Opcodes.FLOAD, 1));
+    list.add(
+        new MethodInsnNode(
+            Opcodes.INVOKEVIRTUAL,
+            "club/sk1er/patcher/util/cloud/CloudHandler",
+            "renderClouds",
+            "(IF)Z",
+            false));
+    LabelNode ifeq = new LabelNode();
+    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+    list.add(new InsnNode(Opcodes.RETURN));
+    list.add(ifeq);
+    return list;
+  }
+
+  private InsnList fixResourceLeak() {
     InsnList list = new InsnList();
     list.add(new VarInsnNode(Opcodes.ALOAD, 1));
     LabelNode ifnonnull = new LabelNode();

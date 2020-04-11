@@ -589,6 +589,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cleanView;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Optimized Cloud Renderer",
+        description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean gpuCloudRenderer = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

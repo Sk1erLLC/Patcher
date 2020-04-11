@@ -17,6 +17,7 @@ import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
+import club.sk1er.patcher.util.cloud.CloudHandler;
 import club.sk1er.patcher.util.culling.EntityCulling;
 import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
@@ -42,9 +43,16 @@ public class Patcher {
     private final Logger LOGGER = LogManager.getLogger("Patcher");
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
+    private CloudHandler cloudHandler;
 
     @Mod.Instance("patcher")
     public static Patcher instance;
+    private int cloudTickCounter;
+
+    public void renderClouds(float partialTicks, int pass) {
+        if (Patcher.instance.getCloudHandler().renderClouds(cloudTickCounter, partialTicks)) return;
+    System.out.println("h");
+    }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -74,6 +82,7 @@ public class Patcher {
         MinecraftForge.EVENT_BUS.register(new ArmorStatusRenderer());
         MinecraftForge.EVENT_BUS.register(new KeybindDropStack());
         MinecraftForge.EVENT_BUS.register(new EntityTrace());
+        MinecraftForge.EVENT_BUS.register(cloudHandler = new CloudHandler());
     }
 
     @EventHandler
@@ -133,5 +142,9 @@ public class Patcher {
 
     public Logger getLogger() {
         return LOGGER;
+    }
+
+    public CloudHandler getCloudHandler() {
+        return cloudHandler;
     }
 }
