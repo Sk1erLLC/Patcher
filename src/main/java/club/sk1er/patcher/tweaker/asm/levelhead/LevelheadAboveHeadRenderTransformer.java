@@ -6,10 +6,14 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class LevelheadAboveHeadRenderTransformer implements PatcherTransformer {
 
@@ -34,9 +38,32 @@ public class LevelheadAboveHeadRenderTransformer implements PatcherTransformer {
     for (MethodNode methodNode : classNode.methods) {
       if (methodNode.name.equals("renderName")) {
         makeNametagTransparent(methodNode);
-        break;
+      } else if (methodNode.name.equals("render")) {
+        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+        while (iterator.hasNext()) {
+          AbstractInsnNode next = iterator.next();
+
+          if (next instanceof InsnNode && next.getOpcode() == Opcodes.DCONST_0) {
+            LabelNode gotoInsn = new LabelNode();
+            methodNode.instructions.insertBefore(next, moveNametag(gotoInsn));
+            methodNode.instructions.insertBefore(next.getNext().getNext(), gotoInsn);
+          }
+        }
       }
     }
+  }
+
+  private InsnList moveNametag(LabelNode gotoInsn) {
+    InsnList list = new InsnList();
+    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "showOwnNametag", "Z"));
+    LabelNode ifeq = new LabelNode();
+    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+    list.add(new LdcInsnNode(0.3D));
+    list.add(new VarInsnNode(Opcodes.DSTORE, 9));
+    list.add(ifeq);
+    list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+    return list;
   }
 
   private void makeNametagTransparent(MethodNode methodNode) {

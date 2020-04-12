@@ -114,7 +114,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerArrowTransformer());
         registerTransformer(new CommandHandlerTransformer());
         registerTransformer(new TileEntityRendererDispatcherTransformer());
-        registerTransformer(new RenderGlobalTransformer());
+//        registerTransformer(new RenderGlobalTransformer());
 //        registerTransformer(new BlockDoublePlantTransformer());
 
         // forge classes
