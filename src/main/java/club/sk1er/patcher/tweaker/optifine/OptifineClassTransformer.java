@@ -6,6 +6,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.tnttime.TNTTimeTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -28,6 +29,7 @@ public class OptifineClassTransformer implements IClassTransformer {
     registerTransformer(new OptifineRenderItemFrameTransformer());
 
     registerTransformer(new LevelheadAboveHeadRenderTransformer());
+    registerTransformer(new TNTTimeTransformer());
   }
 
   private void registerTransformer(PatcherTransformer transformer) {
