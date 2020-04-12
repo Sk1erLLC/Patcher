@@ -40,9 +40,9 @@ public class GuiVideoSettingsTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/GuiScreen", "onGuiClosed", "()V", false));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiVideoSettings", "field_146297_k", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", // gameSettings
-                "Lnet/minecraft/client/settings/GameSettings;"));
+            "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/GameSettings", "onGuiClosed", "()V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;

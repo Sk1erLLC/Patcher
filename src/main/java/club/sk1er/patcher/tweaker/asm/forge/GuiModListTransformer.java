@@ -41,6 +41,8 @@ public class GuiModListTransformer implements PatcherTransformer {
                         ((MethodInsnNode) next).desc = "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;";
                     }
                 }
+
+                break;
             }
         }
     }

@@ -48,7 +48,7 @@ public class GuiGameOverTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/GuiGameOver", "field_146347_a", // enableButtonsTimer
-                "I"));
+            "I"));
         list.add(ifeq);
         return list;
     }

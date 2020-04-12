@@ -78,7 +78,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(l0);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "set", "(ILjava/lang/Object;)Ljava/lang/Object;", true));
@@ -90,7 +90,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, 3));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_147415_a", // logger
-                "Lorg/apache/logging/log4j/Logger;"));
+            "Lorg/apache/logging/log4j/Logger;"));
         list.add(new LdcInsnNode("Failed to set server data"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true));
@@ -109,28 +109,28 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/multiplayer/ServerList", "func_78850_a", // getServerData
-                "(I)Lnet/minecraft/client/multiplayer/ServerData;", false));
+            "(I)Lnet/minecraft/client/multiplayer/ServerData;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 3));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/multiplayer/ServerList", "func_78850_a", // getServerData
-                "(I)Lnet/minecraft/client/multiplayer/ServerData;", false));
+            "(I)Lnet/minecraft/client/multiplayer/ServerData;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "set", "(ILjava/lang/Object;)Ljava/lang/Object;", true));
         list.add(new InsnNode(Opcodes.POP));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "set", "(ILjava/lang/Object;)Ljava/lang/Object;", true));
         list.add(new InsnNode(Opcodes.POP));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/multiplayer/ServerList", "func_78855_b", // saveServerList
-                "()V", false));
+            "()V", false));
         list.add(l1);
         LabelNode l6 = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.GOTO, l6));
@@ -138,7 +138,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, 3));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_147415_a", // logger
-                "Lorg/apache/logging/log4j/Logger;"));
+            "Lorg/apache/logging/log4j/Logger;"));
         list.add(new LdcInsnNode("Failed to swap servers"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true));
@@ -156,7 +156,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(l0);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true));
         list.add(new InsnNode(Opcodes.POP));
@@ -167,7 +167,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_147415_a", // logger
-                "Lorg/apache/logging/log4j/Logger;"));
+            "Lorg/apache/logging/log4j/Logger;"));
         list.add(new LdcInsnNode("Failed to remove server data"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true));
@@ -185,7 +185,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(l0);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "remove", "(I)Ljava/lang/Object;", true));
         list.add(new InsnNode(Opcodes.POP));
@@ -196,7 +196,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_147415_a", // logger
-                "Lorg/apache/logging/log4j/Logger;"));
+            "Lorg/apache/logging/log4j/Logger;"));
         list.add(new LdcInsnNode("Failed to remove server data"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true));
@@ -214,7 +214,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(l0);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_78858_b", // servers
-                "Ljava/util/List;"));
+            "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "get", "(I)Ljava/lang/Object;", true));
         list.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/client/multiplayer/ServerData"));
@@ -224,7 +224,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ServerList", "field_147415_a", // logger
-                "Lorg/apache/logging/log4j/Logger;"));
+            "Lorg/apache/logging/log4j/Logger;"));
         list.add(new LdcInsnNode("Failed to get server data"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true));

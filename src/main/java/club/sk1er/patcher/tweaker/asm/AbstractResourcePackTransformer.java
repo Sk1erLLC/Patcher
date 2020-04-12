@@ -53,9 +53,9 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new LdcInsnNode("pack.png"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/resources/AbstractResourcePack", "func_110591_a", // getInputStreamByName
-                "(Ljava/lang/String;)Ljava/io/InputStream;", false));
+            "(Ljava/lang/String;)Ljava/io/InputStream;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/texture/TextureUtil", "func_177053_a", // readBufferedImage
-                "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", false));
+            "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         LabelNode l4 = new LabelNode();

@@ -6,8 +6,8 @@ import org.lwjgl.input.Keyboard;
 
 public class KeybindNameHistory {
 
-  public static final KeyBinding searchPlayer = KeybindBuilder.buildKeybind(
-      "User Name History",
-      Keyboard.KEY_N
-  );
+    public static final KeyBinding searchPlayer = KeybindBuilder.buildKeybind(
+        "User Name History",
+        Keyboard.KEY_N
+    );
 }

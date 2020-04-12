@@ -2,7 +2,6 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -35,8 +34,8 @@ public class ChunkTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         List<String> brightness = Arrays.asList(
-                "getLightFor", "func_177413_a",
-                "getLightSubtracted", "func_177443_a"
+            "getLightFor", "func_177413_a",
+            "getLightSubtracted", "func_177443_a"
         );
 
         for (MethodNode methodNode : classNode.methods) {

@@ -10,10 +10,9 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class EntityLivingBaseTransformer implements PatcherTransformer {
+public class ResourcePackRepositoryTransformer implements PatcherTransformer {
     /**
      * The class name that's being transformed
      *
@@ -21,7 +20,7 @@ public class EntityLivingBaseTransformer implements PatcherTransformer {
      */
     @Override
     public String[] getClassName() {
-        return new String[]{"net.minecraft.entity.EntityLivingBase"};
+        return new String[]{"net.minecraft.client.resources.ResourcePackRepository"};
     }
 
     /**
@@ -35,29 +34,27 @@ public class EntityLivingBaseTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("getLook") || methodName.equals("func_70676_i")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), returnSpecial());
+            if (methodName.equals("deleteOldServerResourcesPacks") || methodName.equals("func_183028_i")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), createDirectory());
                 break;
             }
         }
     }
 
-    private InsnList returnSpecial() {
+    private InsnList createDirectory() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "mouseDelayFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/client/entity/EntityPlayerSP"));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/ResourcePackRepository", "field_148534_e", // dirServerResourcepacks
+            "Ljava/io/File;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/File", "exists", "()Z", false));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new VarInsnNode(Opcodes.FLOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/Entity", "func_70676_i", // getLook
-            "(F)Lnet/minecraft/util/Vec3;", false));
-        list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(ifeq);
-        list.add(labelNode);
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/ResourcePackRepository", "field_148534_e", // dirServerResourcepacks
+            "Ljava/io/File;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/File", "mkdirs", "()Z", false));
+        list.add(new InsnNode(Opcodes.POP));
+        list.add(ifne);
         return list;
     }
 }

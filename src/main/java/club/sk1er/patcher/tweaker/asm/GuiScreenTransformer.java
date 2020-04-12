@@ -44,9 +44,9 @@ public class GuiScreenTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiScreen", "field_146297_k", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71441_e", // theWorld
-                "Lnet/minecraft/client/multiplayer/WorldClient;"));
+            "Lnet/minecraft/client/multiplayer/WorldClient;"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableTransparentBackgrounds", "Z"));

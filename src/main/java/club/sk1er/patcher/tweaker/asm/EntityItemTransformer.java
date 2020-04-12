@@ -52,14 +52,14 @@ public class EntityItemTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", // getEntityItem
-                "()Lnet/minecraft/item/ItemStack;", false));
+            "()Lnet/minecraft/item/ItemStack;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", // stackSize
-                "I"));
+            "I"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d",  // getMaxStackSize
-                "()I", false));
+            "()I", false));
         LabelNode ificmplt = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, ificmplt));
         list.add(new InsnNode(Opcodes.RETURN));
@@ -75,14 +75,14 @@ public class EntityItemTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", // getEntityItem
-                "()Lnet/minecraft/item/ItemStack;", false));
+            "()Lnet/minecraft/item/ItemStack;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", // stackSize
-                "I"));
+            "I"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d",  // getMaxStackSize
-                "()I", false));
+            "()I", false));
         LabelNode ificmplt = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, ificmplt));
         list.add(new InsnNode(Opcodes.ICONST_0));

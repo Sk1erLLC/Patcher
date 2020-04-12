@@ -13,18 +13,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.*;
 
 public class ScoreboardTransformer implements PatcherTransformer {
     /**
@@ -68,22 +57,22 @@ public class ScoreboardTransformer implements PatcherTransformer {
 
         list.add(new VarInsnNode(ALOAD, 1));
         list.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96661_b", // getRegisteredName
-                "()Ljava/lang/String;", false));
+            "()Ljava/lang/String;", false));
         LabelNode ifNull = new LabelNode();
         list.add(new JumpInsnNode(IFNULL, ifNull));
         list.add(new VarInsnNode(ALOAD, 0));
         list.add(new FieldInsnNode(GETFIELD, "net/minecraft/scoreboard/Scoreboard", "field_96542_e", // teams
-                "Ljava/util/Map;"));
+            "Ljava/util/Map;"));
         list.add(new VarInsnNode(ALOAD, 1));
         list.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96661_b", // getRegisteredName
-                "()Ljava/lang/String;", false));
+            "()Ljava/lang/String;", false));
         list.add(new MethodInsnNode(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", true));
         list.add(new InsnNode(POP));
         list.add(ifNull);
 
         list.add(new VarInsnNode(ALOAD, 1));
         list.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96670_d", // getMembershipCollection
-                "()Ljava/util/Collection;", false));
+            "()Ljava/util/Collection;", false));
         list.add(new MethodInsnNode(INVOKEINTERFACE, "java/util/Collection", "iterator", "()Ljava/util/Iterator;", true));
         list.add(new VarInsnNode(ASTORE, 2));
 
@@ -99,7 +88,7 @@ public class ScoreboardTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(ASTORE, 3));
         list.add(new VarInsnNode(ALOAD, 0));
         list.add(new FieldInsnNode(GETFIELD, "net/minecraft/scoreboard/Scoreboard", "field_96540_f", // teamMemberships
-                "Ljava/util/Map;"));
+            "Ljava/util/Map;"));
         list.add(new VarInsnNode(ALOAD, 3));
         list.add(new MethodInsnNode(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", true));
         list.add(new InsnNode(POP));
@@ -109,7 +98,7 @@ public class ScoreboardTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(ALOAD, 0));
         list.add(new VarInsnNode(ALOAD, 1));
         list.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/scoreboard/Scoreboard", "func_96513_c", // no mcp name
-                "(Lnet/minecraft/scoreboard/ScorePlayerTeam;)V", false));
+            "(Lnet/minecraft/scoreboard/ScorePlayerTeam;)V", false));
         list.add(new InsnNode(RETURN));
         list.add(ifeq);
         return list;

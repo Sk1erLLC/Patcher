@@ -58,7 +58,7 @@ public class EntityPlayerSPTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/entity/AbstractClientPlayer", "func_70618_n", // removePotionEffectClient
-                "(I)V", false));
+            "(I)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

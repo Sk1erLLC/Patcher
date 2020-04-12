@@ -32,10 +32,10 @@ import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
@@ -54,10 +54,12 @@ import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -108,14 +110,12 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiLanguageListTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
-//        registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
         registerTransformer(new LayerArrowTransformer());
         registerTransformer(new CommandHandlerTransformer());
         registerTransformer(new TileEntityRendererDispatcherTransformer());
-//        registerTransformer(new RenderGlobalTransformer());
-//        registerTransformer(new BlockDoublePlantTransformer());
+        registerTransformer(new ResourcePackRepositoryTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -129,6 +129,11 @@ public class ClassTransformer implements IClassTransformer {
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
+
+        // disabled
+        //registerTransformer(new ScreenShotHelperTransformer());
+        //registerTransformer(new RenderGlobalTransformer());
+        //registerTransformer(new BlockDoublePlantTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {
@@ -142,13 +147,7 @@ public class ClassTransformer implements IClassTransformer {
         return createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static byte[] createTransformer(
-        String transformedName,
-        byte[] bytes,
-        Multimap<String, PatcherTransformer> transformerMap,
-        Logger logger,
-        boolean outputBytecode) {
+    public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger, boolean outputBytecode) {
         if (bytes == null) return null;
 
         Collection<PatcherTransformer> transformers = transformerMap.get(transformedName);
@@ -161,19 +160,16 @@ public class ClassTransformer implements IClassTransformer {
         classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
 
         for (PatcherTransformer transformer : transformers) {
-            logger.info(
-                "Applying transformer {} on {}...", transformer.getClass().getName(), transformedName);
+            logger.info("Applying transformer {} on {}...", transformer.getClass().getName(), transformedName);
             transformer.transform(classNode, transformedName);
         }
 
-        ClassWriter classWriter =
-            new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
         try {
             classNode.accept(classWriter);
         } catch (Throwable e) {
-            System.out.println(
-                "Exception when transforming " + transformedName + " : " + e.getClass().getSimpleName());
+            logger.error("Exception when transforming {} : {}", transformedName, e.getClass().getSimpleName());
             e.printStackTrace();
         }
 
@@ -181,10 +177,6 @@ public class ClassTransformer implements IClassTransformer {
             try {
                 File bytecodeDirectory = new File("bytecode");
                 File bytecodeOutput = new File(bytecodeDirectory, transformedName + ".class");
-
-                if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
-                if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();
-
                 FileOutputStream os = new FileOutputStream(bytecodeOutput);
                 os.write(classWriter.toByteArray());
                 os.close();

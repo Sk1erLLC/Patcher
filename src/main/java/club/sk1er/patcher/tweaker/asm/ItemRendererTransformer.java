@@ -58,7 +58,7 @@ public class ItemRendererTransformer implements PatcherTransformer {
     private InsnList changeHeight() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", // pushMatrix
-                "()V", false));
+            "()V", false));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fireHeight", "I"));
         list.add(new InsnNode(Opcodes.I2F));
@@ -66,14 +66,14 @@ public class ItemRendererTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.FDIV));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
-                "(FFF)V", false));
+            "(FFF)V", false));
         return list;
     }
 
     private InsnList popMatrix() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", // popMatrix
-                "()V", false));
+            "()V", false));
         return list;
     }
 }

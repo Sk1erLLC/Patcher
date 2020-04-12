@@ -48,11 +48,11 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", // getMinecraft
-                "()Lnet/minecraft/client/Minecraft;", false));
+            "()Lnet/minecraft/client/Minecraft;", false));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71439_g", // thePlayer
-                "Lnet/minecraft/client/entity/EntityPlayerSP;"));
+            "Lnet/minecraft/client/entity/EntityPlayerSP;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", "func_70651_bq", // getActivePotionEffects
-                "()Ljava/util/Collection;", false));
+            "()Ljava/util/Collection;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Collection", "isEmpty", "()Z", true));
         LabelNode ifne = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
@@ -63,19 +63,19 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(gotoInsn);
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_147045_u", // hasActivePotionEffects
-                "Z"));
+            "Z"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_146294_l", // width
-                "I"));
+            "I"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_146999_f", // xSize
-                "I"));
+            "I"));
         list.add(new InsnNode(Opcodes.ISUB));
         list.add(new InsnNode(Opcodes.ICONST_2));
         list.add(new InsnNode(Opcodes.IDIV));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_147003_i", // guiLeft
-                "I"));
+            "I"));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;

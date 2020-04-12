@@ -14,7 +14,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class RemovedBlockUtil {
     public static List<Block> grassContainer = Arrays.asList(
-            Blocks.tallgrass,
-            Blocks.double_plant
+        Blocks.tallgrass,
+        Blocks.double_plant
     );
 }

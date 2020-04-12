@@ -7,25 +7,25 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CloudHandler {
 
-  private final Minecraft mc = Minecraft.getMinecraft();
-  private final CloudRenderer renderer = new CloudRenderer();
+    private final Minecraft mc = Minecraft.getMinecraft();
+    private final CloudRenderer renderer = new CloudRenderer();
 
-  @SubscribeEvent
-  public void tick(TickEvent event) {
-    renderer.checkSettings();
-  }
-
-  public boolean renderClouds(int cloudTicks, float partialTicks) {
-    IRenderHandler renderHandler = mc.theWorld.provider.getCloudRenderer();
-    if (renderHandler != null) {
-      renderHandler.render(partialTicks, mc.theWorld, mc);
-      return true;
+    @SubscribeEvent
+    public void tick(TickEvent event) {
+        renderer.checkSettings();
     }
 
-    return renderer.render(cloudTicks, partialTicks);
-  }
+    public boolean renderClouds(int cloudTicks, float partialTicks) {
+        IRenderHandler renderHandler = mc.theWorld.provider.getCloudRenderer();
+        if (renderHandler != null) {
+            renderHandler.render(partialTicks, mc.theWorld, mc);
+            return true;
+        }
 
-  public CloudRenderer getRenderer() {
-    return renderer;
-  }
+        return renderer.render(cloudTicks, partialTicks);
+    }
+
+    public CloudRenderer getRenderer() {
+        return renderer;
+    }
 }

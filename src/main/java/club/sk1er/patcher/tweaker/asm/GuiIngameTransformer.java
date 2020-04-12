@@ -44,11 +44,11 @@ public class GuiIngameTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiIngame", "field_73839_d", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", // gameSettings
-                "Lnet/minecraft/client/settings/GameSettings;"));
+            "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74320_O", // thirdPersonView
-                "I"));
+            "I"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFLE, labelNode));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "crosshairPerspective", "Z"));

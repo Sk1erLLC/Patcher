@@ -40,8 +40,8 @@ public class NetHandlerPlayClientHook {
 
                 if (player != null) {
                     player.addChatMessage(new ChatComponentText(
-                            EnumChatFormatting.RED + EnumChatFormatting.BOLD.toString() +
-                                    "[WARNING] The current server has attempted to be malicious but we have stopped them."));
+                        EnumChatFormatting.RED + EnumChatFormatting.BOLD.toString() +
+                            "[WARNING] The current server has attempted to be malicious but we have stopped them."));
                 }
 
                 throw new URISyntaxException(url, "Invalid levelstorage resourcepack path");

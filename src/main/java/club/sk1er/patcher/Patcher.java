@@ -23,7 +23,9 @@ import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+
 import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;

@@ -46,7 +46,7 @@ public class BlockRendererDispatcherTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/block/RemovedBlockUtil", "grassContainer", "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/block/state/IBlockState", "func_177230_c", // getBlock
-                "()Lnet/minecraft/block/Block;", true));
+            "()Lnet/minecraft/block/Block;", true));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "contains", "(Ljava/lang/Object;)Z", true));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));

@@ -40,8 +40,11 @@ public class ModelLoaderTransformer implements PatcherTransformer {
 
                     if (next instanceof FieldInsnNode && ((FieldInsnNode) next).name.equals("isLoading")) {
                         methodNode.instructions.insertBefore(next.getPrevious(), clearMemory());
+                        break;
                     }
                 }
+
+                break;
             }
         }
     }

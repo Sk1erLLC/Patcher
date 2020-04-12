@@ -13,45 +13,45 @@ import org.objectweb.asm.tree.MethodNode;
 // By LlamaLad7
 public class InventoryPlayerTransformer implements PatcherTransformer {
 
-  /**
-   * The class name that's being transformed
-   *
-   * @return the class name
-   */
-  @Override
-  public String[] getClassName() {
-    return new String[] {"net.minecraft.entity.player.InventoryPlayer"};
-  }
-
-  /**
-   * Perform any asm in order to transform code
-   *
-   * @param classNode the transformed class node
-   * @param name the transformed class name
-   */
-  @Override
-  public void transform(ClassNode classNode, String name) {
-    for (MethodNode methodNode : classNode.methods) {
-      String methodName = mapMethodName(classNode, methodNode);
-
-      if (methodName.equals("changeCurrentItem") || methodName.equals("func_70453_c")) {
-        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), skipIfZoomed());
-        break;
-      }
+    /**
+     * The class name that's being transformed
+     *
+     * @return the class name
+     */
+    @Override
+    public String[] getClassName() {
+        return new String[]{"net.minecraft.entity.player.InventoryPlayer"};
     }
-  }
 
-  private InsnList skipIfZoomed() {
-    InsnList list = new InsnList();
-    list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "scrollToZoom", "Z"));
-    list.add(
-        new FieldInsnNode(
-            Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer", "zoomed", "Z"));
-    list.add(new InsnNode(Opcodes.IAND));
-    LabelNode ifeq = new LabelNode();
-    list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-    list.add(new InsnNode(Opcodes.RETURN));
-    list.add(ifeq);
-    return list;
-  }
+    /**
+     * Perform any asm in order to transform code
+     *
+     * @param classNode the transformed class node
+     * @param name      the transformed class name
+     */
+    @Override
+    public void transform(ClassNode classNode, String name) {
+        for (MethodNode methodNode : classNode.methods) {
+            String methodName = mapMethodName(classNode, methodNode);
+
+            if (methodName.equals("changeCurrentItem") || methodName.equals("func_70453_c")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), skipIfZoomed());
+                break;
+            }
+        }
+    }
+
+    private InsnList skipIfZoomed() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "scrollToZoom", "Z"));
+        list.add(
+            new FieldInsnNode(
+                Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer", "zoomed", "Z"));
+        list.add(new InsnNode(Opcodes.IAND));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
+    }
 }
