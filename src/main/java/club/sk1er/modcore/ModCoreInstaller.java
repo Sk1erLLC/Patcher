@@ -1,7 +1,16 @@
 package club.sk1er.modcore;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -17,17 +26,10 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 /*
     Created by Sk1er for use in all mods. Install under exact package name each time.
@@ -46,8 +48,7 @@ public class ModCoreInstaller {
         return isRunningModCore;
     }
 
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
-    private static boolean isInitialized() {
+    private static boolean isInitalized() {
         try {
             LinkedHashSet<String> objects = new LinkedHashSet<>();
             objects.add(className);
@@ -57,8 +58,8 @@ public class ModCoreInstaller {
             Object obj = invalidClasses.get(ModCoreInstaller.class.getClassLoader());
             ((Set<String>) obj).remove(className);
             return Class.forName("club.sk1er.mods.core.ModCore") != null;
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
+            ignored.printStackTrace();
         }
         return false;
     }
@@ -78,7 +79,7 @@ public class ModCoreInstaller {
 
     private static JsonHolder readFile(File in) {
         try {
-            return new JsonHolder(FileUtils.readFileToString(in, StandardCharsets.UTF_8));
+            return new JsonHolder(FileUtils.readFileToString(in));
         } catch (IOException ignored) {
 
         }
@@ -103,9 +104,8 @@ public class ModCoreInstaller {
         System.out.println("Did NOT ModCore Successfully");
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static int initialize(File gameDir, String minecraftVersion) {
-        if (isInitialized()) return -1;
+        if (isInitalized()) return -1;
         dataDir = new File(gameDir, "modcore");
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
@@ -136,7 +136,7 @@ public class ModCoreInstaller {
 
         addToClasspath(modcoreFile);
 
-        if (!isInitialized()) {
+        if (!isInitalized()) {
             bail("Something went wrong and it did not add the jar to the class path. Local file exists? " + modcoreFile.exists());
             return 3;
         }
@@ -212,7 +212,7 @@ public class ModCoreInstaller {
                 bar.setValue(bar.getValue() + 1024);
             }
             outputStream.close();
-            FileUtils.write(new File(dataDir, "metadata.json"), versionData.put(mcver, version).toString(), StandardCharsets.UTF_8);
+            FileUtils.write(new File(dataDir, "metadata.json"), versionData.put(mcver, version).toString());
         } catch (Exception e) {
             e.printStackTrace();
             frame.dispose();
@@ -278,13 +278,86 @@ public class ModCoreInstaller {
             return "{}";
         }
 
+        public JsonHolder put(String key, boolean value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        public void mergeNotOverride(JsonHolder merge) {
+            merge(merge, false);
+        }
+
+        public void mergeOverride(JsonHolder merge) {
+            merge(merge, true);
+        }
+
+        public void merge(JsonHolder merge, boolean override) {
+            JsonObject object = merge.getObject();
+            for (String s : merge.getKeys()) {
+                if (override || !this.has(s))
+                    put(s, object.get(s));
+            }
+        }
+
+        private void put(String s, JsonElement element) {
+            this.object.add(s, element);
+        }
+
         public JsonHolder put(String key, String value) {
             object.addProperty(key, value);
             return this;
         }
 
+        public JsonHolder put(String key, int value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        public JsonHolder put(String key, double value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        public JsonHolder put(String key, long value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        private JsonHolder defaultOptJSONObject(String key, JsonObject fallBack) {
+            try {
+                return new JsonHolder(object.get(key).getAsJsonObject());
+            } catch (Exception e) {
+                return new JsonHolder(fallBack);
+            }
+        }
+
+        public JsonArray defaultOptJSONArray(String key, JsonArray fallback) {
+            try {
+                return object.get(key).getAsJsonArray();
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+
+        public JsonArray optJSONArray(String key) {
+            return defaultOptJSONArray(key, new JsonArray());
+        }
+
+
         public boolean has(String key) {
             return object.has(key);
+        }
+
+        public long optLong(String key, long fallback) {
+            try {
+                return object.get(key).getAsLong();
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+
+        public long optLong(String key) {
+            return optLong(key, 0);
         }
 
         public boolean optBoolean(String key, boolean fallback) {
@@ -299,6 +372,32 @@ public class ModCoreInstaller {
             return optBoolean(key, false);
         }
 
+        public JsonObject optActualJSONObject(String key) {
+            try {
+                return object.get(key).getAsJsonObject();
+            } catch (Exception e) {
+                return new JsonObject();
+            }
+        }
+
+        public JsonHolder optJSONObject(String key) {
+            return defaultOptJSONObject(key, new JsonObject());
+        }
+
+
+        public int optInt(String key, int fallBack) {
+            try {
+                return object.get(key).getAsInt();
+            } catch (Exception e) {
+                return fallBack;
+            }
+        }
+
+        public int optInt(String key) {
+            return optInt(key, 0);
+        }
+
+
         public String defaultOptString(String key, String fallBack) {
             try {
                 return object.get(key).getAsString();
@@ -311,10 +410,45 @@ public class ModCoreInstaller {
             return defaultOptString(key, "");
         }
 
+
+        public double optDouble(String key, double fallBack) {
+            try {
+                return object.get(key).getAsDouble();
+            } catch (Exception e) {
+                return fallBack;
+            }
+        }
+
         public List<String> getKeys() {
             List<String> tmp = new ArrayList<>();
             object.entrySet().forEach(e -> tmp.add(e.getKey()));
             return tmp;
+        }
+
+        public double optDouble(String key) {
+            return optDouble(key, 0.0);
+        }
+
+
+        public JsonObject getObject() {
+            return object;
+        }
+
+        public boolean isNull(String key) {
+            return object.has(key) && object.get(key).isJsonNull();
+        }
+
+        public JsonHolder put(String values, JsonHolder values1) {
+            return put(values, values1.getObject());
+        }
+
+        public JsonHolder put(String values, JsonObject object) {
+            this.object.add(values, object);
+            return this;
+        }
+
+        public void put(String blacklisted, JsonArray jsonElements) {
+            this.object.add(blacklisted, jsonElements);
         }
 
         public void remove(String header) {

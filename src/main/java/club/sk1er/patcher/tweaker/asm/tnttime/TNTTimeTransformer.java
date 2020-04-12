@@ -1,4 +1,4 @@
-package club.sk1er.patcher.tweaker.tnttime;
+package club.sk1er.patcher.tweaker.asm.tnttime;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import java.util.ListIterator;
