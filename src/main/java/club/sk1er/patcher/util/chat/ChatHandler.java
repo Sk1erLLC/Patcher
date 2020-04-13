@@ -22,11 +22,16 @@ public class ChatHandler {
         if (!event.isCanceled() && event.type == 0) {
             String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
             if (PatcherConfig.compactChat) {
+                String message = event.message.getUnformattedText();
+                if (message.contains("---------") || message.contains("=========")) { // why would a user send this
+                    return; // die!
+                }
+
                 // Get the chat instance
                 GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 
                 // If the last message sent is the same as the newly posted message
-                if (lastMessage.equals(event.message.getUnformattedText())) {
+                if (lastMessage.equals(message)) {
 
                     // Delete the message
                     chat.deleteChatLine(line);
@@ -35,13 +40,12 @@ public class ChatHandler {
                     ++amount;
 
                     // Set the last message to be the newly posted message
-                    lastMessage = event.message.getUnformattedText();
+                    lastMessage = message;
 
                     // Append (amount of times it's been sent) to the last message
                     event.message.appendText(EnumChatFormatting.GRAY + " (" + amount + ")");
                     if (PatcherConfig.timestamps) {
-                        ChatComponentText newThing =
-                            new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
+                        ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
                         newThing.appendSibling(event.message);
                         event.message = newThing;
                     }
@@ -51,7 +55,7 @@ public class ChatHandler {
                     amount = 1;
 
                     // Set the last message to be the newly posted message
-                    lastMessage = event.message.getUnformattedText();
+                    lastMessage = message;
                     if (PatcherConfig.timestamps) {
                         ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
                         newThing.appendSibling(event.message);
