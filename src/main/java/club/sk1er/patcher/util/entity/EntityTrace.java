@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
@@ -34,8 +35,14 @@ public class EntityTrace {
         if (KeybindNameHistory.searchPlayer.isKeyDown()) {
             getMouseOver(partialTicks);
 
-            if (mc.currentScreen == null && targetEntity != null && targetEntity instanceof EntityPlayer && mc.theWorld != null && mc.thePlayer != null) {
-                ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
+            if (targetEntity != null && targetEntity instanceof EntityPlayer) {
+                if (targetEntity.getDisplayName().getFormattedText().contains(EnumChatFormatting.OBFUSCATED.toString())) {
+                    return;
+                }
+
+                if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null) {
+                    ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
+                }
             }
         }
     }
