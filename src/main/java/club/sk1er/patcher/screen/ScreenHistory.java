@@ -56,8 +56,8 @@ public class ScreenHistory extends GuiScreen {
                 UUID uuid = null;
                 try {
                     uuid = MojangAPI.getUUID(username);
-                } catch (IOException | APIException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
                 }
 
                 if (uuid != null) {
@@ -73,7 +73,7 @@ public class ScreenHistory extends GuiScreen {
                 }
             });
         } catch (Exception e) {
-            Patcher.instance.getLogger().warn("User catch failed, tried fetching {}", username, e);
+            Patcher.instance.getLogger().warn("User catch failed, tried fetching {}.", username, e);
         }
     }
 

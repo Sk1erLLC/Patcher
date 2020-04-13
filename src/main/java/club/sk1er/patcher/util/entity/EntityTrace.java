@@ -13,8 +13,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.List;
 
@@ -32,8 +31,8 @@ public class EntityTrace {
     }
 
     @SubscribeEvent
-    public void tick(ClientTickEvent event) {
-        if (event.phase.equals(Phase.START) && KeybindNameHistory.searchPlayer.isKeyDown() && mc.currentScreen == null && targetEntity != null && targetEntity instanceof EntityPlayer) {
+    public void keybind(InputEvent.KeyInputEvent event) {
+        if (KeybindNameHistory.searchPlayer.isKeyDown() && mc.currentScreen == null && targetEntity != null && targetEntity instanceof EntityPlayer) {
             ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
         }
     }
