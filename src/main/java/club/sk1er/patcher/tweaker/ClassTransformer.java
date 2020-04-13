@@ -31,6 +31,7 @@ import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
+import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
@@ -124,6 +125,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S14PacketEntityTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
+        registerTransformer(new NodeProcessorTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
