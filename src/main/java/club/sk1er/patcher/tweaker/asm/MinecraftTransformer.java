@@ -76,14 +76,12 @@ public class MinecraftTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof FieldInsnNode) {
-                        if (node.getOpcode() == Opcodes.GETFIELD
-                            && node.getNext().getOpcode() == Opcodes.INVOKEVIRTUAL
-                            && node.getNext().getNext().getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            methodNode.instructions.remove(node.getPrevious());
-                            methodNode.instructions.remove(node.getNext());
-                            methodNode.instructions.remove(node.getNext());
-                            methodNode.instructions.remove(node);
+                    if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                        if (methodInsnName.equals("clearChatMessages") || methodInsnName.equals("func_146231_a")) {
+                            LabelNode ifne = new LabelNode();
+                            methodNode.instructions.insertBefore(node.getPrevious().getPrevious().getPrevious().getPrevious(), addConfigOption(ifne));
+                            methodNode.instructions.insertBefore(node.getNext(), ifne);
                             break;
                         }
                     }
@@ -161,6 +159,13 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList addConfigOption(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "crossChat", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList setSystemTime() {

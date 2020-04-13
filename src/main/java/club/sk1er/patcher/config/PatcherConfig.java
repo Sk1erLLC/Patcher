@@ -598,6 +598,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean gpuCloudRenderer = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "CrossChat",
+        description = "Stop clearing chat when switching servers.",
+        category = "Quality of Life",
+        subcategory = "Chat"
+    )
+    public static boolean crossChat = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
