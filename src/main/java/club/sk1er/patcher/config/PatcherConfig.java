@@ -607,6 +607,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean crossChat = true;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Clean Main Menu",
+        description = "Remove the Realms button as you need to be on the latest Minecraft version to use Realms.",
+        category = "Quality of Life",
+        subcategory = "General"
+    )
+    public static boolean cleanMainMenu = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

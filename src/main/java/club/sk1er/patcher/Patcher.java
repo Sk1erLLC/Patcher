@@ -26,6 +26,7 @@ import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 
 import java.util.concurrent.CompletableFuture;
 
+import club.sk1er.patcher.util.screen.MainMenuEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -67,18 +68,23 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
         ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
 
-        MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(target);
-        MinecraftForge.EVENT_BUS.register(new TabToggleHandler());
-        MinecraftForge.EVENT_BUS.register(new EntityRendering());
-        MinecraftForge.EVENT_BUS.register(new FovHandler());
-        MinecraftForge.EVENT_BUS.register(new ChatHandler());
-        MinecraftForge.EVENT_BUS.register(new HotbarItemsHandler());
-        MinecraftForge.EVENT_BUS.register(new EntityCulling());
-        MinecraftForge.EVENT_BUS.register(new ArmorStatusRenderer());
-        MinecraftForge.EVENT_BUS.register(new KeybindDropStack());
-        MinecraftForge.EVENT_BUS.register(new EntityTrace());
-        MinecraftForge.EVENT_BUS.register(cloudHandler = new CloudHandler());
+        registerClass(this);
+        registerClass(target);
+        registerClass(new TabToggleHandler());
+        registerClass(new EntityRendering());
+        registerClass(new FovHandler());
+        registerClass(new ChatHandler());
+        registerClass(new HotbarItemsHandler());
+        registerClass(new EntityCulling());
+        registerClass(new ArmorStatusRenderer());
+        registerClass(new KeybindDropStack());
+        registerClass(new EntityTrace());
+        registerClass(new MainMenuEditor());
+        registerClass(cloudHandler = new CloudHandler());
+    }
+
+    private void registerClass(Object eventClass) {
+        MinecraftForge.EVENT_BUS.register(eventClass);
     }
 
     @EventHandler
@@ -140,6 +146,7 @@ public class Patcher {
         return LOGGER;
     }
 
+    @SuppressWarnings("unused")
     public CloudHandler getCloudHandler() {
         return cloudHandler;
     }
