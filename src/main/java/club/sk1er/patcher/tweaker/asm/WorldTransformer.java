@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -17,6 +18,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class WorldTransformer implements PatcherTransformer {
 
@@ -55,16 +57,12 @@ public class WorldTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("getHorizon")) {
+            if (methodName.equals("getHorizon") || methodName.equals("func_72919_O")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setSkyHeight());
                 break;
-            }
-
-            if (brightness.contains(methodName)) {
+            } else if (brightness.contains(methodName)) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
-            }
-
-            if (methodName.equals("updateEntityWithOptionalForce") || methodName.equals("func_72866_a")) {
+            } else if (methodName.equals("updateEntityWithOptionalForce") || methodName.equals("func_72866_a")) {
                 Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
@@ -82,8 +80,63 @@ public class WorldTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("updateEntities") || methodName.equals("func_72939_s")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("blockEntities")) {
+                        methodNode.instructions.insertBefore(next.getNext().getNext(), removeTileEntities());
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList removeTileEntities() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_147483_b", // tileEntitiesToBeRemoved
+            "Ljava/util/List;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "isEmpty", "()Z", true));
+        LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_175730_i", // tickableTileEntities
+            "Ljava/util/List;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_147483_b", // tileEntitiesToBeRemoved
+            "Ljava/util/List;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "removeAll", "(Ljava/util/Collection;)Z", true));
+        list.add(new InsnNode(Opcodes.POP));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_147482_g", // loadedTileEntityList
+            "Ljava/util/List;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_147483_b", // tileEntitiesToBeRemoved
+            "Ljava/util/List;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "removeAll", "(Ljava/util/Collection;)Z", true));
+        list.add(new InsnNode(Opcodes.POP));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/world/World",
+            "field_147483_b", // tileEntitiesToBeRemoved
+            "Ljava/util/List;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "clear", "()V", true));
+        list.add(labelNode);
+        return list;
     }
 
     private InsnList setLightLevel() {
