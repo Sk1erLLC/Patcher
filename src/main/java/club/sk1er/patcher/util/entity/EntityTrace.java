@@ -22,18 +22,21 @@ public class EntityTrace {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private Entity targetEntity;
+    private float partialTicks;
 
     @SubscribeEvent
     public void worldRender(RenderWorldLastEvent event) {
-        if (mc.theWorld != null && mc.thePlayer != null) {
-            getMouseOver(event.partialTicks);
-        }
+        partialTicks = event.partialTicks;
     }
 
     @SubscribeEvent
     public void keybind(InputEvent.KeyInputEvent event) {
-        if (KeybindNameHistory.searchPlayer.isKeyDown() && mc.currentScreen == null && targetEntity != null && targetEntity instanceof EntityPlayer) {
-            ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
+        if (KeybindNameHistory.searchPlayer.isKeyDown()) {
+            getMouseOver(partialTicks);
+
+            if (mc.currentScreen == null && targetEntity != null && targetEntity instanceof EntityPlayer && mc.theWorld != null && mc.thePlayer != null) {
+                ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
+            }
         }
     }
 
