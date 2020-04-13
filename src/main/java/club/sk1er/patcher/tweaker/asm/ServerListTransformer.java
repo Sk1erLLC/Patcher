@@ -72,7 +72,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
             "club/sk1er/patcher/hooks/ServerListHook",
-            "getServerData",
+            "set",
             "(Lnet/minecraft/client/multiplayer/ServerList;ILnet/minecraft/client/multiplayer/ServerData;)V",
             false));
         list.add(new InsnNode(Opcodes.RETURN));
@@ -86,7 +86,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
             "club/sk1er/patcher/hooks/ServerListHook",
-            "getServerData",
+            "swapServers",
             "(Lnet/minecraft/client/multiplayer/ServerList;II)V",
             false));
         list.add(new InsnNode(Opcodes.RETURN));
@@ -99,7 +99,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
             "club/sk1er/patcher/hooks/ServerListHook",
-            "getServerData",
+            "addServerData",
             "(Lnet/minecraft/client/multiplayer/ServerList;Lnet/minecraft/client/multiplayer/ServerData;)V",
             false));
         list.add(new InsnNode(Opcodes.RETURN));

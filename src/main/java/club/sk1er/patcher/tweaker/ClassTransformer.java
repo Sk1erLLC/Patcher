@@ -179,8 +179,7 @@ public class ClassTransformer implements IClassTransformer {
         try {
             classNode.accept(classWriter);
         } catch (Throwable e) {
-            logger.error("Exception when transforming {} : {}", transformedName, e.getClass().getSimpleName());
-            e.printStackTrace();
+            logger.error("Exception when transforming {} : {}", transformedName, e.getClass().getSimpleName(), e);
         }
 
         if (outputBytecode) {
