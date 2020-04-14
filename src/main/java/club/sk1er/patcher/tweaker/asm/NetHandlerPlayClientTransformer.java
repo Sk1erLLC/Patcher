@@ -39,7 +39,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
 
             if (methodName.equals("handleResourcePack") || methodName.equals("func_175095_a")) {
                 // todo: fix
-                //methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelIfNotSafe());
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelIfNotSafe());
             }
 
             // HE GO ZOOM
@@ -82,6 +82,11 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             "validateResourcePackUrl",
             "(Lnet/minecraft/client/network/NetHandlerPlayClient;Ljava/lang/String;Ljava/lang/String;)Z",
             false));
+//        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+//            "club/sk1er/patcher/hooks/NetHandlerPlayClientHook",
+//            "validateResourcePackUrl",
+//            "()Z",
+//            false));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));

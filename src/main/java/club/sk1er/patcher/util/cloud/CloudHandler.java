@@ -11,7 +11,8 @@ public class CloudHandler {
     private final CloudRenderer renderer = new CloudRenderer();
 
     @SubscribeEvent
-    public void tick(TickEvent event) {
+    public void tick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
         renderer.checkSettings();
     }
 
