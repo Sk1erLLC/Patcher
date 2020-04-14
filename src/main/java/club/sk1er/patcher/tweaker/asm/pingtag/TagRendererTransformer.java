@@ -47,6 +47,7 @@ public class TagRendererTransformer implements PatcherTransformer {
                         String fieldName = mapFieldNameFromNode((FieldInsnNode) node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             methodNode.instructions.insert(node, timesByModifier());
+                            break;
                         }
                     }
                 }

@@ -49,6 +49,7 @@ public class LevelheadAboveHeadRenderTransformer implements PatcherTransformer {
                         LabelNode gotoInsn = new LabelNode();
                         methodNode.instructions.insertBefore(next, moveNametag(gotoInsn));
                         methodNode.instructions.insertBefore(next.getNext().getNext(), gotoInsn);
+                        break;
                     }
                 }
             }

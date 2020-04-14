@@ -43,8 +43,8 @@ public class BlockDoublePlantTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("<clinit>")) {
-                methodNode.instructions.insertBefore(
-                    methodNode.instructions.getLast().getPrevious(), createVariantMap());
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), createVariantMap());
+                break;
             }
         }
     }

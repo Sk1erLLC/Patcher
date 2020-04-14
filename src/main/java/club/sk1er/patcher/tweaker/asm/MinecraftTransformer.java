@@ -51,9 +51,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-            }
-
-            if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a"))
+            } else if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a"))
                 && methodDesc.equals(
                 "(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -68,9 +66,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-            }
-
-            if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
+            } else if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -86,9 +82,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            }
-
-            if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
+            } else if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
                 boolean foundFirst = false;
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 LabelNode ifne = new LabelNode();
@@ -125,9 +119,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            }
-
-            if (methodName.equals("setIngameFocus") || methodName.equals("func_71381_h")) {
+            } else if (methodName.equals("setIngameFocus") || methodName.equals("func_71381_h")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();

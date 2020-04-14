@@ -60,9 +60,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
                 }
 
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), disableBlend());
-            }
-
-            if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
+            } else if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

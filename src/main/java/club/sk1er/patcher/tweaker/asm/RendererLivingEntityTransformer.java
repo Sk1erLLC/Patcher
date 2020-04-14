@@ -108,9 +108,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            }
-
-            if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+            } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -120,6 +118,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                         String fieldName = mapFieldNameFromNode((FieldInsnNode) node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             method.instructions.insert(node, timesByModifier());
+                            break;
                         }
                     }
                 }

@@ -37,30 +37,31 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = methodNode.name;
 
-            if (methodName.equals("<clinit>")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "<clinit>":
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof FieldInsnNode && ((FieldInsnNode) next).name.equals("forcedChunks")) {
-                        for (int i = 0; i < 5; ++i) {
-                            methodNode.instructions.remove(next.getPrevious());
+                        if (next instanceof FieldInsnNode && ((FieldInsnNode) next).name.equals("forcedChunks")) {
+                            for (int i = 0; i < 5; ++i) {
+                                methodNode.instructions.remove(next.getPrevious());
+                            }
+
+                            methodNode.instructions.insertBefore(next, assignForcedChunks());
+                            break;
                         }
-
-                        methodNode.instructions.insertBefore(next, assignForcedChunks());
                     }
-                }
-            }
-
-            if (methodName.equals("unloadWorld")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeWorld());
-            }
-
-            if (methodName.equals("getPersistentChunksFor")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
-                methodNode.instructions.insert(getHookedChunksMethod());
+                    break;
+                case "unloadWorld":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeWorld());
+                    break;
+                case "getPersistentChunksFor":
+                    methodNode.instructions.clear();
+                    methodNode.localVariables.clear();
+                    methodNode.instructions.insert(getHookedChunksMethod());
+                    break;
             }
         }
     }

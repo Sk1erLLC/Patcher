@@ -34,6 +34,7 @@ public class ModClassLoaderTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("isDefaultLibrary")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), skipHomeSearch());
+                break;
             }
         }
     }

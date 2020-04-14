@@ -39,6 +39,7 @@ public class GuiModListTransformer implements PatcherTransformer {
                         ((MethodInsnNode) next).owner = "net/minecraft/client/renderer/texture/TextureUtil";
                         ((MethodInsnNode) next).name = "func_177053_a"; // readBufferedImage
                         ((MethodInsnNode) next).desc = "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;";
+                        break;
                     }
                 }
 

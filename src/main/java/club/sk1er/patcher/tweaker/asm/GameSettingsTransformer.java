@@ -54,6 +54,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
                         String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
                         if (methodInsnName.equals("scheduleResourcesRefresh") || methodInsnName.equals("func_175603_A")) {
                             methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), insertBoolean());
+                            break;
                         }
                     }
                 }

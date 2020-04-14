@@ -39,9 +39,7 @@ public class RenderItemFrameTransformer implements PatcherTransformer {
 
             if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
-            }
-
-            if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+            } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
             }
         }

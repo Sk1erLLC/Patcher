@@ -37,9 +37,7 @@ public class EntityItemTransformer implements PatcherTransformer {
 
             if (methodName.equals("searchForOtherItemsNearby") || methodName.equals("func_85054_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), stopSearch());
-            }
-
-            if (methodName.equals("combineItems") || methodName.equals("func_70289_a")) {
+            } else if (methodName.equals("combineItems") || methodName.equals("func_70289_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), stopSearchBoolean());
             }
         }
