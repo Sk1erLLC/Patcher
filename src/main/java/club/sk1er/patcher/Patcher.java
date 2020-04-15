@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import club.sk1er.patcher.util.screen.MainMenuEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -149,5 +150,17 @@ public class Patcher {
     @SuppressWarnings("unused")
     public CloudHandler getCloudHandler() {
         return cloudHandler;
+    }
+
+    private static boolean cacheDevelopment;
+
+    public static boolean isDevelopment() {
+        if (cacheDevelopment) {
+            return true;
+        } else {
+            Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+            if (o == null) return false;
+            return cacheDevelopment = (boolean) o;
+        }
     }
 }

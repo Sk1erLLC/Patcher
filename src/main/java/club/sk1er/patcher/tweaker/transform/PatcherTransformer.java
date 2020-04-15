@@ -1,5 +1,6 @@
 package club.sk1er.patcher.tweaker.transform;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.ClassNode;
@@ -32,8 +33,11 @@ public interface PatcherTransformer {
      * @return a mapped method name
      */
     default String mapMethodName(ClassNode classNode, MethodNode methodNode) {
-        return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(
-            classNode.name, methodNode.name, methodNode.desc);
+        if (Patcher.isDevelopment()) {
+            return methodNode.name;
+        } else {
+            return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(classNode.name, methodNode.name, methodNode.desc);
+        }
     }
 
     /**
@@ -43,7 +47,11 @@ public interface PatcherTransformer {
      * @return a mapped method desc
      */
     default String mapMethodDesc(MethodNode methodNode) {
-        return FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(methodNode.desc);
+        if (Patcher.isDevelopment()) {
+            return methodNode.desc;
+        } else {
+            return FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(methodNode.desc);
+        }
     }
 
     /**
@@ -53,8 +61,11 @@ public interface PatcherTransformer {
      * @return a mapped insn method
      */
     default String mapMethodNameFromNode(MethodInsnNode methodInsnNode) {
-        return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(
-            methodInsnNode.owner, methodInsnNode.name, methodInsnNode.desc);
+        if (Patcher.isDevelopment()) {
+            return methodInsnNode.name;
+        } else {
+            return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(methodInsnNode.owner, methodInsnNode.name, methodInsnNode.desc);
+        }
     }
 
     /**
@@ -64,8 +75,11 @@ public interface PatcherTransformer {
      * @return a mapped insn field
      */
     default String mapFieldNameFromNode(FieldInsnNode fieldInsnNode) {
-        return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(
-            fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
+        if (Patcher.isDevelopment()) {
+            return fieldInsnNode.name;
+        } else {
+            return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
+        }
     }
 
     /**
