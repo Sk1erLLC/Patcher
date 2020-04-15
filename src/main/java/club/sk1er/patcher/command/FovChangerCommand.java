@@ -45,7 +45,7 @@ public class FovChangerCommand extends CommandBase {
         }
     }
 
-    private void sendMessage(String message) {
+    public static void sendMessage(String message) {
         MinecraftUtils.sendMessage(EnumChatFormatting.YELLOW + "[Patcher] ", message);
     }
 

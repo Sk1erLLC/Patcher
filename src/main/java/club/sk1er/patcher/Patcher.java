@@ -7,6 +7,7 @@ import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.NameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.PatcherSoundsCommand;
+import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.keybind.KeybindDropStack;
@@ -68,6 +69,10 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
         ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
+
+        if (isDevelopment()) {
+            ClientCommandHandler.instance.registerCommand(new WireframeClouds());
+        }
 
         registerClass(this);
         registerClass(target);

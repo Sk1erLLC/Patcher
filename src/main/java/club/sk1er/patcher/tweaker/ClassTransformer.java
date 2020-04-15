@@ -33,6 +33,7 @@ import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
+import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
@@ -141,7 +142,7 @@ public class ClassTransformer implements IClassTransformer {
 
         // disabled
         //registerTransformer(new ScreenShotHelperTransformer());
-        //registerTransformer(new RenderGlobalTransformer());
+        registerTransformer(new RenderGlobalTransformer());
         //registerTransformer(new BlockDoublePlantTransformer());
     }
 
