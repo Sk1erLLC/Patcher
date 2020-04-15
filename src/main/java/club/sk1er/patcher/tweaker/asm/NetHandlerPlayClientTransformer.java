@@ -38,14 +38,8 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("handleResourcePack") || methodName.equals("func_175095_a")) {
-                // todo: fix
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelIfNotSafe());
-            }
-
-            // HE GO ZOOM
-            // i physically made the poggers face when i got this to work
-            // these two methods are the same in sense of instructions to remove, so they're merged
-            if ((methodName.equals("handleJoinGame") || methodName.equals("func_147282_a")) || (
+            } else if ((methodName.equals("handleJoinGame") || methodName.equals("func_147282_a")) || (
                 methodName.equals("handleRespawn") || methodName.equals("func_147280_a"))) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
@@ -59,6 +53,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                             }
 
                             methodNode.instructions.insertBefore(next, new InsnNode(Opcodes.ACONST_NULL));
+                            break;
                         }
                     }
                 }
@@ -82,11 +77,6 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             "validateResourcePackUrl",
             "(Lnet/minecraft/client/network/NetHandlerPlayClient;Ljava/lang/String;Ljava/lang/String;)Z",
             false));
-//        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-//            "club/sk1er/patcher/hooks/NetHandlerPlayClientHook",
-//            "validateResourcePackUrl",
-//            "()Z",
-//            false));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));

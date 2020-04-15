@@ -46,7 +46,6 @@ public class NetHandlerPlayClientHook {
 
                 throw new URISyntaxException(url, "Invalid levelstorage resourcepack path");
             }
-            System.out.println("RET TRUE");
             return true;
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -54,7 +53,6 @@ public class NetHandlerPlayClientHook {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println("RET FF");
         return false;
     }
 }
