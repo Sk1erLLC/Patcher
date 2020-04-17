@@ -59,6 +59,7 @@ public class EntityTrace {
                 distanceFromEyes = mc.objectMouseOver.hitVec.distanceTo(position);
             }
 
+            // poggers
             Vec3 lookPosition = entity.getLook(partialTicks);
             double x = lookPosition.xCoord * distance;
             double y = lookPosition.yCoord * distance;

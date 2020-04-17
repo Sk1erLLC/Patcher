@@ -36,8 +36,8 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
             currentModifier -= 0.25f * currentModifier;
         }
 
-        if (currentModifier < 0.6) {
-            currentModifier = 0.6f;
+        if (currentModifier < 0.8) {
+            currentModifier = 0.8f;
         }
 
         if (currentModifier > 600) {
