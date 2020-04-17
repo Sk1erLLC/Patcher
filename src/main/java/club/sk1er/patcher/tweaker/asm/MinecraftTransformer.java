@@ -53,7 +53,8 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
                 InsnList insnList = new InsnList();
                 LabelNode labelNode = new LabelNode();
-                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/mods/fullscreen/FullScreenMod", "apply", "()Z", false));
+                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook"
+                    , "fullscreen", "()Z", false));
                 insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
                 insnList.add(new InsnNode(Opcodes.RETURN));
                 insnList.add(labelNode);

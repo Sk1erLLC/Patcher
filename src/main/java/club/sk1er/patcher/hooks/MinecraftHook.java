@@ -14,7 +14,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 
 /**
@@ -22,14 +23,19 @@ import java.awt.*;
  */
 @SuppressWarnings("unused")
 public class MinecraftHook {
+    public static final MinecraftHook INSTANCE = new MinecraftHook();
     private boolean lastFullscreen = false;
+
+    private MinecraftHook() {
+
+    }
 
     public static void updateKeyBindState() {
         for (KeyBinding keybinding : KeyBinding.keybindArray) {
             try {
                 KeyBinding.setKeyBindState(
-                        keybinding.getKeyCode(),
-                        keybinding.getKeyCode() < 256 && Keyboard.isKeyDown(keybinding.getKeyCode()));
+                    keybinding.getKeyCode(),
+                    keybinding.getKeyCode() < 256 && Keyboard.isKeyDown(keybinding.getKeyCode()));
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
@@ -37,8 +43,10 @@ public class MinecraftHook {
 
     public static boolean fullscreen() {
         if (!PatcherConfig.instantFullscreen || !PatcherConfig.windowedFullscreen || !Util.getOSType().equals(Util.EnumOS.WINDOWS)) {
+            System.out.println("Not running override");
             return false;
         }
+        System.out.println("Override issued");
         Minecraft minecraft = Minecraft.getMinecraft();
         minecraft.fullscreen = !minecraft.fullscreen;
 
@@ -50,16 +58,14 @@ public class MinecraftHook {
             if (minecraft.fullscreen) {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
                 Display.setDisplayMode(displayMode);
-
                 Display.setLocation(0, 0);
-                Display.setFullscreen(false);
-                Display.setResizable(false);
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
                 displayMode = new DisplayMode(minecraft.tempDisplayWidth, minecraft.tempDisplayHeight);
                 Display.setDisplayMode(displayMode);
                 displayCommon();
             }
+            Display.setFullscreen(false);
 
             minecraft.displayWidth = displayMode.getWidth();
             minecraft.displayHeight = displayMode.getHeight();
@@ -68,10 +74,12 @@ public class MinecraftHook {
             } else {
                 minecraft.updateFramebufferSize();
             }
+            INSTANCE.lastFullscreen = minecraft.fullscreen; //Forward so both behavior isn't ran
             minecraft.updateDisplay();
             Mouse.setCursorPosition((Display.getX() + Display.getWidth()) / 2, (Display.getY() + Display.getHeight()) / 2);
             if (grabbed)
                 Mouse.setGrabbed(true);
+            Display.setResizable(true);
             return true;
         } catch (LWJGLException e) {
             e.printStackTrace();
@@ -99,18 +107,21 @@ public class MinecraftHook {
     }
 
     public void fix(boolean fullscreen) {
+        System.out.println("Running fix: " + fullscreen);
         try {
             if (fullscreen) {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
                 Display.setDisplayMode(Display.getDesktopDisplayMode());
                 Display.setLocation(0, 0);
                 Display.setFullscreen(false);
-                Display.setResizable(false);
+
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
                 Display.setDisplayMode(new DisplayMode(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight));
                 displayCommon();
             }
+            Display.setResizable(!fullscreen);
+
         } catch (LWJGLException e) {
             e.printStackTrace();
         }

@@ -25,9 +25,6 @@ import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
-
-import java.util.concurrent.CompletableFuture;
-
 import club.sk1er.patcher.util.screen.MainMenuEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -42,6 +39,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.1")
 public class Patcher {
@@ -82,7 +81,7 @@ public class Patcher {
         registerClass(new FovHandler());
         registerClass(new ChatHandler());
         registerClass(new HotbarItemsHandler());
-        registerClass(new MinecraftHook());
+        registerClass(MinecraftHook.INSTANCE);
         registerClass(new EntityCulling());
         registerClass(new ArmorStatusRenderer());
         registerClass(new KeybindDropStack());
