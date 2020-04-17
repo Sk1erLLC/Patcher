@@ -10,6 +10,7 @@ import club.sk1er.patcher.command.PatcherSoundsCommand;
 import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
+import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.keybind.KeybindDropStack;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
@@ -81,6 +82,7 @@ public class Patcher {
         registerClass(new FovHandler());
         registerClass(new ChatHandler());
         registerClass(new HotbarItemsHandler());
+        registerClass(new MinecraftHook());
         registerClass(new EntityCulling());
         registerClass(new ArmorStatusRenderer());
         registerClass(new KeybindDropStack());

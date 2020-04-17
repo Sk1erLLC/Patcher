@@ -51,6 +51,13 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+                InsnList insnList = new InsnList();
+                LabelNode labelNode = new LabelNode();
+                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/mods/fullscreen/FullScreenMod", "apply", "()Z", false));
+                insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+                insnList.add(new InsnNode(Opcodes.RETURN));
+                insnList.add(labelNode);
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
             } else if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a"))
                 && methodDesc.equals(
                 "(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {

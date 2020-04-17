@@ -164,85 +164,85 @@ public class PatcherConfig extends Vigilant {
     public static int fireHeight;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Chat History Length",
-        description = "Change how many messages you can scroll back past.",
-        category = "Quality of Life",
-        subcategory = "Chat",
-        min = 100,
-        max = 10000
+            type = PropertyType.SLIDER,
+            name = "Chat History Length",
+            description = "Change how many messages you can scroll back past.",
+            category = "Quality of Life",
+            subcategory = "Chat",
+            min = 100,
+            max = 10000
     )
     public static int chatHistoryLength = 100;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "FOV Modifier",
-        description = "Allow for modifying FOV change states.",
-        category = "Quality of Life",
-        subcategory = "Field of View"
+            type = PropertyType.SWITCH,
+            name = "FOV Modifier",
+            description = "Allow for modifying FOV change states.",
+            category = "Quality of Life",
+            subcategory = "Field of View"
     )
     public static boolean allowFovModifying = true;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Sprinting FOV",
-        description = "Change your FOV when sprinting.",
-        category = "Quality of Life",
-        subcategory = "Field of View",
-        min = -5,
-        max = 5
+            type = PropertyType.SLIDER,
+            name = "Sprinting FOV",
+            description = "Change your FOV when sprinting.",
+            category = "Quality of Life",
+            subcategory = "Field of View",
+            min = -5,
+            max = 5
     )
     public static int sprintingFovModifier = 1;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Bow FOV",
-        description = "Change your FOV when pulling back a bow.",
-        category = "Quality of Life",
-        subcategory = "Field of View",
-        min = -5,
-        max = 5
+            type = PropertyType.SLIDER,
+            name = "Bow FOV",
+            description = "Change your FOV when pulling back a bow.",
+            category = "Quality of Life",
+            subcategory = "Field of View",
+            min = -5,
+            max = 5
     )
     public static int bowFovModifier = 1;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Speed FOV",
-        description = "Change your FOV when having the speed effect.",
-        category = "Quality of Life",
-        subcategory = "Field of View",
-        min = -5,
-        max = 5
+            type = PropertyType.SLIDER,
+            name = "Speed FOV",
+            description = "Change your FOV when having the speed effect.",
+            category = "Quality of Life",
+            subcategory = "Field of View",
+            min = -5,
+            max = 5
     )
     public static int speedFovModifier = 1;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Slowness FOV",
-        description = "Change your FOV when having the slowness effect.",
-        category = "Quality of Life",
-        subcategory = "Field of View",
-        min = -5,
-        max = 5
+            type = PropertyType.SLIDER,
+            name = "Slowness FOV",
+            description = "Change your FOV when having the slowness effect.",
+            category = "Quality of Life",
+            subcategory = "Field of View",
+            min = -5,
+            max = 5
     )
     public static int slownessFovModifier = 1;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Custom Tab Opacity",
-        description = "Allow for customizing tab opacity.",
-        category = "Quality of Life",
-        subcategory = "Tab"
+            type = PropertyType.SWITCH,
+            name = "Custom Tab Opacity",
+            description = "Allow for customizing tab opacity.",
+            category = "Quality of Life",
+            subcategory = "Tab"
     )
     public static boolean customTabOpacity = false;
 
     @Property(
-        type = PropertyType.SLIDER,
-        name = "Tab Opacity",
-        description = "Change the tab list opacity.",
-        category = "Quality of Life",
-        subcategory = "Tab",
-        max = 100
+            type = PropertyType.SLIDER,
+            name = "Tab Opacity",
+            description = "Change the tab list opacity.",
+            category = "Quality of Life",
+            subcategory = "Tab",
+            max = 100
     )
     public static int tabOpacity = 100;
 
@@ -275,346 +275,366 @@ public class PatcherConfig extends Vigilant {
     public static boolean crosshairPerspective;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Remove Tall Grass",
-        description = "Stop tall grass/double tall plants from rendering.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Remove Tall Grass",
+            description = "Stop tall grass/double tall plants from rendering.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean removeTallGrass;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Transparent Chat",
-        description = "Remove the background from chat.\n§eMay improve performance.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "Transparent Chat",
+            description = "Remove the background from chat.\n§eMay improve performance.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean transparentChat;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Transparent Chat Field",
-        description = "Remove the background from chat's input field.\n§eMay improve performance.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "Transparent Chat Field",
+            description = "Remove the background from chat's input field.\n§eMay improve performance.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean transparentChatInputField;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Tab Height",
-        description = "Move the tab overlay down 16 pixels when there's an active bossbar.",
-        category = "Quality of Life",
-        subcategory = "Tab"
+            type = PropertyType.SWITCH,
+            name = "Tab Height",
+            description = "Move the tab overlay down 16 pixels when there's an active bossbar.",
+            category = "Quality of Life",
+            subcategory = "Tab"
     )
     public static boolean tabHeight = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Armorstands",
-        description = "Stop armorstands from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Armorstands",
+            description = "Stop armorstands from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableArmorstands;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Item Frames",
-        description = "Stop item frames from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Item Frames",
+            description = "Stop item frames from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableItemFrames;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Grounded Arrows",
-        description = "Stop arrows that are in the ground from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Grounded Arrows",
+            description = "Stop arrows that are in the ground from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableGroundedArrows;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Attached Arrows",
-        description = "Stop arrows that are attached to a player from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Attached Arrows",
+            description = "Stop arrows that are attached to a player from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableAttachedArrows;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Moving Arrows",
-        description = "Stop arrows that are airborne from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Moving Arrows",
+            description = "Stop arrows that are airborne from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableMovingArrows;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Skulls",
-        description = "Stop skulls from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Skulls",
+            description = "Stop skulls from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableSkulls;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable End Portals",
-        description = "Stop end portals from rendering.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable End Portals",
+            description = "Stop end portals from rendering.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableEndPortals;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Show Own Nametag",
-        description = "See your own nametag in third person.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Show Own Nametag",
+            description = "See your own nametag in third person.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean showOwnNametag;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Mouse Bind Fix",
-        description = "Fixes an issue where keybinds bound to mouse buttons do not work in inventories.",
-        category = "Fixes",
-        subcategory = "General"
+            type = PropertyType.SWITCH,
+            name = "Mouse Bind Fix",
+            description = "Fixes an issue where keybinds bound to mouse buttons do not work in inventories.",
+            category = "Fixes",
+            subcategory = "General"
     )
     public static boolean mouseBindFix = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "OptiFine Zoom Adjustment",
-        description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
-        category = "Quality of Life",
-        subcategory = "OptiFine"
+            type = PropertyType.SWITCH,
+            name = "OptiFine Zoom Adjustment",
+            description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
+            category = "Quality of Life",
+            subcategory = "OptiFine"
     )
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Optifine Zoom Sensitivity",
-        description = "Remove the smoothing from OptiFine's zoom.",
-        category = "Quality of Life",
-        subcategory = "OptiFine"
+            type = PropertyType.SWITCH,
+            name = "Optifine Zoom Sensitivity",
+            description = "Remove the smoothing from OptiFine's zoom.",
+            category = "Quality of Life",
+            subcategory = "OptiFine"
     )
     public static boolean normalZoomSensitivity;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Compact Chat",
-        description = "Clean up chat by stacking duplicate messages.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "Compact Chat",
+            description = "Clean up chat by stacking duplicate messages.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean compactChat = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Number Ping",
-        description = "Show a readable ping number in tab instead of bars.\n§cMay turn out to be 1 on Hypixel in most cases.",
-        category = "Quality of Life",
-        subcategory = "Tab"
+            type = PropertyType.SWITCH,
+            name = "Number Ping",
+            description = "Show a readable ping number in tab instead of bars.\n§cMay turn out to be 1 on Hypixel in most cases.",
+            category = "Quality of Life",
+            subcategory = "Tab"
     )
     public static boolean numberPing = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Numerical Enchantments",
-        description = "Use normal numbers instead of roman numerals on enchants.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Numerical Enchantments",
+            description = "Use normal numbers instead of roman numerals on enchants.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean romanNumerals = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Startup Notification",
-        description = "Notify how long the game took to startup with a notification.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Startup Notification",
+            description = "Notify how long the game took to startup with a notification.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean startupNotification = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Keep Shaders on Perspective Change",
-        description = "Keep the shaders you're currently using while also being able to toggle perspective.",
-        category = "Quality of Life",
-        subcategory = "General"
+            type = PropertyType.SWITCH,
+            name = "Keep Shaders on Perspective Change",
+            description = "Keep the shaders you're currently using while also being able to toggle perspective.",
+            category = "Quality of Life",
+            subcategory = "General"
     )
     public static boolean keepShadersOnPerspectiveChange = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Better Keybind Handling",
-        description = "Make keys re-register when closing a GUI, like in 1.12+.",
-        category = "Quality of Life",
-        subcategory = "General"
+            type = PropertyType.SWITCH,
+            name = "Better Keybind Handling",
+            description = "Make keys re-register when closing a GUI, like in 1.12+.",
+            category = "Quality of Life",
+            subcategory = "General"
     )
     public static boolean newKeybindHandling = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Shadowed Text",
-        description = "Remove shadows from text.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Disable Shadowed Text",
+            description = "Remove shadows from text.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean disableShadowedText;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Damage Glance",
-        description = "View the damage value of the currently held item above your hotbar.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+            type = PropertyType.SWITCH,
+            name = "Damage Glance",
+            description = "View the damage value of the currently held item above your hotbar.",
+            category = "Quality of Life",
+            subcategory = "Combat Utilities"
     )
     public static boolean damageGlance = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Item Count Glance",
-        description = "View the amount of the currently held item above your hotbar.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+            type = PropertyType.SWITCH,
+            name = "Item Count Glance",
+            description = "View the amount of the currently held item above your hotbar.",
+            category = "Quality of Life",
+            subcategory = "Combat Utilities"
     )
     public static boolean itemCountGlance = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Enchantment Glance",
-        description = "View the enchantments of the currently held item above your hotbar.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+            type = PropertyType.SWITCH,
+            name = "Enchantment Glance",
+            description = "View the enchantments of the currently held item above your hotbar.",
+            category = "Quality of Life",
+            subcategory = "Combat Utilities"
     )
     public static boolean enchantmentsGlance = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Protection Percentage",
-        description = "View how much total protection you have inside the inventory menu.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+            type = PropertyType.SWITCH,
+            name = "Protection Percentage",
+            description = "View how much total protection you have inside the inventory menu.",
+            category = "Quality of Life",
+            subcategory = "Combat Utilities"
     )
     public static boolean protectionPercentage = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Projectile Protection Percentage",
-        description = "View how much total projectile protection you have inside the inventory menu.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+            type = PropertyType.SWITCH,
+            name = "Projectile Protection Percentage",
+            description = "View how much total projectile protection you have inside the inventory menu.",
+            category = "Quality of Life",
+            subcategory = "Combat Utilities"
     )
     public static boolean projectileProtectionPercentage = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Chat Position",
-        description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "Chat Position",
+            description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean chatPosition = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Chat Timestamps",
-        description = "Add timestamps before a message.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "Chat Timestamps",
+            description = "Add timestamps before a message.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean timestamps;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Transparent Nametags",
-        description = "Remove boxes around nametags.\n§eMay improve performance.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Transparent Nametags",
+            description = "Remove boxes around nametags.\n§eMay improve performance.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean transparentNameTags;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Arrow Lighting",
-        description = "Stop attached arrows from lighting up other entities.",
-        category = "Fixes",
-        subcategory = "Entities"
+            type = PropertyType.SWITCH,
+            name = "Arrow Lighting",
+            description = "Stop attached arrows from lighting up other entities.",
+            category = "Fixes",
+            subcategory = "Entities"
     )
     public static boolean fixArrowLighting;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Entity Culling",
-        description = "Stop entities that aren't visible to the player from rendering.",
-        category = "Performance",
-        subcategory = "Culling"
+            type = PropertyType.SWITCH,
+            name = "Entity Culling",
+            description = "Stop entities that aren't visible to the player from rendering.",
+            category = "Performance",
+            subcategory = "Culling"
     )
     public static boolean entityCulling = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Don't Cull Nametags",
-        description = "Render nametags even with entity culling enabled.",
-        category = "Performance",
-        subcategory = "Culling"
+            type = PropertyType.SWITCH,
+            name = "Don't Cull Nametags",
+            description = "Render nametags even with entity culling enabled.",
+            category = "Performance",
+            subcategory = "Culling"
     )
     public static boolean dontCullNametags;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Remove Water Overlay",
-        description = "Remove the water texture overlay when underwater.",
-        category = "Quality of Life",
-        subcategory = "Overlay"
+            type = PropertyType.SWITCH,
+            name = "Remove Water Overlay",
+            description = "Remove the water texture overlay when underwater.",
+            category = "Quality of Life",
+            subcategory = "Overlay"
     )
     public static boolean removeWaterOverlay;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "CleanView",
-        description = "Stop self-potion effects from rendering.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "CleanView",
+            description = "Stop self-potion effects from rendering.",
+            category = "Quality of Life",
+            subcategory = "Rendering"
     )
     public static boolean cleanView;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Optimized Cloud Renderer",
-        description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
-        category = "Performance",
-        subcategory = "Rendering"
+            type = PropertyType.SWITCH,
+            name = "Optimized Cloud Renderer",
+            description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
+            category = "Performance",
+            subcategory = "Rendering"
     )
     public static boolean gpuCloudRenderer = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "CrossChat",
-        description = "Stop clearing chat when switching servers.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+            type = PropertyType.SWITCH,
+            name = "CrossChat",
+            description = "Stop clearing chat when switching servers.",
+            category = "Quality of Life",
+            subcategory = "Chat"
     )
     public static boolean crossChat = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Clean Main Menu",
-        description = "Remove the Realms button as you need to be on the latest Minecraft version to use Realms.",
-        category = "Quality of Life",
-        subcategory = "General"
+            type = PropertyType.SWITCH,
+            name = "Clean Main Menu",
+            description = "Remove the Realms button as you need to be on the latest Minecraft version to use Realms.",
+            category = "Quality of Life",
+            subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
+
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Windowed Fullscreen",
+            description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window",
+            category = "Quality of Life",
+            subcategory = "Fullscreen"
+    )
+    public static boolean windowedFullscreen = true;
+
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Instant Fullscreen (Windows Only)",
+            description = "Instant switching between full screen and non fullscreen modes. \nWindowed Fullscreen must also be enabled for this to work.",
+            category = "Quality of Life",
+            subcategory = "Fullscreen"
+    )
+    public static boolean instantFullscreen = true;
+
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
