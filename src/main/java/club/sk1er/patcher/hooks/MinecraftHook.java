@@ -79,6 +79,7 @@ public class MinecraftHook {
             Mouse.setCursorPosition((Display.getX() + Display.getWidth()) / 2, (Display.getY() + Display.getHeight()) / 2);
             if (grabbed)
                 Mouse.setGrabbed(true);
+            Display.setResizable(false);
             Display.setResizable(true);
             return true;
         } catch (LWJGLException e) {
@@ -88,6 +89,7 @@ public class MinecraftHook {
     }
 
     private static void displayCommon() {
+        Display.setResizable(false);
         Display.setResizable(true);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - Display.getWidth()) / 2);
