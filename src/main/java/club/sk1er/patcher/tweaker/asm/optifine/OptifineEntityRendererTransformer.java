@@ -44,7 +44,7 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
             currentModifier = 600f;
         }
 
-        return currentModifier;
+        return currentModifier;/
     }
 
     public static void resetCurrent() {
