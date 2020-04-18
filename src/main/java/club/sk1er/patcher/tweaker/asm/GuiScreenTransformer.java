@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
@@ -35,7 +36,6 @@ public class GuiScreenTransformer implements PatcherTransformer {
 
             if (methodName.equals("drawDefaultBackground") || methodName.equals("func_146276_q_")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
-                break;
             }
         }
     }

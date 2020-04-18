@@ -126,6 +126,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
+        registerTransformer(new RenderGlobalTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -142,7 +143,6 @@ public class ClassTransformer implements IClassTransformer {
 
         // disabled
         //registerTransformer(new ScreenShotHelperTransformer());
-        registerTransformer(new RenderGlobalTransformer());
         //registerTransformer(new BlockDoublePlantTransformer());
     }
 

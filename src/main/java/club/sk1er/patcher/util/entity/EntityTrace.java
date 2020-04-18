@@ -1,8 +1,8 @@
 package club.sk1er.patcher.util.entity;
 
 import club.sk1er.mods.core.ModCore;
-import club.sk1er.patcher.keybind.KeybindNameHistory;
 import club.sk1er.patcher.screen.ScreenHistory;
+import club.sk1er.patcher.util.keybind.KeybindBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +32,7 @@ public class EntityTrace {
 
     @SubscribeEvent
     public void keybind(InputEvent.KeyInputEvent event) {
-        if (KeybindNameHistory.searchPlayer.isKeyDown()) {
+        KeybindBuilder.instance.getNameHistory().withInitialPress(() -> {
             getMouseOver(partialTicks);
 
             if (targetEntity != null && targetEntity instanceof EntityPlayer) {
@@ -44,7 +44,7 @@ public class EntityTrace {
                     ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
                 }
             }
-        }
+        });
     }
 
     public void getMouseOver(float partialTicks) {

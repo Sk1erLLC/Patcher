@@ -16,6 +16,7 @@ public class CloudHandler {
         renderer.checkSettings();
     }
 
+    @SuppressWarnings("unused")
     public boolean renderClouds(int cloudTicks, float partialTicks) {
         IRenderHandler renderHandler = mc.theWorld.provider.getCloudRenderer();
         if (renderHandler != null) {

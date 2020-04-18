@@ -11,7 +11,6 @@ import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.hooks.MinecraftHook;
-import club.sk1er.patcher.keybind.KeybindDropStack;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
@@ -25,6 +24,7 @@ import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+import club.sk1er.patcher.util.keybind.KeybindBuilder;
 import club.sk1er.patcher.util.screen.MainMenuEditor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -65,6 +65,9 @@ public class Patcher {
 
         SoundHandler target = new SoundHandler();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
+
+        KeybindBuilder.instance.registerPatcherKeybinds();
+
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
@@ -84,7 +87,6 @@ public class Patcher {
         registerClass(MinecraftHook.INSTANCE);
         registerClass(new EntityCulling());
         registerClass(new ArmorStatusRenderer());
-        registerClass(new KeybindDropStack());
         registerClass(new EntityTrace());
         registerClass(new MainMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
