@@ -36,6 +36,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
 
             if (methodName.equals("drawDefaultBackground") || methodName.equals("func_146276_q_")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
+                break;
             }
         }
     }
