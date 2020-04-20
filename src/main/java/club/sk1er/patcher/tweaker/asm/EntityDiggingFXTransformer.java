@@ -2,7 +2,6 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -33,7 +32,7 @@ public class EntityDiggingFXTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderParticle")) {
+            if (methodName.equals("renderParticle") || methodName.equals("func_180434_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelAnimation());
                 break;
             }
