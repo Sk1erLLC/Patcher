@@ -43,10 +43,8 @@ public class MinecraftHook {
 
     public static boolean fullscreen() {
         if (!PatcherConfig.instantFullscreen || !PatcherConfig.windowedFullscreen || !Util.getOSType().equals(Util.EnumOS.WINDOWS)) {
-            System.out.println("Not running override");
             return false;
         }
-        System.out.println("Override issued");
         Minecraft minecraft = Minecraft.getMinecraft();
         minecraft.fullscreen = !minecraft.fullscreen;
 
