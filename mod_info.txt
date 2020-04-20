@@ -98,5 +98,5 @@
 </ul>
 <br>
 <p>Patcher had a lot of help during development by <a href="https://github.com/lego3708">LlamaLad7</a> & integrates features from <a href="https://github.com/prplz">prplz</a> & <a href="https://github.com/minemanpi">2pi</a>.</p>
-<p><b>If you're using 5Zig, please consider switching to <a href="https://5zigreborn.eu/">5Zig Reborn</a>, an open-source & maintained version of 5Zig built with compatibility in mind.</b></p>
+<p><b><h3>If you're using 5Zig, please consider switching to <a href="https://5zigreborn.eu/">5Zig Reborn</a>, an open-source & maintained version of 5Zig built with compatibility in mind.</h3></b></p>
 </p>
