@@ -3,6 +3,7 @@ package club.sk1er.patcher.command;
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.patcher.screen.ScreenHistory;
+import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.EnumChatFormatting;
@@ -34,8 +35,7 @@ public class NameHistoryCommand extends CommandBase {
                 break;
 
             default:
-                MinecraftUtils
-                    .sendMessage(EnumChatFormatting.YELLOW + "[Patcher] ", "Usage: /name <username>");
+                ChatUtilities.sendMessage("Usage: /name <username>");
                 break;
         }
     }

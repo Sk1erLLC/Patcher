@@ -1,6 +1,7 @@
 package club.sk1er.patcher.command;
 
 import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -21,32 +22,28 @@ public class FovChangerCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender iCommandSender, String[] args) {
         if (args.length > 1) {
-            sendMessage("Too many arguments. Usage: " + getCommandUsage(iCommandSender));
+            ChatUtilities.sendMessage("Too many arguments. Usage: " + getCommandUsage(iCommandSender));
         } else if (args.length < 1) {
-            sendMessage("Too little arguments. Usage: " + getCommandUsage(iCommandSender));
+            ChatUtilities.sendMessage("Too little arguments. Usage: " + getCommandUsage(iCommandSender));
         } else if (args[0].equals("0")) {
-            sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
+            ChatUtilities.sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
         } else {
             try {
                 float fovAmount = Float.parseFloat(args[0]);
 
                 if (fovAmount == 0) {
-                    sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
+                    ChatUtilities.sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
                     return;
                 }
 
-                sendMessage("Fov changed from " + EnumChatFormatting.YELLOW + Minecraft
+                ChatUtilities.sendMessage("Fov changed from " + EnumChatFormatting.YELLOW + Minecraft
                     .getMinecraft().gameSettings.fovSetting + EnumChatFormatting.RESET + " to "
                     + EnumChatFormatting.GREEN + fovAmount);
                 Minecraft.getMinecraft().gameSettings.fovSetting = fovAmount;
             } catch (NumberFormatException e) {
-                sendMessage("You cannot use a letter.");
+                ChatUtilities.sendMessage("You cannot use a letter.");
             }
         }
-    }
-
-    public static void sendMessage(String message) {
-        MinecraftUtils.sendMessage(EnumChatFormatting.YELLOW + "[Patcher] ", message);
     }
 
     @Override
