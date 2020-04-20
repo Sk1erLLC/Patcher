@@ -7,6 +7,7 @@ import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
@@ -127,6 +128,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
+        registerTransformer(new EntityDiggingFXTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
