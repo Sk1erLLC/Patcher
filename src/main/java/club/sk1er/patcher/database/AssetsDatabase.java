@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -101,7 +102,10 @@ public class AssetsDatabase {
     }
 
     public List<String> getAllNegative() throws IOException {
-        return FileUtils.readLines(new File(dir, "negative_cache.txt"));
+        File file = new File(dir, "negative_cache.txt");
+        if (file.exists())
+            return FileUtils.readLines(file);
+        return new ArrayList<>();
     }
 
     public void saveNegative(Set<String> lines) throws IOException {
