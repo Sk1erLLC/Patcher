@@ -22,6 +22,7 @@ import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiScreenResourcePacksTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
@@ -131,6 +132,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new EntityDiggingFXTransformer());
         registerTransformer(new ScreenShotHelperTransformer());
+        registerTransformer(new GuiScreenResourcePacksTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

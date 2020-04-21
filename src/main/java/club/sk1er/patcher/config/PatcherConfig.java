@@ -671,6 +671,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean compactScreenshotResponse;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Cached Resources",
+        description = "Store resources in a local database, massively improving resource loading times.",
+        category = "Performance",
+        subcategory = "Resources"
+    )
+    public static boolean cachedResources = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
