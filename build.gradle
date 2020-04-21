@@ -35,9 +35,14 @@ minecraft {
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
 dependencies {
     provided files("libs/modcore.jar")
-    implementation("com.h2database:h2:1.3.176")
+    embed("com.h2database:h2:1.3.176")
 }
 
 task moveResources {
@@ -72,6 +77,13 @@ processResources {
 }
 
 jar {
+    dependsOn configurations.compile
+    from {
+        configurations.embed.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
     manifest {
         attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
                 "ModSide": "CLIENT",
