@@ -1,6 +1,8 @@
 package club.sk1er.patcher.database;
 
+import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
 import net.minecraft.launchwrapper.Launch;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -12,24 +14,34 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 
 public class AssetsDatabase {
 
     private Connection connection;
+    private File dir;
 
     public AssetsDatabase() {
         try {
             File minecraftHome = Launch.minecraftHome;
             if (minecraftHome == null) minecraftHome = new File(".");
-            connection = DriverManager.getConnection("jdbc:h2:" + minecraftHome.getAbsolutePath() + "/asset_cache_from_patcher_mod.h2", "", "");
+            dir = new File(minecraftHome, "patcher");
+            dir.mkdir();
+            connection = DriverManager.getConnection("jdbc:h2:" + dir.getAbsolutePath() + "/asset_cache_from_patcher_mod.h2", "", "");
             connection.prepareStatement("create table if not exists assets (pack varchar(256), name varchar(1024), data BINARY, mcmeta BINARY)").executeUpdate();
-            connection.prepareStatement("create index name on assets (name)").executeUpdate();
-            connection.prepareStatement("create index pack_name on assets (pack,name)").executeUpdate();
+            connection.prepareStatement("create index if not exists name on assets (name)").executeUpdate();
+            connection.prepareStatement("create index if not exists pack_name on assets (pack,name)").executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         if (connection != null)
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    saveNegative(FallbackResourceManagerHook.negativeResourceCache);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 try {
                     connection.close();
                 } catch (SQLException throwables) {
@@ -86,7 +98,14 @@ public class AssetsDatabase {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
 
+    public List<String> getAllNegative() throws IOException {
+        return FileUtils.readLines(new File(dir, "negative_cache.txt"));
+    }
+
+    public void saveNegative(Set<String> lines) throws IOException {
+        FileUtils.writeLines(new File(dir, "negative_cache.txt"), lines);
     }
 
 }

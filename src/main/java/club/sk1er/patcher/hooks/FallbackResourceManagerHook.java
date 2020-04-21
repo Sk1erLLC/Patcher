@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Used in {@link FallbackResourceManagerTransformer#transform(ClassNode, String)}
@@ -26,8 +28,20 @@ import java.util.Arrays;
 public class FallbackResourceManagerHook {
     private static final AssetsDatabase database = new AssetsDatabase();
     private static final boolean DB = true;
+    public static final Set<String> negativeResourceCache = new HashSet<>();
+
+    static {
+        try {
+            negativeResourceCache.addAll(database.getAllNegative());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static IResource getCachedResource(FallbackResourceManager manager, ResourceLocation location) throws IOException {
+        if (negativeResourceCache.contains(location.getResourcePath())) {
+            throw new FileNotFoundException(location.toString());
+        }
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
         if (DB) {
             DatabaseReturn data = database.getData(location.getResourcePath());
@@ -67,12 +81,14 @@ public class FallbackResourceManagerHook {
                     manager.frmMetadataSerializer);
             }
         }
+        negativeResourceCache.add(location.getResourcePath());
         throw new FileNotFoundException(location.toString());
     }
 
     private static byte[] readCopy(InputStream inputStream) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(inputStream, out);
+        inputStream.close();
         return out.toByteArray();
     }
 
