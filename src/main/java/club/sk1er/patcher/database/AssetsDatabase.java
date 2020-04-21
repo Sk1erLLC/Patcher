@@ -51,6 +51,12 @@ public class AssetsDatabase {
             }));
     }
 
+    private static byte[] read(InputStream stream) throws IOException {
+        byte[] bytes = new byte[stream.available()];
+        IOUtils.read(stream, bytes);
+        return bytes;
+    }
+
     public DatabaseReturn getData(String name) {
         try {
             PreparedStatement statement = connection.prepareStatement("select * from assets where name=?");
@@ -60,7 +66,7 @@ public class AssetsDatabase {
                 InputStream data = resultSet.getBinaryStream("data");
                 InputStream mcmeta = resultSet.getBinaryStream("mcmeta");
                 boolean noMeta = resultSet.wasNull();
-                return new DatabaseReturn(IOUtils.readFully(data, data.available()), noMeta ? null : IOUtils.readFully(mcmeta, mcmeta.available()), resultSet.getString("pack"));
+                return new DatabaseReturn(read(data), noMeta ? null : read(mcmeta), resultSet.getString("pack"));
             }
             return null;
         } catch (SQLException | IOException throwables) {
