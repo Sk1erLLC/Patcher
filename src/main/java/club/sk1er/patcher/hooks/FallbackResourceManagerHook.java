@@ -26,9 +26,9 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public class FallbackResourceManagerHook {
+    public static final Set<String> negativeResourceCache = new HashSet<>();
     private static final AssetsDatabase database = new AssetsDatabase();
     private static final boolean DB = true;
-    public static final Set<String> negativeResourceCache = new HashSet<>();
 
     static {
         try {
@@ -36,6 +36,11 @@ public class FallbackResourceManagerHook {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void clearCache() {
+        negativeResourceCache.clear();
+        database.clearAll();
     }
 
     public static IResource getCachedResource(FallbackResourceManager manager, ResourceLocation location) throws IOException {
