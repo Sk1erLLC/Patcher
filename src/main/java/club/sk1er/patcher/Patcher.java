@@ -26,9 +26,11 @@ import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindBuilder;
 import club.sk1er.patcher.util.screen.MainMenuEditor;
+import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,6 +75,11 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
         ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.DeleteScreenshot());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
 
         if (isDevelopment()) {
             ClientCommandHandler.instance.registerCommand(new WireframeClouds());
@@ -141,6 +149,11 @@ public class Patcher {
                 e.printStackTrace();
             }
         });
+    }
+
+    @SubscribeEvent
+    public void tick(TickEvent.ClientTickEvent event) {
+        ScreenShotHelper.pixelValues = null; //Reset because this uses 14 mb of persistent ram after screenshot is taken
     }
 
     public PatcherConfig getPatcherConfig() {

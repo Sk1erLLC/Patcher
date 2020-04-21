@@ -644,6 +644,33 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean disableBlockBreakParticles;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "No Feedback",
+        description = "Remove messages from screenshots entirely.",
+        category = "Quality of Life",
+        subcategory = "Screenshot Utilities"
+    )
+    public static boolean screenshotNoFeedback;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Screenshot Preview",
+        description = "Preview the look of your screenshot when taken.",
+        category = "Quality of Life",
+        subcategory = "Screenshot Utilities"
+    )
+    public static boolean screenshotPreview;
+
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Compact Response",
+        description = "Compact the feedback given when screenshotting.",
+        category = "Quality of Life",
+        subcategory = "Screenshot Utilities"
+    )
+    public static boolean compactScreenshotResponse;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

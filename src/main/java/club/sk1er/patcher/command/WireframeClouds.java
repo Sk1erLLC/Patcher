@@ -1,5 +1,6 @@
 package club.sk1er.patcher.command;
 
+import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.cloud.CloudRenderer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -33,7 +34,7 @@ public class WireframeClouds extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         CloudRenderer.WIREFRAME = !CloudRenderer.WIREFRAME;
-        FovChangerCommand.sendMessage("Cloud Wireframe set to " + CloudRenderer.WIREFRAME);
+        ChatUtilities.sendMessage("Cloud Wireframe set to " + CloudRenderer.WIREFRAME);
     }
 
     @Override

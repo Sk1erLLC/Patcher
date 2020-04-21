@@ -44,6 +44,7 @@ import club.sk1er.patcher.tweaker.asm.S19PacketEntityHeadLookTransformer;
 import club.sk1er.patcher.tweaker.asm.S19PacketEntityStatusTransformer;
 import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
+import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
@@ -129,6 +130,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new EntityDiggingFXTransformer());
+        registerTransformer(new ScreenShotHelperTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -144,7 +146,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new InventoryPlayerTransformer());
 
         // disabled
-        //registerTransformer(new ScreenShotHelperTransformer());
         //registerTransformer(new BlockDoublePlantTransformer());
     }
 
