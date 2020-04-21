@@ -22,6 +22,7 @@ public class AssetsDatabase {
 
     private Connection connection;
     private File dir;
+    private boolean connected = false;
 
     public AssetsDatabase() {
         try {
@@ -33,6 +34,7 @@ public class AssetsDatabase {
             connection.prepareStatement("create table if not exists assets (pack varchar(256), name varchar(1024), data BINARY, mcmeta BINARY)").executeUpdate();
             connection.prepareStatement("create index if not exists name on assets (name)").executeUpdate();
             connection.prepareStatement("create index if not exists pack_name on assets (pack,name)").executeUpdate();
+            connected = true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -58,6 +60,7 @@ public class AssetsDatabase {
     }
 
     public DatabaseReturn getData(String name) {
+        if(!connected) return null;
         try {
             PreparedStatement statement = connection.prepareStatement("select * from assets where name=?");
             statement.setString(1, name);
@@ -76,6 +79,7 @@ public class AssetsDatabase {
     }
 
     public void clearAll() {
+        if(!connected) return;
         try {
             connection.prepareStatement("delete from assets").executeUpdate();
         } catch (SQLException throwables) {
@@ -83,17 +87,9 @@ public class AssetsDatabase {
         }
     }
 
-    public void clearPack(String pack) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("delete from assets where pack=?");
-            preparedStatement.setString(1, pack);
-            preparedStatement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
 
     public void update(String pack, String name, byte[] data, byte[] mcMeta) {
+        if(!connected) return;
         try {
             PreparedStatement statement = connection.prepareStatement("merge into assets key(pack,`name`) values (?,?,?,?)");
             statement.setString(1, pack);
