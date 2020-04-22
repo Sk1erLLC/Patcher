@@ -246,15 +246,14 @@ public class PatcherConfig extends Vigilant {
     )
     public static int tabOpacity = 100;
 
-    // todo refresh resourcepack image when toggled
     @Property(
         type = PropertyType.SWITCH,
-        name = "Pack Images",
+        name = "Downscale Pack Images",
         description = "Change all pack icons to 64x64 to improve memory usage.",
         category = "Performance",
         subcategory = "Resources"
     )
-    public static boolean packImageOptimization = true;
+    public static boolean downscalePackImages = true;
 
     @Property(
         type = PropertyType.SWITCH,

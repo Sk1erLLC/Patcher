@@ -47,7 +47,7 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
 
     private InsnList downscaleImageSize() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "packImageOptimization", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "downscalePackImages", "Z"));
         LabelNode l1 = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
