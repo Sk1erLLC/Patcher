@@ -252,7 +252,7 @@ public class PatcherConfig extends Vigilant {
         name = "Pack Images",
         description = "Change all pack icons to 64x64 to improve memory usage.",
         category = "Performance",
-        subcategory = "Packs"
+        subcategory = "Resources"
     )
     public static boolean packImageOptimization = true;
 
