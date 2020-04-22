@@ -321,6 +321,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH,
+        name = "Disable Enchantment Books",
+        description = "Stop enchantment table books from rendering.",
+        category = "Performance",
+        subcategory = "Rendering"
+    )
+    public static boolean disableEnchantmentBooks;
+
+    @Property(
+        type = PropertyType.SWITCH,
         name = "Disable Item Frames",
         description = "Stop item frames from rendering.",
         category = "Performance",
@@ -624,16 +633,16 @@ public class PatcherConfig extends Vigilant {
         category = "Quality of Life",
         subcategory = "Fullscreen"
     )
-    public static boolean windowedFullscreen = true;
+    public static boolean windowedFullscreen;
 
     @Property(
         type = PropertyType.SWITCH,
         name = "Instant Fullscreen (Windows Only)",
-        description = "Instant switching between full screen and non fullscreen modes. \nWindowed Fullscreen must also be enabled for this to work.",
+        description = "Instant switching between full screen and non fullscreen modes.\nWindowed Fullscreen must also be enabled for this to work.",
         category = "Quality of Life",
         subcategory = "Fullscreen"
     )
-    public static boolean instantFullscreen = true;
+    public static boolean instantFullscreen;
 
     @Property(
         type = PropertyType.SWITCH,
@@ -678,7 +687,7 @@ public class PatcherConfig extends Vigilant {
         category = "Performance",
         subcategory = "Resources"
     )
-    public static boolean cachedResources = true;
+    public static boolean cachedResources;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
