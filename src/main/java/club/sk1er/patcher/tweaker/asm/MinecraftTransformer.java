@@ -38,7 +38,9 @@ public class MinecraftTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
             String methodDesc = mapMethodDesc(methodNode);
 
-            if (methodName.equals("toggleFullscreen") || methodName.equals("func_71352_k")) {
+            if (methodName.equals("startGame") || methodName.equals("func_71384_a")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
+            } else if (methodName.equals("toggleFullscreen") || methodName.equals("func_71352_k")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -53,15 +55,12 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
                 InsnList insnList = new InsnList();
                 LabelNode labelNode = new LabelNode();
-                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook"
-                    , "fullscreen", "()Z", false));
+                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "fullscreen", "()Z", false));
                 insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
                 insnList.add(new InsnNode(Opcodes.RETURN));
                 insnList.add(labelNode);
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
-            } else if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a"))
-                && methodDesc.equals(
-                "(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
+            } else if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a")) && methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -159,6 +158,17 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList toggleGLErrorChecking() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "glErrorChecking", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD,
+            "net/minecraft/client/Minecraft",
+            "field_175619_R", // enableGLErrorChecking
+            "Z"));
+        return list;
     }
 
     private InsnList addConfigOption(LabelNode ifne) {

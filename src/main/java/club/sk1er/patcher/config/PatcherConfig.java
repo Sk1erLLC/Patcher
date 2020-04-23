@@ -688,6 +688,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cachedResources;
 
+    @Property(
+        type = PropertyType.SWITCH,
+        name = "Disable GL Error Checking",
+        description = "Disable unnecessary constant checking for errors in OpenGL.\n§cRequires restart once toggled.",
+        category = "Performance",
+        subcategory = "General"
+    )
+    public static boolean glErrorChecking = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
