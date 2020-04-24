@@ -11,6 +11,7 @@ import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityTransformer;
 import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
@@ -135,6 +136,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
+        registerTransformer(new EntityTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
