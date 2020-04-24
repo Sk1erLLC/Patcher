@@ -41,7 +41,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
 
             if (methodName.equals("renderClouds") || methodName.equals("func_180447_b")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
-            } else if (methodName.equals("preRenderDamagedBlocks")) {
+            } else if (methodName.equals("preRenderDamagedBlocks") || methodName.equals("func_180443_s")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

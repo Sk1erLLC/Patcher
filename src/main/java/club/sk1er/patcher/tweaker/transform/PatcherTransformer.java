@@ -5,6 +5,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -37,6 +38,21 @@ public interface PatcherTransformer {
             return methodNode.name;
         } else {
             return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(classNode.name, methodNode.name, methodNode.desc);
+        }
+    }
+
+    /**
+     * Map the field name from notch names
+     *
+     * @param classNode  the transformed class node
+     * @param fieldNode the transformed classes field node
+     * @return a mapped field name
+     */
+    default String mapFieldName(ClassNode classNode, FieldNode fieldNode) {
+        if (Patcher.isDevelopment()) {
+            return fieldNode.name;
+        } else {
+            return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(classNode.name, fieldNode.name, fieldNode.desc);
         }
     }
 

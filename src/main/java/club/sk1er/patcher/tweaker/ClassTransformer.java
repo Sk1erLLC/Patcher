@@ -2,6 +2,7 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
@@ -137,6 +138,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
+        registerTransformer(new BlockRedstoneTorchTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
