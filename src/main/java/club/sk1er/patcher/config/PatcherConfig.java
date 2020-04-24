@@ -517,185 +517,152 @@ public class PatcherConfig extends Vigilant {
     public static boolean protectionPercentage = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Projectile Protection Percentage",
+        type = PropertyType.SWITCH, name = "Projectile Protection Percentage",
         description = "View how much total projectile protection you have inside the inventory menu.",
-        category = "Quality of Life",
-        subcategory = "Combat Utilities"
+        category = "Quality of Life", subcategory = "Combat Utilities"
     )
     public static boolean projectileProtectionPercentage = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Chat Position",
+        type = PropertyType.SWITCH, name = "Chat Position",
         description = "Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+        category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean chatPosition = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Chat Timestamps",
+        type = PropertyType.SWITCH, name = "Chat Timestamps",
         description = "Add timestamps before a message.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+        category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean timestamps;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Transparent Nametags",
+        type = PropertyType.SWITCH, name = "Transparent Nametags",
         description = "Remove boxes around nametags.\n§eMay improve performance.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+        category = "Quality of Life", subcategory = "Rendering"
     )
     public static boolean transparentNameTags;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Arrow Lighting",
+        type = PropertyType.SWITCH, name = "Arrow Lighting",
         description = "Stop attached arrows from lighting up other entities.",
-        category = "Fixes",
-        subcategory = "Entities"
+        category = "Fixes", subcategory = "Entities"
     )
     public static boolean fixArrowLighting;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Entity Culling",
+        type = PropertyType.SWITCH, name = "Entity Culling",
         description = "Stop entities that aren't visible to the player from rendering.",
-        category = "Performance",
-        subcategory = "Culling"
+        category = "Performance", subcategory = "Culling"
     )
     public static boolean entityCulling = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Don't Cull Nametags",
+        type = PropertyType.SWITCH, name = "Don't Cull Nametags",
         description = "Render nametags even with entity culling enabled.",
-        category = "Performance",
-        subcategory = "Culling"
+        category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullNametags;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Remove Water Overlay",
+        type = PropertyType.SWITCH, name = "Remove Water Overlay",
         description = "Remove the water texture overlay when underwater.",
-        category = "Quality of Life",
-        subcategory = "Overlay"
+        category = "Quality of Life", subcategory = "Overlay"
     )
     public static boolean removeWaterOverlay;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "CleanView",
+        type = PropertyType.SWITCH, name = "CleanView",
         description = "Stop self-potion effects from rendering.",
-        category = "Quality of Life",
-        subcategory = "Rendering"
+        category = "Quality of Life", subcategory = "Rendering"
     )
     public static boolean cleanView;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Optimized Cloud Renderer",
+        type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
         description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
-        category = "Performance",
-        subcategory = "Rendering"
+        category = "Performance", subcategory = "Rendering"
     )
     public static boolean gpuCloudRenderer = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "CrossChat",
+        type = PropertyType.SWITCH, name = "CrossChat",
         description = "Stop clearing chat when switching servers.",
-        category = "Quality of Life",
-        subcategory = "Chat"
+        category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean crossChat = true;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Clean Main Menu",
+        type = PropertyType.SWITCH, name = "Clean Main Menu",
         description = "Remove the Realms button as you need to be on the latest Minecraft version to use Realms.",
-        category = "Quality of Life",
-        subcategory = "General"
+        category = "Quality of Life", subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
 
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Windowed Fullscreen",
+        type = PropertyType.SWITCH, name = "Windowed Fullscreen",
         description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window",
-        category = "Quality of Life",
-        subcategory = "Fullscreen"
+        category = "Quality of Life", subcategory = "Fullscreen"
     )
     public static boolean windowedFullscreen;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Instant Fullscreen (Windows Only)",
+        type = PropertyType.SWITCH, name = "Instant Fullscreen (Windows Only)",
         description = "Instant switching between full screen and non fullscreen modes.\nWindowed Fullscreen must also be enabled for this to work.",
-        category = "Quality of Life",
-        subcategory = "Fullscreen"
+        category = "Quality of Life", subcategory = "Fullscreen"
     )
     public static boolean instantFullscreen;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable Breaking Particles",
+        type = PropertyType.SWITCH, name = "Disable Breaking Particles",
         description = "Remove block breaking particles for visibility.",
-        category = "Performance",
-        subcategory = "Particles"
+        category = "Performance", subcategory = "Particles"
     )
     public static boolean disableBlockBreakParticles;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "No Feedback",
+        type = PropertyType.SWITCH, name = "No Feedback",
         description = "Remove messages from screenshots entirely.",
-        category = "Quality of Life",
-        subcategory = "Screenshot Utilities"
+        category = "Quality of Life", subcategory = "Screenshot Utilities"
     )
     public static boolean screenshotNoFeedback;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Screenshot Preview",
+        type = PropertyType.SWITCH, name = "Screenshot Preview",
         description = "Preview the look of your screenshot when taken.",
-        category = "Quality of Life",
-        subcategory = "Screenshot Utilities"
+        category = "Quality of Life", subcategory = "Screenshot Utilities"
     )
     public static boolean screenshotPreview;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Compact Response",
+        type = PropertyType.SWITCH, name = "Compact Response",
         description = "Compact the feedback given when screenshotting.",
-        category = "Quality of Life",
-        subcategory = "Screenshot Utilities"
+        category = "Quality of Life", subcategory = "Screenshot Utilities"
     )
     public static boolean compactScreenshotResponse;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Cached Resources",
+        type = PropertyType.SWITCH, name = "Cached Resources",
         description = "Store resources in a local database, massively improving resource loading times.",
-        category = "Performance",
-        subcategory = "Resources"
+        category = "Performance", subcategory = "Resources"
     )
     public static boolean cachedResources;
 
     @Property(
-        type = PropertyType.SWITCH,
-        name = "Disable GL Error Checking",
+        type = PropertyType.SWITCH, name = "Disable GL Error Checking",
         description = "Disable unnecessary constant checking for errors in OpenGL.\n§cRequires restart once toggled.",
-        category = "Performance",
-        subcategory = "General"
+        category = "Performance", subcategory = "General"
     )
     public static boolean glErrorChecking = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Chat Keeper",
+        description = "Keep chat when toggling fullscreen.",
+        category = "Quality of Life", subcategory = "Chat"
+    )
+    public static boolean chatKeeper = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
