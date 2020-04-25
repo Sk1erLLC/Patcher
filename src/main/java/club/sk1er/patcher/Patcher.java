@@ -124,8 +124,8 @@ public class Patcher {
         }
 
         String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
-        if (serverIP.contains("mineplex")) {
-            LOGGER.info("Mineplex doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+        if (serverIP.contains("mineplex") || serverIP.contains("mccentral")) {
+            LOGGER.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;
             return;
         }

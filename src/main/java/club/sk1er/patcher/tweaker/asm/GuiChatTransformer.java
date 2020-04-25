@@ -110,7 +110,7 @@ public class GuiChatTransformer implements PatcherTransformer {
             "Ljava/lang/String;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/client/gui/GuiTextField",
-            "func_175274_a", // setText
+            "func_146180_a", // setText
             "(Ljava/lang/String;)V",
             false));
         LabelNode gotoInsn = new LabelNode();
@@ -124,7 +124,7 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/client/gui/GuiTextField",
-            "func_175274_a", // setText
+            "func_146180_a", // setText
             "(Ljava/lang/String;)V",
             false));
         list.add(gotoInsn);
