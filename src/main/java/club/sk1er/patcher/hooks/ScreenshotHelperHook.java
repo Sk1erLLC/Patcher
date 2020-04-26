@@ -2,6 +2,7 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,10 +13,15 @@ import net.minecraft.util.IChatComponent;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.File;
 import java.nio.IntBuffer;
 
+/**
+ * Used in {@link ScreenShotHelperTransformer#transform(ClassNode, String)}
+ */
+@SuppressWarnings("unused")
 public class ScreenshotHelperHook {
     private static IntBuffer pixelBuffer;
     private static int[] pixelValues;

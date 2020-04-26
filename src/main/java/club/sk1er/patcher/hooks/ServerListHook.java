@@ -1,10 +1,16 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.tree.ClassNode;
 
+/**
+ * Used in {@link ServerListTransformer#transform(ClassNode, String)}
+ */
+@SuppressWarnings("unused")
 public class ServerListHook {
 
     private static final Logger logger = Patcher.instance.getLogger();

@@ -2,12 +2,11 @@ package club.sk1er.patcher.util.screen;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
@@ -22,15 +21,19 @@ public class MainMenuEditor {
             buttonList = event.buttonList;
             buttonList.get(3).width = 200;
         } else if (event.gui instanceof GuiScreenResourcePacks) {
-            for (GuiButton button : event.buttonList) {
-                button.width = 200;
+            if (!Loader.isModLoaded("ResourcePackOrganizer")) {
+                for (GuiButton button : event.buttonList) {
+                    button.width = 200;
 
-                if (button.id == 2) {
-                    button.xPosition = event.gui.width / 2 - 204;
+                    if (button.id == 2) {
+                        button.xPosition = event.gui.width / 2 - 204;
+                    }
                 }
             }
 
-            event.buttonList.add(new GuiButton(822462, event.gui.width / 2 + 4, event.gui.height - 24,"Refresh Cache"));
+            if (!Loader.isModLoaded("ResourcePackOrganizer")) {
+                event.buttonList.add(new GuiButton(822462, event.gui.width / 2 + 4, event.gui.height - 24, "Refresh Cache"));
+            }
         }
     }
 

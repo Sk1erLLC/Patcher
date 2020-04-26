@@ -1,6 +1,7 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.Loader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -32,7 +33,7 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("drawScreen") || methodName.equals("func_73863_a")) {
+            if ((methodName.equals("drawScreen") || methodName.equals("func_73863_a")) && !Loader.isModLoaded("ResourcePackOrganizer")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

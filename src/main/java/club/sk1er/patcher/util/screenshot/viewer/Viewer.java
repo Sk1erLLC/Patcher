@@ -10,7 +10,6 @@ import club.sk1er.elementa.constraints.PixelConstraint;
 import club.sk1er.elementa.constraints.RelativeConstraint;
 import club.sk1er.elementa.constraints.animation.AnimatingConstraints;
 import club.sk1er.elementa.constraints.animation.Animations;
-import kotlin.Unit;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -48,12 +47,11 @@ public class Viewer {
 
         currentWindow.addChild(imageComponent);
 
-        imageComponent.onMouseEnter(() -> {
+        imageComponent.onMouseEnterRunnable(() -> {
             UIConstraints constraints = imageComponent.getConstraints().copy();
             constraints.setColor(new ConstantColorConstraint(Color.WHITE));
             imageComponent.setConstraints(constraints);
             fadeOutAnimation(imageComponent);
-            return Unit.INSTANCE;
         });
 
         AnimatingConstraints anim = imageComponent.makeAnimation()
@@ -61,10 +59,7 @@ public class Viewer {
             .setHeightAnimation(Animations.OUT_QUINT, 1.5f, new RelativeConstraint(1 / 3f))
             .setXAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
             .setYAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
-            .onComplete(() -> {
-                fadeOutAnimation(imageComponent);
-                return Unit.INSTANCE;
-            });
+            .onCompleteRunnable(() -> fadeOutAnimation(imageComponent));
 
         imageComponent.animateTo(anim);
     }
@@ -74,10 +69,7 @@ public class Viewer {
             .setColorAnimation(Animations.OUT_CUBIC, 1f,
                 new ConstantColorConstraint(new Color(255, 255, 255, 0)),
                 3f
-            ).onComplete(() -> {
-                currentWindow = null;
-                return Unit.INSTANCE;
-            });
+            ).onCompleteRunnable(() -> currentWindow = null);
 
         container.animateTo(newAnim);
     }
