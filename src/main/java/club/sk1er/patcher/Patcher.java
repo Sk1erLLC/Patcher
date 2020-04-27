@@ -42,6 +42,8 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.1")
@@ -97,6 +99,21 @@ public class Patcher {
         registerClass(new EntityTrace());
         registerClass(new MainMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
+
+        checkLogs();
+    }
+
+    private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
+
+    private void checkLogs() {
+        if (PatcherConfig.logOptimizer) {
+            for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
+                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 24 * 60 * 60 * 1000)) {
+                    LOGGER.info("Deleted " + file.getName() + ", last modified was " + file.lastModified());
+                    file.delete();
+                }
+            }
+        }
     }
 
     private void registerClass(Object eventClass) {

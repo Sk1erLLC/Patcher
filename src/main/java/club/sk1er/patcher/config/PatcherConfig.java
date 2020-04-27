@@ -664,6 +664,21 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean chatKeeper = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Log Optimizer",
+        description = "Toggle log optimizing.",
+        category = "Quality of Life", subcategory = "Cleaner"
+    )
+    public static boolean logOptimizer;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Log Optimizer Amount",
+        description = "Remove logs older than the set amount.",
+        category = "Quality of Life", subcategory = "Cleaner",
+        min = 1, max = 90
+    )
+    public static int logOptimizerLength = 30;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
