@@ -50,6 +50,7 @@ import java.util.concurrent.CompletableFuture;
 public class Patcher {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher");
+    private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
     private CloudHandler cloudHandler;
@@ -102,8 +103,6 @@ public class Patcher {
 
         checkLogs();
     }
-
-    private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
 
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
