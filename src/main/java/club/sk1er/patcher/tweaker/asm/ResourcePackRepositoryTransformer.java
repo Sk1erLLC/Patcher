@@ -36,7 +36,12 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
 
             if (methodName.equals("deleteOldServerResourcesPacks") || methodName.equals("func_183028_i")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), createDirectory());
-                break;
+            } else if (methodName.equals("setResourcePackInstance") || methodName.equals("func_177319_a")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                    "clearCache",
+                    "()V",
+                    false));
             }
         }
     }
