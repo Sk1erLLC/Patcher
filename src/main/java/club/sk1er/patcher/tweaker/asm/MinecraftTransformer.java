@@ -66,11 +66,20 @@ public class MinecraftTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof MethodInsnNode
-                        && node.getOpcode() == Opcodes.INVOKESTATIC
-                        && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
-                        methodNode.instructions.insertBefore(node, setSystemTime());
-                        break;
+                    if (node instanceof MethodInsnNode) {
+                        if (node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
+                            methodNode.instructions.insertBefore(node, setSystemTime());
+                        } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String mappedMethodName = mapMethodNameFromNode((MethodInsnNode) node);
+
+                            if (mappedMethodName.equals("clearResourcePack") || mappedMethodName.equals("func_148529_f")) {
+                                methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                    "clearCache",
+                                    "()V",
+                                    false));
+                            }
+                        }
                     }
                 }
             } else if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {

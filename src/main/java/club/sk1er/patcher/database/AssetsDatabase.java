@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -106,7 +107,7 @@ public class AssetsDatabase {
     public List<String> getAllNegative() throws IOException {
         File file = new File(dir, "negative_cache.txt");
         if (file.exists())
-            return FileUtils.readLines(file);
+            return FileUtils.readLines(file, Charset.defaultCharset());
         return new ArrayList<>();
     }
 
