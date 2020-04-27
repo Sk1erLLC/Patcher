@@ -30,6 +30,7 @@ import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -168,7 +169,7 @@ public class Patcher {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-//        ScreenShotHelper.pixelValues = null; //Reset because this uses 14 mb of persistent ram after screenshot is taken
+        ScreenShotHelper.pixelValues = null; //Reset because this uses 14 mb of persistent ram after screenshot is taken
     }
 
     public PatcherConfig getPatcherConfig() {
