@@ -549,14 +549,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Log Optimizer",
-        description = "Toggle log optimizing.",
+        description = "Toggle log optimizing.\n§cThese files are not recoverable once deleted.",
         category = "Quality of Life", subcategory = "Cleaner"
     )
     public static boolean logOptimizer;
 
     @Property(
         type = PropertyType.SLIDER, name = "Log Optimizer Amount",
-        description = "Remove logs older than the set amount.",
+        description = "Choose low many days old a file should be before deleted.",
         category = "Quality of Life", subcategory = "Cleaner",
         min = 1, max = 90
     )
