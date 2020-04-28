@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.database.AssetsDatabase;
 import club.sk1er.patcher.database.DatabaseReturn;

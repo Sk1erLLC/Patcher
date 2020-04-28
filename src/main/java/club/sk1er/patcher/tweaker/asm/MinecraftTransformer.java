@@ -121,6 +121,14 @@ public class MinecraftTransformer implements PatcherTransformer {
                                 methodNode.instructions.insert(node, ifne);
                                 break;
                             }
+                        } else if (methodInsnName.equals("refreshResources")) {
+                            methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
+                                Opcodes.INVOKESTATIC,
+                                "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                "clearCache",
+                                "()V",
+                                false
+                            ));
                         }
                     }
                 }
