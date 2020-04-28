@@ -3,6 +3,7 @@ package club.sk1er.patcher;
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.patcher.command.BlacklistServerCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.NameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
@@ -48,8 +49,13 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = "1.1")
@@ -57,6 +63,7 @@ public class Patcher {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
+    private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
     private CloudHandler cloudHandler;
@@ -95,6 +102,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
+        ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
 
         if (isDevelopment()) {
             ClientCommandHandler.instance.registerCommand(new WireframeClouds());
@@ -118,6 +126,7 @@ public class Patcher {
         checkLogs();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
@@ -145,6 +154,50 @@ public class Patcher {
         LOGGER.info("Minecraft started in {} seconds.", time);
     }
 
+    private boolean isServerBlacklisted(String ip) {
+        return ip != null && !ip.isEmpty() && !ip.trim().isEmpty() && blacklistedServers.contains(ip.trim());
+    }
+
+    public boolean addOrRemoveBlacklist(String input) {
+        if (input == null || input.isEmpty() || input.trim().isEmpty()) {
+            return false;
+        } else {
+            input = input.trim();
+
+            if (isServerBlacklisted(input)) {
+                blacklistedServers.remove(input);
+                return false;
+            } else {
+                blacklistedServers.add(input);
+                return true;
+            }
+        }
+    }
+
+    public void saveBlacklistedServers() {
+        File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
+
+        try {
+            if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
+                return;
+            }
+
+            if (!blacklistedServersFile.exists() && !blacklistedServersFile.createNewFile()) {
+                return;
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile));
+
+            for (String server : blacklistedServers) {
+                writer.write(server + System.lineSeparator());
+            }
+
+            writer.close();
+            writer.flush();
+        } catch (IOException ignored) {
+        }
+    }
+
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
@@ -154,7 +207,7 @@ public class Patcher {
         }
 
         String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
-        if (serverIP.contains("mineplex") || serverIP.contains("mccentral") || serverIP.contains("minesucht")) {
+        if (blacklistedServers.contains(serverIP)) {
             LOGGER.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;
             return;
