@@ -556,7 +556,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Log Optimizer Amount",
-        description = "Choose low many days old a file should be before deleted.",
+        description = "Choose how many days old a file should be before deleted.",
         category = "Quality of Life", subcategory = "Cleaner",
         min = 1, max = 90
     )
