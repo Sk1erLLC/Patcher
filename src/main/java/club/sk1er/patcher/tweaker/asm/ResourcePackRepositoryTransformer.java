@@ -2,6 +2,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -11,6 +12,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class ResourcePackRepositoryTransformer implements PatcherTransformer {
     /**
@@ -34,14 +37,42 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("deleteOldServerResourcesPacks") || methodName.equals("func_183028_i")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), createDirectory());
-            } else if (methodName.equals("setResourcePackInstance") || methodName.equals("func_177319_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
-                    "clearCache",
-                    "()V",
-                    false));
+            switch (methodName) {
+                case "deleteOldServerResourcesPacks":
+                case "func_183028_i":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), createDirectory());
+                    break;
+                case "setResourcePackInstance":
+                case "func_177319_a":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                        "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                        "clearCache",
+                        "()V",
+                        false));
+                    break;
+                case "func_148529_f":
+                case "clearResourcePack":
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String mappedMethodName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (mappedMethodName.equals("scheduleResourcesRefresh") || mappedMethodName.equals("func_175603_A")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(
+                                    Opcodes.INVOKESTATIC,
+                                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                    "clearCache",
+                                    "()V",
+                                    false
+                                ));
+                                break;
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }
