@@ -3,8 +3,11 @@ package club.sk1er.patcher.tweaker.asm;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -42,6 +45,9 @@ public class ScreenShotHelperTransformer implements PatcherTransformer {
 
     private InsnList betterScreenshots() {
         InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "screenshotManager", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
@@ -51,6 +57,7 @@ public class ScreenShotHelperTransformer implements PatcherTransformer {
             "saveScreenshot", "(Ljava/io/File;Ljava/lang/String;IILnet/minecraft/client/shader/Framebuffer;)Lnet/minecraft/util/IChatComponent;",
             false));
         list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ifeq);
         return list;
     }
 }

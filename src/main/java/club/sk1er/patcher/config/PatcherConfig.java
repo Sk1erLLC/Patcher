@@ -506,6 +506,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableBlockBreakParticles;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Screenshot Manager",
+        description = "Overwrite the screenshotting experience as a whole.",
+        category = "Quality of Life", subcategory = "Screenshot Utilities"
+    )
+    public static boolean screenshotManager = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "No Feedback",
         description = "Remove messages from screenshots entirely.",
         category = "Quality of Life", subcategory = "Screenshot Utilities"
