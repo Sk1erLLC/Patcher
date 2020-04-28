@@ -24,19 +24,24 @@ import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
-import club.sk1er.patcher.util.keybind.KeybindBuilder;
+import club.sk1er.patcher.util.keybind.KeybindDropStack;
+import club.sk1er.patcher.util.keybind.KeybindHandler;
+import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screen.MainMenuEditor;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -59,6 +64,15 @@ public class Patcher {
     @Mod.Instance("patcher")
     public static Patcher instance;
 
+    private KeyBinding nameHistory;
+    private KeyBinding dropKeybind;
+
+    @EventHandler
+    public void preinit(FMLPreInitializationEvent event) {
+        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
+        ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
+    }
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
@@ -71,8 +85,6 @@ public class Patcher {
 
         SoundHandler target = new SoundHandler();
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
-
-        KeybindBuilder.instance.registerPatcherKeybinds();
 
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
@@ -101,6 +113,7 @@ public class Patcher {
         registerClass(new EntityTrace());
         registerClass(new MainMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
+        registerClass(new KeybindHandler());
 
         checkLogs();
     }
@@ -187,6 +200,14 @@ public class Patcher {
     @SuppressWarnings("unused")
     public CloudHandler getCloudHandler() {
         return cloudHandler;
+    }
+
+    public KeyBinding getNameHistory() {
+        return nameHistory;
+    }
+
+    public KeyBinding getDropKeybind() {
+        return dropKeybind;
     }
 
     private static boolean cacheDevelopment;
