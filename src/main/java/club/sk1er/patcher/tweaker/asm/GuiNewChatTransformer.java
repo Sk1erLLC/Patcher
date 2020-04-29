@@ -7,8 +7,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -98,10 +98,17 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
-                        if (node.getOpcode() == Opcodes.ISUB
-                            && node.getPrevious().getOpcode() == Opcodes.BIPUSH) {
-                            methodNode.instructions.insert(node, minus12());
-                            break;
+                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+
+                            if (methodInsnName.equals("floor_float")) {
+                                for (int i = 0; i < 4; ++i) {
+                                    node = node.getPrevious();
+                                }
+
+                                methodNode.instructions.insertBefore(node, minus12());
+                                break;
+                            }
                         }
                     }
                     break;
@@ -128,8 +135,7 @@ public class GuiNewChatTransformer implements PatcherTransformer {
         LabelNode afterSub = new LabelNode();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 12));
-        list.add(new InsnNode(Opcodes.ISUB));
+        list.add(new IincInsnNode(7, -12));
         list.add(afterSub);
         return list;
     }
