@@ -576,6 +576,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static int logOptimizerLength = 30;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Skin Refresher",
+        description = "Refresh your current skin without needing to leave the server.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean skinRefresher = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

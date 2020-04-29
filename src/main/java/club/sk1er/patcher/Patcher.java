@@ -8,6 +8,7 @@ import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.NameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.PatcherSoundsCommand;
+import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
@@ -103,6 +104,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
         ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
+        ClientCommandHandler.instance.registerCommand(new SkinCacheRefresh());
 
         if (isDevelopment()) {
             ClientCommandHandler.instance.registerCommand(new WireframeClouds());
