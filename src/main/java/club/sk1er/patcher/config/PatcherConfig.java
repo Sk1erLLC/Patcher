@@ -464,6 +464,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean cleanView;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Disable Enchantment Glint",
+        description = "Disable the enchantment glint on enchanted items/potions.",
+        category = "Performance", subcategory = "Rendering"
+    )
+    public static boolean disableEnchantmentGlint;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
         description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
         category = "Performance", subcategory = "Rendering"

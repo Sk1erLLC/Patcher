@@ -29,6 +29,7 @@ import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
@@ -39,6 +40,7 @@ import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
+import club.sk1er.patcher.tweaker.asm.RenderItemTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.ResourcePackRepositoryTransformer;
@@ -139,6 +141,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
         registerTransformer(new BlockRedstoneTorchTransformer());
+        registerTransformer(new RenderItemTransformer());
+        registerTransformer(new LayerArmorBaseTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
