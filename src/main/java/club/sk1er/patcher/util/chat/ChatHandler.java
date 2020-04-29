@@ -41,7 +41,6 @@ public class ChatHandler {
                         event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
                         print = entry;
                         break;
-
                     }
                 }
                 if(print == null) {
@@ -50,6 +49,9 @@ public class ChatHandler {
                     print = e;
                     if(entries.size() > 10)
                         entries.removeLast();
+                } else {
+                    entries.remove(print); //Push to front
+                    entries.add(print);
                 }
 
                 if (PatcherConfig.timestamps) {
@@ -86,11 +88,12 @@ public class ChatHandler {
         String text;
         int amount;
         int id;
-
+        private long lastAccessed;
         public ChatEntry(String text, int amount, int id) {
             this.text = text;
             this.amount = amount;
             this.id = id;
+            lastAccessed = System.currentTimeMillis();
         }
     }
 }
