@@ -578,7 +578,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Skin Refresher",
-        description = "Refresh your current skin without needing to leave the server.",
+        description = "Refresh your current skin without needing to leave the server.\n§eAlso accessible with the command \"/refreshskin\".",
         category = "Quality of Life", subcategory = "General"
     )
     public static boolean skinRefresher = true;
