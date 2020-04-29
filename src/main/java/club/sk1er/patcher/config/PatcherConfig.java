@@ -331,6 +331,14 @@ public class PatcherConfig extends Vigilant {
     public static boolean compactChat = true;
 
     @Property(
+        type = PropertyType.SLIDER, name = "Super Compact Chat",
+        description = "Clean up chat by stacking duplicate messages found within the select range.",
+        category = "Quality of Life", subcategory = "Chat",
+        min = 1, max = 25
+    )
+    public static int superCompactChatAmount = 5;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Number Ping",
         description = "Show a readable ping number in tab instead of bars.\n§cMay turn out to be 1 on Hypixel in most cases.",
         category = "Quality of Life", subcategory = "Tab"

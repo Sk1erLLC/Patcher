@@ -15,9 +15,7 @@ import java.util.LinkedList;
 
 public class ChatHandler {
 
-//    private String lastMessage = "";
-//    private int line, amount;
-    private LinkedList<ChatEntry> entries = new LinkedList<>();
+    private final LinkedList<ChatEntry> entries = new LinkedList<>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
@@ -35,7 +33,7 @@ public class ChatHandler {
                 // If the last message sent is the same as the newly posted message
                 ChatEntry print = null;
                 for (ChatEntry entry : entries) {
-                    if(entry.text.equalsIgnoreCase(message)) {
+                    if (entry.text.equalsIgnoreCase(message)) {
                         chat.deleteChatLine(entry.id);
                         entry.amount++;
                         event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
@@ -43,12 +41,14 @@ public class ChatHandler {
                         break;
                     }
                 }
-                if(print == null) {
+
+                if (print == null) {
                     ChatEntry e = new ChatEntry(message, 1, line);
                     entries.add(e);
                     print = e;
-                    if(entries.size() > 10)
+                    if (entries.size() > PatcherConfig.superCompactChatAmount) {
                         entries.removeLast();
+                    }
                 } else {
                     entries.remove(print); //Push to front
                     entries.add(print);
@@ -82,18 +82,18 @@ public class ChatHandler {
             }
         }
     }
+
     private int line;
 
-    class ChatEntry {
+    static class ChatEntry {
         String text;
         int amount;
         int id;
-        private long lastAccessed;
+
         public ChatEntry(String text, int amount, int id) {
             this.text = text;
             this.amount = amount;
             this.id = id;
-            lastAccessed = System.currentTimeMillis();
         }
     }
 }
