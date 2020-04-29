@@ -101,7 +101,7 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                         if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC) {
                             String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
 
-                            if (methodInsnName.equals("floor_float")) {
+                            if (methodInsnName.equals("floor_float") || methodInsnName.equals("func_76141_d")) {
                                 for (int i = 0; i < 4; ++i) {
                                     node = node.getPrevious();
                                 }
