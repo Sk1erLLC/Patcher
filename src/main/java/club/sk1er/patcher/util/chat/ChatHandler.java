@@ -23,7 +23,7 @@ public class ChatHandler {
             String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
             if (PatcherConfig.compactChat) {
                 String message = event.message.getUnformattedText();
-                if (message.equals("") || message.startsWith("---------") || message.startsWith("=========")) {
+                if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========")) {
                     return; // die!
                 }
 
