@@ -40,8 +40,7 @@ public class GuiLanguageListTransformer implements PatcherTransformer {
                     if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) node;
                         String methodInsnName = mapMethodNameFromNode(methodInsnNode);
-                        if (methodInsnName.equals("refreshResources")
-                            || methodInsnName.equals("func_110436_a")) {
+                        if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
                             methodNode.instructions.remove(node.getPrevious());
                             methodNode.instructions.remove(node.getPrevious());
                             methodNode.instructions.insertBefore(

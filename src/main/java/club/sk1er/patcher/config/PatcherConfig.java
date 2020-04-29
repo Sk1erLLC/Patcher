@@ -317,7 +317,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Optifine Zoom Sensitivity",
+        type = PropertyType.SWITCH, name = "OptiFine Zoom Sensitivity",
         description = "Remove the smoothing from OptiFine's zoom.",
         category = "Quality of Life", subcategory = "OptiFine"
     )

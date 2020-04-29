@@ -11,10 +11,12 @@ import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityTransformer;
 import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.GameRulesValueTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
@@ -143,6 +145,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockRedstoneTorchTransformer());
         registerTransformer(new RenderItemTransformer());
         registerTransformer(new LayerArmorBaseTransformer());
+        registerTransformer(new GameRulesValueTransformer());
+        registerTransformer(new EntityOtherPlayerMPTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -200,7 +204,16 @@ public class ClassTransformer implements IClassTransformer {
         if (outputBytecode) {
             try {
                 File bytecodeDirectory = new File("bytecode");
-                File bytecodeOutput = new File(bytecodeDirectory, transformedName + ".class");
+                String transformedClassName;
+
+                // anonymous classes
+                if (transformedName.contains("$")) {
+                    transformedClassName = transformedName.replace('$', '.') + ".class";
+                } else {
+                    transformedClassName = transformedName + ".class";
+                }
+
+                File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
                 FileOutputStream os = new FileOutputStream(bytecodeOutput);
                 os.write(classWriter.toByteArray());
                 os.close();
