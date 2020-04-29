@@ -11,11 +11,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 
 public class ChatHandler {
 
-    private String lastMessage = "";
-    private int line, amount;
+//    private String lastMessage = "";
+//    private int line, amount;
+    private LinkedList<ChatEntry> entries = new LinkedList<>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
@@ -31,45 +33,37 @@ public class ChatHandler {
                 GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 
                 // If the last message sent is the same as the newly posted message
-                if (lastMessage.equals(message)) {
+                ChatEntry print = null;
+                for (ChatEntry entry : entries) {
+                    if(entry.text.equalsIgnoreCase(message)) {
+                        chat.deleteChatLine(entry.id);
+                        entry.amount++;
+                        event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
+                        print = entry;
+                        break;
 
-                    // Delete the message
-                    chat.deleteChatLine(line);
-
-                    // Increase the amount of times it's been sent
-                    ++amount;
-
-                    // Set the last message to be the newly posted message
-                    lastMessage = message;
-
-                    // Append (amount of times it's been sent) to the last message
-                    event.message.appendText(EnumChatFormatting.GRAY + " (" + amount + ")");
-                    if (PatcherConfig.timestamps) {
-                        ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
-                        newThing.appendSibling(event.message);
-                        event.message = newThing;
-                    }
-                } else {
-
-                    // Otherwise it's never been sent
-                    amount = 1;
-
-                    // Set the last message to be the newly posted message
-                    lastMessage = message;
-                    if (PatcherConfig.timestamps) {
-                        ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
-                        newThing.appendSibling(event.message);
-                        event.message = newThing;
                     }
                 }
+                if(print == null) {
+                    ChatEntry e = new ChatEntry(message, 1, line);
+                    entries.add(e);
+                    print = e;
+                    if(entries.size() > 10)
+                        entries.removeLast();
+                }
 
+                if (PatcherConfig.timestamps) {
+                    ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
+                    newThing.appendSibling(event.message);
+                    event.message = newThing;
+                }
                 // Increase the line the message was on
                 ++line;
 
                 // Check if the event wasn't cancelled
                 if (!event.isCanceled()) {
                     // Print the chat message and allow it to be deleted
-                    chat.printChatMessageWithOptionalDeletion(event.message, line);
+                    chat.printChatMessageWithOptionalDeletion(event.message, print.id);
                 }
 
                 // If the message has been sent 256 times
@@ -84,6 +78,19 @@ public class ChatHandler {
                 newThing.appendSibling(event.message);
                 event.message = newThing;
             }
+        }
+    }
+    private int line;
+
+    class ChatEntry {
+        String text;
+        int amount;
+        int id;
+
+        public ChatEntry(String text, int amount, int id) {
+            this.text = text;
+            this.amount = amount;
+            this.id = id;
         }
     }
 }
