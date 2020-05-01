@@ -42,7 +42,7 @@ public class NameHistoryCommand extends CommandBase {
 
     @Override
     public List<String> getCommandAliases() {
-        return Arrays.asList("namehistory", "name", "username", "history");
+        return Arrays.asList("namehistory", "name", "username");
     }
 
     @Override

@@ -12,7 +12,7 @@ public class BlacklistServerCommand extends CommandBase {
      */
     @Override
     public String getCommandName() {
-        return "blacklist";
+        return "pblacklist";
     }
 
     /**
@@ -22,7 +22,7 @@ public class BlacklistServerCommand extends CommandBase {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/blacklist <server ip>";
+        return "/pblacklist <server ip>";
     }
 
     /**
