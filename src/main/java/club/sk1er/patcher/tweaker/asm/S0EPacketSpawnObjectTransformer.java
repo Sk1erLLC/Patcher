@@ -43,12 +43,10 @@ public class S0EPacketSpawnObjectTransformer implements PatcherTransformer {
         while (iterator.hasNext()) {
             AbstractInsnNode next = iterator.next();
 
-            if (next instanceof JumpInsnNode) {
-                if (next.getOpcode() == Opcodes.IFLE) {
-                    methodNode.instructions.insertBefore(next.getNext(), new JumpInsnNode(Opcodes.IFLT, ((JumpInsnNode) next).label));
-                    methodNode.instructions.remove(next);
-                    break;
-                }
+            if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFLE) {
+                methodNode.instructions.insertBefore(next.getNext(), new JumpInsnNode(Opcodes.IFLT, ((JumpInsnNode) next).label));
+                methodNode.instructions.remove(next);
+                break;
             }
         }
     }

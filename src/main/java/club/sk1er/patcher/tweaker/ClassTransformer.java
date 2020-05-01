@@ -14,6 +14,7 @@ import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityXPOrbTransformer;
 import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameRulesValueTransformer;
@@ -44,6 +45,7 @@ import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderItemTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
+import club.sk1er.patcher.tweaker.asm.RenderXPOrbTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.tweaker.asm.S0EPacketSpawnObjectTransformer;
@@ -149,6 +151,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GameRulesValueTransformer());
         registerTransformer(new EntityOtherPlayerMPTransformer());
         registerTransformer(new S0EPacketSpawnObjectTransformer());
+        registerTransformer(new RenderXPOrbTransformer());
+        registerTransformer(new EntityXPOrbTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
