@@ -101,7 +101,7 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                         methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
                     }
                 }
-            } else if (methodName.equals("orientCamera")) {
+            } else if (methodName.equals("orientCamera") || methodName.equals("func_78467_g")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
