@@ -44,7 +44,7 @@ public interface PatcherTransformer {
     /**
      * Map the field name from notch names
      *
-     * @param classNode  the transformed class node
+     * @param classNode the transformed class node
      * @param fieldNode the transformed classes field node
      * @return a mapped field name
      */
@@ -95,6 +95,25 @@ public interface PatcherTransformer {
             return fieldInsnNode.name;
         } else {
             return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
+        }
+    }
+
+    /**
+     * Remove instructions to this method
+     *
+     * @param methodNode the method being cleared
+     */
+    default void clearInstructions(MethodNode methodNode) {
+        methodNode.instructions.clear();
+
+        // dont waste time clearing local variables if they're empty
+        if (!methodNode.localVariables.isEmpty()) {
+            methodNode.localVariables.clear();
+        }
+
+        // dont waste time clearing try-catches if they're empty
+        if (!methodNode.tryCatchBlocks.isEmpty()) {
+            methodNode.tryCatchBlocks.clear();
         }
     }
 

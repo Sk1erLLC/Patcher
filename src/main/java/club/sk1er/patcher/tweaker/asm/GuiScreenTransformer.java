@@ -38,8 +38,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
             if (methodName.equals("drawDefaultBackground") || methodName.equals("func_146276_q_")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
             } else if (methodName.equals("handleKeyboardInput") || methodName.equals("func_146282_l")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(handleForeignKeyboards());
             }
         }

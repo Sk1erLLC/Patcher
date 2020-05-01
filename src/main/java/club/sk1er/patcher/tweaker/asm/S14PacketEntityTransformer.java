@@ -35,8 +35,7 @@ public class S14PacketEntityTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("getEntity") || methodName.equals("func_149065_a")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(getFixedEntity(
                     "net/minecraft/network/play/server/S14PacketEntity",
                     "field_149074_a")

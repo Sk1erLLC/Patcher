@@ -46,8 +46,7 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
             if ("<init>".equals(methodName)) {
                 methodNode.instructions.insert(initializeDisallowedChars());
             } else if ("stripSpecialChars".equals(methodName)) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(fasterSpecialChars());
             }
         }

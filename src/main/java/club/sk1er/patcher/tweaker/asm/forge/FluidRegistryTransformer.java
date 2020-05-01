@@ -33,7 +33,7 @@ public class FluidRegistryTransformer implements PatcherTransformer {
             String methodName = methodNode.name;
 
             if (methodName.equals("getBucketFluids")) {
-                methodNode.instructions.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(returnFasterSet());
                 break;
             }

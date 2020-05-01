@@ -58,8 +58,7 @@ public class ForgeChunkManagerTransformer implements PatcherTransformer {
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeWorld());
                     break;
                 case "getPersistentChunksFor":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(getHookedChunksMethod());
                     break;
             }

@@ -34,31 +34,26 @@ public class ServerListTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "getServerData":
                 case "func_78850_a":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(getCleanServerData());
                     break;
                 case "removeServerData":
                 case "func_78851_b":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(removeCleanServerData());
                     break;
                 case "addServerData":
                 case "func_78849_a":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(addCleanServerData());
                     break;
                 case "swapServers":
                 case "func_78857_a":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(swapCleanServers());
                     break;
                 case "func_147413_a":
-                    methodNode.instructions.clear();
-                    methodNode.localVariables.clear();
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(setClean());
                     break;
             }

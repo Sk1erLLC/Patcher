@@ -36,12 +36,10 @@ public class EntityTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodNode.name.equals("hasCapability")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(fasterCapabilityCheck());
             } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(getFixedBrightness());
             }
         }

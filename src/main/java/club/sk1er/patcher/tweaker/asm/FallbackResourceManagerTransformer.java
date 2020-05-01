@@ -32,8 +32,7 @@ public class FallbackResourceManagerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("getResource") || methodName.equals("func_110536_a")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(getFastCache());
                 break;
             }

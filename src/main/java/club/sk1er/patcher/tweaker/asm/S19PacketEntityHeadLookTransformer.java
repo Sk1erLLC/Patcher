@@ -27,8 +27,7 @@ public class S19PacketEntityHeadLookTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("getEntity") || methodName.equals("func_149381_a")) {
-                methodNode.instructions.clear();
-                methodNode.localVariables.clear();
+                clearInstructions(methodNode);
                 methodNode.instructions.insert(
                     S14PacketEntityTransformer.getFixedEntity(
                         "net/minecraft/network/play/server/S19PacketEntityHeadLook",
