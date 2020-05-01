@@ -9,6 +9,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -16,6 +18,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 
 // By LlamaLad7
 public class OptifineEntityRendererTransformer implements PatcherTransformer {
@@ -98,10 +101,34 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                         methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
                     }
                 }
+            } else if (methodName.equals("orientCamera")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                break;
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
+                        methodNode.instructions.insertBefore(next, fixParallax());
+                        methodNode.instructions.remove(next);
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList fixParallax() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "parallaxFix", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new LdcInsnNode(0.05F));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        list.add(new LdcInsnNode(-0.10000000149011612F));
+        list.add(gotoInsn);
+        return list;
     }
 
     private boolean checkNode(AbstractInsnNode node) {

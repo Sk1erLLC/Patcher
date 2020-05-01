@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class EntityTransformer implements PatcherTransformer {
@@ -32,15 +33,63 @@ public class EntityTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = methodNode.name;
+            String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("hasCapability")) {
+            if (methodNode.name.equals("hasCapability")) {
                 methodNode.instructions.clear();
                 methodNode.localVariables.clear();
                 methodNode.instructions.insert(fasterCapabilityCheck());
-                break;
+            } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
+                methodNode.instructions.clear();
+                methodNode.localVariables.clear();
+                methodNode.instructions.insert(getFixedBrightness());
             }
         }
+    }
+
+    private InsnList getFixedBrightness() {
+        InsnList list = new InsnList();
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/BlockPos"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/entity/Entity",
+            "field_70165_t", // posX
+            "D"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/entity/Entity",
+            "field_70163_u", // posY
+            "D"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/entity/Entity",
+            "func_70047_e", // getEyeHeight
+            "()F",
+            false));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/entity/Entity",
+            "field_70161_v", // posZ
+            "D"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/BlockPos", "<init>", "(DDD)V", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, 2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/entity/Entity",
+            "field_70170_p", // worldObj
+            "Lnet/minecraft/world/World;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/world/World",
+            "func_175626_b", // getCombinedLight
+            "(Lnet/minecraft/util/BlockPos;I)I",
+            false));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        return list;
     }
 
     private InsnList fasterCapabilityCheck() {

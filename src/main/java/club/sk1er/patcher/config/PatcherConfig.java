@@ -591,6 +591,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean skinRefresher = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Parallax Fix",
+        description = "Fix the camera being too far back, seemingly making your eyes be in the back of your head.",
+        category = "Fixes", subcategory = "General"
+    )
+    public static boolean parallaxFix;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
