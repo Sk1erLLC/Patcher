@@ -66,6 +66,7 @@ import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeHooksClientTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
@@ -163,6 +164,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelLoaderTransformer());
         registerTransformer(new ForgeChunkManagerTransformer());
         registerTransformer(new FluidRegistryTransformer());
+        registerTransformer(new GuiIngameForgeTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
