@@ -132,7 +132,7 @@ public class Patcher {
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
-                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 24 * 60 * 60 * 1000)) {
+                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000)) {
                     LOGGER.info("Deleted " + file.getName() + ", last modified was " + file.lastModified());
                     file.delete();
                 }
