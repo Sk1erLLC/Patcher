@@ -46,6 +46,7 @@ import club.sk1er.patcher.tweaker.asm.RenderItemTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
 import club.sk1er.patcher.tweaker.asm.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.ResourcePackRepositoryTransformer;
+import club.sk1er.patcher.tweaker.asm.S0EPacketSpawnObjectTransformer;
 import club.sk1er.patcher.tweaker.asm.S14PacketEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.S19PacketEntityHeadLookTransformer;
 import club.sk1er.patcher.tweaker.asm.S19PacketEntityStatusTransformer;
@@ -147,6 +148,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerArmorBaseTransformer());
         registerTransformer(new GameRulesValueTransformer());
         registerTransformer(new EntityOtherPlayerMPTransformer());
+        registerTransformer(new S0EPacketSpawnObjectTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
