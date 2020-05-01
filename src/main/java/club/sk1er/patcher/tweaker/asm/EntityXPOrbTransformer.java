@@ -34,7 +34,7 @@ public class EntityXPOrbTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("onUpdate")) {
+            if (methodName.equals("onUpdate") || methodName.equals("func_70071_h_")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -43,7 +43,7 @@ public class EntityXPOrbTransformer implements PatcherTransformer {
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                         String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
-                        if (methodInsnName.equals("getEyeHeight")) {
+                        if (methodInsnName.equals("getEyeHeight") || methodInsnName.equals("func_70047_e")) {
                             methodNode.instructions.insertBefore(next.getNext().getNext(), lowerRenderHeight());
                             break;
                         }

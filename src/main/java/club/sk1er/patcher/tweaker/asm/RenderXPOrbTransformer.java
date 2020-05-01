@@ -34,7 +34,7 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("doRender")) {
+            if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -42,8 +42,11 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
 
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(180.0f)) {
                         methodNode.instructions.insertBefore(next, fixRenderHeight());
+                        break;
                     }
                 }
+
+                break;
             }
         }
     }
@@ -53,7 +56,11 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new LdcInsnNode(0.1f));
         list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "translate", "(FFF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+            "net/minecraft/client/renderer/GlStateManager",
+            "func_179109_b", // translate
+            "(FFF)V",
+            false));
         return list;
     }
 }
