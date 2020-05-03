@@ -1,5 +1,6 @@
 package club.sk1er.patcher.tweaker.asm.optifine;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
@@ -115,7 +116,7 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                         String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
                         if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
-                            ((MethodInsnNode) next).name = "func_147447_a";
+                            ((MethodInsnNode) next).name = Patcher.isDevelopment() ? "rayTraceBlocks" : "func_147447_a";
                             ((MethodInsnNode) next).desc = FMLDeobfuscatingRemapper.INSTANCE.mapDesc(
                                 "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;"
                             );
