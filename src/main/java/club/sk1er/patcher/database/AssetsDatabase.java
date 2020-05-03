@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class AssetsDatabase {
             dir.mkdir();
             connection = DriverManager.getConnection("jdbc:h2:" + dir.getAbsolutePath() + "/asset_cache_from_patcher_mod.h2", "", "");
             connection.prepareStatement("create table if not exists assets (pack varchar(256), name varchar(1024), data BINARY, mcmeta BINARY)").executeUpdate();
-            connection.prepareStatement("create index if not exists name on assets (name)").executeUpdate();
+            connection.prepareStatement("create unique index if not exists name on assets (name)").executeUpdate();
             connection.prepareStatement("create index if not exists pack_name on assets (pack,name)").executeUpdate();
             connected = true;
         } catch (SQLException throwables) {
@@ -55,15 +56,16 @@ public class AssetsDatabase {
     }
 
     private static byte[] read(InputStream stream) throws IOException {
-        byte[] bytes = new byte[stream.available()];
-        IOUtils.read(stream, bytes);
-        return bytes;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(stream, out);
+        stream.close();
+        return out.toByteArray();
     }
 
     public DatabaseReturn getData(String name) {
-        if(!connected) return null;
+        if (!connected) return null;
         try {
-            PreparedStatement statement = connection.prepareStatement("select * from assets where name=?");
+            PreparedStatement statement = connection.prepareStatement("select * from assets where name=? limit 1");
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -80,7 +82,7 @@ public class AssetsDatabase {
     }
 
     public void clearAll() {
-        if(!connected) return;
+        if (!connected) return;
         try {
             connection.prepareStatement("delete from assets").executeUpdate();
         } catch (SQLException throwables) {
@@ -90,7 +92,7 @@ public class AssetsDatabase {
 
 
     public void update(String pack, String name, byte[] data, byte[] mcMeta) {
-        if(!connected) return;
+        if (!connected) return;
         try {
             PreparedStatement statement = connection.prepareStatement("merge into assets key(pack,`name`) values (?,?,?,?)");
             statement.setString(1, pack);

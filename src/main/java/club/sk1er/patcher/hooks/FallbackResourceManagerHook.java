@@ -1,6 +1,5 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.database.AssetsDatabase;
 import club.sk1er.patcher.database.DatabaseReturn;
@@ -44,13 +43,13 @@ public class FallbackResourceManagerHook {
         database.clearAll();
     }
 
-    public static IResource getCachedResource(FallbackResourceManager manager, ResourceLocation location) throws IOException {
-        if (negativeResourceCache.contains(location.getResourcePath())) {
+    public static IResource getCachedResource(final FallbackResourceManager manager, final ResourceLocation location) throws IOException {
+        if (negativeResourceCache.contains(location.toString())) {
             throw new FileNotFoundException(location.toString());
         }
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
         if (PatcherConfig.cachedResources) {
-            DatabaseReturn data = database.getData(location.getResourcePath());
+            DatabaseReturn data = database.getData(location.toString());
             if (data != null) {
                 return new SimpleResource(data.getPackName(),
                     location,
@@ -78,7 +77,7 @@ public class FallbackResourceManagerHook {
                 }
                 byte[] mainData = readCopy(stream);
                 if (PatcherConfig.cachedResources)
-                    database.update(currentPack.getPackName(), location.getResourcePath(), mainData, rawMcMeta);
+                    database.update(currentPack.getPackName(), location.toString(), mainData, rawMcMeta);
                 return new SimpleResource(
                     currentPack.getPackName(),
                     location,
