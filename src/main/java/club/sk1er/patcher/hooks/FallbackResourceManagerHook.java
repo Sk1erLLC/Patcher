@@ -21,6 +21,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Used in {@link FallbackResourceManagerTransformer#transform(ClassNode, String)}
@@ -29,6 +33,10 @@ import java.util.Set;
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
     private static final AssetsDatabase database = new AssetsDatabase();
+    private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1, (r) -> new Thread(r, "Patcher Database Worker Thread "));
+    public static boolean reloading = false;
+    private static ConcurrentLinkedQueue<Data> updateQueue = new ConcurrentLinkedQueue<>();
+    private static boolean purge = false;
 
     static {
         try {
@@ -36,11 +44,23 @@ public class FallbackResourceManagerHook {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        SERVICE.scheduleAtFixedRate(() -> {
+            if (purge) {
+                purge = false;
+                database.clearAll();
+            }
+            Data poll;
+            while ((poll = updateQueue.poll()) != null) {
+                database.update(poll.name, poll.location.toString(), poll.stream, poll.mcMeta);
+            }
+        }, 10, 10, TimeUnit.MILLISECONDS);
+        reloading = database.isNew();
     }
 
     public static void clearCache() {
+        reloading = true;
+        purge = true;
         negativeResourceCache.clear();
-        database.clearAll();
     }
 
     public static IResource getCachedResource(final FallbackResourceManager manager, final ResourceLocation location) throws IOException {
@@ -48,7 +68,7 @@ public class FallbackResourceManagerHook {
             throw new FileNotFoundException(location.toString());
         }
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
-        if (PatcherConfig.cachedResources) {
+        if (PatcherConfig.cachedResources && !reloading) {
             DatabaseReturn data = database.getData(location.toString());
             if (data != null) {
                 return new SimpleResource(data.getPackName(),
@@ -76,8 +96,9 @@ public class FallbackResourceManagerHook {
                     mcMetaData = new ByteArrayInputStream(rawMcMeta);
                 }
                 byte[] mainData = readCopy(stream);
-                if (PatcherConfig.cachedResources)
-                    database.update(currentPack.getPackName(), location.toString(), mainData, rawMcMeta);
+                if (PatcherConfig.cachedResources) {
+                    updateQueue.add(new Data(currentPack.getPackName(), location, mainData, rawMcMeta));
+                }
                 return new SimpleResource(
                     currentPack.getPackName(),
                     location,

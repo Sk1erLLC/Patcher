@@ -12,6 +12,7 @@ import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
+import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
@@ -62,18 +63,27 @@ import java.util.concurrent.CompletableFuture;
 @Mod(modid = "patcher", name = "Patcher", version = "1.1")
 public class Patcher {
 
+    @Mod.Instance("patcher")
+    public static Patcher instance;
+    private static boolean cacheDevelopment;
     private final Logger LOGGER = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
     private CloudHandler cloudHandler;
-
-    @Mod.Instance("patcher")
-    public static Patcher instance;
-
     private KeyBinding nameHistory;
     private KeyBinding dropKeybind;
+
+    public static boolean isDevelopment() {
+        if (cacheDevelopment) {
+            return true;
+        } else {
+            Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+            if (o == null) return false;
+            return cacheDevelopment = (boolean) o;
+        }
+    }
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
@@ -238,6 +248,7 @@ public class Patcher {
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         ScreenShotHelper.pixelValues = null; //Reset because this uses 14 mb of persistent ram after screenshot is taken
+        FallbackResourceManagerHook.reloading = false;
     }
 
     public PatcherConfig getPatcherConfig() {
@@ -263,17 +274,5 @@ public class Patcher {
 
     public KeyBinding getDropKeybind() {
         return dropKeybind;
-    }
-
-    private static boolean cacheDevelopment;
-
-    public static boolean isDevelopment() {
-        if (cacheDevelopment) {
-            return true;
-        } else {
-            Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-            if (o == null) return false;
-            return cacheDevelopment = (boolean) o;
-        }
     }
 }
