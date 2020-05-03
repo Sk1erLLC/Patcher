@@ -2,6 +2,7 @@ package club.sk1er.patcher.tweaker.asm.optifine;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -110,11 +111,29 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
                         methodNode.instructions.insertBefore(next, fixParallax());
                         methodNode.instructions.remove(next);
-                        break;
+                    } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                        if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
+                            ((MethodInsnNode) next).name = "func_147447_a";
+                            ((MethodInsnNode) next).desc = FMLDeobfuscatingRemapper.INSTANCE.mapDesc(
+                                "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;"
+                            );
+
+                            methodNode.instructions.insertBefore(next, changeMethodRedirect());
+                        }
                     }
                 }
             }
         }
+    }
+
+    private InsnList changeMethodRedirect() {
+        InsnList list = new InsnList();
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        return list;
     }
 
     private InsnList fixParallax() {

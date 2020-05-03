@@ -4,6 +4,7 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.BlacklistServerCommand;
+import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.NameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
@@ -105,6 +106,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
         ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
         ClientCommandHandler.instance.registerCommand(new SkinCacheRefresh());
+        ClientCommandHandler.instance.registerCommand(new CoordsCommand());
 
         if (isDevelopment()) {
             ClientCommandHandler.instance.registerCommand(new WireframeClouds());
