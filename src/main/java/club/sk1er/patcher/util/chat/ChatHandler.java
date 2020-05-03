@@ -16,6 +16,8 @@ import java.util.LinkedList;
 public class ChatHandler {
 
     private final LinkedList<ChatEntry> entries = new LinkedList<>();
+    private int line;
+    private int lastAmount = 0;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
@@ -26,14 +28,17 @@ public class ChatHandler {
                 if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========")) {
                     return; // die!
                 }
-
+                if (lastAmount != PatcherConfig.superCompactChatAmount) {
+                    lastAmount = PatcherConfig.superCompactChatAmount;
+                    entries.clear();
+                }
                 // Get the chat instance
                 GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 
                 // If the last message sent is the same as the newly posted message
                 ChatEntry print = null;
                 for (ChatEntry entry : entries) {
-                    if (entry.text.equalsIgnoreCase(message)) {
+                    if (entry.text.equalsIgnoreCase(message) || (entry.noSpace.length() == 0 && message.replace(" ", "").length() == 0)) {
                         chat.deleteChatLine(entry.id);
                         entry.amount++;
                         event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
@@ -43,7 +48,7 @@ public class ChatHandler {
                 }
 
                 if (print == null) {
-                    ChatEntry e = new ChatEntry(message, 1, line);
+                    ChatEntry e = new ChatEntry(message.replace(" ", "").length() == 0 ? "" : message, 1, line);
                     entries.add(e);
                     print = e;
                     if (entries.size() > PatcherConfig.superCompactChatAmount) {
@@ -53,6 +58,7 @@ public class ChatHandler {
                     entries.remove(print); //Push to front
                     entries.add(print);
                 }
+
 
                 if (PatcherConfig.timestamps) {
                     ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
@@ -83,17 +89,17 @@ public class ChatHandler {
         }
     }
 
-    private int line;
-
     static class ChatEntry {
         String text;
         int amount;
         int id;
+        String noSpace;
 
         public ChatEntry(String text, int amount, int id) {
             this.text = text;
             this.amount = amount;
             this.id = id;
+            noSpace = text.replace(" ", "");
         }
     }
 }
