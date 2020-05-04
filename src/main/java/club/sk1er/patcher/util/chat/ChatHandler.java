@@ -52,10 +52,10 @@ public class ChatHandler {
                     entries.add(e);
                     print = e;
                     if (entries.size() > PatcherConfig.superCompactChatAmount) {
-                        entries.removeLast();
+                        entries.removeFirst();
                     }
                 } else {
-                    entries.remove(print); //Push to front
+                    entries.remove(print); //Push to end
                     entries.add(print);
                 }
 
