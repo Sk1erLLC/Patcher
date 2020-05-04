@@ -339,6 +339,13 @@ public class PatcherConfig extends Vigilant {
     public static int superCompactChatAmount = 5;
 
     @Property(
+        type = PropertyType.SWITCH, name = "AntiClearChat",
+        description = "Remove blank messages from chat.",
+        category = "Quality of Life", subcategory = "Chat"
+    )
+    public static boolean antiClearChat = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Number Ping",
         description = "Show a readable ping number in tab instead of bars.\n§cMay turn out to be 1 on Hypixel in most cases.",
         category = "Quality of Life", subcategory = "Tab"

@@ -22,10 +22,14 @@ public class ChatHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
         if (!event.isCanceled() && event.type == 0) {
+            if (event.message.getUnformattedText().trim().isEmpty() && PatcherConfig.antiClearChat) {
+                event.setCanceled(true);
+            }
+
             String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
             if (PatcherConfig.compactChat) {
                 String message = event.message.getUnformattedText();
-                if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========")) {
+                if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========")) {
                     return; // die!
                 }
                 if (lastAmount != PatcherConfig.superCompactChatAmount) {
