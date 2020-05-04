@@ -56,6 +56,7 @@ import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
+import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
@@ -154,6 +155,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new EntityXPOrbTransformer());
+        registerTransformer(new SoundManagerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

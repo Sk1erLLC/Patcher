@@ -57,6 +57,7 @@ public class AssetsDatabase {
     public static byte[] read(InputStream inputStream, int size) throws IOException {
         byte[] data = new byte[size];
         inputStream.read(data);
+        inputStream.close();
         return data;
     }
 
