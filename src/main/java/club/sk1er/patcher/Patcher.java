@@ -249,7 +249,6 @@ public class Patcher {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        ScreenShotHelper.pixelValues = null; //Reset because this uses 14 mb of persistent ram after screenshot is taken
         FallbackResourceManagerHook.reloading = false;
     }
 
