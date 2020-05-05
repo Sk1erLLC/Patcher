@@ -31,13 +31,12 @@ import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindDropStack;
 import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
-import club.sk1er.patcher.util.screen.MainMenuEditor;
+import club.sk1er.patcher.util.screen.PatcherMenuEditor;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.ScreenShotHelper;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -133,7 +132,7 @@ public class Patcher {
         registerClass(new EntityCulling());
         registerClass(new ArmorStatusRenderer());
         registerClass(new EntityTrace());
-        registerClass(new MainMenuEditor());
+        registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
         registerClass(new KeybindHandler());
 

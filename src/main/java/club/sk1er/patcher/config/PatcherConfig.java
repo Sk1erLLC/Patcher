@@ -605,6 +605,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean parallaxFix;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Replace Open to Lan",
+        description = "Remove the 'Open to Lan' button when in a multiplayer server with a server list button.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean replaceOpenToLan = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
