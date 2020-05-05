@@ -41,7 +41,6 @@ public class PatcherMenuEditor {
 
                         if (button.id == 2) {
                             button.xPosition = width / 2 - 204;
-                            break;
                         }
                     }
                 }
