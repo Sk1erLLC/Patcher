@@ -39,24 +39,73 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderClouds") || methodName.equals("func_180447_b")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
-            } else if (methodName.equals("preRenderDamagedBlocks") || methodName.equals("func_180443_s")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "renderClouds":
+                case "func_180447_b":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
+                    break;
+                case "preRenderDamagedBlocks":
+                case "func_180443_s": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-3.0F)) {
-                        if (next.getNext() instanceof LdcInsnNode) {
-                            ((LdcInsnNode) next).cst = -1.0F;
-                        } else {
-                            ((LdcInsnNode) next).cst = -10.0F;
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-3.0F)) {
+                            if (next.getNext() instanceof LdcInsnNode) {
+                                ((LdcInsnNode) next).cst = -1.0F;
+                            } else {
+                                ((LdcInsnNode) next).cst = -10.0F;
+                            }
                         }
                     }
+                    break;
+                }
+                case "setupTerrain":
+                case "func_174970_a": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEINTERFACE) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("isBoundingBoxInFrustum") || methodInsnName.equals("func_78546_a")) {
+                                methodNode.instructions.insertBefore(next, checkYLevel());
+                                break;
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }
+    }
+
+    private InsnList checkYLevel() {
+        InsnList list = new InsnList();
+        list.add(new InsnNode(Opcodes.DCONST_0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 19));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/util/BlockPos",
+            "func_177956_o", // getY
+            "()I",
+            false));
+        LabelNode ifle = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
+        list.add(new LdcInsnNode(Double.POSITIVE_INFINITY));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifle);
+        list.add(new LdcInsnNode(Double.NEGATIVE_INFINITY));
+        list.add(gotoInsn);
+        list.add(new InsnNode(Opcodes.DCONST_0));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/util/AxisAlignedBB",
+            "func_72321_a", // addCoord
+            "(DDD)Lnet/minecraft/util/AxisAlignedBB;",
+            false));
+        return list;
     }
 
     private InsnList patcherCloudRenderer() {
