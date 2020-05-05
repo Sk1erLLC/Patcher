@@ -1,8 +1,6 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.database.AssetsDatabase;
-import club.sk1er.patcher.database.DatabaseReturn;
 import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import net.minecraft.client.resources.FallbackResourceManager;
 import net.minecraft.client.resources.IResource;
@@ -12,19 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Used in {@link FallbackResourceManagerTransformer#transform(ClassNode, String)}
@@ -33,10 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
     private static final AssetsDatabase database = new AssetsDatabase();
-    private static final ScheduledExecutorService SERVICE = Executors.newScheduledThreadPool(1, (r) -> new Thread(r, "Patcher Database Worker Thread "));
-    public static boolean reloading = false;
-    private static ConcurrentLinkedQueue<Data> updateQueue = new ConcurrentLinkedQueue<>();
-    private static boolean purge = false;
 
     static {
         try {
@@ -44,22 +28,9 @@ public class FallbackResourceManagerHook {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        SERVICE.scheduleAtFixedRate(() -> {
-            if (purge) {
-                purge = false;
-                database.clearAll();
-            }
-            Data poll;
-            while ((poll = updateQueue.poll()) != null) {
-                database.update(poll.name, poll.location.toString(), poll.stream, poll.mcMeta);
-            }
-        }, 10, 10, TimeUnit.MILLISECONDS);
-        reloading = database.isNew();
     }
 
     public static void clearCache() {
-        reloading = true;
-        purge = true;
         negativeResourceCache.clear();
     }
 
@@ -68,42 +39,26 @@ public class FallbackResourceManagerHook {
             throw new FileNotFoundException(location.toString());
         }
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
-        if (PatcherConfig.cachedResources && !reloading) {
-            DatabaseReturn data = database.getData(location.toString());
-            if (data != null) {
-                return new SimpleResource(data.getPackName(),
-                    location,
-                    new ByteArrayInputStream(data.getData()),
-                    data.getMcMeta() != null ? new ByteArrayInputStream(data.getMcMeta()) : null,
-                    manager.frmMetadataSerializer);
-            }
-        }
-        byte[] rawMcMeta = null;
+
+        InputStream mcMetaStream = null;
         for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
             IResourcePack currentPack = manager.resourcePacks.get(i);
 
-            if (rawMcMeta == null) {
+            if (mcMetaStream == null) {
                 InputStream safe = getFromFile(currentPack, mcMetaLocation);
                 if (safe != null) {
-                    rawMcMeta = readCopy(safe);
+                    mcMetaStream = safe;
                 }
             }
 
             InputStream stream = getFromFile(currentPack, location);
             if (stream != null) {
-                InputStream mcMetaData = null;
-                if (rawMcMeta != null) {
-                    mcMetaData = new ByteArrayInputStream(rawMcMeta);
-                }
-                byte[] mainData = readCopy(stream);
-                if (PatcherConfig.cachedResources) {
-                    updateQueue.add(new Data(currentPack.getPackName(), location, mainData, rawMcMeta));
-                }
+
                 return new SimpleResource(
                     currentPack.getPackName(),
                     location,
-                    new ByteArrayInputStream(mainData),
-                    mcMetaData,
+                    stream,
+                    mcMetaStream,
                     manager.frmMetadataSerializer);
             }
         }
@@ -111,46 +66,15 @@ public class FallbackResourceManagerHook {
         throw new FileNotFoundException(location.toString());
     }
 
-    private static byte[] readCopy(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtils.copy(inputStream, out);
-        inputStream.close();
-        return out.toByteArray();
-    }
 
     private static InputStream getFromFile(IResourcePack pack, ResourceLocation location) {
-
         try {
-            BufferedInputStream inputStream = new BufferedInputStream(pack.getInputStream(location));
-            byte[] bytes = readCopy(inputStream);
-            return new ByteArrayInputStream(bytes);
+            return new BufferedInputStream(pack.getInputStream(location));
         } catch (Throwable ignored) {
         }
 
         return null;
     }
 
-    static class Data {
-        String name;
-        ResourceLocation location;
-        byte[] stream;
-        byte[] mcMeta;
 
-        public Data(String name, ResourceLocation location, byte[] stream, byte[] mcMeta) {
-            this.name = name;
-            this.location = location;
-            this.stream = stream;
-            this.mcMeta = mcMeta;
-        }
-
-        @Override
-        public String toString() {
-            return "Data{" +
-                "name='" + name + '\'' +
-                ", location=" + location +
-                ", stream=" + Arrays.toString(stream) +
-                ", mcMeta=" + Arrays.toString(mcMeta) +
-                '}';
-        }
-    }
 }

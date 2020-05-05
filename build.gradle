@@ -42,7 +42,6 @@ configurations {
 
 dependencies {
     provided files("libs/modcore.jar")
-    embed("com.h2database:h2:1.3.176")
 }
 
 task moveResources {
