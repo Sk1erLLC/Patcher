@@ -13,7 +13,6 @@ import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.command.WireframeClouds;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
-import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
@@ -46,7 +45,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -244,11 +242,6 @@ public class Patcher {
                 e.printStackTrace();
             }
         });
-    }
-
-    @SubscribeEvent
-    public void tick(TickEvent.ClientTickEvent event) {
-        FallbackResourceManagerHook.reloading = false;
     }
 
     public PatcherConfig getPatcherConfig() {
