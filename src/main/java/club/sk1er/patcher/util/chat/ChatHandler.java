@@ -29,7 +29,7 @@ public class ChatHandler {
             String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
             if (PatcherConfig.compactChat) {
                 String message = event.message.getUnformattedText();
-                if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========")) {
+                if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
                     return; // die!
                 }
                 if (lastAmount != PatcherConfig.superCompactChatAmount) {
