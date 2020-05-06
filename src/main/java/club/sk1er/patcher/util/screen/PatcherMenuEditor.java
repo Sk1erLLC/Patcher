@@ -10,12 +10,11 @@ import net.minecraft.client.gui.GuiCustomizeSkin;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.List;
 
@@ -61,7 +60,17 @@ public class PatcherMenuEditor {
                 if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
                     mcButtonList.get(4).visible = false;
                     mcButtonList.get(4).enabled = false;
-                    mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List"));
+                    mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List") {
+                        @Override
+                        public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+                            if (super.mousePressed(mc, mouseX, mouseY)) {
+                                mc.displayGuiScreen(new ExtendedMultiplayer(event.gui));
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    });
                 }
             } else if (event.gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
                 mcButtonList.add(new GuiButton(435762,
@@ -80,11 +89,6 @@ public class PatcherMenuEditor {
             FallbackResourceManagerHook.clearCache();
         } else if (event.button.id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
             SkinCacheRefresh.refreshSkin();
-        } else if (event.gui instanceof GuiIngameMenu && event.button.id == 231423) {
-            MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
-            mc.theWorld.sendQuittingDisconnectingPacket();
-            mc.loadWorld(null);
-            mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
         }
     }
 
@@ -93,6 +97,36 @@ public class PatcherMenuEditor {
         if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
             buttonList.get(2).visible = false;
             buttonList.get(2).enabled = false;
+        }
+    }
+
+    // taken from canelex
+    private static class ExtendedMultiplayer extends GuiMultiplayer {
+
+        public ExtendedMultiplayer(GuiScreen parent) {
+            super(parent);
+        }
+
+        @Override
+        protected void actionPerformed(GuiButton button) {
+            if (button.id == 1 || button.id == 4) {
+                this.disconnectFromServer();
+            }
+        }
+
+        @Override
+        public void connectToSelected() {
+            this.disconnectFromServer();
+            super.connectToSelected();
+        }
+
+        private void disconnectFromServer() {
+            if (mc.theWorld != null) {
+                mc.theWorld.sendQuittingDisconnectingPacket();
+                mc.loadWorld(null);
+                mc.displayGuiScreen(null);
+                parentScreen = this;
+            }
         }
     }
 }
