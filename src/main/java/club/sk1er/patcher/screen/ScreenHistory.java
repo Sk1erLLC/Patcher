@@ -91,6 +91,8 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+        mc.fontRendererObj.drawStringWithShadow("* this design is temporary.", 3, 3, new Color(125, 125, 125, 180).getRGB());
+
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         int left = width / 5 - 1;
