@@ -2,7 +2,6 @@ package club.sk1er.patcher.screen;
 
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.Patcher;
-import me.kbrewster.exceptions.APIException;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
@@ -91,6 +90,8 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+        mc.fontRendererObj.drawStringWithShadow("* this design is temporary.", 3, 3, new Color(125, 125, 125, 180).getRGB());
+
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         int left = width / 5 - 1;
