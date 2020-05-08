@@ -212,21 +212,20 @@ public class ClassTransformer implements IClassTransformer {
         }
 
         if (outputBytecode) {
-            try {
-                File bytecodeDirectory = new File("bytecode");
-                String transformedClassName;
+            File bytecodeDirectory = new File("bytecode");
+            String transformedClassName;
 
-                // anonymous classes
-                if (transformedName.contains("$")) {
-                    transformedClassName = transformedName.replace('$', '.') + ".class";
-                } else {
-                    transformedClassName = transformedName + ".class";
-                }
+            // anonymous classes
+            if (transformedName.contains("$")) {
+                transformedClassName = transformedName.replace('$', '.') + ".class";
+            } else {
+                transformedClassName = transformedName + ".class";
+            }
 
-                File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
-                FileOutputStream os = new FileOutputStream(bytecodeOutput);
+            File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
+
+            try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
                 os.write(classWriter.toByteArray());
-                os.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

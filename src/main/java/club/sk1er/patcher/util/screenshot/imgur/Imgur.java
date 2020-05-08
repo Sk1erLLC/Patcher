@@ -1,5 +1,6 @@
 package club.sk1er.patcher.util.screenshot.imgur;
 
+import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.codec.binary.Base64;
@@ -30,17 +31,17 @@ public class Imgur implements Runnable {
     @Override
     public void run() {
         HttpURLConnection connection = null;
-
-        try {
+        OutputStreamWriter outputStreamWriter = null;
+        BufferedReader bufferedReader = null;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             URL url = new URL("https://api.imgur.com/3/image");
             connection = (HttpURLConnection) url.openConnection();
             BufferedImage image;
             File file = uploadFile;
             file.mkdir();
             image = ImageIO.read(file);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", byteArrayOutputStream);
-            byte[] byteImage = byteArrayOutputStream.toByteArray();
+            ImageIO.write(image, "png", baos);
+            byte[] byteImage = baos.toByteArray();
 
             String dataImage = Base64.encodeBase64String(byteImage);
             String data = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(dataImage, "UTF-8");
@@ -51,22 +52,32 @@ public class Imgur implements Runnable {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.connect();
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
+            outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
             outputStreamWriter.write(data);
-            outputStreamWriter.flush();
-            outputStreamWriter.close();
 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             JsonParser parser = new JsonParser();
             JsonObject imgurJson = parser.parse(bufferedReader).getAsJsonObject();
             JsonObject dataJson = imgurJson.getAsJsonObject("data");
             link = dataJson.get("link").getAsString();
-            bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (connection != null) {
                 connection.disconnect();
+            }
+
+            try {
+                if (outputStreamWriter != null) {
+                    outputStreamWriter.flush();
+                    outputStreamWriter.close();
+                }
+
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            } catch (Exception e) {
+                Patcher.instance.getLogger().error("Failed cleaning up Imgur uploader.", e);
             }
         }
     }

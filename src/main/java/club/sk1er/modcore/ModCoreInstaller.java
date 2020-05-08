@@ -174,8 +174,6 @@ public class ModCoreInstaller {
         comp.setSize(399, 80);
         comp.setEditable(false);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-
         Dimension preferredSize = new Dimension(400, 225);
         bar.setSize(preferredSize);
         frame.setSize(preferredSize);
@@ -189,8 +187,8 @@ public class ModCoreInstaller {
         bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 4));
         comp.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
 
-        try {
-
+        InputStream is = null;
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
             URL u = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
@@ -199,9 +197,8 @@ public class ModCoreInstaller {
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            InputStream is = connection.getInputStream();
+            is = connection.getInputStream();
             int contentLength = connection.getContentLength();
-            FileOutputStream outputStream = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             System.out.println("MAX: " + contentLength);
             bar.setMaximum(contentLength);
@@ -217,6 +214,15 @@ public class ModCoreInstaller {
             e.printStackTrace();
             frame.dispose();
             return false;
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (Exception e) {
+                System.out.println("Failed cleaning up ModCoreInstaller#download");
+                e.printStackTrace();
+            }
         }
         frame.dispose();
         return true;
@@ -229,20 +235,37 @@ public class ModCoreInstaller {
     public static String fetchString(String url) {
         url = url.replace(" ", "%20");
         System.out.println("Fetching " + url);
+
+        HttpURLConnection connection = null;
+        InputStream is = null;
         try {
             URL u = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
+            connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
             connection.addRequestProperty("User-Agent", "Mozilla/4.76 (Sk1er ModCore)");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            InputStream is = connection.getInputStream();
+            is = connection.getInputStream();
             return IOUtils.toString(is, Charset.defaultCharset());
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (Exception e) {
+                System.out.println("Failed cleaning up ModCoreInstaller#fetchString");
+                e.printStackTrace();
+            }
         }
+
         return "Failed to fetch";
     }
 

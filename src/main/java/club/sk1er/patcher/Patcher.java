@@ -188,7 +188,7 @@ public class Patcher {
     public void saveBlacklistedServers() {
         File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
 
-        try {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
             if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
                 return;
             }
@@ -197,14 +197,9 @@ public class Patcher {
                 return;
             }
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile));
-
             for (String server : blacklistedServers) {
                 writer.write(server + System.lineSeparator());
             }
-
-            writer.close();
-            writer.flush();
         } catch (IOException ignored) {
         }
     }
