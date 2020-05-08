@@ -2,7 +2,6 @@ package club.sk1er.patcher.screen;
 
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.Patcher;
-import me.kbrewster.exceptions.APIException;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;

@@ -113,7 +113,7 @@ public class AsyncScreenshots implements Runnable {
         deleteComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7This'll delete the screenshot from your screenshots folder.\n" +
-                    "&cThis is not recoverable and cannot be deleted once a \n" +
+                    "&cThis is not recoverable and cannot be deleted once a\n" +
                     "&cnew screenshot is taken, or favorited."))));
 
         IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
