@@ -221,10 +221,11 @@ public class AsyncScreenshots implements Runnable {
             return "/favorite";
         }
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             try {
-                final File favorited_screenshots = getTimestampedPNGFileForDirectory(new File("./favorite_screenshots"));
+                File favorited_screenshots = getTimestampedPNGFileForDirectory(new File("./favorite_screenshots"));
                 screenshot.delete();
 
                 if (!favorited_screenshots.exists()) {
@@ -234,7 +235,7 @@ public class AsyncScreenshots implements Runnable {
                 ImageIO.write(image, "png", favorited_screenshots);
                 ChatUtilities.sendMessage("&e" + screenshot.getName() + " has been favorited.");
             } catch (Throwable e) {
-                e.printStackTrace();
+                ChatUtilities.sendMessage("&cFailed to favorite screenshot, maybe the file was moved/deleted?");
             }
         }
 
@@ -255,11 +256,15 @@ public class AsyncScreenshots implements Runnable {
             return "/delete";
         }
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             if (screenshot.exists()) {
                 ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
                 screenshot.delete();
+
+                // not on disk, remove from memory
+                screenshot = null;
             } else {
                 ChatUtilities.sendMessage("&cCouldn't find " + screenshot.getName());
             }
@@ -324,11 +329,16 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-            ImageSelection sel = new ImageSelection(image);
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
+            try {
+                ImageSelection sel = new ImageSelection(image);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
 
-            IChatComponent uploadedComponent = new ChatComponentText(ChatColor.GREEN + "Screenshot has been copied to your clipboard");
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
+                IChatComponent uploadedComponent = new ChatComponentText(ChatColor.GREEN + "Screenshot has been copied to your clipboard");
+                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
+            } catch (Exception e) {
+                ChatUtilities.sendMessage("&cFailed to copy the screenshot: " + e.getCause());
+                e.printStackTrace();
+            }
         }
 
         @Override
