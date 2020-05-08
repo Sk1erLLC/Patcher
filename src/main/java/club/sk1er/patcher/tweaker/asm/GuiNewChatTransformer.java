@@ -1,19 +1,8 @@
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import net.minecraft.client.renderer.GlStateManager;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.IincInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -63,7 +52,10 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
-                        if (node.getOpcode() == Opcodes.INVOKESTATIC
+                        if (node.getOpcode() == Opcodes.LDC && ((LdcInsnNode) node).cst.equals(20.0f)) {
+                            methodNode.instructions.insert(node, minus12Float());
+                        }
+                        else if (node.getOpcode() == Opcodes.INVOKESTATIC
                             && node.getPrevious().getOpcode() == Opcodes.ISHL) {
                             LabelNode ifeq = new LabelNode();
                             methodNode.instructions.insert(node, ifeq);
@@ -81,15 +73,6 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                             break;
                         }
                     }
-
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(),
-                        new MethodInsnNode(Opcodes.INVOKESTATIC,
-                            "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer",
-                            "moveDownAndPushMatrix", "()V", false));
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(),
-                        new MethodInsnNode(Opcodes.INVOKESTATIC,
-                            "club/sk1er/patcher/tweaker/asm/GuiNewChatTransformer", "popMatrix", "()V",
-                            false));
                     break;
                 }
 
@@ -117,25 +100,22 @@ public class GuiNewChatTransformer implements PatcherTransformer {
         }
     }
 
-    public static void moveDownAndPushMatrix() {
-        if (PatcherConfig.chatPosition) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, -12, 0);
-        }
-    }
-
-    public static void popMatrix() {
-        if (PatcherConfig.chatPosition) {
-            GlStateManager.popMatrix();
-        }
-    }
-
     private InsnList minus12() {
         InsnList list = new InsnList();
         LabelNode afterSub = new LabelNode();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
         list.add(new IincInsnNode(7, -12));
+        list.add(afterSub);
+        return list;
+    }
+    private InsnList minus12Float() {
+        InsnList list = new InsnList();
+        LabelNode afterSub = new LabelNode();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
+        list.add(new LdcInsnNode(12.0f));
+        list.add(new InsnNode(Opcodes.FSUB));
         list.add(afterSub);
         return list;
     }
