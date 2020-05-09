@@ -40,6 +40,8 @@ public class MinecraftTransformer implements PatcherTransformer {
 
             if (methodName.equals("startGame") || methodName.equals("func_71384_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
+            } else if (methodName.equals("checkGLError") || methodName.equals("func_71361_d")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());
             } else if (methodName.equals("toggleFullscreen") || methodName.equals("func_71352_k")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -151,6 +153,16 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList cancelGlCheck() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "glErrorChecking", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList toggleGLErrorChecking() {
