@@ -39,7 +39,7 @@ public class EntityCulling {
                 }
                 event.setCanceled(true);
 
-                if (PatcherConfig.dontCullNametags) {
+                if (PatcherConfig.dontCullNametags && !objEntity.isInvisible()) {
                     event.renderer.renderName(event.entity, event.x, event.y, event.z);
                 }
             }
