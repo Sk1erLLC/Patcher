@@ -5,9 +5,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.Team;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,22 +36,57 @@ public class EntityCulling {
                 if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
                     return;
                 }
+
                 if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
                     return;
                 }
+
                 if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
                     return;
                 }
+
                 if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
                     return;
                 }
+
                 event.setCanceled(true);
 
-                if (PatcherConfig.dontCullNametags && !objEntity.isInvisible()) {
+                if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
                     event.renderer.renderName(event.entity, event.x, event.y, event.z);
                 }
             }
         }
+    }
+
+    // mirrored from RendererLivingEntity#canRenderName
+    public static boolean canRenderName(EntityLivingBase entity) {
+        EntityPlayerSP entityplayersp = Minecraft.getMinecraft().thePlayer;
+
+        if (entity instanceof EntityPlayer && entity != entityplayersp) {
+            Team team = entity.getTeam();
+            Team team1 = entityplayersp.getTeam();
+
+            if (team != null) {
+                Team.EnumVisible team$enumvisible = team.getNameTagVisibility();
+
+                switch (team$enumvisible) {
+                    case NEVER:
+                        return false;
+                    case HIDE_FOR_OTHER_TEAMS:
+                        return team1 == null || team.isSameTeam(team1);
+                    case HIDE_FOR_OWN_TEAM:
+                        return team1 == null || !team.isSameTeam(team1);
+                    case ALWAYS:
+                    default:
+                        return true;
+                }
+            }
+        }
+
+        return Minecraft.isGuiEnabled()
+            && entity != Minecraft.getMinecraft().getRenderManager().livingPlayer
+            && !entity.isInvisibleToPlayer(entityplayersp)
+            && entity.riddenByEntity == null;
     }
 
     private boolean doesRayHitEntity(World worldObj, Entity player, double x, double y, double z) {

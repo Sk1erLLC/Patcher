@@ -3,8 +3,10 @@ package club.sk1er.patcher.util.entity;
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
+import club.sk1er.patcher.util.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -40,7 +42,7 @@ public class EntityTrace {
                     return;
                 }
 
-                if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null) {
+                if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null && EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
                     ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
                 }
             }
