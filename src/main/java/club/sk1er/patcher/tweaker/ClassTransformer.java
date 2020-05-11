@@ -62,6 +62,7 @@ import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
@@ -167,6 +168,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ForgeChunkManagerTransformer());
         registerTransformer(new FluidRegistryTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
+        registerTransformer(new ASMDataTableTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());

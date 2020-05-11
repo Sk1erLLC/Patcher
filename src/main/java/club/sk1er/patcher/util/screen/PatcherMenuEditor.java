@@ -28,8 +28,11 @@ public class PatcherMenuEditor {
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
         List<GuiButton> mcButtonList = event.buttonList;
         if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            this.buttonList = mcButtonList;
-            this.buttonList.get(3).width = 200;
+            buttonList = mcButtonList;
+
+            if (buttonList.get(3) != null) {
+                buttonList.get(3).width = 200;
+            }
         } else {
             int width = event.gui.width;
             int height = event.gui.height;
