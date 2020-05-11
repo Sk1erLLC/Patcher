@@ -31,29 +31,27 @@ public class EntityCulling {
         Entity objEntity = event.entity;
         //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
         if (theWorld != null && thePlayer != null && objEntity != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
-            if (thePlayer.getDistanceToEntity(objEntity) > 8) {
-                AxisAlignedBB box = objEntity.getEntityBoundingBox();
-                if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
-                    return;
-                }
+            AxisAlignedBB box = objEntity.getEntityBoundingBox();
+            if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
+                return;
+            }
 
-                if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
-                    return;
-                }
+            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
+                return;
+            }
 
-                if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
-                    return;
-                }
+            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
+                return;
+            }
 
-                if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
-                    return;
-                }
+            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
+                return;
+            }
 
-                event.setCanceled(true);
+            event.setCanceled(true);
 
-                if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
-                    event.renderer.renderName(event.entity, event.x, event.y, event.z);
-                }
+            if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
+                event.renderer.renderName(event.entity, event.x, event.y, event.z);
             }
         }
     }
