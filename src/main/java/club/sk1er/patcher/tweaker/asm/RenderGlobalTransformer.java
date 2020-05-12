@@ -55,8 +55,27 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                         }
                     }
                 }
+            } else if (methodName.equals("getVisibleFacings") || methodName.equals("func_174978_c")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next.getOpcode() == Opcodes.ASTORE && ((VarInsnNode) next).var == 2) {
+                        methodNode.instructions.insert(next, getSetLimited());
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList getSetLimited() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "limitScan", "Z"));
+        return list;
     }
 
     private InsnList patcherCloudRenderer() {
