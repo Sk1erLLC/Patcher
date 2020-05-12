@@ -50,32 +50,41 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderClouds") || methodName.equals("func_180447_b")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
-            } else if (methodName.equals("preRenderDamagedBlocks") || methodName.equals("func_180443_s")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "renderClouds":
+                case "func_180447_b":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
+                    break;
+                case "preRenderDamagedBlocks":
+                case "func_180443_s": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-3.0F)) {
-                        if (next.getNext() instanceof LdcInsnNode) {
-                            ((LdcInsnNode) next).cst = -1.0F;
-                        } else {
-                            ((LdcInsnNode) next).cst = -10.0F;
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-3.0F)) {
+                            if (next.getNext() instanceof LdcInsnNode) {
+                                ((LdcInsnNode) next).cst = -1.0F;
+                            } else {
+                                ((LdcInsnNode) next).cst = -10.0F;
+                            }
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("getVisibleFacings") || methodName.equals("func_174978_c")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                case "getVisibleFacings":
+                case "func_174978_c": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next.getOpcode() == Opcodes.ASTORE && ((VarInsnNode) next).var == 2) {
-                        methodNode.instructions.insert(next, getSetLimited());
-                        break;
+                        if (next.getOpcode() == Opcodes.ASTORE && ((VarInsnNode) next).var == 2) {
+                            methodNode.instructions.insert(next, getSetLimited());
+                            break;
+                        }
                     }
+                    break;
                 }
             }
         }
