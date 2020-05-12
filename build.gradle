@@ -81,6 +81,8 @@ jar {
         configurations.embed.collect {
             it.isDirectory() ? it : zipTree(it)
         }
+
+        'LICENSE.txt'
     }
 
     manifest {
