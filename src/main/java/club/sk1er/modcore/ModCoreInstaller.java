@@ -111,7 +111,7 @@ public class ModCoreInstaller {
     }
 
     public static int initialize(File gameDir, String minecraftVersion) {
-//        if (isInitalized()) return -1;
+        if (isInitalized()) return -1;
         dataDir = new File(gameDir, "modcore");
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
@@ -140,7 +140,7 @@ public class ModCoreInstaller {
 
         }
 
-//        addToClasspath(modcoreFile);
+        addToClasspath(modcoreFile);
 
         if (!isInitalized()) {
             bail("Something went wrong and it did not add the jar to the class path. Local file exists? " + modcoreFile.exists());
@@ -162,10 +162,6 @@ public class ModCoreInstaller {
         } catch (Exception e) {
             throw new RuntimeException("Unexpected exception", e);
         }
-    }
-
-    public static void main(String[] args) {
-        initialize(Launch.minecraftHome, "1.8.9");
     }
 
     private static boolean download(String url, String version, File file, String mcver, JsonHolder versionData) {
@@ -247,6 +243,8 @@ public class ModCoreInstaller {
                 e.printStackTrace();
             }
         }
+
+        frame.dispose();
         return true;
     }
 
