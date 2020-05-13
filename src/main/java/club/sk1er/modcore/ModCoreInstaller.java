@@ -207,10 +207,11 @@ public class ModCoreInstaller {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+        HttpURLConnection connection = null;
         InputStream is = null;
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             URL u = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
+            connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
             connection.addRequestProperty("User-Agent", "Mozilla/4.76 (Sk1er Modcore Initializer)");
@@ -235,6 +236,10 @@ public class ModCoreInstaller {
             return false;
         } finally {
             try {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+
                 if (is != null) {
                     is.close();
                 }
