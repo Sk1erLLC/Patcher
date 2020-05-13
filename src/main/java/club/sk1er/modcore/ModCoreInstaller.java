@@ -20,13 +20,8 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.TextArea;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,7 +111,7 @@ public class ModCoreInstaller {
     }
 
     public static int initialize(File gameDir, String minecraftVersion) {
-        if (isInitalized()) return -1;
+//        if (isInitalized()) return -1;
         dataDir = new File(gameDir, "modcore");
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
@@ -145,7 +140,7 @@ public class ModCoreInstaller {
 
         }
 
-        addToClasspath(modcoreFile);
+//        addToClasspath(modcoreFile);
 
         if (!isInitalized()) {
             bail("Something went wrong and it did not add the jar to the class path. Local file exists? " + modcoreFile.exists());
@@ -169,34 +164,52 @@ public class ModCoreInstaller {
         }
     }
 
+    public static void main(String[] args) {
+        initialize(Launch.minecraftHome, "1.8.9");
+    }
+
     private static boolean download(String url, String version, File file, String mcver, JsonHolder versionData) {
         url = url.replace(" ", "%20");
         System.out.println("Downloading ModCore " + " version " + version + " from: " + url);
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         JFrame frame = new JFrame("ModCore Initializer");
         JProgressBar bar = new JProgressBar();
-        TextArea comp = new TextArea("", 1, 1, TextArea.SCROLLBARS_NONE);
-        frame.getContentPane().add(comp);
+        JLabel label = new JLabel("Downloading ModCore " + version, SwingConstants.CENTER);
+        label.setSize(600, 120);
+        frame.getContentPane().add(label);
         frame.getContentPane().add(bar);
-        GridLayout manager = new GridLayout();
-        frame.setLayout(manager);
-        manager.setColumns(1);
-        manager.setRows(2);
-        comp.setText("Downloading Sk1er ModCore Library Version " + version + " for Minecraft " + mcver);
-        comp.setSize(399, 80);
-        comp.setEditable(false);
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension preferredSize = new Dimension(400, 225);
-        bar.setSize(preferredSize);
-        frame.setSize(preferredSize);
+        GroupLayout layout = new GroupLayout(frame.getContentPane());
+        frame.getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(label, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                    .addComponent(bar, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()));
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(label, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bar, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         frame.setResizable(false);
         bar.setBorderPainted(true);
         bar.setMinimum(0);
         bar.setStringPainted(true);
-        frame.setVisible(true);
-        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
         Font font = bar.getFont();
-        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 4));
-        comp.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
+        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
+        label.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         InputStream is = null;
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
@@ -219,7 +232,6 @@ public class ModCoreInstaller {
                 outputStream.write(buffer, 0, read);
                 bar.setValue(bar.getValue() + 1024);
             }
-            outputStream.close();
             FileUtils.write(new File(dataDir, "metadata.json"), versionData.put(mcver, version).toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,7 +247,6 @@ public class ModCoreInstaller {
                 e.printStackTrace();
             }
         }
-        frame.dispose();
         return true;
     }
 
@@ -263,11 +274,11 @@ public class ModCoreInstaller {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-
             try {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+
                 if (is != null) {
                     is.close();
                 }
