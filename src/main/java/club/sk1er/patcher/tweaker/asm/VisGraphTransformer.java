@@ -19,6 +19,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -49,6 +50,8 @@ public class VisGraphTransformer implements PatcherTransformer {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "limitScan", "Z", null, null));
 
         for (MethodNode methodNode : classNode.methods) {
+            String methodName = mapMethodName(classNode, methodNode);
+
             if (methodNode.name.equals("func_178604_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -60,10 +63,37 @@ public class VisGraphTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("computeVisibility") || methodName.equals("func_178607_a")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                break;
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 256) {
+                        InsnList list = new InsnList();
+                        LabelNode gotoInsn = new LabelNode();
+                        methodNode.instructions.insertBefore(next, changeOperand(list, gotoInsn));
+                        methodNode.instructions.insertBefore(next.getNext(), addGoto(list, gotoInsn));
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList addGoto(InsnList list, LabelNode gotoInsn) {
+        list.add(gotoInsn);
+        return list;
+    }
+
+    private InsnList changeOperand(InsnList list, LabelNode gotoInsn) {
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cullingFix", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 4097));
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList getCheckSize() {

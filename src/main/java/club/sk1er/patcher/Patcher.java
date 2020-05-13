@@ -96,6 +96,7 @@ public class Patcher {
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
+        LOGGER.info("🦀");
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
     }

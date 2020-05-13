@@ -610,6 +610,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean parallaxFix;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Culling Fix",
+        description = "Fix false negatives in frustum culling check, fixing sometimes invisible chunks.\n§cMay affect performance.",
+        category = "Fixes", subcategory = "General"
+    )
+    public static boolean cullingFix;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Replace Open to Lan",
         description = "Remove the 'Open to Lan' button when in a multiplayer server with a server list button.",
         category = "Quality of Life", subcategory = "General"
