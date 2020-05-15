@@ -61,7 +61,7 @@ public class OptifineClassTransformer implements IClassTransformer {
             byte[] configClass = IOUtils.toByteArray(path);
             ClassNode classNode = new ClassNode();
             ClassReader classReader = new ClassReader(configClass);
-            classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
+            classReader.accept(classNode, ClassReader.SKIP_CODE);
             String optifineVersion = "";
             for (FieldNode fieldNode : classNode.fields) {
                 if (fieldNode.name.equals("OF_RELEASE")) {
