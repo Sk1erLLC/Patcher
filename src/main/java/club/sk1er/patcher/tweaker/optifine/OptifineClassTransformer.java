@@ -17,6 +17,8 @@ import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.tnttime.TNTTimeTransformer;
@@ -24,37 +26,89 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.Loader;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class OptifineClassTransformer implements IClassTransformer {
 
-  private final Logger LOGGER = LogManager.getLogger("OptifinePatcherTransformer");
-  private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-  private final boolean outputBytecode =
-      Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    private final Logger LOGGER = LogManager.getLogger("OptifinePatcherTransformer");
+    private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
+    private final boolean outputBytecode =
+            Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
-  public OptifineClassTransformer() {
-    registerTransformer(new OptifineEntityRendererTransformer());
-    registerTransformer(new OptifineRenderTransformer());
-    registerTransformer(new OptifineRendererLivingEntityTransformer());
-    registerTransformer(new OptifineRenderItemFrameTransformer());
+    public OptifineClassTransformer() {
+        registerTransformer(new OptifineEntityRendererTransformer());
+        registerTransformer(new OptifineRenderTransformer());
+        registerTransformer(new OptifineRendererLivingEntityTransformer());
+        registerTransformer(new OptifineRenderItemFrameTransformer());
 
-    registerTransformer(new TagRendererTransformer());
-    registerTransformer(new TagRendererListenerTransformer());
-    registerTransformer(new LevelheadAboveHeadRenderTransformer());
-    registerTransformer(new TNTTimeTransformer());
-  }
-
-  private void registerTransformer(PatcherTransformer transformer) {
-    for (String cls : transformer.getClassName()) {
-      transformerMap.put(cls, transformer);
+        registerTransformer(new TagRendererTransformer());
+        registerTransformer(new TagRendererListenerTransformer());
+        registerTransformer(new LevelheadAboveHeadRenderTransformer());
+        registerTransformer(new TNTTimeTransformer());
+        // Reflection Optimizations
+        try {
+            Class optifineClass = Class.forName("Config", false, Loader.instance().getModClassLoader());
+            URL path = optifineClass.getProtectionDomain().getCodeSource().getLocation();
+            byte[] configClass = IOUtils.toByteArray(path);
+            ClassNode classNode = new ClassNode();
+            ClassReader classReader = new ClassReader(configClass);
+            classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
+            String optifineVersion = "";
+            for (FieldNode fieldNode : classNode.fields) {
+                if (fieldNode.name.equals("OF_RELEASE")) {
+                    optifineVersion = (String) fieldNode.value;
+                    break;
+                }
+            }
+            switch (optifineVersion) {
+                case "I7":
+                    LOGGER.info("Found optifine I7");
+                    registerCommonTransformers();
+                    registerI7Transformers();
+                    break;
+                case "L5":
+                    LOGGER.info("Found optifine L5");
+                    registerCommonTransformers();
+                    registerL5Transformers();
+                    break;
+                default:
+                    LOGGER.info("User has old optifine version. Aborting reflection optimizations");
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            LOGGER.info("Something went wrong, or the user doesn't have optifine");
+        }
     }
-  }
 
-  @Override
-  public byte[] transform(String name, String transformedName, byte[] bytes) {
-    return ClassTransformer.createTransformer(
-        transformedName, bytes, transformerMap, LOGGER, outputBytecode);
-  }
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+    }
+
+    private void registerCommonTransformers() {
+        registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
+    }
+
+    private void registerI7Transformers() {
+        registerTransformer(new MapGenStructureReflectionOptimizer());
+    }
+
+    private void registerL5Transformers() {
+
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return ClassTransformer.createTransformer(
+                transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+    }
 }
