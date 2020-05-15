@@ -56,11 +56,8 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TNTTimeTransformer());
         // Reflection Optimizations
         try {
-            Class optifineClass = Class.forName("Config", false, Loader.instance().getModClassLoader());
-            URL path = optifineClass.getProtectionDomain().getCodeSource().getLocation();
-            byte[] configClass = IOUtils.toByteArray(path);
             ClassNode classNode = new ClassNode();
-            ClassReader classReader = new ClassReader(configClass);
+            ClassReader classReader = new ClassReader("Config");
             classReader.accept(classNode, ClassReader.SKIP_CODE);
             String optifineVersion = "";
             for (FieldNode fieldNode : classNode.fields) {
@@ -83,7 +80,7 @@ public class OptifineClassTransformer implements IClassTransformer {
                 default:
                     LOGGER.info("User has old optifine version. Aborting reflection optimizations");
             }
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (IOException e) {
             LOGGER.info("Something went wrong, or the user doesn't have optifine");
         }
     }
