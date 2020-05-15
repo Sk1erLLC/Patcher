@@ -22,6 +22,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTrans
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.tnttime.TNTTimeTransformer;
@@ -94,6 +95,7 @@ public class OptifineClassTransformer implements IClassTransformer {
     private void registerCommonTransformers() {
         registerTransformer(new BakedQuadReflectionOptimizer());
         registerTransformer(new FaceBakeryReflectionOptimizer());
+        registerTransformer(new ModelRotationReflectionOptimizer());
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
     }
 
