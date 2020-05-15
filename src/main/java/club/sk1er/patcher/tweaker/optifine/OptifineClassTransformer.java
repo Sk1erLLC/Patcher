@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
@@ -27,8 +28,6 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.common.Loader;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -36,7 +35,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class OptifineClassTransformer implements IClassTransformer {
 
@@ -94,6 +92,7 @@ public class OptifineClassTransformer implements IClassTransformer {
 
     private void registerCommonTransformers() {
         registerTransformer(new BakedQuadReflectionOptimizer());
+        registerTransformer(new FaceBakeryReflectionOptimizer());
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
     }
 
