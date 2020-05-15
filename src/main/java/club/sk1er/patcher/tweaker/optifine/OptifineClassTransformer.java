@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
@@ -101,7 +102,7 @@ public class OptifineClassTransformer implements IClassTransformer {
     }
 
     private void registerL5Transformers() {
-
+        registerTransformer(new ItemModelMesherReflectionOptimizer());
     }
 
     @Override
