@@ -18,6 +18,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransforme
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
@@ -92,6 +93,7 @@ public class OptifineClassTransformer implements IClassTransformer {
     }
 
     private void registerCommonTransformers() {
+        registerTransformer(new BakedQuadReflectionOptimizer());
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
     }
 
