@@ -90,6 +90,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -171,7 +172,10 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
-        registerTransformer(new VisGraphTransformer());
+
+        if (!Loader.isModLoaded("framesplus")) {
+            registerTransformer(new VisGraphTransformer());
+        }
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
