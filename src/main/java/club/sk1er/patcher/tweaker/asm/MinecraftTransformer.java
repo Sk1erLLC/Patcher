@@ -18,6 +18,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -162,8 +163,29 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("dispatchKeypresses") || methodName.equals("func_152348_aa")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
+                        MethodInsnNode method = (MethodInsnNode) next;
+                        if (method.owner.equals("org/lwjgl/input/Keyboard") && method.name.equals("getEventCharacter") && method.desc.equals("()C")) {
+                            methodNode.instructions.insert(method, keybindFixer());
+                            break;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList keybindFixer() {
+        InsnList list = new InsnList();
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 256));
+        list.add(new InsnNode(Opcodes.IADD));
+        return list;
     }
 
     private InsnList cancelGlCheck() {
