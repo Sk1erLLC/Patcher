@@ -84,6 +84,7 @@ import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -151,6 +152,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ResourcePackRepositoryTransformer());
         registerTransformer(new ServerListTransformer());
         registerTransformer(new S14PacketEntityTransformer());
+        registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
