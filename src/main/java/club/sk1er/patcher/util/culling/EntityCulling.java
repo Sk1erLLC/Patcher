@@ -41,7 +41,7 @@ public class EntityCulling {
         Entity thePlayer = event.renderer.getRenderManager().livingPlayer;
         Entity objEntity = event.entity;
         //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-        if (theWorld != null && thePlayer != null && objEntity != null && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
+        if (theWorld != null && thePlayer != null && objEntity != null && !objEntity.isEntityInsideOpaqueBlock()) {
             AxisAlignedBB box = objEntity.getEntityBoundingBox();
             if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
                 return;
