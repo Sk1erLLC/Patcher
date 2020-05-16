@@ -12,7 +12,6 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import net.minecraftforge.fml.common.Loader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -75,16 +74,14 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 }
                 case "getVisibleFacings":
                 case "func_174978_c": {
-                    if (!Loader.isModLoaded("framesplus")) {
-                        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                        while (iterator.hasNext()) {
-                            AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                            if (next.getOpcode() == Opcodes.ASTORE && ((VarInsnNode) next).var == 2) {
-                                methodNode.instructions.insert(next, getSetLimited());
-                                break;
-                            }
+                        if (next.getOpcode() == Opcodes.ASTORE && ((VarInsnNode) next).var == 2) {
+                            methodNode.instructions.insert(next, getSetLimited());
+                            break;
                         }
                     }
                     break;
@@ -97,7 +94,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "limitScan", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "patcherLimitScan", "Z"));
         return list;
     }
 

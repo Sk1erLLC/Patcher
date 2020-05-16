@@ -47,7 +47,7 @@ public class VisGraphTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "limitScan", "Z", null, null));
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "patcherLimitScan", "Z", null, null));
 
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
@@ -99,7 +99,7 @@ public class VisGraphTransformer implements PatcherTransformer {
     private InsnList getCheckSize() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "limitScan", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "patcherLimitScan", "Z"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
