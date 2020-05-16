@@ -17,35 +17,30 @@ public class WindowsDisplayTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("doHandleMessage")) {
                 ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-                outer:
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
                     if (next.getOpcode() == Opcodes.ICONST_3 && iterator.hasNext()) {
                         AbstractInsnNode following = iterator.next();
                         if (following.getOpcode() == Opcodes.ICONST_1) {
                             //we found it
-                            AbstractInsnNode node = following;
-                            LabelNode labelNode = null;
-                            while (node.getPrevious() != null) {
-                                if (node instanceof LabelNode)
-                                    labelNode = (LabelNode) node;
-                                node = node.getPrevious();
-                                if (node instanceof JumpInsnNode && node.getOpcode() == Opcodes.IFNE && labelNode != null) {
-                                    JumpInsnNode jump = (JumpInsnNode) node;
-                                    LabelNode after = jump.label;
-                                    jump.label = labelNode;
-                                    jump.setOpcode(Opcodes.IFEQ);
+                            AbstractInsnNode node;
+                            while (true) {
+                                node = iterator.previous();
+                                if (node instanceof JumpInsnNode && node.getOpcode() == Opcodes.IFNE) {
+                                    node = iterator.previous();
+                                    for (int i = 0; i < 3; i++) {
+                                        AbstractInsnNode previous = iterator.previous();
+                                        iterator.remove();
+                                    }
                                     InsnList fix = new InsnList();
-                                    fix.add(new VarInsnNode(Opcodes.LLOAD, 4));
-                                    fix.add(new LdcInsnNode(255L));
-                                    fix.add(new InsnNode(Opcodes.LAND));
-                                    fix.add(new LdcInsnNode(36L));
-                                    fix.add(new InsnNode(Opcodes.LCMP));
-                                    fix.add(new JumpInsnNode(Opcodes.IFNE, after));
-                                    method.instructions.insert(node, fix);
+                                    fix.add(new IntInsnNode(Opcodes.BIPUSH, 16));
+                                    fix.add(new InsnNode(Opcodes.LSHR));
+                                    fix.add(new InsnNode(Opcodes.LCONST_1));
+                                    method.instructions.insertBefore(node, fix);
                                     return;
                                 }
                             }
+
                         }
                     }
                 }
