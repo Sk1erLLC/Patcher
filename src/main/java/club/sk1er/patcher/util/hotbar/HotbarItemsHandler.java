@@ -147,9 +147,15 @@ public class HotbarItemsHandler {
     }
 
     private String getAttackDamageString(ItemStack stack) {
-        for (String entry : stack.getTooltip(mc.thePlayer, true)) {
-            if (entry.endsWith("Attack Damage")) {
-                return entry.split(" ", 2)[0].substring(2);
+        if (stack != null) {
+            List<String> tooltip = stack.getTooltip(mc.thePlayer, true);
+
+            if (!tooltip.isEmpty()) {
+                for (String entry : tooltip) {
+                    if (entry.endsWith("Attack Damage")) {
+                        return entry.split(" ", 2)[0].substring(2);
+                    }
+                }
             }
         }
 
