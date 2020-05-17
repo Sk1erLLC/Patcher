@@ -80,6 +80,8 @@ public class ScreenHistory extends GuiScreen {
                             names.add(String.format("%s > %s", name, format.format(history.getChangedToAt())));
                         }
                     }
+                } else {
+                    names.add("Failed to fetch " + username + "'s names.");
                 }
             });
         } catch (Exception e) {
@@ -90,7 +92,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        nameField = new GuiTextField(0, mc.fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115,
+        nameField = new GuiTextField(0, fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115,
             20);
         nameField.setText(name);
         nameField.setFocused(focus);
@@ -101,7 +103,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        mc.fontRendererObj.drawStringWithShadow("* this design is temporary.", 3, 3, new Color(125, 125, 125, 180).getRGB());
+        fontRendererObj.drawStringWithShadow("* this design is temporary.", 3, 3, new Color(125, 125, 125, 180).getRGB());
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -117,7 +119,7 @@ public class ScreenHistory extends GuiScreen {
         drawRect(left, top, right, bottom, new Color(0, 0, 0, 150).getRGB());
 
         //TITLE;
-        drawCenteredString(mc.fontRendererObj, "Name History", width / 2, height / 5, -1);
+        drawCenteredString(fontRendererObj, "Name History", width / 2, height / 5, -1);
 
         //Text Box
         nameField.drawTextBox();
@@ -127,22 +129,28 @@ public class ScreenHistory extends GuiScreen {
         // Highlight current and original names.
         int bound = names.size();
         for (int i = 0; i < bound; i++) {
-            float xPos = (width >> 1) - (115 >> 1);
+            float xPos = width >> 1;
             float yPos = bottom + (i * 10) + offset;
             if (yPos < (height / 5f) + 32) {
                 continue;
             }
 
             if (i == 0) {
-                mc.fontRendererObj.drawString(names.get(i), (int) xPos, (int) yPos, Color.YELLOW.getRGB());
+                drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, Color.YELLOW.getRGB());
             } else {
                 if (i == names.size() - 1) {
-                    mc.fontRendererObj.drawString(names.get(i), (int) xPos, (int) yPos, Color.GREEN.getRGB());
+                    drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, Color.GREEN.getRGB());
                 } else {
-                    mc.fontRendererObj.drawString(names.get(i), (int) xPos, (int) yPos, defaultColour);
+                    drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, defaultColour);
                 }
             }
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        nameField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
