@@ -19,6 +19,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
 import club.sk1er.patcher.tweaker.asm.tnttime.TNTTimeTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -40,10 +41,12 @@ public class OptifineClassTransformer implements IClassTransformer {
     registerTransformer(new OptifineRendererLivingEntityTransformer());
     registerTransformer(new OptifineRenderItemFrameTransformer());
 
+    // mods
     registerTransformer(new TagRendererTransformer());
     registerTransformer(new TagRendererListenerTransformer());
     registerTransformer(new LevelheadAboveHeadRenderTransformer());
     registerTransformer(new TNTTimeTransformer());
+    registerTransformer(new GuiCustomResourcePacks());
   }
 
   private void registerTransformer(PatcherTransformer transformer) {
