@@ -623,6 +623,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean replaceOpenToLan = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Remove Inverted Colors from Crosshair",
+        description = "Remove the inverted color effect on the crosshair.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean removeInvertFromCrosshair;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
