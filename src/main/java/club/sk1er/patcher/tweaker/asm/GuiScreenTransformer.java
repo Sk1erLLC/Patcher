@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -23,6 +24,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class GuiScreenTransformer implements PatcherTransformer {
     /**
@@ -46,13 +49,53 @@ public class GuiScreenTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("drawDefaultBackground") || methodName.equals("func_146276_q_")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
-            } else if (methodName.equals("handleKeyboardInput") || methodName.equals("func_146282_l")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(handleForeignKeyboards());
+            switch (methodName) {
+                case "drawDefaultBackground":
+                case "func_146276_q_":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
+                    break;
+                case "handleKeyboardInput":
+                case "func_146282_l":
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(handleForeignKeyboards());
+                    break;
+                case "handleInput":
+                case "func_146269_k":
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("handleKeyboardInput") || methodInsnName.equals("func_146282_l")) {
+                                methodNode.instructions.insertBefore(next.getPrevious(), bailScreen());
+                            }
+                        }
+                    }
+                    break;
             }
         }
+    }
+
+    private InsnList bailScreen() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/client/gui/GuiScreen",
+            "field_146297_k", // mc
+            "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD,
+            "net/minecraft/client/Minecraft",
+            "field_71462_r", // currentScreen
+            "Lnet/minecraft/client/gui/GuiScreen;"));
+        LabelNode ifacmpeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, ifacmpeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifacmpeq);
+        return list;
     }
 
     private InsnList handleForeignKeyboards() {
