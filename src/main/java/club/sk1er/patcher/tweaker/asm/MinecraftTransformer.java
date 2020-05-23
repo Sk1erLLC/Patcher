@@ -21,6 +21,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -175,6 +176,23 @@ public class MinecraftTransformer implements PatcherTransformer {
                             methodNode.instructions.insert(method, keybindFixer());
                             break;
                         }
+                    }
+                }
+            } else if (methodName.equals("runGameLoop") || methodName.equals("func_71411_J")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("stream")) {
+                        for (int i = 0; i < 33; ++i) {
+                            methodNode.instructions.remove(next.getNext());
+                        }
+
+                        methodNode.instructions.remove(next.getPrevious().getPrevious());
+                        methodNode.instructions.remove(next.getPrevious());
+                        methodNode.instructions.remove(next);
+                        break;
                     }
                 }
             }
