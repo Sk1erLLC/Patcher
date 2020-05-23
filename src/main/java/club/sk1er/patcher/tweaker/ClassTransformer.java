@@ -75,6 +75,7 @@ import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.VisGraphTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
@@ -82,8 +83,10 @@ import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeHooksClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
@@ -184,6 +187,10 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new FluidRegistryTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new ASMDataTableTransformer());
+        registerTransformer(new MinecraftForgeClientTransformer());
+        registerTransformer(new BlockInfoTransformer());
+        registerTransformer(new VertexLighterFlatTransformer());
+        registerTransformer(new ForgeBlockModelRendererTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());

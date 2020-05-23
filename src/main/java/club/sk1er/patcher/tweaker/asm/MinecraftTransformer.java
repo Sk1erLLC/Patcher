@@ -83,7 +83,16 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
                         methodNode.instructions.insertBefore(node, setSystemTime());
-                        break;
+                    } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
+                        String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) node);
+
+                        if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
+                            methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                "net/minecraftforge/client/MinecraftForgeClient",
+                                "clearRenderCache",
+                                "()V",
+                                false));
+                        }
                     }
                 }
             } else if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
