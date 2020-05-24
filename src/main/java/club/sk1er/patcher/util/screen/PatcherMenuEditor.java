@@ -21,6 +21,7 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -31,17 +32,22 @@ import java.util.List;
 
 public class PatcherMenuEditor {
 
-    private List<GuiButton> buttonList;
+    private List<GuiButton> mcButtonList;
     private final Minecraft mc = Minecraft.getMinecraft();
+    private GuiButton realmsButton;
 
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
-        List<GuiButton> mcButtonList = event.buttonList;
-        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            buttonList = mcButtonList;
+        mcButtonList = event.buttonList;
 
-            if (buttonList.get(3) != null) {
-                buttonList.get(3).width = 200;
+        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
+            realmsButton = ((GuiMainMenu) event.gui).realmsButton;
+
+            for (GuiButton button : mcButtonList) {
+                if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
+                    button.width = 200;
+                    break;
+                }
             }
         } else {
             int width = event.gui.width;
@@ -98,8 +104,10 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void drawMenu(GuiScreenEvent.DrawScreenEvent.Post event) {
         if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            buttonList.get(2).visible = false;
-            buttonList.get(2).enabled = false;
+            if (realmsButton != null) {
+                realmsButton.visible = false;
+                realmsButton.enabled = false;
+            }
         }
     }
 }
