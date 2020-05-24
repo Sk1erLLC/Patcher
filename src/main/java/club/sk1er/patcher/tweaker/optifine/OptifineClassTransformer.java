@@ -30,34 +30,34 @@ import org.apache.logging.log4j.Logger;
 
 public class OptifineClassTransformer implements IClassTransformer {
 
-  private final Logger LOGGER = LogManager.getLogger("OptifinePatcherTransformer");
-  private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-  private final boolean outputBytecode =
-      Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
+    private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
+    private final boolean outputBytecode =
+        Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
-  public OptifineClassTransformer() {
-    registerTransformer(new OptifineEntityRendererTransformer());
-    registerTransformer(new OptifineRenderTransformer());
-    registerTransformer(new OptifineRendererLivingEntityTransformer());
-    registerTransformer(new OptifineRenderItemFrameTransformer());
+    public OptifineClassTransformer() {
+        registerTransformer(new OptifineEntityRendererTransformer());
+        registerTransformer(new OptifineRenderTransformer());
+        registerTransformer(new OptifineRendererLivingEntityTransformer());
+        registerTransformer(new OptifineRenderItemFrameTransformer());
 
-    // mods
-    registerTransformer(new TagRendererTransformer());
-    registerTransformer(new TagRendererListenerTransformer());
-    registerTransformer(new LevelheadAboveHeadRenderTransformer());
-    registerTransformer(new TNTTimeTransformer());
-    registerTransformer(new GuiCustomResourcePacks());
-  }
-
-  private void registerTransformer(PatcherTransformer transformer) {
-    for (String cls : transformer.getClassName()) {
-      transformerMap.put(cls, transformer);
+        // mods
+        registerTransformer(new TagRendererTransformer());
+        registerTransformer(new TagRendererListenerTransformer());
+        registerTransformer(new LevelheadAboveHeadRenderTransformer());
+        registerTransformer(new TNTTimeTransformer());
+        registerTransformer(new GuiCustomResourcePacks());
     }
-  }
 
-  @Override
-  public byte[] transform(String name, String transformedName, byte[] bytes) {
-    return ClassTransformer.createTransformer(
-        transformedName, bytes, transformerMap, LOGGER, outputBytecode);
-  }
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return ClassTransformer.createTransformer(
+            transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+    }
 }

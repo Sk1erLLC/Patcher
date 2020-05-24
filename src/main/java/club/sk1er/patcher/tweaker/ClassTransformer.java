@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.asm.forge.ContainerTypeTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
@@ -106,7 +107,7 @@ import java.util.Collection;
 
 public class ClassTransformer implements IClassTransformer {
 
-    private final Logger LOGGER = LogManager.getLogger("PatcherTransformer");
+    private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
@@ -191,6 +192,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new ForgeBlockModelRendererTransformer());
+        registerTransformer(new ContainerTypeTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
