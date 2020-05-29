@@ -31,8 +31,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+/**
+ * Used for stopping entities from rendering if they are not visible to the player.
+ */
 public class EntityCulling {
 
+    /**
+     * Does the user see the entity that is attempting to render? If they do, continue to render,
+     * otherwise don't render the entity.
+     *
+     * @param event {@link RenderLivingEvent.Pre}
+     */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!PatcherConfig.entityCulling) return;
@@ -67,7 +76,13 @@ public class EntityCulling {
         }
     }
 
-    // mirrored from RendererLivingEntity#canRenderName
+    /**
+     * Used for checking if the entities nametag can be rendered if the user still wants
+     * to see nametags despite the entity being culled.
+     *
+     * @param entity The entity that's being culled.
+     * @return The status on if the nametag is liable for rendering.
+     */
     public static boolean canRenderName(EntityLivingBase entity) {
         EntityPlayerSP entityplayersp = Minecraft.getMinecraft().thePlayer;
 
@@ -98,10 +113,32 @@ public class EntityCulling {
             && entity.riddenByEntity == null;
     }
 
+    /**
+     * Does the ray fired from the players eyes land on an entity?
+     *
+     * @param worldObj Current world.
+     * @param player   Our player.
+     * @param x        Entity bounding box X
+     * @param y        Entity bounding box Y
+     * @param z        Entity bounding box Z
+     * @return The status on if the raytrace hits the entity.
+     */
     private boolean doesRayHitEntity(World worldObj, Entity player, double x, double y, double z) {
         return rayTraceBlocks(worldObj, player.getPositionVector().addVector(0, player.getEyeHeight(), 0), new Vec3(x, y, z), false, false, false, false) == null;
     }
 
+    /**
+     * Fire a ray hitting blocks, used for checking if an entity is behind a block.
+     *
+     * @param theWorld                      Current world.
+     * @param vec31                         From the player
+     * @param vec32                         To the block
+     * @param stopOnLiquid                  Stop on liquids - always false.
+     * @param stopOnTranslucentBlock        Stop on translucent blocks - always false.
+     * @param ignoreBlockWithoutBoundingBox Ignore any block without a bounding box - always false,
+     * @param returnLastUncollidableBlock   Return the last uncollidable block - always false.
+     * @return The ray trace result.
+     */
     private MovingObjectPosition rayTraceBlocks(World theWorld, Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean stopOnTranslucentBlock, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         if (!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord)) {
             if (!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord)) {

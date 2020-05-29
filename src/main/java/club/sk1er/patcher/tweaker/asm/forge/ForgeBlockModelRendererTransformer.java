@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.tweaker;
+package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;

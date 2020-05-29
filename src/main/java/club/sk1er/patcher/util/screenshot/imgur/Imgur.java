@@ -28,6 +28,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+/**
+ * Upload task for uploading images to https://imgur.com, an image sharing service.
+ * TODO: Runs on the same thread as client, fix this.
+ */
 public class Imgur implements Runnable {
 
     public static String link;

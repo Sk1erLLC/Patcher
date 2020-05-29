@@ -17,12 +17,23 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
+/**
+ * Used to handle any and all key presses.
+ */
 public class KeybindHandler {
 
+    /**
+     * Create an instance of our drop entire stack keybind.
+     */
     private final KeyBinding dropKeybind = Patcher.instance.getDropKeybind();
 
+    /**
+     * Called whenever pressing any key, and processing certain key pressed.
+     *
+     * @param event {@link InputEvent.KeyInputEvent}
+     */
     @SubscribeEvent
-    public void key(InputEvent.KeyInputEvent event) {
+    public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (!dropKeybind.isPressed()) {
             return;
         }

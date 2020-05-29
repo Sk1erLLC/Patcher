@@ -80,6 +80,7 @@ import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.ForgeBlockModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeHooksClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;

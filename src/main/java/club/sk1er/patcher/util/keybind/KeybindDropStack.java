@@ -14,6 +14,9 @@ package club.sk1er.patcher.util.keybind;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
+/**
+ * Used for dropping entire stacks on computers that don't allow for doing so, such as macOS.
+ */
 public class KeybindDropStack extends KeyBinding {
     public KeybindDropStack() {
         super("Drop entire stack", Keyboard.KEY_NONE, "Patcher");

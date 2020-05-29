@@ -29,7 +29,9 @@ import club.sk1er.patcher.sound.SoundHandler;
 import club.sk1er.patcher.status.ProtocolDetector;
 import club.sk1er.patcher.tab.TabToggleHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
+import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
+import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.cloud.CloudHandler;
@@ -43,7 +45,9 @@ import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screen.PatcherMenuEditor;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
+import club.sk1er.vigilance.Vigilant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.launchwrapper.Launch;
@@ -55,10 +59,12 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -69,31 +75,71 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The main class for Patcher
+ */
 @Mod(modid = "patcher", name = "Patcher", version = "1.3")
 public class Patcher {
 
+    /**
+     * Create an instance of Patcher to access methods without reinstating the main class.
+     * This is never null, as {@link Mod.Instance} creates the instance.
+     * <p>
+     * Can crash if classloaded before properly loaded.
+     */
     @Mod.Instance("patcher")
     public static Patcher instance;
-    private static boolean cacheDevelopment;
+
+    /**
+     * The main logger for Patcher, used to log debug statements/info/warnings/errors.
+     */
     private final Logger LOGGER = LogManager.getLogger("Patcher");
+
+    /**
+     * Create a file link to the .minecraft/logs folder, used for {@link Patcher#checkLogs()}.
+     */
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
+
+    /**
+     * Create a set of blacklisted servers, used for when a specific server doesn't allow for 1.8 clients to use
+     * our 1.11 text length modifier (bring message length from 100 to 256, as done in 1.11 and above) {@link Patcher#addOrRemoveBlacklist(String)}.
+     */
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    /**
+     * Create an instance of our config using {@link Vigilant}.
+     */
     private PatcherConfig patcherConfig;
+
+    /**
+     * Create an instance of our sound config using {@link Vigilant}. The difference between this and the normal
+     * config {@link Patcher#getPatcherConfig()} is that this is a much larger file, containing any sound possible,
+     * and allowing for players to modify how loud a sound is (0 (mute)-2x).
+     */
     private PatcherSoundConfig patcherSoundConfig;
+
+    /**
+     * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
+     * through ASM, modified through {@link RenderGlobalTransformer}.
+     */
     private CloudHandler cloudHandler;
+
+    /**
+     * Create a keybind for {@link KeybindNameHistory}, allowing people to check the name history of any user.
+     */
     private KeyBinding nameHistory;
+
+    /**
+     * Create a keybind for {@link KeybindDropStack}, allowing people to drop entire stacks on computers that don't
+     * allow it, such as macOS.
+     */
     private KeyBinding dropKeybind;
 
-    public static boolean isDevelopment() {
-        if (cacheDevelopment) {
-            return true;
-        } else {
-            Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-            if (o == null) return false;
-            return cacheDevelopment = (boolean) o;
-        }
-    }
-
+    /**
+     * Register keybinds and other stuff that should be done at the very start.
+     *
+     * @param event {@link FMLPreInitializationEvent}
+     */
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
         LOGGER.info("🦀");
@@ -101,6 +147,14 @@ public class Patcher {
         ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
     }
 
+    /**
+     * Process important things that should be available by the time the game is done loading.
+     * <p>
+     * ModCore is initialized here, as well as any configuration.
+     * Commands and other classes using events are also registered here.
+     *
+     * @param event {@link FMLInitializationEvent}
+     */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
@@ -149,22 +203,11 @@ public class Patcher {
         checkLogs();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void checkLogs() {
-        if (PatcherConfig.logOptimizer) {
-            for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
-                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000)) {
-                    LOGGER.info("Deleted log {}", file.getName());
-                    file.delete();
-                }
-            }
-        }
-    }
-
-    private void registerClass(Object eventClass) {
-        MinecraftForge.EVENT_BUS.register(eventClass);
-    }
-
+    /**
+     * Once the client has finished loading, alert the user of how long the client took to startup.
+     *
+     * @param event {@link FMLLoadCompleteEvent}
+     */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         float time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000f;
@@ -177,45 +220,21 @@ public class Patcher {
         LOGGER.info("Minecraft started in {} seconds.", time);
     }
 
-    private boolean isServerBlacklisted(String ip) {
-        return ip != null && !ip.isEmpty() && !ip.trim().isEmpty() && blacklistedServers.contains(ip.trim());
-    }
-
-    public boolean addOrRemoveBlacklist(String input) {
-        if (input == null || input.isEmpty() || input.trim().isEmpty()) {
-            return false;
-        } else {
-            input = input.trim();
-
-            if (isServerBlacklisted(input)) {
-                blacklistedServers.remove(input);
-                return false;
-            } else {
-                blacklistedServers.add(input);
-                return true;
-            }
-        }
-    }
-
-    public void saveBlacklistedServers() {
-        File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
-            if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
-                return;
-            }
-
-            if (!blacklistedServersFile.exists() && !blacklistedServersFile.createNewFile()) {
-                return;
-            }
-
-            for (String server : blacklistedServers) {
-                writer.write(server + System.lineSeparator());
-            }
-        } catch (IOException ignored) {
-        }
-    }
-
+    /**
+     * Runs when the user connects to a server.
+     * Goes through the process of checking the current state of the server.
+     * <p>
+     * If the server is local, return and set the chat length to 256, as we modify the client to allow for
+     * 256 message length in singleplayer through ASM in {@link C01PacketChatMessageTransformer#transform(ClassNode, String)}.
+     * <p>
+     * If the server is blacklisted, return and set the chat length to 100, as that server does not support 256 long
+     * chat messages, and was manually blacklisted by the player.
+     * <p>
+     * If the server is not local nor blacklisted, check the servers protocol and see if it supports 315, aka 1.11.
+     * If it does, then set the message length max to 256, otherwise return back to 100.
+     *
+     * @param event {@link FMLNetworkEvent.ClientConnectedToServerEvent}
+     */
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
@@ -251,27 +270,152 @@ public class Patcher {
         });
     }
 
+    /**
+     * When the client is started, this is called.
+     * The point of this is to check if the user has an option called "Log Optimizer" enabled,
+     * and if they do, go through every file in the .minecraft/logs directory, and delete any
+     * file that is older than the amount of days specified (1-90), and log what file was deleted.
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void checkLogs() {
+        if (PatcherConfig.logOptimizer) {
+            for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
+                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000)) {
+                    LOGGER.info("Deleted log {}", file.getName());
+                    file.delete();
+                }
+            }
+        }
+    }
+
+    /**
+     * Make life easier by calling this instead of calling {@link EventBus#register(Object)} manually so frequently.
+     *
+     * @param eventClass The class that should be registered.
+     */
+    private void registerClass(Object eventClass) {
+        MinecraftForge.EVENT_BUS.register(eventClass);
+    }
+
+    /**
+     * Check if the current server they're connecting to is a blacklisted server.
+     *
+     * @param ip Current server IP.
+     * @return If the IP is in {@link Patcher#blacklistedServers}, return true, otherwise return false.
+     */
+    private boolean isServerBlacklisted(String ip) {
+        return ip != null && !ip.isEmpty() && !ip.trim().isEmpty() && blacklistedServers.contains(ip.trim());
+    }
+
+    /**
+     * Used for adding or removing a server from the blacklist file and set.
+     *
+     * @param input Current server IP.
+     * @return If the user's input is null or empty, then return false, cancelling the method. Otherwise, if the server
+     * is inside of the blacklisted set, remove it from the blacklist and return false, else add it to the blacklist
+     * and return true.
+     */
+    public boolean addOrRemoveBlacklist(String input) {
+        if (input == null || input.isEmpty() || input.trim().isEmpty()) {
+            return false;
+        } else {
+            input = input.trim();
+
+            if (isServerBlacklisted(input)) {
+                blacklistedServers.remove(input);
+                return false;
+            } else {
+                blacklistedServers.add(input);
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Save the currently blacklisted servers to a text file, allowing the file to be read on server join.
+     */
+    public void saveBlacklistedServers() {
+        File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
+            if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
+                return;
+            }
+
+            if (!blacklistedServersFile.exists() && !blacklistedServersFile.createNewFile()) {
+                return;
+            }
+
+            for (String server : blacklistedServers) {
+                writer.write(server + System.lineSeparator());
+            }
+        } catch (IOException ignored) {
+        }
+    }
+
+    /**
+     * Check if the current environment is development, or production.
+     *
+     * @return If the client is being ran in a development environment, return true, otherwise return false.
+     */
+    public static boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        if (o == null) return false;
+        return (boolean) o;
+    }
+
+    /**
+     * Allow for accessing super methods in the {@link PatcherConfig} class.
+     *
+     * @return The Patcher Config instance.
+     */
     public PatcherConfig getPatcherConfig() {
         return patcherConfig;
     }
 
+    /**
+     * Allow for accessing super methods in the {@link PatcherSoundConfig} class.
+     *
+     * @return The Patcher Sound Config instance.
+     */
     public PatcherSoundConfig getPatcherSoundConfig() {
         return patcherSoundConfig;
     }
 
+    /**
+     * Allow for accessing our logger outside of the class.
+     *
+     * @return The Patcher logger instance.
+     */
     public Logger getLogger() {
         return LOGGER;
     }
 
+    /**
+     * Allow for accessing our cloud handler outside of the class.
+     * Suppressing unused as it is used in an ASM method {@link RenderGlobalTransformer}.
+     *
+     * @return The Cloud Handler instance.
+     */
     @SuppressWarnings("unused")
     public CloudHandler getCloudHandler() {
         return cloudHandler;
     }
 
+    /**
+     * Allow for accessing our name history keybind outside of the class.
+     *
+     * @return The Name History keybind.
+     */
     public KeyBinding getNameHistory() {
         return nameHistory;
     }
 
+    /**
+     * Allow for accessing our drop stack keybind outside of the class.
+     *
+     * @return The Drop Entire Stack keybind.
+     */
     public KeyBinding getDropKeybind() {
         return dropKeybind;
     }
