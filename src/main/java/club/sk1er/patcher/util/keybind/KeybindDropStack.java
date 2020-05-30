@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 
 /**
  * Used for dropping entire stacks on computers that don't allow for doing so, such as macOS.
+ * TODO: Fix, currently doesn't work.
  */
 public class KeybindDropStack extends KeyBinding {
     public KeybindDropStack() {

@@ -58,7 +58,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -75,9 +74,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * The main class for Patcher
- */
 @Mod(modid = "patcher", name = "Patcher", version = "1.3")
 public class Patcher {
 
@@ -90,9 +86,6 @@ public class Patcher {
     @Mod.Instance("patcher")
     public static Patcher instance;
 
-    /**
-     * The main logger for Patcher, used to log debug statements/info/warnings/errors.
-     */
     private final Logger LOGGER = LogManager.getLogger("Patcher");
 
     /**
@@ -136,18 +129,6 @@ public class Patcher {
     private KeyBinding dropKeybind;
 
     /**
-     * Register keybinds and other stuff that should be done at the very start.
-     *
-     * @param event {@link FMLPreInitializationEvent}
-     */
-    @EventHandler
-    public void preinit(FMLPreInitializationEvent event) {
-        LOGGER.info("🦀");
-        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
-        ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
-    }
-
-    /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
      * ModCore is initialized here, as well as any configuration.
@@ -158,6 +139,9 @@ public class Patcher {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
+
+        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
+        ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
