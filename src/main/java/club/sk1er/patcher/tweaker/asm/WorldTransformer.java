@@ -102,8 +102,21 @@ public class WorldTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("getSkyColor") || methodName.equals("func_72833_a")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getFasterSkyColor());
             }
         }
+    }
+
+    private InsnList getFasterSkyColor() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableConstantFogColorChecking", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/WorldHandler", "skyColorVector", "Lnet/minecraft/util/Vec3;"));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList removeTileEntities() {

@@ -45,6 +45,7 @@ import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screen.PatcherMenuEditor;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
+import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.vigilance.Vigilant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -183,6 +184,7 @@ public class Patcher {
         registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
         registerClass(new KeybindHandler());
+        registerClass(new WorldHandler());
 
         checkLogs();
     }

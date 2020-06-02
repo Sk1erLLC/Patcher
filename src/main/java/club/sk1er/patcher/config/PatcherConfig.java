@@ -251,6 +251,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean tabHeight = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Constant Fog Color Checking",
+        description = "Disable constant fog color checking.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean disableConstantFogColorChecking = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"
