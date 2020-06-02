@@ -53,6 +53,7 @@ import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
 import club.sk1er.patcher.tweaker.asm.LongHashMapTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
+import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
@@ -73,6 +74,7 @@ import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
+import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
@@ -187,6 +189,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LongHashMapTransformer());
         registerTransformer(new ChunkCoordIntPairTransformer());
         registerTransformer(new BakedQuadTransformer());
+        registerTransformer(new TexturedQuadTransformer());
+        registerTransformer(new ModelRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

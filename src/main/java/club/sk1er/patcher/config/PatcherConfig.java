@@ -265,6 +265,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean lowAnimationTick = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Single Model Render Call",
+        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean singleModelCall = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Static Particle Color",
         description = "Disable particle lighting checks each frame.",
         category = "Performance", subcategory = "Particles"
