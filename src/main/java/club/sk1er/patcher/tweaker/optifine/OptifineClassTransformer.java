@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
+import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
@@ -47,6 +48,15 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
         registerTransformer(new TNTTimeTransformer());
         registerTransformer(new GuiCustomResourcePacks());
+
+        try {
+            if (Class.forName("io.framesplus.FramesPlus") != null) {
+                LOGGER.warn("Frames+ is installed, not running BakedQuad transformation.");
+            }
+        } catch (Exception e) {
+            LOGGER.info("Frames+ is not installed, running BakedQuad transformation.");
+            registerTransformer(new BakedQuadTransformer());
+        }
     }
 
     private void registerTransformer(PatcherTransformer transformer) {

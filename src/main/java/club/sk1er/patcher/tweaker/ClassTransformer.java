@@ -14,7 +14,6 @@ package club.sk1er.patcher.tweaker;
 import club.sk1er.patcher.asm.forge.ContainerTypeTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
-import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
@@ -188,7 +187,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityFXTransformer());
         registerTransformer(new LongHashMapTransformer());
         registerTransformer(new ChunkCoordIntPairTransformer());
-        registerTransformer(new BakedQuadTransformer());
         registerTransformer(new TexturedQuadTransformer());
         registerTransformer(new ModelRendererTransformer());
 
