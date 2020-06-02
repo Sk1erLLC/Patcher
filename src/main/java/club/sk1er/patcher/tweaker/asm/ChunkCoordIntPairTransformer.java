@@ -46,6 +46,7 @@ public class ChunkCoordIntPairTransformer implements PatcherTransformer {
             if (methodName.equals("hashCode")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(getFasterHashCode());
+                break;
             }
         }
     }
