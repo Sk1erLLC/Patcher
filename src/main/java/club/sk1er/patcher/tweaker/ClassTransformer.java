@@ -17,6 +17,7 @@ import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
+import club.sk1er.patcher.tweaker.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
@@ -48,6 +49,7 @@ import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
+import club.sk1er.patcher.tweaker.asm.LongHashMapTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
@@ -181,6 +183,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new VisGraphTransformer());
         registerTransformer(new WorldClientTransformer());
         registerTransformer(new EntityFXTransformer());
+        registerTransformer(new LongHashMapTransformer());
+        registerTransformer(new ChunkCoordIntPairTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
