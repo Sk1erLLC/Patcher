@@ -258,6 +258,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableConstantFogColorChecking = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Low Animation Tick",
+        description = "Lowers world particle count.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean lowAnimationTick = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"

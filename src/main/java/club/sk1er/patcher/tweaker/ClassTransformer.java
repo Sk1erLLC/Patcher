@@ -74,6 +74,7 @@ import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.VisGraphTransformer;
+import club.sk1er.patcher.tweaker.asm.WorldClientTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
@@ -177,6 +178,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
+        registerTransformer(new WorldClientTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

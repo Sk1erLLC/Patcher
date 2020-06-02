@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.util.world;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.MathHelper;
@@ -33,5 +34,9 @@ public class WorldHandler {
             float modifiedAngle = MathHelper.clamp_float((float) ((celestialAngle * Math.PI * 2.0F) * 2.0F + 0.5F), 0.0F, 1.0F);
             skyColorVector = new Vec3(0.472549021244049 * modifiedAngle, 0.652941197156906 * modifiedAngle, 1 * modifiedAngle);
         }
+    }
+
+    public static int getAnimationTickCount() {
+        return PatcherConfig.lowAnimationTick ? 100 : 1000;
     }
 }
