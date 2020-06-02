@@ -27,6 +27,9 @@ public class KeybindHandler {
      */
     private final KeyBinding dropKeybind = Patcher.instance.getDropKeybind();
 
+    private final KeyBinding dropModifier = Patcher.instance.getDropModifier();
+    private boolean dropped = false;
+
     /**
      * Called whenever pressing any key, and processing certain key pressed.
      *
@@ -34,12 +37,13 @@ public class KeybindHandler {
      */
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
-        if (!dropKeybind.isPressed()) {
-            return;
-        }
 
-        while (dropKeybind.isPressed() && Minecraft.getMinecraft().gameSettings.keyBindDrop.isPressed()) {
+        if (dropKeybind.isPressed()) {
             Minecraft.getMinecraft().thePlayer.dropOneItem(true);
         }
+        if (dropModifier.isKeyDown() && Minecraft.getMinecraft().gameSettings.keyBindDrop.isKeyDown() && !dropped) {
+            Minecraft.getMinecraft().thePlayer.dropOneItem(true);
+            dropped = true;
+        } else dropped = false;
     }
 }

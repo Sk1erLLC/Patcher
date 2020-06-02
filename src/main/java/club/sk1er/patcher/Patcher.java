@@ -14,14 +14,7 @@ package club.sk1er.patcher;
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.patcher.command.BlacklistServerCommand;
-import club.sk1er.patcher.command.CoordsCommand;
-import club.sk1er.patcher.command.FovChangerCommand;
-import club.sk1er.patcher.command.NameHistoryCommand;
-import club.sk1er.patcher.command.PatcherCommand;
-import club.sk1er.patcher.command.PatcherSoundsCommand;
-import club.sk1er.patcher.command.SkinCacheRefresh;
-import club.sk1er.patcher.command.WireframeClouds;
+import club.sk1er.patcher.command.*;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.hooks.MinecraftHook;
@@ -40,6 +33,7 @@ import club.sk1er.patcher.util.entity.EntityRendering;
 import club.sk1er.patcher.util.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindDropStack;
 import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
@@ -129,6 +123,28 @@ public class Patcher {
      */
     private KeyBinding dropKeybind;
 
+
+    /**
+     * Create a keybind for {@link KeybindDropStack}, allowing people to drop entire stacks on computers that don't
+     * allow it, such as macOS.
+     */
+    private KeyBinding dropModifier;
+
+    /**
+     * Check if the current environment is development, or production.
+     *
+     * @return If the client is being ran in a development environment, return true, otherwise return false.
+     */
+    public static boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        if (o == null) return false;
+        return (boolean) o;
+    }
+
+    public KeyBinding getDropModifier() {
+        return dropModifier;
+    }
+
     /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
@@ -143,6 +159,7 @@ public class Patcher {
 
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
+        ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
@@ -337,17 +354,6 @@ public class Patcher {
             }
         } catch (IOException ignored) {
         }
-    }
-
-    /**
-     * Check if the current environment is development, or production.
-     *
-     * @return If the client is being ran in a development environment, return true, otherwise return false.
-     */
-    public static boolean isDevelopment() {
-        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        if (o == null) return false;
-        return (boolean) o;
     }
 
     /**
