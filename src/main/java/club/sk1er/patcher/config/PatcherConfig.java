@@ -265,6 +265,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean lowAnimationTick = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Static Particle Color",
+        description = "Disable particle lighting checks each frame.",
+        category = "Performance", subcategory = "Particles"
+    )
+    public static boolean staticParticleColor = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"

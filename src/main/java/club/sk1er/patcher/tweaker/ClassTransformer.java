@@ -21,6 +21,7 @@ import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
@@ -179,6 +180,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
         registerTransformer(new WorldClientTransformer());
+        registerTransformer(new EntityFXTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
