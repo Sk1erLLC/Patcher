@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatStyle;
@@ -18,21 +19,16 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import scala.actors.Eval;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 public class ImagePreview {
 
-    private final HashMap<String, DynamicTexture> map = new HashMap<>();
     private String loaded;
     private int tex = -1;
-    private int zLevel = 0;
     private int width = 100;
     private int height = 100;
     private BufferedImage image;
@@ -68,9 +64,7 @@ public class ImagePreview {
                 GlStateManager.deleteTexture(tex);
             tex = -1;
             String finalValue = value;
-            Multithreading.runAsync(() -> {
-                loadUrl(finalValue);
-            });
+            Multithreading.runAsync(() -> loadUrl(finalValue));
         }
         if (this.image != null) {
             final DynamicTexture dynamicTexture = new DynamicTexture(image);
@@ -116,29 +110,31 @@ public class ImagePreview {
     public void drawTexturedModalRect(int x, int y, int width, int height) {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, this.zLevel).tex(0, 1).endVertex();
-        worldrenderer.pos((x + width), (y + height), this.zLevel).tex(1, 1).endVertex();
-        worldrenderer.pos((x + width), (y), this.zLevel).tex(1, 0).endVertex();
-        worldrenderer.pos((x), (y), this.zLevel).tex(0, 0).endVertex();
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, 0).tex(0, 1).endVertex();
+        worldrenderer.pos((x + width), (y + height), 0).tex(1, 1).endVertex();
+        worldrenderer.pos((x + width), (y), 0).tex(1, 0).endVertex();
+        worldrenderer.pos((x), (y), 0).tex(0, 0).endVertex();
         tessellator.draw();
     }
 
     private void loadUrl(String url) {
-        URL u = null;
+        HttpURLConnection connection = null;
         try {
-            System.out.println("loading: " + url);
-            u = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
+            URL u = new URL(url);
+            connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
             connection.addRequestProperty("User-Agent", "Patcher Image Previewer");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            image = ImageIO.read(connection.getInputStream());
-        } catch (IOException e) {
+            image = TextureUtil.readBufferedImage(connection.getInputStream());
+        } catch (IOException ignored) {
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
-
     }
 }
