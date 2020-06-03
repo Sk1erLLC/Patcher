@@ -630,6 +630,27 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean removeInvertFromCrosshair;
 
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Image Preview",
+        description = "Preview image links sent in chat. \nPress Shift to use fullscreen and Control to render in native image resolution",
+        category = "Quality of Life", subcategory = "Image Preview"
+    )
+    public static boolean imagePreview = true;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Image Preview Width",
+        description = "The % of screen width to be used for image preview.",
+        category = "Quality of Life", subcategory = "Image Preview",
+        min = 10, max = 100
+    )
+    public static int imagePreviewWidth = 50;
+
+
+
+
+
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

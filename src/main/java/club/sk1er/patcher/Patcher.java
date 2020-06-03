@@ -32,6 +32,7 @@ import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
+import club.sk1er.patcher.util.chat.ImagePreview;
 import club.sk1er.patcher.util.cloud.CloudHandler;
 import club.sk1er.patcher.util.culling.EntityCulling;
 import club.sk1er.patcher.util.entity.EntityRendering;
@@ -145,6 +146,7 @@ public class Patcher {
         registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
         registerClass(new KeybindHandler());
+        registerClass(new ImagePreview());
 
         checkLogs();
     }
