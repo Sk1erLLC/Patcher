@@ -24,13 +24,31 @@ import club.sk1er.elementa.constraints.animation.Animations;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Used for rendering the current screenshot on the screen when "Screenshot Preview" is enabled.
+ * TODO: Fix, currently doesn't render anything.
+ */
 public class Viewer {
+
+    /**
+     * Create an instance of the class for outside usage.
+     */
+    private static final Viewer instance = new Viewer();
+
+    /**
+     * Create a {@link Window} instance.
+     */
     private Window currentWindow;
 
+    /**
+     * Render the current window, which contains all UI Components.
+     *
+     * @param event {@link RenderGameOverlayEvent.Post}
+     */
     @SubscribeEvent
     public void renderScreenshot(RenderGameOverlayEvent.Post event) {
         if (!event.type.equals(RenderGameOverlayEvent.ElementType.TEXT)) return;
@@ -38,17 +56,21 @@ public class Viewer {
         currentWindow.draw();
     }
 
-    private static final Viewer instance = new Viewer();
-
-    public static Viewer getInstance() {
-        return instance;
-    }
-
+    /**
+     * Crate a new capture, then render the animation.
+     *
+     * @param image The screenshot just taken.
+     */
     public void newCapture(BufferedImage image) {
         currentWindow = new Window();
         instantiateComponents(image);
     }
 
+    /**
+     * Animate the screenshot, imitating the iOS screenshot animation.
+     *
+     * @param image The screenshot just taken and created by {@link Viewer#newCapture(BufferedImage)}
+     */
     private void instantiateComponents(BufferedImage image) {
         UIComponent imageComponent = new UIImage(CompletableFuture.completedFuture(image), DefaultLoadingImage.INSTANCE)
             .setX(new PixelConstraint(0))
@@ -75,6 +97,11 @@ public class Viewer {
         imageComponent.animateTo(anim);
     }
 
+    /**
+     * Create a fading out animation, removing the screenshot from the screen, and closing the current window.
+     *
+     * @param container The current UI Component being animated, which in this case is the screenshot.
+     */
     private void fadeOutAnimation(UIComponent container) {
         AnimatingConstraints newAnim = container.makeAnimation()
             .setColorAnimation(Animations.OUT_CUBIC, 1f,
@@ -83,5 +110,14 @@ public class Viewer {
             ).onCompleteRunnable(() -> currentWindow = null);
 
         container.animateTo(newAnim);
+    }
+
+    /**
+     * Create a getter for the {@link Viewer} instance for outside usage.
+     *
+     * @return The Viewer instance.
+     */
+    public static Viewer getInstance() {
+        return instance;
     }
 }

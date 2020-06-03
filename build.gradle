@@ -52,7 +52,10 @@ configurations {
 dependencies {
     provided files("libs/modcore.jar")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    embed 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7'
+    embed('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7') {
+        exclude module: "kotlin-stdlib-common"
+        exclude module: "kotlin-stdlib"
+    }
 }
 
 task moveResources {

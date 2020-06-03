@@ -11,16 +11,20 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.forge.ContainerTypeTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
+import club.sk1er.patcher.tweaker.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
@@ -47,8 +51,10 @@ import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
+import club.sk1er.patcher.tweaker.asm.LongHashMapTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
+import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
@@ -69,17 +75,20 @@ import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
+import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.VisGraphTransformer;
+import club.sk1er.patcher.tweaker.asm.WorldClientTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FMLClientHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.FluidRegistryTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.ForgeBlockModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ForgeHooksClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
@@ -176,6 +185,16 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
+        registerTransformer(new WorldClientTransformer());
+        registerTransformer(new EntityFXTransformer());
+        registerTransformer(new LongHashMapTransformer());
+        registerTransformer(new ChunkCoordIntPairTransformer());
+
+        if (Patcher.isDevelopment()) {
+            registerTransformer(new BakedQuadTransformer());
+            registerTransformer(new TexturedQuadTransformer());
+            registerTransformer(new ModelRendererTransformer());
+        }
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

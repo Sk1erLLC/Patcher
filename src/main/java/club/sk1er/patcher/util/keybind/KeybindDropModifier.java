@@ -15,11 +15,10 @@ import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
 /**
- * Used for dropping entire stacks on press
- * TODO: Fix, currently doesn't work.
+ * Used for dropping entire stacks on computers that don't allow for doing so, such as macOS.
  */
-public class KeybindDropStack extends KeyBinding {
-    public KeybindDropStack() {
-        super("Drop entire stack", Keyboard.KEY_NONE, "Patcher");
+public class KeybindDropModifier extends KeyBinding {
+    public KeybindDropModifier() {
+        super("Drop stack modifier", Keyboard.KEY_NONE, "Patcher");
     }
 }

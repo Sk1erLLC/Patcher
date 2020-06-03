@@ -251,6 +251,34 @@ public class PatcherConfig extends Vigilant {
     public static boolean tabHeight = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Constant Fog Color Checking",
+        description = "Disable constant fog color checking.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean disableConstantFogColorChecking = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Low Animation Tick",
+        description = "Lowers world particle count.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean lowAnimationTick = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Single Model Render Call",
+        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.\nDoes not work with Frames+ installed.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean singleModelCall = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Static Particle Color",
+        description = "Disable particle lighting checks each frame.",
+        category = "Performance", subcategory = "Particles"
+    )
+    public static boolean staticParticleColor = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"

@@ -39,6 +39,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Run screenshots on their own thread using this, stopping the client from freezing when taking a screenshot.
+ * TODO: More Documentation.
+ */
 public class AsyncScreenshots implements Runnable {
 
     private final int width, height;

@@ -30,12 +30,33 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.List;
 
+/**
+ * Used to modify Minecraft's main menus.
+ */
 public class PatcherMenuEditor {
 
-    private List<GuiButton> mcButtonList;
+
+    /**
+     * Create a Minecraft instance.
+     */
     private final Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * Create a copy of the current gui's button list.
+     * Used to modify the current screens button list on events that don't provide the current button list.
+     */
+    private List<GuiButton> mcButtonList;
+
+    /**
+     * Create a copy of the realms button on the main menu for modifying it outside of {@link GuiScreenEvent.InitGuiEvent}.
+     */
     private GuiButton realmsButton;
 
+    /**
+     * Called when opening any menu, and used to modify other menus when opening them.
+     *
+     * @param event {@link GuiScreenEvent.InitGuiEvent.Post}
+     */
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
         mcButtonList = event.buttonList;
@@ -89,6 +110,11 @@ public class PatcherMenuEditor {
         }
     }
 
+    /**
+     * Used to modify or create new actions for buttons.
+     *
+     * @param event {@link GuiScreenEvent.ActionPerformedEvent.Post}
+     */
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
         if (event.button.id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
@@ -101,6 +127,11 @@ public class PatcherMenuEditor {
         }
     }
 
+    /**
+     * Used to modify rendering components, or adding new components to render.
+     *
+     * @param event {@link GuiScreenEvent.DrawScreenEvent.Post}
+     */
     @SubscribeEvent
     public void drawMenu(GuiScreenEvent.DrawScreenEvent.Post event) {
         if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
