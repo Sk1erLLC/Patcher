@@ -72,7 +72,7 @@ public class EntityCulling {
 
             event.setCanceled(true);
 
-            if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
+            if (PatcherConfig.dontCullNametags && canRenderName(event.entity) && event.isCanceled()) {
                 event.renderer.renderName(event.entity, event.x, event.y, event.z);
             }
         }
