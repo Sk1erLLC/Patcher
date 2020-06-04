@@ -52,6 +52,19 @@ public class MinecraftTransformer implements PatcherTransformer {
             String methodDesc = mapMethodDesc(methodNode);
 
             if (methodName.equals("startGame") || methodName.equals("func_71384_a")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("textures")) {
+                        methodNode.instructions.remove(next.getNext());
+                        // lol
+                        ((MethodInsnNode) next.getNext()).desc = "(Ljava/lang/String;)V";
+                        break;
+                    }
+                }
+
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
             } else if (methodName.equals("checkGLError") || methodName.equals("func_71361_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());

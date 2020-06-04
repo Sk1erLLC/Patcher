@@ -29,6 +29,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,7 +53,7 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TNTTimeTransformer());
         registerTransformer(new GuiCustomResourcePacks());
 
-        if (!Patcher.isDevelopment()) {
+        if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
             try {
                 if (Class.forName("io.framesplus.FramesPlus") != null) {
                     LOGGER.warn("Frames+ is installed, not running BakedQuad/TexturedQuad/ModelRenderer transformation.");

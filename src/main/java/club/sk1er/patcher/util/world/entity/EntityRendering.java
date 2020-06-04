@@ -38,19 +38,8 @@ import java.util.Collection;
  */
 public class EntityRendering {
 
-    /**
-     * Create a Minecraft instance.
-     */
     private final Minecraft mc = Minecraft.getMinecraft();
-
-    /**
-     * Create a font renderer instance.
-     */
     private final FontRenderer fontRenderer = mc.fontRendererObj;
-
-    /**
-     * Create a render manager instance.
-     */
     private final RenderManager renderManager = mc.getRenderManager();
 
     /**
@@ -122,11 +111,6 @@ public class EntityRendering {
         }
     }
 
-    /**
-     * Render the players nametag.
-     *
-     * @param entity Our player.
-     */
     private void renderTag(EntityLivingBase entity) {
         String name = entity.getDisplayName().getFormattedText();
         float playerHeight = 1.6f;
