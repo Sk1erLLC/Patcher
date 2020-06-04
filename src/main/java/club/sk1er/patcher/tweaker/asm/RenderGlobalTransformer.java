@@ -111,7 +111,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 Opcodes.INVOKEVIRTUAL,
                 "club/sk1er/patcher/Patcher",
                 "getCloudHandler",
-                "()Lclub/sk1er/patcher/util/cloud/CloudHandler;",
+                "()Lclub/sk1er/patcher/util/world/cloud/CloudHandler;",
                 false));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(
@@ -124,7 +124,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         list.add(
             new MethodInsnNode(
                 Opcodes.INVOKEVIRTUAL,
-                "club/sk1er/patcher/util/cloud/CloudHandler",
+                "club/sk1er/patcher/util/world/cloud/CloudHandler",
                 "renderClouds",
                 "(IF)Z",
                 false));

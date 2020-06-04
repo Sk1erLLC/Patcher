@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.culling;
+package club.sk1er.patcher.util.world.entity.culling;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.block.Block;

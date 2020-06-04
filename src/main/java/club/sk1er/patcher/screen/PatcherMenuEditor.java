@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.screen;
+package club.sk1er.patcher.screen;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.command.SkinCacheRefresh;
@@ -30,15 +30,8 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.List;
 
-/**
- * Used to modify Minecraft's main menus.
- */
 public class PatcherMenuEditor {
 
-
-    /**
-     * Create a Minecraft instance.
-     */
     private final Minecraft mc = Minecraft.getMinecraft();
 
     /**

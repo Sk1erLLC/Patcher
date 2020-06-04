@@ -20,7 +20,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 object MCDispatchers {
 
     val RENDERER = Dispatchers.Default
-    val IO = newFixedThreadPoolContext(32, "IO")
+    val IO = newFixedThreadPoolContext(8, "IO")
     val PATCHER_SCOPE = CoroutineScope(RENDERER)
 
 }

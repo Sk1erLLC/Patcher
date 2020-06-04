@@ -49,7 +49,7 @@ public class BakedQuadTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/util/block/BlockUtil",
+            "club/sk1er/patcher/util/world/block/BlockUtil",
             "bakedQuadEquals",
             "(Lnet/minecraft/client/renderer/block/model/BakedQuad;Ljava/lang/Object;)Z",
             false));

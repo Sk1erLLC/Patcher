@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.block;
+package club.sk1er.patcher.util.world.block;
 
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;

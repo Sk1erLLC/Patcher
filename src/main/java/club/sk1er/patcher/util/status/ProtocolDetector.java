@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.status;
+package club.sk1er.patcher.util.status;
 
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.util.Tuple;

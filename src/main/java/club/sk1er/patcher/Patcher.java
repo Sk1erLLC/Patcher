@@ -17,10 +17,11 @@ import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.*;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
+import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
-import club.sk1er.patcher.sound.SoundHandler;
-import club.sk1er.patcher.status.ProtocolDetector;
-import club.sk1er.patcher.tab.TabToggleHandler;
+import club.sk1er.patcher.util.sound.SoundHandler;
+import club.sk1er.patcher.util.status.ProtocolDetector;
+import club.sk1er.patcher.screen.tab.TabToggleHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
@@ -28,17 +29,17 @@ import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.chat.ImagePreview;
-import club.sk1er.patcher.util.cloud.CloudHandler;
-import club.sk1er.patcher.util.culling.EntityCulling;
-import club.sk1er.patcher.util.entity.EntityRendering;
-import club.sk1er.patcher.util.entity.EntityTrace;
+import club.sk1er.patcher.util.world.cloud.CloudHandler;
+import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
+import club.sk1er.patcher.util.world.entity.EntityRendering;
+import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindDropStack;
 import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
-import club.sk1er.patcher.util.screen.PatcherMenuEditor;
+import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.vigilance.Vigilant;
@@ -54,6 +55,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -206,6 +208,12 @@ public class Patcher {
         registerClass(new WorldHandler());
 
         checkLogs();
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        // Close threads as it is no longer needed after startup.
+        MCDispatchers.INSTANCE.getIO().close();
     }
 
     /**

@@ -9,12 +9,12 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.entity;
+package club.sk1er.patcher.util.world.entity;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
-import club.sk1er.patcher.util.culling.EntityCulling;
+import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

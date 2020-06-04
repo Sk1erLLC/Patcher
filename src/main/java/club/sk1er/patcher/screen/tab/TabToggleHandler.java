@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.tab;
+package club.sk1er.patcher.screen.tab;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
