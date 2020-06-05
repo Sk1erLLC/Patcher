@@ -48,7 +48,7 @@ public class OptifineClassTransformer implements IClassTransformer {
     private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     private final boolean outputBytecode =
-        Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+            Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
     public OptifineClassTransformer() {
         registerTransformer(new OptifineEntityRendererTransformer());
@@ -76,33 +76,19 @@ public class OptifineClassTransformer implements IClassTransformer {
         }
 
         // Reflection Optimizations
-        try {
-            ClassNode classNode = new ClassNode();
-            ClassReader classReader = new ClassReader("Config");
-            classReader.accept(classNode, ClassReader.SKIP_CODE);
-            String optifineVersion = "";
-            for (FieldNode fieldNode : classNode.fields) {
-                if (fieldNode.name.equals("OF_RELEASE")) {
-                    optifineVersion = (String) fieldNode.value;
-                    break;
-                }
-            }
-            switch (optifineVersion) {
-                case "I7":
-                    LOGGER.info("Found optifine I7");
-                    registerCommonTransformers();
-                    registerI7Transformers();
-                    break;
-                case "L5":
-                    LOGGER.info("Found optifine L5");
-                    registerCommonTransformers();
-                    registerL5Transformers();
-                    break;
-                default:
-                    LOGGER.info("User has old optifine version. Aborting reflection optimizations");
-            }
-        } catch (IOException e) {
-            LOGGER.info("Something went wrong, or the user doesn't have optifine");
+        switch (ClassTransformer.optifineVersion) {
+            case "I7":
+                LOGGER.info("Found optifine I7");
+                registerCommonTransformers();
+                registerI7Transformers();
+                break;
+            case "L5":
+                LOGGER.info("Found optifine L5");
+                registerCommonTransformers();
+                registerL5Transformers();
+                break;
+            default:
+                LOGGER.info("User has old optifine version. Aborting reflection optimizations");
         }
     }
 

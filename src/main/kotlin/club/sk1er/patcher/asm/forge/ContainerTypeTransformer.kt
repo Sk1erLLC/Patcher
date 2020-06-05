@@ -31,7 +31,7 @@ class ContainerTypeTransformer : PatcherTransformer {
      * @param name      the transformed class name
      */
     override fun transform(classNode: ClassNode, name: String) {
-        classNode.methods.find {
+        classNode.methods.first {
             it.name == "<clinit>"
         }?.apply {
             instructions.iterator().forEach { insn ->

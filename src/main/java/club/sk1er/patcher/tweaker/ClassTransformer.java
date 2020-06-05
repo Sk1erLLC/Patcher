@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.forge.ContainerTypeTransformer;
+import club.sk1er.patcher.asm.forge.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
@@ -39,7 +40,7 @@ import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiIngameTransformer;
+import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
@@ -109,6 +110,7 @@ import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -120,8 +122,22 @@ public class ClassTransformer implements IClassTransformer {
     private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    public static String optifineVersion = "NONE";
 
     public ClassTransformer() {
+        try {
+            ClassNode classNode = new ClassNode();
+            ClassReader classReader = new ClassReader("Config");
+            classReader.accept(classNode, ClassReader.SKIP_CODE);
+            for (FieldNode fieldNode : classNode.fields) {
+                if (fieldNode.name.equals("OF_RELEASE")) {
+                    optifineVersion = (String) fieldNode.value;
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.info("Something went wrong, or the user doesn't have optifine");
+        }
         registerTransformer(new S2EPacketCloseWindowTransformer());
         registerTransformer(new EntityItemTransformer());
         registerTransformer(new MinecraftTransformer());
