@@ -62,10 +62,6 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TNTTimeTransformer());
         registerTransformer(new GuiCustomResourcePacks());
 
-        registerTransformer(new BakedQuadTransformer());
-        registerTransformer(new TexturedQuadTransformer());
-        registerTransformer(new ModelRendererTransformer());
-
         // Reflection Optimizations
         switch (ClassTransformer.optifineVersion) {
             case "I7":

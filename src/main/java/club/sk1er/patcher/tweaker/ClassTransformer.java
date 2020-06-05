@@ -136,7 +136,7 @@ public class ClassTransformer implements IClassTransformer {
                 }
             }
         } catch (IOException e) {
-            LOGGER.info("Something went wrong, or the user doesn't have optifine", e);
+            LOGGER.info("Something went wrong, or the user doesn't have optifine");
         }
         registerTransformer(new S2EPacketCloseWindowTransformer());
         registerTransformer(new EntityItemTransformer());
@@ -206,6 +206,9 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityFXTransformer());
         registerTransformer(new LongHashMapTransformer());
         registerTransformer(new ChunkCoordIntPairTransformer());
+        registerTransformer(new BakedQuadTransformer());
+        registerTransformer(new TexturedQuadTransformer());
+        registerTransformer(new ModelRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

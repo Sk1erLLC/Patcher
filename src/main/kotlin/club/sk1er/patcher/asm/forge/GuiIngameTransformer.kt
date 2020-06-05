@@ -57,8 +57,6 @@ class GuiIngameTransformer : PatcherTransformer {
                                             int)
                                     imul
                                     isub
-                                    iconst_1
-                                    isub
                                     aload_2
                                     invokevirtual("net/minecraft/client/gui/ScaledResolution", "func_78326_a", //getScaledWidth
                                             int)

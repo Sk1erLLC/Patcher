@@ -674,11 +674,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static int imagePreviewWidth = 50;
 
-
-
-
-
-
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
