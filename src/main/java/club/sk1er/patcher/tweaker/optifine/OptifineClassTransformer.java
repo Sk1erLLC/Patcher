@@ -11,21 +11,20 @@
 
 package club.sk1er.patcher.tweaker.optifine;
 
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
-import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
@@ -93,12 +92,6 @@ public class OptifineClassTransformer implements IClassTransformer {
         }
     }
 
-    private void registerTransformer(PatcherTransformer transformer) {
-        for (String cls : transformer.getClassName()) {
-            transformerMap.put(cls, transformer);
-        }
-    }
-
     private void registerCommonTransformers() {
         registerTransformer(new BakedQuadReflectionOptimizer());
         registerTransformer(new FaceBakeryReflectionOptimizer());
@@ -133,7 +126,6 @@ public class OptifineClassTransformer implements IClassTransformer {
         for (String cls : transformer.getClassName()) {
             transformerMap.put(cls, transformer);
         }
-
     }
 
     @Override
