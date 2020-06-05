@@ -23,10 +23,12 @@ import org.lwjgl.opengl.GL11;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ImagePreview {
 
+    private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net"};
     private String loaded;
     private int tex = -1;
     private int width = 100;
@@ -49,8 +51,24 @@ public class ImagePreview {
     }
 
     private void handle(String value) {
+
+        try {
+            final URL url = new URL(value);
+            final String host = url.getHost();
+            boolean found = false;
+            for (String allowed_host : ALLOWED_HOSTS) {
+                if (host.equalsIgnoreCase(allowed_host)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return;
+        } catch (MalformedURLException e) {
+            return;
+        }
         if (!value.startsWith("http")) {
-            GlStateManager.deleteTexture(tex);
+            if (tex != -1)
+                GlStateManager.deleteTexture(tex);
             tex = -1;
             return;
         }
