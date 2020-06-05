@@ -96,6 +96,7 @@ import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
+import club.sk1er.patcher.tweaker.asm.forge.ModDiscovererTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
@@ -225,7 +226,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new ForgeBlockModelRendererTransformer());
-        registerTransformer(new ContainerTypeTransformer());
+        registerTransformer(new ModDiscovererTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
