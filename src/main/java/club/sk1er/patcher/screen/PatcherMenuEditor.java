@@ -9,12 +9,11 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.screen;
+package club.sk1er.patcher.screen;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiCustomizeSkin;
@@ -22,6 +21,7 @@ import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -32,17 +32,36 @@ import java.util.List;
 
 public class PatcherMenuEditor {
 
-    private List<GuiButton> buttonList;
     private final Minecraft mc = Minecraft.getMinecraft();
 
+    /**
+     * Create a copy of the current gui's button list.
+     * Used to modify the current screens button list on events that don't provide the current button list.
+     */
+    private List<GuiButton> mcButtonList;
+
+    /**
+     * Create a copy of the realms button on the main menu for modifying it outside of {@link GuiScreenEvent.InitGuiEvent}.
+     */
+    private GuiButton realmsButton;
+
+    /**
+     * Called when opening any menu, and used to modify other menus when opening them.
+     *
+     * @param event {@link GuiScreenEvent.InitGuiEvent.Post}
+     */
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
-        List<GuiButton> mcButtonList = event.buttonList;
-        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            buttonList = mcButtonList;
+        mcButtonList = event.buttonList;
 
-            if (buttonList.get(3) != null) {
-                buttonList.get(3).width = 200;
+        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
+            realmsButton = ((GuiMainMenu) event.gui).realmsButton;
+
+            for (GuiButton button : mcButtonList) {
+                if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
+                    button.width = 200;
+                    break;
+                }
             }
         } else {
             int width = event.gui.width;
@@ -57,10 +76,6 @@ public class PatcherMenuEditor {
                             button.xPosition = width / 2 - 204;
                         }
                     }
-                }
-
-                if (!Loader.isModLoaded("ResourcePackOrganizer")) {
-                    mcButtonList.add(new GuiButton(822462, width / 2 + 4, height - 24, "Refresh Cache"));
                 }
             } else if (event.gui instanceof GuiIngameMenu) {
                 if (PatcherConfig.skinRefresher) {
@@ -88,11 +103,14 @@ public class PatcherMenuEditor {
         }
     }
 
+    /**
+     * Used to modify or create new actions for buttons.
+     *
+     * @param event {@link GuiScreenEvent.ActionPerformedEvent.Post}
+     */
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
-        if (event.button.id == 822462 && event.gui instanceof GuiScreenResourcePacks) {
-            FallbackResourceManagerHook.clearCache();
-        } else if (event.button.id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
+        if (event.button.id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
             SkinCacheRefresh.refreshSkin();
         } else if (event.gui instanceof GuiIngameMenu && event.button.id == 231423) {
             MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
@@ -102,11 +120,18 @@ public class PatcherMenuEditor {
         }
     }
 
+    /**
+     * Used to modify rendering components, or adding new components to render.
+     *
+     * @param event {@link GuiScreenEvent.DrawScreenEvent.Post}
+     */
     @SubscribeEvent
     public void drawMenu(GuiScreenEvent.DrawScreenEvent.Post event) {
         if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            buttonList.get(2).visible = false;
-            buttonList.get(2).enabled = false;
+            if (realmsButton != null) {
+                realmsButton.visible = false;
+                realmsButton.enabled = false;
+            }
         }
     }
 }

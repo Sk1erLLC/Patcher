@@ -9,11 +9,16 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.cloud;
+package club.sk1er.patcher.util.world.cloud;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
@@ -29,6 +34,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Our much faster cloud renderer, still has room for improvement.
+ * TODO: More documentation.
+ */
 public class CloudRenderer implements IResourceManagerReloadListener {
 
     private static final float PX_SIZE = 1 / 256F;

@@ -251,6 +251,34 @@ public class PatcherConfig extends Vigilant {
     public static boolean tabHeight = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Constant Fog Color Checking",
+        description = "Disable constant fog color checking.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean disableConstantFogColorChecking = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Low Animation Tick",
+        description = "Lowers world particle count.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean lowAnimationTick = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Single Model Render Call",
+        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.\nDoes not work with Frames+ installed.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean singleModelCall = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Static Particle Color",
+        description = "Disable particle lighting checks each frame.",
+        category = "Performance", subcategory = "Particles"
+    )
+    public static boolean staticParticleColor = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"
@@ -622,6 +650,34 @@ public class PatcherConfig extends Vigilant {
         category = "Quality of Life", subcategory = "General"
     )
     public static boolean replaceOpenToLan = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Remove Inverted Colors from Crosshair",
+        description = "Remove the inverted color effect on the crosshair.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean removeInvertFromCrosshair;
+
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Image Preview",
+        description = "Preview image links sent in chat. \nPress Shift to use fullscreen and Control to render in native image resolution",
+        category = "Quality of Life", subcategory = "Image Preview"
+    )
+    public static boolean imagePreview = true;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Image Preview Width",
+        description = "The % of screen width to be used for image preview.",
+        category = "Quality of Life", subcategory = "Image Preview",
+        min = 10, max = 100
+    )
+    public static int imagePreviewWidth = 50;
+
+
+
+
+
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

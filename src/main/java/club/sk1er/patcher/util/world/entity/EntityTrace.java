@@ -9,12 +9,12 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.entity;
+package club.sk1er.patcher.util.world.entity;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
-import club.sk1er.patcher.util.culling.EntityCulling;
+import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,20 +31,46 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.List;
 
-// taken from ScottehBoeh w/ permission (originally from BM Watchdog)
+/**
+ * Used to fetch the current user the player is pointing at.
+ */
 public class EntityTrace {
 
+    /**
+     * Create a Minecraft instance.
+     */
     private final Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * The currently targeted user.
+     */
     private Entity targetEntity;
+
+    /**
+     * The current world ticks.
+     */
     private float partialTicks;
 
+    /**
+     * Set the current world ticks.
+     *
+     * @param event {@link RenderWorldLastEvent}
+     */
     @SubscribeEvent
     public void worldRender(RenderWorldLastEvent event) {
         partialTicks = event.partialTicks;
     }
 
+    /**
+     * When the Name History keybind is pressed, check the currently hovered over entity.
+     * If the player is hovering over an entity and their name is not obfuscated (&k style) and their name
+     * is currently rendering (avoid any case of allowing the player to identify their name while the server does not
+     * allow them to view names), check their name history and open a GUI displaying the name history.
+     *
+     * @param event {@link InputEvent.KeyInputEvent}
+     */
     @SubscribeEvent
-    public void keybind(InputEvent.KeyInputEvent event) {
+    public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (Patcher.instance.getNameHistory().isPressed()) {
             getMouseOver(partialTicks);
 
@@ -60,6 +86,11 @@ public class EntityTrace {
         }
     }
 
+    /**
+     * Check what exactly the player is currently hovered over.
+     *
+     * @param partialTicks Current world ticks.
+     */
     public void getMouseOver(float partialTicks) {
         Entity entity = mc.getRenderViewEntity();
         if (entity != null && mc.theWorld != null) {

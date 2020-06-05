@@ -18,8 +18,10 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -50,6 +52,19 @@ public class MinecraftTransformer implements PatcherTransformer {
             String methodDesc = mapMethodDesc(methodNode);
 
             if (methodName.equals("startGame") || methodName.equals("func_71384_a")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("textures")) {
+                        methodNode.instructions.remove(next.getNext());
+                        // lol
+                        ((MethodInsnNode) next.getNext()).desc = "(Ljava/lang/String;)V";
+                        break;
+                    }
+                }
+
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
             } else if (methodName.equals("checkGLError") || methodName.equals("func_71361_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());
@@ -81,7 +96,16 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
                         methodNode.instructions.insertBefore(node, setSystemTime());
-                        break;
+                    } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
+                        String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) node);
+
+                        if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
+                            methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                "net/minecraftforge/client/MinecraftForgeClient",
+                                "clearRenderCache",
+                                "()V",
+                                false));
+                        }
                     }
                 }
             } else if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
@@ -162,8 +186,46 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("dispatchKeypresses") || methodName.equals("func_152348_aa")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
+                        MethodInsnNode method = (MethodInsnNode) next;
+                        if (method.owner.equals("org/lwjgl/input/Keyboard") && method.name.equals("getEventCharacter") && method.desc.equals("()C")) {
+                            methodNode.instructions.insert(method, keybindFixer());
+                            break;
+                        }
+                    }
+                }
+            } else if (methodName.equals("runGameLoop") || methodName.equals("func_71411_J")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("stream")) {
+                        for (int i = 0; i < 33; ++i) {
+                            methodNode.instructions.remove(next.getNext());
+                        }
+
+                        methodNode.instructions.remove(next.getPrevious().getPrevious());
+                        methodNode.instructions.remove(next.getPrevious());
+                        methodNode.instructions.remove(next);
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList keybindFixer() {
+        InsnList list = new InsnList();
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 256));
+        list.add(new InsnNode(Opcodes.IADD));
+        return list;
     }
 
     private InsnList cancelGlCheck() {

@@ -9,13 +9,10 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util.entity;
+package club.sk1er.patcher.util.world.entity;
 
 import club.sk1er.patcher.config.PatcherConfig;
-
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-
+import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -27,18 +24,39 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.opengl.GL11;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+
+/**
+ * Used for things relating to entity rendering.
+ * May merge with {@link EntityCulling} for simplicity.
+ */
 public class EntityRendering {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fontRenderer = mc.fontRendererObj;
     private final RenderManager renderManager = mc.getRenderManager();
+
+    /**
+     * Create a key for potion effects.
+     */
     private final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
+
+    /**
+     * Create a weak reference, allowing the garbage collector to easily access it.
+     */
     private WeakReference<EntityLivingBase> reference;
 
+    /**
+     * Stop any entity (currently only armor stands) from being rendered into the world.
+     *
+     * @param event {@link RenderLivingEvent.Pre}
+     */
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<EntityArmorStand> event) {
         if (PatcherConfig.disableArmorstands && event.entity instanceof EntityArmorStand) {
@@ -46,6 +64,11 @@ public class EntityRendering {
         }
     }
 
+    /**
+     * Render the nametag above our player.
+     *
+     * @param event {@link RenderLivingEvent.Specials.Pre}
+     */
     @SubscribeEvent
     public void renderNametag(RenderLivingEvent.Specials.Pre<EntityPlayerSP> event) {
         if (event.entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
@@ -53,6 +76,12 @@ public class EntityRendering {
         }
     }
 
+    /**
+     * Check the users current potion effects, and stop rendering those potion effects if the user does
+     * not want to see said potion effects.
+     *
+     * @param event {@link TickEvent.ClientTickEvent}
+     */
     @SubscribeEvent
     public void tickClient(ClientTickEvent event) {
         if (!PatcherConfig.cleanView) return;

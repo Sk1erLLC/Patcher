@@ -11,21 +11,28 @@
 
 package club.sk1er.patcher.util;
 
+/**
+ * Similar to {@link kotlin.Pair}, but for Java.
+ * May now be redundant, as this was added way before we implemented Kotlin into the project.
+ *
+ * @param <E> Left side.
+ * @param <K> Right side.
+ */
 public class Tuple<E, K> {
 
-    private final E objectOne;
-    private final K objectTwo;
+    private final E left;
+    private final K right;
 
-    public Tuple(E objectOne, K objectTwo) {
-        this.objectOne = objectOne;
-        this.objectTwo = objectTwo;
+    public Tuple(E left, K right) {
+        this.left = left;
+        this.right = right;
     }
 
-    public E getObjectOne() {
-        return objectOne;
+    public E getLeft() {
+        return left;
     }
 
-    public K getObjectTwo() {
-        return objectTwo;
+    public K getRight() {
+        return right;
     }
 }

@@ -12,7 +12,7 @@
 package club.sk1er.patcher.command;
 
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.cloud.CloudRenderer;
+import club.sk1er.patcher.util.world.cloud.CloudRenderer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

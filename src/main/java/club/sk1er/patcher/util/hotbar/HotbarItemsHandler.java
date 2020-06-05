@@ -32,9 +32,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Used to render stuff above or around the hotbar.
+ * <p>
+ * Planned to be removed once we start work on a new ChromaHUD version, as this does not fit nor make any
+ * sense to be in Patcher, and would fit much better in a centralized HUD mod.
+ */
 public class HotbarItemsHandler {
 
+    /**
+     * Create a Minecraft instance.
+     */
     private final Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * Create a map for short enchantment name identification.
+     * Protection -> P, Fire Protection -> FP, Blast Protection -> BP, etc.
+     */
     private final Map<Integer, String> shortEnchantmentNames =
         new HashMap<Integer, String>() {
             {
@@ -68,9 +82,14 @@ public class HotbarItemsHandler {
             }
         };
 
+    /**
+     * Render the damage of the currently held item above the hotbar for easy viewing.
+     *
+     * @param event {@link RenderGameOverlayEvent.Post}
+     */
     @SubscribeEvent
-    public void renderDamage(RenderGameOverlayEvent.Post e) {
-        if (e.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance) {
+    public void renderDamage(RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance) {
             return;
         }
 
@@ -78,7 +97,7 @@ public class HotbarItemsHandler {
         if (heldItemStack != null) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            ScaledResolution res = e.resolution;
+            ScaledResolution res = event.resolution;
 
             String attackDamage = getAttackDamageString(heldItemStack);
             int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
@@ -96,9 +115,14 @@ public class HotbarItemsHandler {
         }
     }
 
+    /**
+     * Render the item count of the currently held item for easy viewing.
+     *
+     * @param event {@link RenderGameOverlayEvent.Post}
+     */
     @SubscribeEvent
-    public void renderItemCount(final RenderGameOverlayEvent.Post e) {
-        if (e.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance) {
+    public void renderItemCount(final RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance) {
             return;
         }
 
@@ -108,7 +132,7 @@ public class HotbarItemsHandler {
 
             if (count > 1 || (holdingBow && count > 0)) {
                 int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? 10 : 0;
-                ScaledResolution resolution = e.resolution;
+                ScaledResolution resolution = event.resolution;
                 mc.fontRendererObj.drawString(String.valueOf(count),
                     resolution.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
                     resolution.getScaledHeight() - 46 - offset,
@@ -118,9 +142,14 @@ public class HotbarItemsHandler {
         }
     }
 
+    /**
+     * Render the enchantments of the currently held item for easy viewing.
+     *
+     * @param event {@link RenderGameOverlayEvent.Post}
+     */
     @SubscribeEvent
-    public void renderEnchantments(final RenderGameOverlayEvent.Post e) {
-        if (e.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance) {
+    public void renderEnchantments(final RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance) {
             return;
         }
 
@@ -130,7 +159,7 @@ public class HotbarItemsHandler {
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            ScaledResolution res = e.resolution;
+            ScaledResolution res = event.resolution;
 
             int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
             int y = res.getScaledHeight() - 59;
@@ -146,16 +175,34 @@ public class HotbarItemsHandler {
         }
     }
 
+    /**
+     * Get the currently held items attack damage by searching through the items lore.
+     *
+     * @param stack Currently held item.
+     * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.
+     */
     private String getAttackDamageString(ItemStack stack) {
-        for (String entry : stack.getTooltip(mc.thePlayer, true)) {
-            if (entry.endsWith("Attack Damage")) {
-                return entry.split(" ", 2)[0].substring(2);
+        if (stack != null) {
+            List<String> tooltip = stack.getTooltip(mc.thePlayer, true);
+
+            if (!tooltip.isEmpty()) {
+                for (String entry : tooltip) {
+                    if (entry.endsWith("Attack Damage")) {
+                        return entry.split(" ", 2)[0].substring(2);
+                    }
+                }
             }
         }
 
         return "";
     }
 
+    /**
+     * Get the amount of the currently held item in the players inventory.
+     *
+     * @param holdingBow If the player is holding a bow, count arrows instead.
+     * @return The amount of the currently held item.
+     */
     private int getHeldItemCount(boolean holdingBow) {
         int id = Item.getIdFromItem(mc.thePlayer.getCurrentEquippedItem().getItem());
         int data = mc.thePlayer.getCurrentEquippedItem().getItemDamage();
@@ -180,6 +227,12 @@ public class HotbarItemsHandler {
         return count;
     }
 
+    /**
+     * Get the duration and name of the held potion.
+     *
+     * @param heldItemStack Currently held item.
+     * @return Potion duration & name.
+     */
     private String getPotionEffectString(ItemStack heldItemStack) {
         ItemPotion potion = (ItemPotion) heldItemStack.getItem();
         List<PotionEffect> effects = potion.getEffects(heldItemStack);
@@ -202,6 +255,12 @@ public class HotbarItemsHandler {
         return potionBuilder.toString().trim();
     }
 
+    /**
+     * Get the enchantments of the currently held item using our short enchantment mapping.
+     *
+     * @param heldItemStack Currently held item.
+     * @return Currently held items enchantments.
+     */
     private String getEnchantmentString(ItemStack heldItemStack) {
         String enchantBuilder;
         Map<Integer, Integer> en = EnchantmentHelper.getEnchantments(heldItemStack);

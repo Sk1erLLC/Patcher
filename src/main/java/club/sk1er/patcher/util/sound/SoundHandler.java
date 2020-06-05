@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.sound;
+package club.sk1er.patcher.util.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.vigilance.data.PropertyData;

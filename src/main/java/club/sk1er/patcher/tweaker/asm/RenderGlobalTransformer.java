@@ -94,7 +94,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "limitScan", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/chunk/VisGraph", "patcherLimitScan", "Z"));
         return list;
     }
 
@@ -111,7 +111,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 Opcodes.INVOKEVIRTUAL,
                 "club/sk1er/patcher/Patcher",
                 "getCloudHandler",
-                "()Lclub/sk1er/patcher/util/cloud/CloudHandler;",
+                "()Lclub/sk1er/patcher/util/world/cloud/CloudHandler;",
                 false));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(
@@ -124,7 +124,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         list.add(
             new MethodInsnNode(
                 Opcodes.INVOKEVIRTUAL,
-                "club/sk1er/patcher/util/cloud/CloudHandler",
+                "club/sk1er/patcher/util/world/cloud/CloudHandler",
                 "renderClouds",
                 "(IF)Z",
                 false));

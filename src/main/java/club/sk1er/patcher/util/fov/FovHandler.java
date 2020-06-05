@@ -21,14 +21,36 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-// taken from hyperium
+/**
+ * Allow for multiplying the FOV status for certain states that drastically change FOV.
+ */
 public class FovHandler {
 
+    /**
+     * Create a constant of the speed modifier's FOV status.
+     */
     private static final float MODIFIER_SPEED = 0.1F;
+
+    /**
+     * Create a constant of the slowness modifier's FOV status.
+     */
     private static final float MODIFIER_SLOWNESS = -0.075F;
+
+    /**
+     * Create a constant of how many states a bow creates when pulling it back.
+     */
     private static final float MAX_BOW_TICKS = 20.0F;
+
+    /**
+     * Create a map containing the bow's current FOV modifier status.
+     */
     private static final Map<Integer, Float> MODIFIER_BY_TICK = new HashMap<>();
 
+    /**
+     * Change the FOV multiplier accordingly to what the user states.
+     *
+     * @param event {@link FOVUpdateEvent}
+     */
     @SubscribeEvent
     public void fovChange(FOVUpdateEvent event) {
         if (!PatcherConfig.allowFovModifying) return;
@@ -60,6 +82,7 @@ public class FovHandler {
         event.newfov = base;
     }
 
+    // Input the current state and modifier.
     static {
         MODIFIER_BY_TICK.put(0, 0.0F);
         MODIFIER_BY_TICK.put(1, 3.7497282E-4f);

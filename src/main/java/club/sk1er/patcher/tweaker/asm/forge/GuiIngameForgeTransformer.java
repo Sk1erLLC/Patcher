@@ -15,7 +15,11 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -57,10 +61,38 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                         }
                     }
                 }
+            } else if (methodName.equals("renderCrosshairs")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                break;
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 775) {
+                        LabelNode ifne = new LabelNode();
+                        InsnList list = new InsnList();
+                        methodNode.instructions.insertBefore(next, createToggle(ifne, list));
+
+                        for (int i = 0; i < 5; ++i) {
+                            next = next.getNext();
+                        }
+
+                        methodNode.instructions.insertBefore(next, addIfeq(ifne, list));
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private InsnList addIfeq(LabelNode ifne, InsnList list) {
+        list.add(ifne);
+        return list;
+    }
+
+    private InsnList createToggle(LabelNode ifne, InsnList list) {
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeInvertFromCrosshair", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList toggleAlpha(boolean state) {

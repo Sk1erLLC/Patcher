@@ -11,7 +11,11 @@
 
 package club.sk1er.patcher.tweaker.optifine;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.ClassTransformer;
+import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
+import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
@@ -25,11 +29,13 @@ import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.Ex
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
 import club.sk1er.patcher.tweaker.asm.tnttime.TNTTimeTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -40,10 +46,10 @@ import java.io.IOException;
 
 public class OptifineClassTransformer implements IClassTransformer {
 
-    private final Logger LOGGER = LogManager.getLogger("OptifinePatcherTransformer");
+    private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     private final boolean outputBytecode =
-            Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+        Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
     public OptifineClassTransformer() {
         registerTransformer(new OptifineEntityRendererTransformer());
@@ -55,6 +61,7 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TagRendererListenerTransformer());
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
         registerTransformer(new TNTTimeTransformer());
+      
         // Reflection Optimizations
         try {
             ClassNode classNode = new ClassNode();
@@ -105,11 +112,32 @@ public class OptifineClassTransformer implements IClassTransformer {
 
     private void registerL5Transformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
+
+        registerTransformer(new GuiCustomResourcePacks());
+
+        if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
+            try {
+                if (Class.forName("io.framesplus.FramesPlus") != null) {
+                    LOGGER.warn("Frames+ is installed, not running BakedQuad/TexturedQuad/ModelRenderer transformation.");
+                }
+            } catch (Exception e) {
+                LOGGER.info("Frames+ is not installed, running BakedQuad/TexturedQuad/ModelRenderer transformation.");
+                registerTransformer(new BakedQuadTransformer());
+                registerTransformer(new TexturedQuadTransformer());
+                registerTransformer(new ModelRendererTransformer());
+            }
+        }
+    }
+
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+
     }
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return ClassTransformer.createTransformer(
-                transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
     }
 }

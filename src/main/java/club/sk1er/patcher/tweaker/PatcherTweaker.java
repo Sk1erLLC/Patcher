@@ -15,6 +15,7 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.patcher.Patcher;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -47,6 +49,18 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.optifine.OptifinePatcherTweaker", mod);
         } catch (Exception e) {
             System.out.println("Failed creating a second tweaker");
+        }
+        boolean lwjglUnlock = false;
+        try {
+            Field transformerExceptions = LaunchClassLoader.class.getDeclaredField("classLoaderExceptions");
+            transformerExceptions.setAccessible(true);
+            Object o = transformerExceptions.get(Launch.classLoader);
+            lwjglUnlock = ((Set<String>) o).remove("org.lwjgl.");
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        if(!lwjglUnlock) {
+            System.out.println("Failed to unlock LWJGL. Mouse button 4 fix thing will not work");
         }
     }
 

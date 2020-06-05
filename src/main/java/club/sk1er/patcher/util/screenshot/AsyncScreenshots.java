@@ -39,6 +39,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Run screenshots on their own thread using this, stopping the client from freezing when taking a screenshot.
+ * TODO: More Documentation.
+ */
 public class AsyncScreenshots implements Runnable {
 
     private final int width, height;
@@ -104,14 +108,14 @@ public class AsyncScreenshots implements Runnable {
             chatComponent = new ChatComponentText(prefix + "Screenshot saved.");
         }
 
-        chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/openfolder"));
+        chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$openfolder"));
         chatComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Open screenshot"))));
 
         IChatComponent favoriteComponent = new ChatComponentText(ChatColor.YELLOW.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "FAV" : "FAVORITE"));
-        favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/favorite"));
+        favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$favorite"));
         favoriteComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7This'll save the screenshot to a new folder called\n" +
@@ -120,7 +124,7 @@ public class AsyncScreenshots implements Runnable {
 
         IChatComponent deleteComponent = new ChatComponentText(ChatColor.RED.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "DEL" : "DELETE"));
-        deleteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/delete"));
+        deleteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$delete"));
         deleteComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7This'll delete the screenshot from your screenshots folder.\n" +
@@ -129,7 +133,7 @@ public class AsyncScreenshots implements Runnable {
 
         IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "UPL" : "UPLOAD"));
-        imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/upload"));
+        imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Upload the screenshot to Imgur, a picture sharing site.\n" +
@@ -138,7 +142,7 @@ public class AsyncScreenshots implements Runnable {
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "CPY" : "COPY"));
-        copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/copyss"));
+        copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$copyss"));
         copyComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Copy this image to your system clipboard.\n" +
@@ -197,12 +201,12 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public String getCommandName() {
-            return "openfolder";
+            return "$openfolder";
         }
 
         @Override
         public String getCommandUsage(ICommandSender sender) {
-            return "/openfolder";
+            return "/$openfolder";
         }
 
         @Override
@@ -210,7 +214,7 @@ public class AsyncScreenshots implements Runnable {
             try {
                 ModCoreDesktop.INSTANCE.open(screenshot.getCanonicalFile());
             } catch (Exception e) {
-                ChatUtilities.sendMessage("Unfortunately, we were unable to open the folder. Please report this to us at https://discord.gg/sk1er.");
+                ChatUtilities.sendMessage("Unfortunately, we were unable to open the screenshots folder. Please report this to us at https://discord.gg/sk1er.");
             }
         }
 
@@ -224,12 +228,12 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public String getCommandName() {
-            return "favorite";
+            return "$favorite";
         }
 
         @Override
         public String getCommandUsage(ICommandSender sender) {
-            return "/favorite";
+            return "/$favorite";
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -259,12 +263,12 @@ public class AsyncScreenshots implements Runnable {
     public static class DeleteScreenshot extends CommandBase {
         @Override
         public String getCommandName() {
-            return "delete";
+            return "$delete";
         }
 
         @Override
         public String getCommandUsage(ICommandSender sender) {
-            return "/delete";
+            return "/$delete";
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -291,12 +295,12 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public String getCommandName() {
-            return "upload";
+            return "$upload";
         }
 
         @Override
         public String getCommandUsage(ICommandSender sender) {
-            return "/upload";
+            return "/$upload";
         }
 
         @Override
@@ -330,12 +334,12 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public String getCommandName() {
-            return "copyss";
+            return "$copyss";
         }
 
         @Override
         public String getCommandUsage(ICommandSender sender) {
-            return "/copyss";
+            return "/$copyss";
         }
 
         @Override

@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -29,6 +30,13 @@ public class ChatHandler {
     private final LinkedList<ChatEntry> entries = new LinkedList<>();
     private int line;
     private int lastAmount = 0;
+
+    @SubscribeEvent
+    public void renderChat(RenderGameOverlayEvent.Chat event) {
+        if (event.type == RenderGameOverlayEvent.ElementType.CHAT && PatcherConfig.chatPosition) {
+            event.posY -= 12;
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
