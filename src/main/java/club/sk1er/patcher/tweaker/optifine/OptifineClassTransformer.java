@@ -60,7 +60,21 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TagRendererListenerTransformer());
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
         registerTransformer(new TNTTimeTransformer());
-      
+        registerTransformer(new GuiCustomResourcePacks());
+
+        if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
+            try {
+                if (Class.forName("io.framesplus.FramesPlus") != null) {
+                    LOGGER.warn("Frames+ is installed, not running BakedQuad/TexturedQuad/ModelRenderer transformation.");
+                }
+            } catch (Exception e) {
+                LOGGER.info("Frames+ is not installed, running BakedQuad/TexturedQuad/ModelRenderer transformation.");
+                registerTransformer(new BakedQuadTransformer());
+                registerTransformer(new TexturedQuadTransformer());
+                registerTransformer(new ModelRendererTransformer());
+            }
+        }
+
         // Reflection Optimizations
         try {
             ClassNode classNode = new ClassNode();
@@ -92,6 +106,17 @@ public class OptifineClassTransformer implements IClassTransformer {
         }
     }
 
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+    }
+
     private void registerCommonTransformers() {
         registerTransformer(new BakedQuadReflectionOptimizer());
         registerTransformer(new FaceBakeryReflectionOptimizer());
@@ -105,31 +130,5 @@ public class OptifineClassTransformer implements IClassTransformer {
 
     private void registerL5Transformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
-
-        registerTransformer(new GuiCustomResourcePacks());
-
-        if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
-            try {
-                if (Class.forName("io.framesplus.FramesPlus") != null) {
-                    LOGGER.warn("Frames+ is installed, not running BakedQuad/TexturedQuad/ModelRenderer transformation.");
-                }
-            } catch (Exception e) {
-                LOGGER.info("Frames+ is not installed, running BakedQuad/TexturedQuad/ModelRenderer transformation.");
-                registerTransformer(new BakedQuadTransformer());
-                registerTransformer(new TexturedQuadTransformer());
-                registerTransformer(new ModelRendererTransformer());
-            }
-        }
-    }
-
-    private void registerTransformer(PatcherTransformer transformer) {
-        for (String cls : transformer.getClassName()) {
-            transformerMap.put(cls, transformer);
-        }
-    }
-
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
     }
 }
