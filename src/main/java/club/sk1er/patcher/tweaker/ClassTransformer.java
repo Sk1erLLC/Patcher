@@ -11,8 +11,6 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.asm.forge.ContainerTypeTransformer;
 import club.sk1er.patcher.asm.forge.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
@@ -40,7 +38,6 @@ import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
-import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
@@ -105,7 +102,6 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
