@@ -24,9 +24,7 @@ class GuiIngameTransformer : PatcherTransformer {
      *
      * @return the class name
      */
-    override fun getClassName(): Array<String> {
-        return arrayOf("net.minecraft.client.gui.GuiIngame")
-    }
+    override fun getClassName() = arrayOf("net.minecraft.client.gui.GuiIngame")
 
     /**
      * Perform any asm in order to transform code
@@ -36,8 +34,7 @@ class GuiIngameTransformer : PatcherTransformer {
      */
     override fun transform(classNode: ClassNode, name: String) {
         for (method in classNode.methods) {
-            val methodName = mapMethodName(classNode, method)
-            when (methodName) {
+            when (mapMethodName(classNode, method)) {
                 "showCrosshair", "func_175183_b" -> {
                     method.instructions.insertBefore(method.instructions.first, disableCrosshairRendering())
                 }

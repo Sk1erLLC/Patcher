@@ -62,18 +62,9 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new TNTTimeTransformer());
         registerTransformer(new GuiCustomResourcePacks());
 
-        if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
-            try {
-                if (Class.forName("io.framesplus.FramesPlus") != null) {
-                    LOGGER.warn("Frames+ is installed, not running BakedQuad/TexturedQuad/ModelRenderer transformation.");
-                }
-            } catch (Exception e) {
-                LOGGER.info("Frames+ is not installed, running BakedQuad/TexturedQuad/ModelRenderer transformation.");
-                registerTransformer(new BakedQuadTransformer());
-                registerTransformer(new TexturedQuadTransformer());
-                registerTransformer(new ModelRendererTransformer());
-            }
-        }
+        registerTransformer(new BakedQuadTransformer());
+        registerTransformer(new TexturedQuadTransformer());
+        registerTransformer(new ModelRendererTransformer());
 
         // Reflection Optimizations
         switch (ClassTransformer.optifineVersion) {
