@@ -19,6 +19,8 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -75,9 +77,10 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
                             String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
                             if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.remove(next);
+                                InsnList list = new InsnList();
+                                LabelNode ifne = new LabelNode();
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), createOption(list, ifne));
+                                methodNode.instructions.insertBefore(next.getNext(), setLabel(list, ifne));
                                 break;
                             }
                         }
@@ -85,6 +88,17 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
                     break;
             }
         }
+    }
+
+    private InsnList setLabel(InsnList list, LabelNode ifne) {
+        list.add(ifne);
+        return list;
+    }
+
+    private InsnList createOption(InsnList list, LabelNode ifne) {
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "optimizedStartup", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList fasterSpecialChars() {

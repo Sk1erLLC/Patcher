@@ -59,8 +59,7 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("textures")) {
                         methodNode.instructions.remove(next.getNext());
-                        // lol
-                        ((MethodInsnNode) next.getNext()).desc = "(Ljava/lang/String;)V";
+                        methodNode.instructions.insertBefore(next.getNext(), checkStartupChoice());
                         break;
                     }
                 }
@@ -219,6 +218,20 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList checkStartupChoice() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "optimizedStartup", "Z"));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifne);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(gotoInsn);
+        return list;
     }
 
     private InsnList keybindFixer() {
