@@ -104,12 +104,15 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
                 switch (methodInsnName) {
+                    case "func_179147_l":
                     case "enableBlend":
                         methodNode.instructions.insertBefore(next, checkConfig(ifne));
                         break;
+                    case "func_179120_a":
                     case "tryBlendFuncSeparate":
                         methodNode.instructions.insertBefore(next.getNext(), addLabel(ifne));
                         break;
+                    case "func_179084_k":
                     case "disableBlend":
                         LabelNode disableIfne = new LabelNode();
                         methodNode.instructions.insertBefore(next, checkConfig(disableIfne));
