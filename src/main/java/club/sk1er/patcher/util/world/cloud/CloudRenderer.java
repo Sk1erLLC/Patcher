@@ -277,8 +277,11 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
         GlStateManager.disableCull();
 
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        if (!PatcherConfig.removeCloudTransparency) {
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        }
+
         Vec3 color = mc.theWorld.getCloudColour(partialTicks);
 
         float r = (float) color.xCoord;
@@ -388,7 +391,10 @@ public class CloudRenderer implements IResourceManagerReloadListener {
         GlStateManager.loadIdentity();
         GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 
-        GlStateManager.disableBlend();
+        if (!PatcherConfig.removeCloudTransparency) {
+            GlStateManager.disableBlend();
+        }
+
         GlStateManager.enableCull();
 
         GlStateManager.popMatrix();

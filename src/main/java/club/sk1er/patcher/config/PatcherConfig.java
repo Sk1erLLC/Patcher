@@ -532,6 +532,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean gpuCloudRenderer = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Remove Cloud Transparency",
+        description = "Remove transparency from clouds.",
+        category = "Performance", subcategory = "Rendering"
+    )
+    public static boolean removeCloudTransparency;
+
+    @Property(
         type = PropertyType.SWITCH, name = "CrossChat",
         description = "Stop clearing chat when switching servers.",
         category = "Quality of Life", subcategory = "Chat"

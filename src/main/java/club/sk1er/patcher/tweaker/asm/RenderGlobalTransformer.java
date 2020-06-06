@@ -52,9 +52,18 @@ public class RenderGlobalTransformer implements PatcherTransformer {
 
             switch (methodName) {
                 case "renderClouds":
-                case "func_180447_b":
+                case "func_180447_b": {
+                    addCloudTransparency(methodNode.instructions.iterator(), methodNode);
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
                     break;
+                }
+
+                case "renderCloudsFancy":
+                case "func_180445_c": {
+                    addCloudTransparency(methodNode.instructions.iterator(), methodNode);
+                    break;
+                }
+
                 case "preRenderDamagedBlocks":
                 case "func_180443_s": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -63,11 +72,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-3.0F)) {
-                            if (next.getNext() instanceof LdcInsnNode) {
-                                ((LdcInsnNode) next).cst = -1.0F;
-                            } else {
-                                ((LdcInsnNode) next).cst = -10.0F;
-                            }
+                            ((LdcInsnNode) next).cst = next.getNext() instanceof LdcInsnNode ? -1.0F : -10.0F;
                         }
                     }
                     break;
@@ -88,6 +93,44 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private void addCloudTransparency(ListIterator<AbstractInsnNode> iterator, MethodNode methodNode) {
+        LabelNode ifne = new LabelNode();
+        while (iterator.hasNext()) {
+            AbstractInsnNode next = iterator.next();
+
+            if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
+                String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                switch (methodInsnName) {
+                    case "enableBlend":
+                        methodNode.instructions.insertBefore(next, checkConfig(ifne));
+                        break;
+                    case "tryBlendFuncSeparate":
+                        methodNode.instructions.insertBefore(next.getNext(), addLabel(ifne));
+                        break;
+                    case "disableBlend":
+                        LabelNode disableIfne = new LabelNode();
+                        methodNode.instructions.insertBefore(next, checkConfig(disableIfne));
+                        methodNode.instructions.insertBefore(next.getNext(), addLabel(disableIfne));
+                        break;
+                }
+            }
+        }
+    }
+
+    private InsnList addLabel(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(ifne);
+        return list;
+    }
+
+    private InsnList checkConfig(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeCloudTransparency", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList getSetLimited() {
