@@ -280,7 +280,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Font Renderer",
-        description = "zOOOOOOM",
+        description = "Cache text to avoid recalculating the same text every frame.",
         category = "Performance", subcategory = "Rendering"
     )
     public static boolean optimizedFontRenderer = true;

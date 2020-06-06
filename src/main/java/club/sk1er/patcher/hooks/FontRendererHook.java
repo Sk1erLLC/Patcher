@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.cache.CachedString;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
@@ -315,11 +316,11 @@ public class FontRendererHook {
                 Method bind = textureClass.getDeclaredMethod("bind");
                 bind.setAccessible(true);
                 bind.invoke(o);
-            } else
+            } else {
                 renderEngine.bindTexture(location);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Caught exception trying to bind texture. This happens on the splash screen occasionally.");
+            Patcher.instance.getLogger().error("Caught exception trying to bind texture. This happens on the splash screen occasionally.", e);
         }
     }
 
