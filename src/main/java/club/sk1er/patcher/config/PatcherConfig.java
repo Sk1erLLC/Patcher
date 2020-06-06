@@ -527,9 +527,16 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
         description = "Upload geometry to the GPU, allowing for much faster rendering.\n§eFor best results, have a dedicated GPU.",
-        category = "Performance", subcategory = "Rendering"
+        category = "Performance", subcategory = "World"
     )
     public static boolean gpuCloudRenderer = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Remove Cloud Transparency",
+        description = "Remove transparency from clouds.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean removeCloudTransparency;
 
     @Property(
         type = PropertyType.SWITCH, name = "CrossChat",
