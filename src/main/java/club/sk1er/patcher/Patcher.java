@@ -19,6 +19,8 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
+import club.sk1er.patcher.util.enhancement.EnhancementManager;
+import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.sound.SoundHandler;
 import club.sk1er.patcher.util.status.ProtocolDetector;
 import club.sk1er.patcher.screen.tab.TabToggleHandler;
@@ -58,6 +60,7 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -171,7 +174,9 @@ public class Patcher {
         patcherSoundConfig.preload();
 
         SoundHandler target = new SoundHandler();
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(target);
+        IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        resourceManager.registerReloadListener(target);
+        resourceManager.registerReloadListener(new ReloadListener());
 
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
@@ -281,6 +286,11 @@ public class Patcher {
                 e.printStackTrace();
             }
         });
+    }
+
+    @SubscribeEvent
+    public void clientTick(TickEvent.ClientTickEvent event) {
+        EnhancementManager.getInstance().tick();
     }
 
     /**

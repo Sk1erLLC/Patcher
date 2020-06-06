@@ -67,6 +67,8 @@ dependencies {
         exclude module: 'asm-tree'
         exclude module: 'asm'
     }
+
+    embed 'com.github.ben-manes.caffeine:caffeine:2.8.4'
 }
 
 task moveResources {

@@ -279,6 +279,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean staticParticleColor = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Optimized Font Renderer",
+        description = "zOOOOOOM",
+        category = "Performance", subcategory = "Rendering"
+    )
+    public static boolean optimizedFontRenderer = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
         description = "Stop armorstands from rendering.",
         category = "Performance", subcategory = "Rendering"
