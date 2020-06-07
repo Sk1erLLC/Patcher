@@ -13,43 +13,154 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.util.cache.CachedString;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import club.sk1er.patcher.util.hash.StringHash;
+import kotlin.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.SplashProgress;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 import static net.minecraft.client.gui.FontRenderer.unicodePageLocations;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 
 @SuppressWarnings("unused")
 public class FontRendererHook {
 
+    public static FontRendererHook instance;
+    public final int texSheetDim = 256;
+    public final float fontTexHeight = 16 * texSheetDim + 128;
+    public final float fontTexWidth = 16 * texSheetDim;
     private final EnhancedFontRenderer enhancedFontRenderer = EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
     private final FontRenderer fontRenderer;
     private final String characterDictionary = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000";
-
+    public int GL_TEX = -1;
+    public int GL_VBO = -1;
     private boolean drawing;
     private int boundPage = -4;
 
     public FontRendererHook(FontRenderer fontRenderer) {
+        instance = this;
         this.fontRenderer = fontRenderer;
+        if (fontRenderer.renderEngine == null) return;
     }
 
+    public static FontRendererHook getInstance() {
+        return instance;
+    }
+
+    private void create() {
+        final BufferedImage bufferedImage = new BufferedImage((int) fontTexWidth, (int) fontTexHeight, BufferedImage.TYPE_INT_ARGB);
+        int ctr = 0;
+        for (int i = 0; i < 256; i++) {
+            final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
+            try {
+                final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
+                final BufferedImage read = ImageIO.read(resource.getInputStream());
+                bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ctr++;
+            }
+        }
+        try {
+            final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(fontRenderer.locationFontTexture);
+            final BufferedImage read = ImageIO.read(resource.getInputStream());
+            bufferedImage.getGraphics().drawImage(read, 0, 16 * texSheetDim, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        final DynamicTexture dynamicTexture = new DynamicTexture(bufferedImage);
+        GL_TEX = dynamicTexture.getGlTextureId();
+        GL_VBO = GL15.glGenBuffers();
+//        final ByteBuffer byteBuffer = BufferUtils.createByteBuffer(65536 * 4 * 8 + 65536 * 4 * 16 + 256 * 4 * 8 + 256 * 4 * 16);
+        final ByteBuffer byteBuffer = BufferUtils.createByteBuffer(256 * 4 * 8 + 256 * 4 * 16);
+
+        //Unicode Textures
+//        for (char characterIndex = 0; characterIndex < 65535; characterIndex++) {
+//            int i = characterIndex / 256;
+//            int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
+//            int k = this.fontRenderer.glyphWidth[characterIndex] & 15;
+//            float f1 = (float) (k + 1);
+//            float f4 = f1 - j - 0.02F;
+//            final Pair<Float, Float> uv = getUV(characterIndex);
+//            byteBuffer.putFloat(uv.component1()).putFloat(uv.component2());
+//            byteBuffer.putFloat(uv.component1()).putFloat(uv.component2() + 15.98F / fontTexHeight);
+//            byteBuffer.putFloat(uv.component1() + f4 / fontTexHeight).putFloat(uv.component2());
+//            byteBuffer.putFloat(uv.component1() + f4 / fontTexHeight).putFloat(uv.component2() + 15.98F / fontTexHeight);
+//        }
+//        //Positions. First regular then italic
+//        for (char characterIndex = 0; characterIndex < 65535; characterIndex++) {
+//            for (int d = 0; d < 2; d++) {
+//                int i = characterIndex / 256;
+//                int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
+//                int k = this.fontRenderer.glyphWidth[characterIndex] & 15;
+//                float f1 = (float) (k + 1);
+//                float f4 = f1 - j - 0.02F;
+//                float f5 = d == 1 ? 1.0F : 0.0F;
+//                final Pair<Float, Float> uv = getUV(characterIndex);
+//
+//                byteBuffer.putFloat(f5).putFloat(0);
+//                byteBuffer.putFloat(f5).putFloat(7.99F);
+//                byteBuffer.putFloat(f4 / 2.0F + f5).putFloat(0);
+//                byteBuffer.putFloat(f4 / 2.0F - f5).putFloat(7.99F);
+//            }
+//        }
+
+        //Default textures
+        for (int characterIndex = 0; characterIndex < 256; characterIndex++) {
+            int characterX = characterIndex % 16 * 8;
+            int characterY = characterIndex / 16 * 8 + 16 * texSheetDim;
+            float l = getCharWidthFloat(characterDictionary.charAt(characterIndex));
+            float f = l - 0.01F;
+            byteBuffer.putFloat((float) characterX / fontTexWidth).putFloat((float) characterY / fontTexHeight);
+            byteBuffer.putFloat((float) characterX / fontTexWidth).putFloat(((float) characterY + 7.99F) / fontTexHeight);
+            byteBuffer.putFloat(((float) characterX + f - 1.0F) / fontTexWidth).putFloat((float) characterY / fontTexHeight);
+            byteBuffer.putFloat(((float) characterX + f - 1.0F) / fontTexWidth).putFloat(((float) characterY + 7.99F) / fontTexHeight);
+        }
+        for (int characterIndex = 0; characterIndex < 256; characterIndex++) {
+            for (int d = 0; d < 2; d++) {
+                int xModifier = d == 1 ? 1 : 0;
+                float charWidth = getCharWidthFloat(characterDictionary.charAt(characterIndex));
+                float f = charWidth - 0.01F;
+                byteBuffer.putFloat((float) xModifier).putFloat(0);
+                byteBuffer.putFloat(-(float) xModifier).putFloat(0 + 7.99F);
+                byteBuffer.putFloat(f - 1.0F + (float) xModifier).putFloat(0);
+                byteBuffer.putFloat(f - 1.0F - (float) xModifier).putFloat(7.99F);
+            }
+        }
+        System.out.println("byteBuffer.capacity() = " + byteBuffer.capacity());
+        //Default positions
+
+        byteBuffer.rewind();
+        GL15.glBindBuffer(GL_ARRAY_BUFFER, GL_VBO);
+        GL15.glBufferData(GL_ARRAY_BUFFER, byteBuffer, GL15.GL_STATIC_DRAW);
+    }
+
+
     @SuppressWarnings("SuspiciousNameCombination")
-    public void renderStringAtPos(String text, boolean shadow) {
+    public boolean renderStringAtPos(String text, boolean shadow) {
+        if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) return false;
+        if (GL_TEX == -1) {
+            create();
+        }
+        //Trim the unnecessary items
         while (text.startsWith('\u00a7' + "r")) {
             text = text.substring(2);
         }
@@ -72,45 +183,19 @@ public class FontRendererHook {
 
         StringHash hash = new StringHash(text, red, green, blue, alpha, shadow);
         GlStateManager.translate(posX, posY, 0.0F);
-
-        if (PatcherConfig.optimizedFontRenderer) {
-            GlStateManager.TextureState[] textureStates = GlStateManager.textureState;
-            int activeTextureUnit = GlStateManager.activeTextureUnit;
-
-            GlStateManager.TextureState textureState = textureStates[activeTextureUnit];
-            CachedString cachedString = enhancedFontRenderer.get(hash);
-            if (cachedString != null) {
-                GlStateManager.color(red, blue, green, alpha);
-                GlStateManager.callList(cachedString.getListId());
-
-                textureState.textureName = cachedString.getLastTexture();
-
-                GlStateManager.Color colorState = GlStateManager.colorState;
-                colorState.red = cachedString.getLastRed();
-                colorState.green = cachedString.getLastGreen();
-                colorState.blue = cachedString.getLastBlue();
-                colorState.alpha = cachedString.getLastAlpha();
-
-                GlStateManager.translate(-posX, -posY, 0.0F);
-                fontRenderer.posX = posX + cachedString.getWidth();
-                fontRenderer.posY = posY + cachedString.getHeight();
-                return;
-            }
-
-            textureState.textureName = -1;
-            GlStateManager.resetColor();
-            list = enhancedFontRenderer.getGlList();
-            GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
-        }
+        GlStateManager.pushMatrix();
+        GlStateManager.bindTexture(GL_TEX);
+        GL15.glBindBuffer(GL_ARRAY_BUFFER, GL_VBO);
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
         boolean obfuscated = false;
-        CachedString value = new CachedString(text, list, fontRenderer.posX - posX, fontRenderer.posY - posY);
 
         int[] colorCode = fontRenderer.colorCode;
 
         List<RenderPair> underline = new ArrayList<>();
         List<RenderPair> strikethrough = new ArrayList<>();
-
+        int numRender = 0;
         for (int i = 0; i < text.length(); ++i) {
             char c0 = text.charAt(i);
 
@@ -140,10 +225,6 @@ public class FontRendererHook {
                     float colorBlue = (float) (textColor & 255) / 255.0F;
                     GlStateManager.color(colorRed, colorGreen, colorBlue, alpha);
 
-                    value.setLastAlpha(alpha);
-                    value.setLastRed(colorRed);
-                    value.setLastGreen(colorGreen);
-                    value.setLastBlue(colorBlue);
                 } else if (index == 16) {
                     fontRenderer.randomStyle = true;
                     obfuscated = true;
@@ -161,10 +242,6 @@ public class FontRendererHook {
                     fontRenderer.boldStyle = false;
                     GlStateManager.color(red, blue, green, alpha);
 
-                    value.setLastAlpha(alpha);
-                    value.setLastRed(red);
-                    value.setLastBlue(blue);
-                    value.setLastGreen(green);
                 }
 
                 ++i;
@@ -193,44 +270,45 @@ public class FontRendererHook {
                 }
 
                 float stringWidth = renderChar(c0, fontRenderer.italicStyle);
-
+                GlStateManager.translate(stringWidth, 0, 0);
                 if (flag) {
                     fontRenderer.posX += unicodeCharWidth;
                     fontRenderer.posY += unicodeCharWidth;
                 }
 
-                if (fontRenderer.boldStyle) {
-                    fontRenderer.posX += unicodeCharWidth;
+//                if (fontRenderer.boldStyle) {
+//                    fontRenderer.posX += unicodeCharWidth;
+//
+//                    if (flag) {
+//                        fontRenderer.posX -= unicodeCharWidth;
+//                        fontRenderer.posY -= unicodeCharWidth;
+//                    }
+//
+//                    renderChar(c0, fontRenderer.italicStyle);
+//                    fontRenderer.posX -= unicodeCharWidth;
+//
+//                    if (flag) {
+//                        fontRenderer.posX += unicodeCharWidth;
+//                        fontRenderer.posY += unicodeCharWidth;
+//                    }
+//
+//                    ++stringWidth;
+//                }
 
-                    if (flag) {
-                        fontRenderer.posX -= unicodeCharWidth;
-                        fontRenderer.posY -= unicodeCharWidth;
-                    }
-
-                    renderChar(c0, fontRenderer.italicStyle);
-                    fontRenderer.posX -= unicodeCharWidth;
-
-                    if (flag) {
-                        fontRenderer.posX += unicodeCharWidth;
-                        fontRenderer.posY += unicodeCharWidth;
-                    }
-
-                    ++stringWidth;
-                }
-
-                if (fontRenderer.strikethroughStyle) {
-                    strikethrough.add(new RenderPair(fontRenderer.posX, stringWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
-                }
-
-                if (fontRenderer.underlineStyle) {
-                    underline.add(new RenderPair(fontRenderer.posX, stringWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
-                }
+//                if (fontRenderer.strikethroughStyle) {
+//                    strikethrough.add(new RenderPair(fontRenderer.posX, stringWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+//                }
+//
+//                if (fontRenderer.underlineStyle) {
+//                    underline.add(new RenderPair(fontRenderer.posX, stringWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+//                }
 
                 fontRenderer.posX += (int) stringWidth;
+                numRender++;
             }
         }
-
-        endDrawing();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0); //Needed to stop buffer mode  (without it the game crashes)
+        GlStateManager.popMatrix();
         boolean style = underline.size() > 0 || strikethrough.size() > 0;
 
         if (style) {
@@ -265,20 +343,21 @@ public class FontRendererHook {
 
         if (PatcherConfig.optimizedFontRenderer) {
             GL11.glEndList();
-            enhancedFontRenderer.cache(hash, value);
+//            enhancedFontRenderer.cache(hash, value);
         }
 
-        value.setWidth(fontRenderer.posX);
-        value.setLastTexture(GlStateManager.activeTextureUnit);
+//        value.setWidth(fontRenderer.posX);
+//        value.setLastTexture(GlStateManager.activeTextureUnit);
 
-        fontRenderer.posX = posX + value.getWidth() + 1;
-        fontRenderer.posY = posY + value.getHeight();
+//        fontRenderer.posX = posX + value.getWidth() + 1;
+//        fontRenderer.posY = posY + value.getHeight();
 
         if (obfuscated) {
             enhancedFontRenderer.getObfuscated().add(hash);
         }
 
         GlStateManager.translate(-posX, -posY, 0.0F);
+        return true;
     }
 
     private void minify(List<RenderPair> pairs) {
@@ -328,7 +407,6 @@ public class FontRendererHook {
         if (drawing) {
             drawing = false;
             GL11.glEnd();
-            boundPage = -2;
         }
     }
 
@@ -341,73 +419,58 @@ public class FontRendererHook {
         }
     }
 
+    private Pair<Float, Float> getUV(char characterIndex) {
+        int page = characterIndex / 256;
+        int row = page / 16;
+        int column = page % 16;
+        int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
+        int k = this.fontRenderer.glyphWidth[characterIndex] & 15;
+        float f = (float) j;
+        float f2 = (float) (characterIndex % 16 * 16) + f;
+        float f3 = (float) ((characterIndex & 255) / 16 * 16);
+        return new Pair<>((row * 16 * texSheetDim + f2) / fontTexWidth, (column * 16 * texSheetDim + f3) / fontTexHeight); //16 rows each with a size of 64px
+    }
+
     private float renderUnicodeChar(char characterIndex, boolean italic) {
+        if (true) return 0;
         if (fontRenderer.glyphWidth[characterIndex] == 0) {
             return 0.0F;
         } else {
-            // im not deobfuscating this lmao
             int i = characterIndex / 256;
             int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
             int k = this.fontRenderer.glyphWidth[characterIndex] & 15;
             float f = (float) j;
             float f1 = (float) (k + 1);
-            float f2 = (float) (characterIndex % 16 * 16) + f;
-            float f3 = (float) ((characterIndex & 255) / 16 * 16);
-            float f4 = f1 - f - 0.02F;
-            float f5 = italic ? 1.0F : 0.0F;
-            if (startDrawing(i)) {
-                GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
-            }
-            GL11.glTexCoord2f(f2 / 256.0F, f3 / 256.0F);
-            GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
-            GL11.glTexCoord2f(f2 / 256.0F, (f3 + 15.98F) / 256.0F);
-            GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY + 7.99F);
-            GL11.glTexCoord2f((f2 + f4) / 256.0F, f3 / 256.0F);
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F + f5, this.fontRenderer.posY);
-            GL11.glTexCoord2f((f2 + f4) / 256.0F, (f3 + 15.98F) / 256.0F);
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
+            GL11.glVertexPointer(2, GL11.GL_FLOAT, 0, (65536 * 4 * 8) + characterIndex * 64); //Unicode UV block,
+            GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 0, characterIndex * 32);
+            GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
             return (f1 - f) / 2.0F + 1.0F;
         }
     }
 
     private float renderDefaultChar(int characterIndex, boolean italic) {
-        int characterX = characterIndex % 16 * 8;
-        int characterY = characterIndex / 16 * 8;
-        int xModifier = italic ? 1 : 0;
-        float charWidth = getCharWidthFloat(characterDictionary.charAt(characterIndex));
-        float f = charWidth - 0.01F;
-
-        if (startDrawing(-1)) {
-            GL11.glVertex2f(fontRenderer.posX + xModifier, fontRenderer.posY);
-        }
-
-        GL11.glTexCoord2f((float) characterX / 128.0F, (float) characterY / 128.0F);
-        GL11.glVertex2f(fontRenderer.posX + (float) xModifier, fontRenderer.posY);
-        GL11.glTexCoord2f((float) characterX / 128.0F, ((float) characterY + 7.99F) / 128.0F);
-        GL11.glVertex2f(fontRenderer.posX - (float) xModifier, fontRenderer.posY + 7.99F);
-        GL11.glTexCoord2f(((float) characterX + f - 1.0F) / 128.0F, (float) characterY / 128.0F);
-        GL11.glVertex2f(fontRenderer.posX + f - 1.0F + (float) xModifier, fontRenderer.posY);
-        GL11.glTexCoord2f(((float) characterX + f - 1.0F) / 128.0F, ((float) characterY + 7.99F) / 128.0F);
-        GL11.glVertex2f(fontRenderer.posX + f - 1.0F - (float) xModifier, fontRenderer.posY + 7.99F);
-        GL11.glVertex2f(fontRenderer.posX + f - 1.0F - (float) xModifier, fontRenderer.posY + 7.99F);
-        endDrawing();
-        return charWidth;
+//        GlStateManager.disableTexture2D();
+        //TODO: Italic
+        GL11.glVertexPointer(2, GL11.GL_FLOAT, 0, (256 * 32) + characterIndex * 64); //Unicode UV block, Unicode Pos block, regular UV block
+        GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 0, characterIndex *32);
+        //   GL11.glVertexPointer(2, GL11.GL_FLOAT, 0, (65536 * 4 * 8) + (65536 * 64) + (256 * 32) + characterIndex * 32); //Unicode UV block, Unicode Pos block, regular UV block
+        //        GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 0, (65536 * 4 * 8) + (65536 * 64) + characterIndex * 8);
+        //
+        GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+        return getCharWidthFloat(characterDictionary.charAt(characterIndex));
     }
 
     private boolean startDrawing(int page) {
         if (drawing && page != boundPage) {
             endDrawing();
         }
-
         if (!drawing) {
-            bindTexture(page == -1 ? fontRenderer.locationFontTexture : getUnicodePageLocation(page));
-            boundPage = page;
+            GlStateManager.bindTexture(GL_TEX);
+            this.boundPage = page;
             drawing = true;
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
             return false;
         }
-
         return true;
     }
 
@@ -485,12 +548,11 @@ public class FontRendererHook {
 
     private static class RenderPair {
         private final float posX;
-        private float width;
-
         private final float red;
         private final float green;
         private final float blue;
         private final float alpha;
+        private float width;
 
         public RenderPair(float posX, float width, float red, float green, float blue, float alpha) {
             this.posX = posX;

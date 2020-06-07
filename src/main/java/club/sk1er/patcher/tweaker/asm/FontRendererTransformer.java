@@ -13,18 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 public class FontRendererTransformer implements PatcherTransformer {
 
@@ -56,7 +45,7 @@ public class FontRendererTransformer implements PatcherTransformer {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(getStringWidthHook());
             } else if (methodName.equals("renderStringAtPos") || methodName.equals("func_78255_a")) {
-                clearInstructions(methodNode);
+//                clearInstructions(methodNode);
                 methodNode.instructions.insert(renderStringAtPosHook());
             } else if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getShadowHook());
@@ -81,8 +70,11 @@ public class FontRendererTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "Lclub/sk1er/patcher/hooks/FontRendererHook;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/hooks/FontRendererHook", "renderStringAtPos", "(Ljava/lang/String;Z)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/hooks/FontRendererHook", "renderStringAtPos", "(Ljava/lang/String;Z)Z", false));
+        final LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));
+        list.add(labelNode);
         return list;
     }
 
