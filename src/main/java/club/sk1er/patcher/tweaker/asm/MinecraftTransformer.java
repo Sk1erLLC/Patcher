@@ -208,20 +208,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList checkStartupChoice() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "optimizedStartup", "Z"));
-        LabelNode ifne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        LabelNode gotoInsn = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-        list.add(ifne);
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(gotoInsn);
-        return list;
-    }
-
     private InsnList keybindFixer() {
         InsnList list = new InsnList();
         list.add(new IntInsnNode(Opcodes.SIPUSH, 256));
