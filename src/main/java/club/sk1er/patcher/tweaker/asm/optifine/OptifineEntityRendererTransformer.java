@@ -139,7 +139,7 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            } else if (methodName.equals("updateLightmap")) {
+            } else if (methodName.equals("updateLightmap") || methodName.equals("func_78472_g")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
 
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -150,8 +150,9 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                     if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
                         String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
-                        if (methodInsnName.equals("endSection")) {
+                        if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                             methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
+                            break;
                         }
                     }
                 }
