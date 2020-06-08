@@ -82,8 +82,9 @@ public class FontRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "Lclub/sk1er/patcher/hooks/FontRendererHook;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/hooks/FontRendererHook", "getStringWidth", "(Ljava/lang/String;)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/hooks/FontRendererHook", "getStringWidth", "(Lnet/minecraft/client/gui/FontRenderer;Ljava/lang/String;)I", false));
         list.add(new InsnNode(Opcodes.IRETURN));
         return list;
     }
