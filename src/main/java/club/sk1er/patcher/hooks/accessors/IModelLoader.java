@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.hooks;
+package club.sk1er.patcher.hooks.accessors;
 
 public interface IModelLoader {
     void callLoadBlocks();

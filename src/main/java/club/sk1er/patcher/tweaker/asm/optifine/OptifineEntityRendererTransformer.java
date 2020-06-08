@@ -156,6 +156,9 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                         }
                     }
                 }
+            } else if (methodName.equals("renderStreamIndicator") || methodName.equals("func_152430_c")) {
+                clearInstructions(methodNode);
+                methodNode.instructions.insert(new InsnNode(Opcodes.RETURN));
             }
         }
     }

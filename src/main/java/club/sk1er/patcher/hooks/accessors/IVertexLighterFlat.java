@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.hooks;
+package club.sk1er.patcher.hooks.accessors;
 
 import net.minecraftforge.client.model.pipeline.BlockInfo;
 

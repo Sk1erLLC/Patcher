@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.hooks.accessors.IVertexLighterFlat;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 

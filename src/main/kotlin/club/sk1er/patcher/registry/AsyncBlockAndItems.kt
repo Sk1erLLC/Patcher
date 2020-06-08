@@ -11,7 +11,7 @@
 package club.sk1er.patcher.registry
 
 import club.sk1er.patcher.coroutines.MCDispatchers
-import club.sk1er.patcher.hooks.IModelLoader
+import club.sk1er.patcher.hooks.accessors.IModelLoader
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import net.minecraftforge.client.model.ModelLoader

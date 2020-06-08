@@ -43,7 +43,7 @@ public class ModelLoaderTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.interfaces.add("club/sk1er/patcher/hooks/IModelLoader");
+        classNode.interfaces.add("club/sk1er/patcher/hooks/accessors/IModelLoader");
 
         MethodNode callLoadBlocks = new MethodNode(Opcodes.ACC_PUBLIC, "callLoadBlocks", "()V", null, null);
         callLoadBlocks.instructions.add(createCallLoadBlocks());
