@@ -12,9 +12,6 @@
 package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
-import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
-import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
@@ -34,21 +31,15 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-
-import java.io.IOException;
 
 public class OptifineClassTransformer implements IClassTransformer {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     private final boolean outputBytecode =
-            Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+        Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
     public OptifineClassTransformer() {
         registerTransformer(new OptifineEntityRendererTransformer());
