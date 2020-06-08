@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -42,7 +43,18 @@ public class ModelLoaderTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        classNode.interfaces.add("club/sk1er/patcher/hooks/IModelLoader");
+
+        MethodNode callLoadBlocks = new MethodNode(Opcodes.ACC_PUBLIC, "callLoadBlocks", "()V", null, null);
+        callLoadBlocks.instructions.add(createCallLoadBlocks());
+        classNode.methods.add(callLoadBlocks);
+
+        MethodNode callLoadItems = new MethodNode(Opcodes.ACC_PUBLIC, "callLoadItems", "()V", null, null);
+        callLoadItems.instructions.add(createCallLoadItems());
+        classNode.methods.add(callLoadItems);
+
         for (MethodNode methodNode : classNode.methods) {
+            String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("onPostBakeEvent")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -54,10 +66,44 @@ public class ModelLoaderTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-
-                break;
+            } else if (methodName.equals("setupModelRegistry") || methodName.equals("func_177570_a")) {
+                clearInstructions(methodNode);
+                methodNode.instructions.insert(getAsyncLoader());
             }
         }
+    }
+
+    private InsnList getAsyncLoader() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraftforge/client/model/ModelLoader", "isLoading", "Z"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/ModelLoader", "missingModel", "Lnet/minecraftforge/client/model/IModel;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/ModelLoader", "stateModels", "Ljava/util/Map;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/ModelLoader", "textures", "Ljava/util/Set;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ModelLoaderHook", "setupModelRegistry", "(Lnet/minecraftforge/client/model/ModelLoader;Lnet/minecraftforge/client/model/IModel;Ljava/util/Map;Ljava/util/Set;)Lnet/minecraft/util/IRegistry;", false));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        return list;
+    }
+
+    private InsnList createCallLoadItems() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/client/model/ModelLoader", "loadItems", "()V", false));
+        list.add(new InsnNode(Opcodes.RETURN));
+        return list;
+    }
+
+    private InsnList createCallLoadBlocks() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/client/model/ModelLoader", "loadBlocks", "()V", false));
+        list.add(new InsnNode(Opcodes.RETURN));
+        return list;
     }
 
     private InsnList clearMemory() {
