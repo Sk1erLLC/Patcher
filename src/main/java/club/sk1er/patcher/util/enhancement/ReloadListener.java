@@ -18,7 +18,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 public class ReloadListener implements IResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        for (EnhancedFontRenderer enhancedFontRenderer : EnhancedFontRenderer.INSTANCES) {
+        for (EnhancedFontRenderer enhancedFontRenderer : EnhancedFontRenderer.getInstances()) {
             enhancedFontRenderer.invalidateAll();
         }
     }

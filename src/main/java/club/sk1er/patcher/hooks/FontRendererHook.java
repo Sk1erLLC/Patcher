@@ -19,25 +19,26 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public final class FontRendererHook {
 
-    public static boolean optimize = true;
-    public static boolean hideAllShadowText = true;
     public final int texSheetDim = 256;
     public final float fontTexHeight = 16 * texSheetDim + 128;
     public final float fontTexWidth = 16 * texSheetDim;
-    private final EnhancedFontRenderer enhancedFontRenderer =
-        EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
-    private final FontRenderer fontRenderer;
     public int GL_TEX = -1;
+
+    private final EnhancedFontRenderer enhancedFontRenderer = EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
+    private final FontRenderer fontRenderer;
+    private final String characterDictionary = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000";
+
     private boolean lookedForOF = false;
     private boolean drawing = false;
-    ;
-    private String characterDictionary = "\u00c0\u00c1\u00c2\u00c8\u00ca\u00cb\u00cd\u00d3\u00d4\u00d5\u00da\u00df\u00e3\u00f5\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0207\u0000\u0000\u0000\u0000\u0000\u0000\u0000 !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u0000\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00f8\u00a3\u00d8\u00d7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u00ae\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u03b2\u0393\u03c0\u03a3\u03c3\u03bc\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u2205\u2208\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0\u0000";
     private Method getCharWidthFloat;
-    private char colorCodeSymbol = '\u00a7';
 
     public FontRendererHook(FontRenderer fontRenderer) {
         this.fontRenderer = fontRenderer;
@@ -52,11 +53,11 @@ public final class FontRendererHook {
                 final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
                 final BufferedImage read = ImageIO.read(resource.getInputStream());
                 bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
                 ctr++;
             }
         }
+
         try {
             final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(fontRenderer.locationFontTexture);
             final BufferedImage read = ImageIO.read(resource.getInputStream());
@@ -64,6 +65,7 @@ public final class FontRendererHook {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         final DynamicTexture dynamicTexture = new DynamicTexture(bufferedImage);
         GL_TEX = dynamicTexture.getGlTextureId();
     }
@@ -74,13 +76,16 @@ public final class FontRendererHook {
         if (GL_TEX == -1) {
             create();
         }
-        while (text.startsWith(colorCodeSymbol + "r"))
+
+        while (text.startsWith('\u00a7' + "r")) {
             text = text.substring(2);
-        while (text.endsWith(colorCodeSymbol + "r"))
+        }
+
+        while (text.endsWith('\u00a7' + "r")) {
             text = text.substring(0, text.length() - 2);
+        }
 
-
-        int list = 0;
+        int list;
 
         float posX = this.fontRenderer.posX;
         float posY = this.fontRenderer.posY;
@@ -95,46 +100,43 @@ public final class FontRendererHook {
         StringHash hash = new StringHash(text, red, green, blue, alpha, shadow);
         GlStateManager.bindTexture(GL_TEX);
         GlStateManager.translate(posX, posY, 0F);
-        if (optimize) {
-            GlStateManager.TextureState[] textureStates = GlStateManager.textureState;
-            int activeTextureUnit = GlStateManager.activeTextureUnit;
 
-            GlStateManager.TextureState textureState = textureStates[activeTextureUnit];
-            CachedString cachedString = this.enhancedFontRenderer.get(hash);
-            if (cachedString != null) {
-                GlStateManager.color(red, blue, green, alpha);
+        GlStateManager.TextureState[] textureStates = GlStateManager.textureState;
+        int activeTextureUnit = GlStateManager.activeTextureUnit;
 
-                GlStateManager.callList(cachedString.getListId());
+        GlStateManager.TextureState textureState = textureStates[activeTextureUnit];
+        CachedString cachedString = this.enhancedFontRenderer.get(hash);
 
-                // Call so states in game know the texture was changed.
-                // Otherwise the game won't know the active texture was changed on the GPU
-                textureState.textureName = GL_TEX;
+        if (cachedString != null) {
+            GlStateManager.color(red, blue, green, alpha);
+            GlStateManager.callList(cachedString.getListId());
 
-                // Save thing as texture, it updated in GL so we need to update the MC cache of that value
-                GlStateManager.Color colorState = GlStateManager.colorState;
-                colorState.red = cachedString.getLastRed();
-                colorState.green = cachedString.getLastGreen();
-                colorState.blue = cachedString.getLastBlue();
-                colorState.alpha = cachedString.getLastAlpha();
-
-                GlStateManager.translate(-posX, -posY, 0.0f);
-
-                this.fontRenderer.posX = posX + cachedString.getWidth();
-                this.fontRenderer.posY = posY + cachedString.getHeight();
-                return true;
-            }
+            // Call so states in game know the texture was changed.
+            // Otherwise the game won't know the active texture was changed on the GPU
             textureState.textureName = GL_TEX;
-            GlStateManager.resetColor();
-            list = enhancedFontRenderer.getGlList();
 
-            GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
+            // Save thing as texture, it updated in GL so we need to update the MC cache of that value
+            GlStateManager.Color colorState = GlStateManager.colorState;
+            colorState.red = cachedString.getLastRed();
+            colorState.green = cachedString.getLastGreen();
+            colorState.blue = cachedString.getLastBlue();
+            colorState.alpha = cachedString.getLastAlpha();
+
+            GlStateManager.translate(-posX, -posY, 0.0f);
+
+            this.fontRenderer.posX = posX + cachedString.getWidth();
+            this.fontRenderer.posY = posY + cachedString.getHeight();
+            return true;
         }
 
+        textureState.textureName = GL_TEX;
+        GlStateManager.resetColor();
+        list = enhancedFontRenderer.getGlList();
+        GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
 
-        boolean hasObf = false;
-        CachedString value = new CachedString(text, list,
-            this.fontRenderer.posX - posX, this.fontRenderer.posY - posY);
 
+        boolean obfuscated = false;
+        CachedString value = new CachedString(text, list, this.fontRenderer.posX - posX, this.fontRenderer.posY - posY);
 
         int[] colorCode = this.fontRenderer.colorCode;
         List<RenderPair> underline = new ArrayList<>();
@@ -173,7 +175,7 @@ public final class FontRendererHook {
                     value.setLastRed(colorRed);
                 } else if (i1 == 16) {
                     this.fontRenderer.randomStyle = true;
-                    hasObf = true;
+                    obfuscated = true;
                 } else if (i1 == 17) {
                     this.fontRenderer.boldStyle = true;
                 } else if (i1 == 18) {
@@ -219,7 +221,8 @@ public final class FontRendererHook {
                     this.fontRenderer.posY -= boldWidth;
                 }
 
-                float effectiveWidth = this.func_181559_a(c0, this.fontRenderer.italicStyle);
+                float effectiveWidth = this.renderChar(c0, this.fontRenderer.italicStyle);
+
                 if (flag) {
                     this.fontRenderer.posX += boldWidth;
                     this.fontRenderer.posY += boldWidth;
@@ -233,36 +236,40 @@ public final class FontRendererHook {
                         this.fontRenderer.posY -= boldWidth;
                     }
 
-                    this.func_181559_a(c0, this.fontRenderer.italicStyle);
+                    this.renderChar(c0, this.fontRenderer.italicStyle);
                     this.fontRenderer.posX -= boldWidth;
+
                     if (flag) {
                         this.fontRenderer.posX += boldWidth;
                         this.fontRenderer.posY += boldWidth;
                     }
+
                     ++effectiveWidth;
                 }
 
                 if (this.fontRenderer.strikethroughStyle) {
-                    strikeThough.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(),
-                        value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+                    strikeThough.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
                 }
 
                 if (this.fontRenderer.underlineStyle) {
-                    underline.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(),
-                        value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+                    underline.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
                 }
 
                 this.fontRenderer.posX += (int) effectiveWidth;
             }
         }
+
         endDrawing();
         boolean hasStyle = underline.size() > 0 || strikeThough.size() > 0;
+
         if (hasStyle) {
             GlStateManager.disableTexture2D();
             GL11.glBegin(GL11.GL_QUADS);
         }
+
         minify(strikeThough);
         minify(underline);
+
         for (RenderPair renderPair : strikeThough) {
             GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
             GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 4.0f);
@@ -270,6 +277,7 @@ public final class FontRendererHook {
             GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 3.0f);
             GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 3.0f);
         }
+
         for (RenderPair renderPair : underline) {
             GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
             GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT);
@@ -277,23 +285,25 @@ public final class FontRendererHook {
             GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT - 1.0F);
             GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT - 1.0F);
         }
+
         if (hasStyle) {
             GL11.glEnd();
         }
+
         GlStateManager.enableTexture2D();
-        if (optimize) {
-            GL11.glEndList();
-            this.enhancedFontRenderer.cache(hash, value);
-        }
+
+        GL11.glEndList();
+        this.enhancedFontRenderer.cache(hash, value);
 
         value.setWidth(this.fontRenderer.posX);
 
         this.fontRenderer.posY = posY + value.getHeight();
         this.fontRenderer.posX = posX + value.getWidth();
 
-        if (hasObf) {
-            this.enhancedFontRenderer.obfuscated.add(hash);
+        if (obfuscated) {
+            this.enhancedFontRenderer.getObfuscated().add(hash);
         }
+
         GlStateManager.translate(-posX, -posY, 0F);
         return true;
     }
@@ -307,16 +317,19 @@ public final class FontRendererHook {
                 lastStart = next;
                 continue;
             }
+
             if (lastStart.alpha == next.alpha && lastStart.red == next.red && lastStart.green == next.green && lastStart.blue == next.blue) {
                 if (lastStart.posX + lastStart.width >= next.posX - 1) {
                     iterator.remove();
                     lastStart.width = next.posX + next.width - lastStart.posX;
                 }
-            } else lastStart = next;
+            } else {
+                lastStart = next;
+            }
         }
     }
 
-    public float func_181559_a(char ch, boolean italic) {
+    public float renderChar(char ch, boolean italic) {
         if (ch == 32) {
             return 4.0F;
         } else {
@@ -335,6 +348,7 @@ public final class FontRendererHook {
         int k = italic ? 1 : 0;
         float l = getCharWidthFloat(ch);
         float f = l - 0.01F;
+
         if (startDrawing()) {
             GL11.glVertex2f(this.fontRenderer.posX + (float) k, this.fontRenderer.posY);
         }
@@ -358,6 +372,7 @@ public final class FontRendererHook {
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
             return false;
         }
+
         return true;
     }
 
@@ -373,7 +388,6 @@ public final class FontRendererHook {
         int row = page / 16;
         int column = page % 16;
         int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
-        int k = this.fontRenderer.glyphWidth[characterIndex] & 15;
         float f = (float) j;
         float f2 = (float) (characterIndex % 16 * 16) + f;
         float f3 = (float) ((characterIndex & 255) / 16 * 16);
@@ -387,7 +401,6 @@ public final class FontRendererHook {
         if (this.fontRenderer.glyphWidth[ch] == 0) {
             return 0.0F;
         } else {
-
             final Pair<Float, Float> uv = getUV(ch);
             int j = this.fontRenderer.glyphWidth[ch] >>> 4;
             int k = this.fontRenderer.glyphWidth[ch] & 15;
@@ -395,9 +408,11 @@ public final class FontRendererHook {
             float f1 = (float) (k + 1);
             float f4 = f1 - f - 0.02F;
             float f5 = italic ? 1.0F : 0.0F;
+
             if (startDrawing()) {
                 GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
             }
+
             GL11.glTexCoord2f(uv.component1(), uv.component2());
             GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
             GL11.glTexCoord2f(uv.component1(), uv.component2() + 15.98F / fontTexHeight);
@@ -430,16 +445,21 @@ public final class FontRendererHook {
     public int getStringWidth(FontRenderer renderer, String text) {
         Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
 
-        if (!optimize) {
+        if (!PatcherConfig.optimizedFontRenderer) {
             if (stringWidthCache.size() != 0)
                 stringWidthCache.clear();
             return getUncachedWidth(renderer, text);
         }
-        if (text == null)
+
+        if (text == null) {
             return 0;
-        if (stringWidthCache.size() > 5000)
+        }
+
+        if (stringWidthCache.size() > 5000) {
             stringWidthCache.clear();
-        return stringWidthCache.computeIfAbsent(text, s -> getUncachedWidth(renderer, text));
+        }
+
+        return stringWidthCache.computeIfAbsent(text, width -> getUncachedWidth(renderer, text));
     }
 
     private int getUncachedWidth(FontRenderer renderer, String text) {
@@ -494,14 +514,6 @@ public final class FontRendererHook {
             this.green = green;
             this.blue = blue;
             this.alpha = alpha;
-        }
-
-        public float getPosX() {
-            return posX;
-        }
-
-        public float getWidth() {
-            return width;
         }
 
     }
