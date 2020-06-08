@@ -688,13 +688,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static int imagePreviewWidth = 50;
 
-    @Property(
-        type = PropertyType.SWITCH, name = "Startup Optimization",
-        description = "Only refresh resources once during startup.\n§cMay cause issues with other mods when enabled.",
-        category = "Performance", subcategory = "General"
-    )
-    public static boolean optimizedStartup;
-
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
