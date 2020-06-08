@@ -40,9 +40,23 @@ public class VertexLighterFlatTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        classNode.interfaces.add("club/sk1er/patcher/hooks/IVertexLighterFlat");
+
+        MethodNode getBlockInfo = new MethodNode(Opcodes.ACC_PUBLIC, "getBlockInfo", "()Lnet/minecraftforge/client/model/pipeline/BlockInfo;", null, null);
+        getBlockInfo.instructions.add(getBlockInfoInstructions());
+        classNode.methods.add(getBlockInfo);
+
         MethodNode resetBlockInfo = new MethodNode(Opcodes.ACC_PUBLIC, "resetBlockInfo", "()V", null, null);
         resetBlockInfo.instructions.add(resetBlockInfoInstructions());
         classNode.methods.add(resetBlockInfo);
+    }
+
+    private InsnList getBlockInfoInstructions() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/pipeline/VertexLighterFlat", "blockInfo", "Lnet/minecraftforge/client/model/pipeline/BlockInfo;"));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        return list;
     }
 
     private InsnList resetBlockInfoInstructions() {
