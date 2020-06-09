@@ -546,13 +546,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeCloudTransparency;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Cloud Culling",
-        description = "Don't spend time rendering clouds you can't see.",
-        category = "Performance", subcategory = "Culling"
-    )
-    public static boolean cloudCulling = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "CrossChat",
         description = "Stop clearing chat when switching servers.",
         category = "Quality of Life", subcategory = "Chat"
