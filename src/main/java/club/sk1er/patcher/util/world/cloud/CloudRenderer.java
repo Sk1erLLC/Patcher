@@ -47,8 +47,6 @@ public class CloudRenderer implements IResourceManagerReloadListener {
     private static final float INSET = 0.001F;
     private static final float ALPHA = 0.8F;
 
-    public static boolean WIREFRAME = false;
-
     private final Minecraft mc = Minecraft.getMinecraft();
     private final ResourceLocation texture = new ResourceLocation("textures/environment/clouds.png");
 
@@ -350,23 +348,6 @@ public class CloudRenderer implements IResourceManagerReloadListener {
                     GlStateManager.colorMask(true, false, false, true);
                     break;
             }
-        }
-
-        if (WIREFRAME) {
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-            GL11.glLineWidth(2.0F);
-            GlStateManager.disableTexture2D();
-            GlStateManager.depthMask(false);
-            GlStateManager.disableFog();
-            if (OpenGlHelper.useVbo()) {
-                vbo.drawArrays(GL11.GL_QUADS);
-            } else {
-                GlStateManager.callList(displayList);
-            }
-            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
-            GlStateManager.enableFog();
         }
 
         if (OpenGlHelper.useVbo()) {

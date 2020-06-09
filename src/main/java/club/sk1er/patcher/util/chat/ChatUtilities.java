@@ -13,11 +13,25 @@ package club.sk1er.patcher.util.chat;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.MinecraftUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 
 public class ChatUtilities {
 
     public static void sendMessage(String message) {
-        MinecraftUtils.sendMessage(color("&e[Patcher] &r"), color(message));
+        sendMessage(message, true);
+    }
+
+    public static void sendMessage(String message, boolean prefix) {
+        if (prefix) {
+            sendMessageHelper(color("&e[Patcher] &r") + color(message));
+        } else {
+            sendMessageHelper(message);
+        }
+    }
+
+    private static void sendMessageHelper(String message) {
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(color(message)));
     }
 
     private static String color(String message) {
