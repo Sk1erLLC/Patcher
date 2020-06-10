@@ -15,9 +15,11 @@ import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
+import club.sk1er.patcher.util.benchmark.impl.ItemBenchmark;
 import club.sk1er.patcher.util.benchmark.impl.TextBenchmark;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
+import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -32,6 +34,7 @@ public class PatcherCommand extends CommandBase {
 
     public PatcherCommand() {
         benchmarkMap.put("text", new TextBenchmark());
+        benchmarkMap.put("item", new ItemBenchmark());
     }
 
     /**
@@ -86,11 +89,10 @@ public class PatcherCommand extends CommandBase {
             }
 
             return;
-        }
-
-        if (args.length == 1 && args[0].equals("resetcache")) {
+        } else if (args.length == 1 && args[0].equals("resetcache")) {
             EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-            sendMessage("Cleared FontRenderer cache.");
+            EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
+            sendMessage("Cleared Enhancement cache.");
             return;
         }
 
@@ -108,7 +110,7 @@ public class PatcherCommand extends CommandBase {
         long totalMillis = 0;
 
         for (BenchmarkResult result : results) {
-            sendMessage("\n&9&m-------------------");
+            sendMessage("&9&m--------------------------------------");
             sendMessage("&6" + result.getName());
 
             float millis = result.getDeltaTime() / (float) 1_000_000;
@@ -117,7 +119,7 @@ public class PatcherCommand extends CommandBase {
             sendMessage("&6Benchmark took a total time of " + millis + "ms.");
             sendMessage("&6Each iteration took an average of " + nanosPerIteration + "ns.");
 
-            sendMessage("&9&m-------------------\n");
+            sendMessage("&9&m--------------------------------------");
 
             totalMillis += millis;
         }

@@ -688,6 +688,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static int imagePreviewWidth = 50;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Optimized Item Renderer",
+        description = "Cache information about items, avoiding recalculating everything about it every frame.",
+        category = "Performance", subcategory = "General"
+    )
+    public static boolean optimizedItemRenderer = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
