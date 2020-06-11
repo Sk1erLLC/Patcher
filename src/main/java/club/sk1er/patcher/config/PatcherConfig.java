@@ -691,7 +691,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Item Renderer",
         description = "Cache information about items, avoiding recalculating everything about it every frame.",
-        category = "Performance", subcategory = "General"
+        category = "Performance", subcategory = "Items"
     )
     public static boolean optimizedItemRenderer = true;
 
