@@ -27,7 +27,7 @@ public class ReloadListener implements IResourceManagerReloadListener {
         for (EnhancedItemRenderer enhancedItemRenderer : EnhancedItemRenderer.getInstances()) {
             enhancedItemRenderer.invalidateAll();
         }
-        System.out.println("\"ASD\" = " + "ASD");
+
         FontRendererHook.forceRefresh = true;
     }
 }
