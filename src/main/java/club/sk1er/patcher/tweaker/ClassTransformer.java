@@ -82,6 +82,7 @@ import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.VisGraphTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldClientTransformer;
 import club.sk1er.patcher.tweaker.asm.WorldTransformer;
+import club.sk1er.patcher.tweaker.asm.block.BlockPotatoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
@@ -155,6 +156,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new AbstractResourcePackTransformer());
         registerTransformer(new GuiIngameTransformer());
+        registerTransformer(new BlockPotatoTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new BlockRendererDispatcherTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());
