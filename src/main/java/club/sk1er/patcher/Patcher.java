@@ -149,8 +149,7 @@ public class Patcher {
      */
     public static boolean isDevelopment() {
         Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        if (o == null) return false;
-        return (boolean) o;
+        return o != null && (boolean) o;
     }
 
     public KeyBinding getDropModifier() {

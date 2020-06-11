@@ -16,6 +16,8 @@ public class BlockPotatoTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         final LabelNode beforeReturn = new LabelNode();
         final LabelNode defaultBehavior = new LabelNode();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/mods/core/util/MinecraftUtils", "isHypixel", "()Z", false));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, defaultBehavior));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "futureHitBoxes", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, defaultBehavior));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
