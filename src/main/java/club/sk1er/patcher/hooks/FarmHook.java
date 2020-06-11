@@ -1,7 +1,10 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -18,16 +21,9 @@ public class FarmHook {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5625D, 1.0D)
     };
 
-    public static AxisAlignedBB getBox(World world, BlockPos pos, Block block) {
-        final AxisAlignedBB axisAlignedBB = AABB[world.getBlockState(pos).getValue(BlockCrops.AGE)];
-
-        final AxisAlignedBB adjusted = new AxisAlignedBB(
-            pos.getX(), pos.getY(), pos.getZ(),
-            pos.getX() + axisAlignedBB.maxX,
-            pos.getY() + axisAlignedBB.maxY,
-            pos.getZ() + axisAlignedBB.maxZ);
-
-        block.maxY = axisAlignedBB.maxY;
-        return adjusted;
+    public static void getBox(World world, BlockPos pos, Block block) {
+        block.maxY = PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || Minecraft.getMinecraft().isIntegratedServerRunning())
+            ? AABB[world.getBlockState(pos).getValue(BlockCrops.AGE)].maxY
+            : .25F;
     }
 }
