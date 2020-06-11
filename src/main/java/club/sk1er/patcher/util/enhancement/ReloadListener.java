@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.util.enhancement;
 
+import club.sk1er.patcher.hooks.FontRendererHook;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import net.minecraft.client.resources.IResourceManager;
@@ -26,5 +27,7 @@ public class ReloadListener implements IResourceManagerReloadListener {
         for (EnhancedItemRenderer enhancedItemRenderer : EnhancedItemRenderer.getInstances()) {
             enhancedItemRenderer.invalidateAll();
         }
+        System.out.println("\"ASD\" = " + "ASD");
+        FontRendererHook.forceRefresh = true;
     }
 }
