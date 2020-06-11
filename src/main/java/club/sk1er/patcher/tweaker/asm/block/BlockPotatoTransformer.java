@@ -18,8 +18,8 @@ public class BlockPotatoTransformer implements PatcherTransformer {
         final LabelNode ifne = new LabelNode();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/mods/core/util/MinecraftUtils", "isHypixel", "()Z", false));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "isIntegratedServerRunning", "()Z;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", "()Lnet/minecraft/client/Minecraft;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "func_71387_A", "()Z;", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(ifne);
