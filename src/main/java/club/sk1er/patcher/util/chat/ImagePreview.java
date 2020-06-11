@@ -2,7 +2,6 @@ package club.sk1er.patcher.util.chat;
 
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.FontRendererHook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.ScaledResolution;

@@ -111,7 +111,7 @@ public final class FontRendererHook {
             text = text.substring(0, text.length() - 2);
         }
 
-        int list;
+        int list = 0;
 
         float posX = this.fontRenderer.posX;
         float posY = this.fontRenderer.posY;
@@ -131,7 +131,8 @@ public final class FontRendererHook {
         int activeTextureUnit = GlStateManager.activeTextureUnit;
 
         GlStateManager.TextureState textureState = textureStates[activeTextureUnit];
-        CachedString cachedString = this.enhancedFontRenderer.get(hash);
+        final boolean cacheFontData = PatcherConfig.cacheFontData;
+        CachedString cachedString = cacheFontData ? this.enhancedFontRenderer.get(hash) : null;
 
         if (cachedString != null) {
             GlStateManager.color(red, blue, green, alpha);
@@ -157,9 +158,10 @@ public final class FontRendererHook {
 
         textureState.textureName = GL_TEX;
         GlStateManager.resetColor();
-        list = enhancedFontRenderer.getGlList();
-        GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
-
+        if (cacheFontData) {
+            list = enhancedFontRenderer.getGlList();
+            GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
+        }
 
         boolean obfuscated = false;
         CachedString value = new CachedString(text, list, this.fontRenderer.posX - posX, this.fontRenderer.posY - posY);
@@ -317,11 +319,13 @@ public final class FontRendererHook {
         }
 
         GlStateManager.enableTexture2D();
+        if(cacheFontData) {
+            GL11.glEndList();
+            this.enhancedFontRenderer.cache(hash, value);
+            value.setWidth(this.fontRenderer.posX);
+        }
 
-        GL11.glEndList();
-        this.enhancedFontRenderer.cache(hash, value);
 
-        value.setWidth(this.fontRenderer.posX);
 
         this.fontRenderer.posY = posY + value.getHeight();
         this.fontRenderer.posX = posX + value.getWidth();

@@ -280,10 +280,19 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Font Renderer",
-        description = "Cache text to avoid recalculating the same text every frame.",
+        description = "Use a more efficient font renderer.",
         category = "Performance", subcategory = "Rendering"
     )
     public static boolean optimizedFontRenderer = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Cache Font Data",
+        description = "Cache font data allowing for it to be reused multiple times before needing recalculation.",
+        category = "Performance", subcategory = "Rendering"
+    )
+    public static boolean cacheFontData = true;
+
+
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
