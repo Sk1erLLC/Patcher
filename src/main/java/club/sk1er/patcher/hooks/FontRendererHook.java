@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -35,6 +36,8 @@ public final class FontRendererHook {
     private boolean lookedForOF = false;
     private boolean drawing = false;
     private Method getCharWidthFloat;
+    private Field boldOffsetField = null;
+    private boolean searchedBoldOffset = false;
 
     public FontRendererHook(FontRenderer fontRenderer) {
         this.fontRenderer = fontRenderer;
@@ -73,7 +76,6 @@ public final class FontRendererHook {
             GlStateManager.deleteTexture(GL_TEX);
         }
         final BufferedImage bufferedImage = new BufferedImage((int) fontTexWidth, (int) fontTexHeight, BufferedImage.TYPE_INT_ARGB);
-        int ctr = 0;
         for (int i = 0; i < 256; i++) {
             final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
             try {
@@ -81,7 +83,6 @@ public final class FontRendererHook {
                 final BufferedImage read = ImageIO.read(resource.getInputStream());
                 bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
             } catch (IOException ignored) {
-                ctr++;
             }
         }
 
@@ -92,7 +93,6 @@ public final class FontRendererHook {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         final DynamicTexture dynamicTexture = new DynamicTexture(bufferedImage);
         GL_TEX = dynamicTexture.getGlTextureId();
     }
@@ -239,7 +239,7 @@ public final class FontRendererHook {
                 }
 
                 boolean unicode = this.fontRenderer.unicodeFlag;
-                float boldWidth = unicode ? 0.5F : 1.0F;
+                float boldWidth = getBoldOffset(j);
                 boolean flag = (c0 == 0 || j == -1 || unicode) && shadow;
 
                 if (flag) {
@@ -270,7 +270,7 @@ public final class FontRendererHook {
                         this.fontRenderer.posY += boldWidth;
                     }
 
-                    ++effectiveWidth;
+                    effectiveWidth += boldWidth;
                 }
 
                 if (this.fontRenderer.strikethroughStyle) {
@@ -281,7 +281,7 @@ public final class FontRendererHook {
                     underline.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
                 }
 
-                this.fontRenderer.posX += (int) effectiveWidth;
+                this.fontRenderer.posX += effectiveWidth;
             }
         }
 
@@ -334,6 +334,28 @@ public final class FontRendererHook {
         return true;
     }
 
+    private float getBoldOffset(int j) {
+        return fontRenderer.unicodeFlag || j == -1 ? 0.5F : getOptifineBoldOffset();
+    }
+
+    private float getOptifineBoldOffset() {
+        try {
+            if (boldOffsetField == null && !searchedBoldOffset) {
+                searchedBoldOffset = true;
+                boldOffsetField = FontRenderer.class.getDeclaredField("offsetBold");
+            }
+            if (boldOffsetField != null) {
+                boldOffsetField.setAccessible(true);
+                Object invoke = boldOffsetField.get(fontRenderer);
+                return (Float) invoke;
+            }
+        } catch (IllegalAccessException ignored) {
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
     private void minify(List<RenderPair> pairs) {
         Iterator<RenderPair> iterator = pairs.iterator();
         RenderPair lastStart = null;
@@ -356,8 +378,8 @@ public final class FontRendererHook {
     }
 
     public float renderChar(char ch, boolean italic) {
-        if (ch == 32) {
-            return 4.0F;
+        if (ch == 32 || ch == 160) {
+            return fontRenderer.unicodeFlag ? 4.0F : getCharWidthFloat(ch);
         } else {
             int i = characterDictionary.indexOf(ch);
             return i != -1 && !this.fontRenderer.unicodeFlag ? this.renderDefaultChar(i, italic, ch) : this.renderUnicodeChar(ch, italic);
@@ -369,8 +391,8 @@ public final class FontRendererHook {
      * Render a single character with the default.png font at current (posX,posY) location...
      */
     protected float renderDefaultChar(int characterIndex, boolean italic, char ch) {
-        int characterX = characterIndex % 16 * 8 * regularCharDim / 128;
-        int characterY = (characterIndex / 16 * 8 * regularCharDim / 128) + 16 * texSheetDim;
+        float characterX = characterIndex % 16 * 8 * regularCharDim / 128 + .01f;
+        float characterY = (characterIndex / 16 * 8 * regularCharDim / 128) + 16 * texSheetDim + .01f;
         int k = italic ? 1 : 0;
         float l = getCharWidthFloat(ch);
         float f = l - 0.01F;
@@ -380,17 +402,17 @@ public final class FontRendererHook {
         }
         float uvHeight = 7.99F * regularCharDim / 128;
         float uvWidth = f * regularCharDim / 128;
-        GL11.glTexCoord2f((float) characterX / fontTexWidth, (float) characterY / fontTexHeight);
+        GL11.glTexCoord2f(characterX / fontTexWidth, characterY / fontTexHeight);
         GL11.glVertex2f(this.fontRenderer.posX + (float) k, this.fontRenderer.posY);
 
-        GL11.glTexCoord2f((float) characterX / fontTexWidth, ((float) characterY + uvHeight) / fontTexHeight);
+        GL11.glTexCoord2f(characterX / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
         GL11.glVertex2f(this.fontRenderer.posX - (float) k, this.fontRenderer.posY + 7.99F);
 
         final int offset = regularCharDim / 128;
-        GL11.glTexCoord2f(((float) characterX + uvWidth- offset) / fontTexWidth, (float) characterY / fontTexHeight);
+        GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, characterY / fontTexHeight);
         GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F + (float) k, this.fontRenderer.posY);
 
-        GL11.glTexCoord2f(((float) characterX + uvWidth - offset) / fontTexWidth, ((float) characterY + uvHeight) / fontTexHeight);
+        GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
         GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
         GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
         return l;
@@ -419,10 +441,9 @@ public final class FontRendererHook {
         int row = page / 16;
         int column = page % 16;
         int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
-        float f = (float) j;
-        float f2 = (float) (characterIndex % 16 * 16) + f;
-        float f3 = (float) ((characterIndex & 255) / 16 * 16);
-        return new Pair<>((row * texSheetDim + f2) / fontTexWidth, (column * texSheetDim + f3) / fontTexHeight); //16 rows each with a size of 64px
+        float f2 = (float) (characterIndex % 16 * 16) + j;
+        float f3 = (float) ((characterIndex & 255) / 16 * 16 + .1);
+        return new Pair<>((row * texSheetDim + f2 + .05f) / fontTexWidth, (column * texSheetDim + f3) / fontTexHeight); //16 rows each with a size of 64px
     }
 
     /**
@@ -439,18 +460,21 @@ public final class FontRendererHook {
             float f1 = (float) (k + 1);
             float f4 = f1 - f - 0.02F;
             float f5 = italic ? 1.0F : 0.0F;
-
             if (startDrawing()) {
                 GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
             }
 
+            final float v = 15.98F * texSheetDim / 256;
             GL11.glTexCoord2f(uv.component1(), uv.component2());
             GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
-            GL11.glTexCoord2f(uv.component1(), uv.component2() + 15.98F / fontTexHeight);
+
+            GL11.glTexCoord2f(uv.component1(), uv.component2() + v / fontTexHeight);
             GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY + 7.99F);
-            GL11.glTexCoord2f(uv.component1() + f4 / fontTexHeight, uv.component2());
+            final float texAdj = f4 + .5f;
+            GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2());
             GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F + f5, this.fontRenderer.posY);
-            GL11.glTexCoord2f(uv.component1() + f4 / fontTexHeight, uv.component2() + 15.98F / fontTexHeight);
+
+            GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2() + v / fontTexHeight);
             GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
             GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
             return (f1 - f) / 2.0F + 1.0F;
@@ -522,7 +546,7 @@ public final class FontRendererHook {
                 i += k;
 
                 if (flag && k > 0) {
-                    ++i;
+                    i += getBoldOffset(characterDictionary.indexOf(c0));
                 }
             }
 
