@@ -322,9 +322,8 @@ public final class FontRendererHook {
         if(cacheFontData) {
             GL11.glEndList();
             this.enhancedFontRenderer.cache(hash, value);
-            value.setWidth(this.fontRenderer.posX);
         }
-
+        value.setWidth(this.fontRenderer.posX);
 
 
         this.fontRenderer.posY = posY + value.getHeight();

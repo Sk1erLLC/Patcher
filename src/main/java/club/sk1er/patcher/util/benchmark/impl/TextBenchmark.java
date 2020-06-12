@@ -62,7 +62,8 @@ public class TextBenchmark extends AbstractBenchmark {
                 case "average":
                     return new BenchmarkResult[]{averageTextBenchmark()};
                 case "all":
-                    return new BenchmarkResult[]{separateRendersBenchmark(), singleRenderBenchmark(), averageTextBenchmark()};
+                    return new BenchmarkResult[]{separateRendersBenchmark(), singleRenderBenchmark(),
+                        averageTextBenchmark()};
                 default:
                     sendMessage("Can't find a text benchmark by the name of " + args[0]);
                     return new BenchmarkResult[]{};
