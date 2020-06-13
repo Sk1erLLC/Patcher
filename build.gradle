@@ -40,7 +40,7 @@ minecraft {
 
 compileKotlin {
     kotlinOptions {
-        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn']
+        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn', '-Xno-param-assertions']
     }
 }
 

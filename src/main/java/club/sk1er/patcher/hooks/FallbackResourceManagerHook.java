@@ -18,10 +18,12 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.SimpleResource;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,34 +51,39 @@ public class FallbackResourceManagerHook {
         if (negativeResourceCache.contains(location.toString())) {
             throw new FileNotFoundException(location.toString());
         }
+
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
 
         InputStream mcMetaStream = null;
-        for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
-            IResourcePack currentPack = manager.resourcePacks.get(i);
+        try {
+            for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
+                IResourcePack currentPack = manager.resourcePacks.get(i);
 
-            if (mcMetaStream == null) {
-                InputStream safe = getFromFile(currentPack, mcMetaLocation);
-                if (safe != null) {
-                    mcMetaStream = safe;
+                if (mcMetaStream == null) {
+                    try (InputStream safe = getFromFile(currentPack, mcMetaLocation)) {
+                        if (safe != null) {
+                            mcMetaStream = safe;
+                        }
+                    }
+                }
+
+                try (InputStream stream = getFromFile(currentPack, location)) {
+                    if (stream != null) {
+                        return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
+                    }
                 }
             }
-
-            InputStream stream = getFromFile(currentPack, location);
-            if (stream != null) {
-
-                return new SimpleResource(
-                    currentPack.getPackName(),
-                    location,
-                    stream,
-                    mcMetaStream,
-                    manager.frmMetadataSerializer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (mcMetaStream != null) {
+                mcMetaStream.close();
             }
         }
+
         negativeResourceCache.add(location.getResourcePath());
         throw new FileNotFoundException(location.toString());
     }
-
 
     private static InputStream getFromFile(IResourcePack pack, ResourceLocation location) {
         try {
