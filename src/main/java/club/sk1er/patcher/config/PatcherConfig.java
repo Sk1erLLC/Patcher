@@ -223,6 +223,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean crosshairPerspective;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Inventory Crosshair",
+        description = "Stop rendering the crosshair when in a container.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean inventoryCrosshair;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Tall Grass",
         description = "Stop tall grass/double tall plants from rendering.",
         category = "Quality of Life", subcategory = "Rendering"

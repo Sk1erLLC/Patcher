@@ -51,25 +51,33 @@ class GuiIngameTransformer : PatcherTransformer {
                                     aload(4) // collection
                                     invokeinterface(Collection::class, "size", int)
                                     aload_0
-                                    invokevirtual("net/minecraft/client/gui/GuiIngame", "func_175179_f", //getFontRenderer
-                                            "net/minecraft/client/gui/FontRenderer")
-                                    getfield("net/minecraft/client/gui/FontRenderer", "field_78288_b", //FONT_HEIGHT
-                                            int)
+                                    invokevirtual(
+                                        "net/minecraft/client/gui/GuiIngame", "func_175179_f", //getFontRenderer
+                                        "net/minecraft/client/gui/FontRenderer"
+                                    )
+                                    getfield(
+                                        "net/minecraft/client/gui/FontRenderer", "field_78288_b", //FONT_HEIGHT
+                                        int
+                                    )
                                     imul
                                     isub
                                     iconst_1
                                     isub
                                     aload_2
-                                    invokevirtual("net/minecraft/client/gui/ScaledResolution", "func_78326_a", //getScaledWidth
-                                            int)
+                                    invokevirtual(
+                                        "net/minecraft/client/gui/ScaledResolution", "func_78326_a", //getScaledWidth
+                                        int
+                                    )
                                     iload(9) // k1
                                     isub
                                     iconst_2
                                     iadd
                                     iload(8) // j1
                                     ldc(1342177280)
-                                    invokestatic("net/minecraft/client/gui/Gui", "func_73734_a", //drawRect
-                                            void, int, int, int, int, int)
+                                    invokestatic(
+                                        "net/minecraft/client/gui/Gui", "func_73734_a", //drawRect
+                                        void, int, int, int, int, int
+                                    )
                                 }.first)
                             } else if (node is MethodInsnNode && node.name in listOf("drawRect", "func_73734_a")) {
                                 if (!foundOneDrawRect) {
@@ -90,18 +98,24 @@ class GuiIngameTransformer : PatcherTransformer {
     }
 
     private fun disableCrosshairRendering() = assembleBlock {
-        aload_0
-        getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d",  // mc
-                "net/minecraft/client/Minecraft")
-        getfield("net/minecraft/client/Minecraft", "field_71474_y",  // gameSettings
-                "net/minecraft/client/settings/GameSettings")
-        getfield("net/minecraft/client/settings/GameSettings", "field_74320_O",  // thirdPersonView
-                int)
-        ifle(L["end"])
         getstatic(patcherConfigClass, "crosshairPerspective", boolean)
-        ifeq(L["end"])
+        ifeq(L["1"])
+        aload_0
+        getfield("net/minecraft/client/gui/GuiIngame", "field_146297_k", "net/minecraft/client/Minecraft")
+        getfield("net/minecraft/client/Minecraft", "field_71474_y", "net/minecraft/client/settings/GameSettings")
+        getfield("net/minecraft/client/settings/GameSettings", "field_74320_O", int)
+        ifne(L["2"])
+        +L["1"]
+        getstatic(patcherConfigClass, "inventoryCrosshair", boolean)
+        ifeq(L["3"])
+        aload_0
+        getfield("net/minecraft/client/gui/GuiIngame", "field_146297_k", "net/minecraft/client/Minecraft")
+        getfield("net/minecraft/client/Minecraft", "field_71462_r", "net/minecraft/client/gui/GuiScreen")
+        instanceof("net/minecraft/client/gui/inventory/GuiContainer")
+        ifeq(L["3"])
+        +L["2"]
         iconst_0
         ireturn
-        +L["end"]
+        +L["3"]
     }.first
 }
