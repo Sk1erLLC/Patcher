@@ -101,7 +101,7 @@ class GuiIngameTransformer : PatcherTransformer {
         getstatic(patcherConfigClass, "crosshairPerspective", boolean)
         ifeq(L["1"])
         aload_0
-        getfield("net/minecraft/client/gui/GuiIngame", "field_146297_k", "net/minecraft/client/Minecraft")
+        getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
         getfield("net/minecraft/client/Minecraft", "field_71474_y", "net/minecraft/client/settings/GameSettings")
         getfield("net/minecraft/client/settings/GameSettings", "field_74320_O", int)
         ifne(L["2"])
@@ -109,7 +109,7 @@ class GuiIngameTransformer : PatcherTransformer {
         getstatic(patcherConfigClass, "inventoryCrosshair", boolean)
         ifeq(L["3"])
         aload_0
-        getfield("net/minecraft/client/gui/GuiIngame", "field_146297_k", "net/minecraft/client/Minecraft")
+        getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
         getfield("net/minecraft/client/Minecraft", "field_71462_r", "net/minecraft/client/gui/GuiScreen")
         instanceof("net/minecraft/client/gui/inventory/GuiContainer")
         ifeq(L["3"])

@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 // By LlamaLad7
+@SuppressWarnings("unused")
 public class OptifineEntityRendererTransformer implements PatcherTransformer {
     private static final float normalModifier = 4f;
     private static float currentModifier = 4f;
@@ -91,76 +92,111 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("getFOVModifier") || methodName.equals("func_78481_a")) {
-                int zoomActiveIndex = -1;
+            switch (methodName) {
+                case "getFOVModifier":
+                case "func_78481_a": {
+                    int zoomActiveIndex = -1;
 
-                for (LocalVariableNode var : methodNode.localVariables) {
-                    if (var.name.equals("zoomActive")) {
-                        zoomActiveIndex = var.index;
-                        break;
-                    }
-                }
-
-                Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode thing = iterator.next();
-                    if (checkNode(thing)) {
-                        methodNode.instructions.insertBefore(thing, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "normalZoomSensitivity", "Z")); // False instead of true
-                        methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.ICONST_1));
-                        methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.IXOR));
-                        methodNode.instructions.insert(thing, callReset());
-                        methodNode.instructions.remove(thing);
-                    } else if (checkDivNode(thing)) {
-                        methodNode.instructions.remove(thing.getPrevious());
-                        methodNode.instructions.insertBefore(thing, getDivisor());
-                    } else if (checkZoomActiveNode(thing, zoomActiveIndex)) {
-                        methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
-                    }
-                }
-            } else if (methodName.equals("orientCamera") || methodName.equals("func_78467_g")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
-                        methodNode.instructions.insertBefore(next, fixParallax());
-                        methodNode.instructions.remove(next);
-                    } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-                        if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
-                            ((MethodInsnNode) next).name = Patcher.isDevelopment() ? "rayTraceBlocks" : "func_147447_a";
-                            ((MethodInsnNode) next).desc = FMLDeobfuscatingRemapper.INSTANCE.mapDesc(
-                                "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;"
-                            );
-
-                            methodNode.instructions.insertBefore(next, changeMethodRedirect());
-                        }
-                    }
-                }
-            } else if (methodName.equals("updateLightmap") || methodName.equals("func_78472_g")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
-
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-                        if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
-                            methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
+                    for (LocalVariableNode var : methodNode.localVariables) {
+                        if (var.name.equals("zoomActive")) {
+                            zoomActiveIndex = var.index;
                             break;
                         }
                     }
+
+                    Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    LabelNode ifne = new LabelNode();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode thing = iterator.next();
+                        if (checkNode(thing)) {
+                            methodNode.instructions.insertBefore(thing, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "normalZoomSensitivity", "Z")); // False instead of true
+                            methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.ICONST_1));
+                            methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.IXOR));
+                            methodNode.instructions.insert(thing, callReset());
+                            methodNode.instructions.remove(thing);
+                        } else if (checkDivNode(thing)) {
+                            methodNode.instructions.remove(thing.getPrevious());
+                            methodNode.instructions.insertBefore(thing, getDivisor());
+                        } else if (checkZoomActiveNode(thing, zoomActiveIndex)) {
+                            methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
+                        } else if (thing instanceof MethodInsnNode && thing.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) thing);
+
+                            if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
+                                methodNode.instructions.insertBefore(thing.getPrevious(), createLabel(ifne));
+                            }
+                        } else if (thing instanceof LdcInsnNode && ((LdcInsnNode) thing).cst.equals(70.0f) && thing.getPrevious().getOpcode() == Opcodes.FMUL) {
+                            methodNode.instructions.insert(thing.getNext().getNext().getNext(), setLabel(ifne));
+                        }
+                    }
+
+                    break;
                 }
-            } else if (methodName.equals("renderStreamIndicator") || methodName.equals("func_152430_c")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(new InsnNode(Opcodes.RETURN));
+                case "orientCamera":
+                case "func_78467_g": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
+                            methodNode.instructions.insertBefore(next, fixParallax());
+                            methodNode.instructions.remove(next);
+                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
+                                ((MethodInsnNode) next).name = Patcher.isDevelopment() ? "rayTraceBlocks" : "func_147447_a";
+                                ((MethodInsnNode) next).desc = FMLDeobfuscatingRemapper.INSTANCE.mapDesc(
+                                    "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;"
+                                );
+
+                                methodNode.instructions.insertBefore(next, changeMethodRedirect());
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "updateLightmap":
+                case "func_78472_g": {
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
+
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "renderStreamIndicator":
+                case "func_152430_c":
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(new InsnNode(Opcodes.RETURN));
+                    break;
             }
         }
+    }
+
+    private InsnList setLabel(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(ifne);
+        return list;
+    }
+
+    private InsnList createLabel(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeWaterFov", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList assignCreatedLightmap() {

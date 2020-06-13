@@ -187,6 +187,13 @@ public class PatcherConfig extends Vigilant {
     public static int slownessFovModifier = 1;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Remove Water FOV",
+        description = "Remove the change of FOV when underwater.\n§eDoes not require FOV Modifier to be enabled.",
+        category = "Quality of Life", subcategory = "Field of View"
+    )
+    public static boolean removeWaterFov;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Custom Tab Opacity",
         description = "Allow for customizing tab opacity.",
         category = "Quality of Life", subcategory = "Tab"
@@ -298,8 +305,6 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Rendering"
     )
     public static boolean cacheFontData = true;
-
-
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
