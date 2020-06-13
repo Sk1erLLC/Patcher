@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 
 public final class FontRendererHook {
 
@@ -167,8 +170,8 @@ public final class FontRendererHook {
         CachedString value = new CachedString(text, list, this.fontRenderer.posX - posX, this.fontRenderer.posY - posY);
 
         int[] colorCode = this.fontRenderer.colorCode;
-        List<RenderPair> underline = new ArrayList<>();
-        List<RenderPair> strikeThough = new ArrayList<>();
+        Deque<RenderPair> underline = new LinkedList<>();
+        Deque<RenderPair> strikeThough = new LinkedList<>();
         for (int i = 0; i < text.length(); ++i) {
             char c0 = text.charAt(i);
 
@@ -275,12 +278,13 @@ public final class FontRendererHook {
                     effectiveWidth += boldWidth;
                 }
 
+                RenderPair next = new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha());
                 if (this.fontRenderer.strikethroughStyle) {
-                    strikeThough.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+                    adjustOrAppend(strikeThough, next);
                 }
 
                 if (this.fontRenderer.underlineStyle) {
-                    underline.add(new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha()));
+                    adjustOrAppend(underline, next);
                 }
 
                 this.fontRenderer.posX += effectiveWidth;
@@ -295,8 +299,6 @@ public final class FontRendererHook {
             GL11.glBegin(GL11.GL_QUADS);
         }
 
-        minify(strikeThough);
-        minify(underline);
 
         for (RenderPair renderPair : strikeThough) {
             GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
@@ -319,7 +321,7 @@ public final class FontRendererHook {
         }
 
         GlStateManager.enableTexture2D();
-        if(cacheFontData) {
+        if (cacheFontData) {
             GL11.glEndList();
             this.enhancedFontRenderer.cache(hash, value);
         }
@@ -337,6 +339,17 @@ public final class FontRendererHook {
         return true;
     }
 
+    private void adjustOrAppend(Deque<RenderPair> underline, RenderPair next) {
+        RenderPair lastStart = underline.peekLast();
+        if (lastStart != null && lastStart.alpha == next.alpha && lastStart.red == next.red && lastStart.green == next.green && lastStart.blue == next.blue) {
+            if (lastStart.posX + lastStart.width >= next.posX - 1) {
+                lastStart.width = next.posX + next.width - lastStart.posX;
+            }
+        } else {
+            underline.add(next);
+        }
+    }
+
     private float getBoldOffset(int j) {
         return fontRenderer.unicodeFlag || j == -1 ? 0.5F : getOptifineBoldOffset();
     }
@@ -346,11 +359,10 @@ public final class FontRendererHook {
             if (boldOffsetField == null && !searchedBoldOffset) {
                 searchedBoldOffset = true;
                 boldOffsetField = FontRenderer.class.getDeclaredField("offsetBold");
+                boldOffsetField.setAccessible(true);
             }
             if (boldOffsetField != null) {
-                boldOffsetField.setAccessible(true);
-                Object invoke = boldOffsetField.get(fontRenderer);
-                return (Float) invoke;
+                return ((Float) boldOffsetField.get(fontRenderer));
             }
         } catch (IllegalAccessException ignored) {
         } catch (NoSuchFieldException e) {
@@ -359,26 +371,6 @@ public final class FontRendererHook {
         return 1;
     }
 
-    private void minify(List<RenderPair> pairs) {
-        Iterator<RenderPair> iterator = pairs.iterator();
-        RenderPair lastStart = null;
-        while (iterator.hasNext()) {
-            RenderPair next = iterator.next();
-            if (lastStart == null) {
-                lastStart = next;
-                continue;
-            }
-
-            if (lastStart.alpha == next.alpha && lastStart.red == next.red && lastStart.green == next.green && lastStart.blue == next.blue) {
-                if (lastStart.posX + lastStart.width >= next.posX - 1) {
-                    iterator.remove();
-                    lastStart.width = next.posX + next.width - lastStart.posX;
-                }
-            } else {
-                lastStart = next;
-            }
-        }
-    }
 
     public float renderChar(char ch, boolean italic) {
         if (ch == 32 || ch == 160) {
@@ -399,10 +391,7 @@ public final class FontRendererHook {
         int k = italic ? 1 : 0;
         float l = getCharWidthFloat(ch);
         float f = l - 0.01F;
-
-        if (startDrawing()) {
-            GL11.glVertex2f(this.fontRenderer.posX + (float) k, this.fontRenderer.posY);
-        }
+        startDrawing();
         float uvHeight = 7.99F * regularCharDim / 128;
         float uvWidth = f * regularCharDim / 128;
         GL11.glTexCoord2f(characterX / fontTexWidth, characterY / fontTexHeight);
@@ -412,24 +401,21 @@ public final class FontRendererHook {
         GL11.glVertex2f(this.fontRenderer.posX - (float) k, this.fontRenderer.posY + 7.99F);
 
         final int offset = regularCharDim / 128;
+        GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
+        GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
+
         GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, characterY / fontTexHeight);
         GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F + (float) k, this.fontRenderer.posY);
 
-        GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
-        GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
-        GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
         return l;
     }
 
 
-    private boolean startDrawing() {
+    private void startDrawing() {
         if (!drawing) {
             drawing = true;
-            GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
-            return false;
+            GL11.glBegin(GL11.GL_QUADS);
         }
-
-        return true;
     }
 
     private void endDrawing() {
@@ -463,9 +449,7 @@ public final class FontRendererHook {
             float f1 = (float) (k + 1);
             float f4 = f1 - f - 0.02F;
             float f5 = italic ? 1.0F : 0.0F;
-            if (startDrawing()) {
-                GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
-            }
+            startDrawing();
 
             final float v = 15.98F * texSheetDim / 256;
             GL11.glTexCoord2f(uv.component1(), uv.component2());
@@ -479,7 +463,6 @@ public final class FontRendererHook {
 
             GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2() + v / fontTexHeight);
             GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
             return (f1 - f) / 2.0F + 1.0F;
         }
     }
@@ -489,11 +472,10 @@ public final class FontRendererHook {
             if (getCharWidthFloat == null && !lookedForOF) {
                 lookedForOF = true;
                 getCharWidthFloat = FontRenderer.class.getDeclaredMethod("getCharWidthFloat", char.class);
+                getCharWidthFloat.setAccessible(true);
             }
             if (getCharWidthFloat != null) {
-                getCharWidthFloat.setAccessible(true);
-                Object invoke = getCharWidthFloat.invoke(fontRenderer, c);
-                return (Float) invoke;
+                return (Float) getCharWidthFloat.invoke(fontRenderer, c);
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
         }
