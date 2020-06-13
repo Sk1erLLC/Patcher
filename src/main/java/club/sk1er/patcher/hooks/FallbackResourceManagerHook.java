@@ -67,10 +67,9 @@ public class FallbackResourceManagerHook {
                     }
                 }
 
-                try (InputStream stream = getFromFile(currentPack, location)) {
-                    if (stream != null) {
-                        return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
-                    }
+                InputStream stream = getFromFile(currentPack, location);
+                if (stream != null) {
+                    return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
                 }
             }
         } catch (Exception e) {
