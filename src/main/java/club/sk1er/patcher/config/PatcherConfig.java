@@ -723,6 +723,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean futureHitBoxes = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Particle Culling",
+        description = "Stop trying to render particles you cannot see.",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean cullParticles = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
