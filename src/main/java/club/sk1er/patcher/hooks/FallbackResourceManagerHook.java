@@ -55,28 +55,19 @@ public class FallbackResourceManagerHook {
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
 
         InputStream mcMetaStream = null;
-        try {
-            for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
-                IResourcePack currentPack = manager.resourcePacks.get(i);
+        for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
+            IResourcePack currentPack = manager.resourcePacks.get(i);
 
-                if (mcMetaStream == null) {
-                    try (InputStream safe = getFromFile(currentPack, mcMetaLocation)) {
-                        if (safe != null) {
-                            mcMetaStream = safe;
-                        }
-                    }
-                }
-
-                InputStream stream = getFromFile(currentPack, location);
-                if (stream != null) {
-                    return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
+            if (mcMetaStream == null) {
+                InputStream safe = getFromFile(currentPack, mcMetaLocation);
+                if (safe != null) {
+                    mcMetaStream = safe;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (mcMetaStream != null) {
-                mcMetaStream.close();
+
+            InputStream stream = getFromFile(currentPack, location);
+            if (stream != null) {
+                return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
             }
         }
 
