@@ -15,6 +15,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -84,6 +85,9 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
 
     private InsnList cancelIfNotSafe() {
         InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "resourceExploitFix", "Z"));
+        LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
@@ -98,7 +102,6 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             "validateResourcePackUrl",
             "(Lnet/minecraft/client/network/NetHandlerPlayClient;Ljava/lang/String;Ljava/lang/String;)Z",
             false));
-        LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(labelNode);

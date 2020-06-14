@@ -730,6 +730,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cullParticles = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Resource Exploit Fix",
+        description = "Fix an exploit in 1.8 allowing servers to look through directories.",
+        category = "Fixes", subcategory = "Security"
+    )
+    public static boolean resourceExploitFix = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
