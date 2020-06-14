@@ -21,6 +21,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -49,7 +50,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderParticles")) {
+            if (methodName.equals("renderParticles") || methodName.equals("func_78874_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 LabelNode ifeq = new LabelNode();
@@ -64,8 +65,16 @@ public class EffectRendererTransformer implements PatcherTransformer {
                         methodNode.instructions.insertBefore(next.getNext(), ifeq);
                     }
                 }
-            } else if (methodName.equals("updateEffectAlphaLayer")) {
+            } else if (methodName.equals("updateEffectAlphaLayer") || methodName.equals("func_178925_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                int entityfxIndex = -1;
+
+                for (LocalVariableNode var : methodNode.localVariables) {
+                    if (var.name.equals("entityfx")) {
+                        entityfxIndex = var.index;
+                    }
+                }
 
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
@@ -73,8 +82,8 @@ public class EffectRendererTransformer implements PatcherTransformer {
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
                         String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
-                        if (methodInsnName.equals("tickParticle")) {
-                            methodNode.instructions.insertBefore(next.getNext(), checkIfCull());
+                        if (methodInsnName.equals("tickParticle") || methodInsnName.equals("func_178923_d")) {
+                            methodNode.instructions.insertBefore(next.getNext(), checkIfCull(entityfxIndex));
                             break;
                         }
                     }
@@ -83,18 +92,18 @@ public class EffectRendererTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList checkIfCull() {
+    private InsnList checkIfCull(int entityfxIndex) {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cullParticles", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/particle/EntityFX", "getEntityBoundingBox", "()Lnet/minecraft/util/AxisAlignedBB;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/client/renderer/culling/ICamera", "isBoundingBoxInFrustum", "(Lnet/minecraft/util/AxisAlignedBB;)Z", true));
+        list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/particle/EntityFX", "func_174813_aQ", "()Lnet/minecraft/util/AxisAlignedBB;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/client/renderer/culling/ICamera", "func_78546_a", "(Lnet/minecraft/util/AxisAlignedBB;)Z", true));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.FCONST_1));
@@ -103,7 +112,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
         list.add(ifeq);
         list.add(new LdcInsnNode(-1.0f));
         list.add(gotoInsn);
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/particle/EntityFX", "distanceWalkedModified", "F"));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/particle/EntityFX", "field_70140_Q", "F"));
         list.add(labelNode);
         return list;
     }

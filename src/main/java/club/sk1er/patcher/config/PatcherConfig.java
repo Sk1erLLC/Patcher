@@ -725,10 +725,17 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Particle Culling",
-        description = "Stop trying to render particles you cannot see.",
+        description = "Stop particles that aren't visible to the player from rendering.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean cullParticles = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Resource Exploit Fix",
+        description = "Fix an exploit in 1.8 allowing servers to look through directories.",
+        category = "Fixes", subcategory = "Security"
+    )
+    public static boolean resourceExploitFix = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

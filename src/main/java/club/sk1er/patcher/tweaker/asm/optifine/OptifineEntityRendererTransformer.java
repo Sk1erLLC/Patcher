@@ -29,7 +29,6 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
@@ -185,17 +184,28 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                     break;
 
                 case "renderWorldPass":
+                case "func_175068_a":
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        if (next instanceof TypeInsnNode && ((TypeInsnNode) next).desc.equals("net/minecraft/client/renderer/culling/Frustum")) {
-                            while (true) {
-                                AbstractInsnNode insn = iterator.next();
-                                if (insn instanceof VarInsnNode) {
-                                    methodNode.instructions.insert(insn, getStoreCameraInsn(((VarInsnNode) insn).var));
-                                    break;
-                                }
+                        int cameraVar = -1;
+
+                        for (LocalVariableNode var : methodNode.localVariables) {
+                            if (var.name.equals("icamera")) {
+                                cameraVar = var.index;
+                                break;
+                            }
+                        }
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("getRenderViewEntity") || methodInsnName.equals("func_175606_aa")) {
+                                next = next.getPrevious().getPrevious();
+
+                                methodNode.instructions.insertBefore(next, getStoreCameraInsn(cameraVar));
+                                break;
                             }
                         }
                     }
@@ -208,7 +218,10 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
     private InsnList getStoreCameraInsn(int var) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, var));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC,
+            "club/sk1er/patcher/util/world/particles/ParticleCulling",
+            "camera",
+            "Lnet/minecraft/client/renderer/culling/ICamera;"));
         return list;
     }
 
