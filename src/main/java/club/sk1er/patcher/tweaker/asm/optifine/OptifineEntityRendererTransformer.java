@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.asm.optifine;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
@@ -29,6 +30,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
@@ -189,24 +191,47 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        int cameraVar = -1;
+                        switch (ClassTransformer.optifineVersion) {
+                            case "I7": {
+                                if (next instanceof TypeInsnNode) {
+                                    if (FMLDeobfuscatingRemapper.INSTANCE.map(((TypeInsnNode) next).desc).equals("net/minecraft/client/renderer/culling/Frustum")) {
+                                        while (true) {
+                                            AbstractInsnNode insn = iterator.next();
+                                            if (insn instanceof VarInsnNode) {
+                                                methodNode.instructions.insert(insn, getStoreCameraInsn(((VarInsnNode) insn).var));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
 
-                        for (LocalVariableNode var : methodNode.localVariables) {
-                            if (var.name.equals("icamera")) {
-                                cameraVar = var.index;
                                 break;
                             }
-                        }
 
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            default:
+                            case "L5": {
+                                int cameraVar = -1;
 
-                            if (methodInsnName.equals("getRenderViewEntity") || methodInsnName.equals("func_175606_aa")) {
-                                next = next.getPrevious().getPrevious();
+                                for (LocalVariableNode var : methodNode.localVariables) {
+                                    if (var.name.equals("icamera")) {
+                                        cameraVar = var.index;
+                                        break;
+                                    }
+                                }
 
-                                methodNode.instructions.insertBefore(next, getStoreCameraInsn(cameraVar));
-                                break;
+                                if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                    String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                                    if (methodInsnName.equals("getRenderViewEntity") || methodInsnName.equals("func_175606_aa")) {
+                                        next = next.getPrevious().getPrevious();
+
+                                        methodNode.instructions.insertBefore(next, getStoreCameraInsn(cameraVar));
+                                        break;
+                                    }
+                                }
                             }
+
+                            break;
                         }
                     }
 

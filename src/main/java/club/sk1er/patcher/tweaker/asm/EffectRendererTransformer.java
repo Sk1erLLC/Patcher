@@ -71,8 +71,9 @@ public class EffectRendererTransformer implements PatcherTransformer {
                 int entityfxIndex = -1;
 
                 for (LocalVariableNode var : methodNode.localVariables) {
-                    if (var.name.equals("entityfx")) {
+                    if (var.name.equals("entityfx") || var.name.equals("var4")) {
                         entityfxIndex = var.index;
+                        break;
                     }
                 }
 
