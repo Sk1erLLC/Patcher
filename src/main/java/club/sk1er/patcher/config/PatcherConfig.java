@@ -725,7 +725,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Particle Culling",
-        description = "Stop trying to render particles you cannot see.",
+        description = "Stop particles that aren't visible to the player from rendering.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean cullParticles = true;

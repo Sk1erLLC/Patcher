@@ -185,16 +185,19 @@ public class OptifineEntityRendererTransformer implements PatcherTransformer {
                     break;
 
                 case "renderWorldPass":
+                case "func_175068_a":
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        if (next instanceof TypeInsnNode && ((TypeInsnNode) next).desc.equals("net/minecraft/client/renderer/culling/Frustum")) {
-                            while (true) {
-                                AbstractInsnNode insn = iterator.next();
-                                if (insn instanceof VarInsnNode) {
-                                    methodNode.instructions.insert(insn, getStoreCameraInsn(((VarInsnNode) insn).var));
-                                    break;
+                        if (next instanceof TypeInsnNode) {
+                            if (FMLDeobfuscatingRemapper.INSTANCE.map(((TypeInsnNode) next).desc).equalsIgnoreCase("net/minecraft/client/renderer/culling/Frustum")) {
+                                while (true) {
+                                    AbstractInsnNode method = iterator.next();
+                                    if (method instanceof VarInsnNode) {
+                                        methodNode.instructions.insert(method, getStoreCameraInsn(((VarInsnNode) method).var));
+                                        break;
+                                    }
                                 }
                             }
                         }
