@@ -13,10 +13,10 @@ package club.sk1er.patcher.jar
 
 import club.sk1er.patcher.coroutines.MCDispatchers
 import com.google.common.base.Throwables
-import kotlinx.coroutines.launch
+import com.google.common.collect.Lists
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import net.minecraftforge.fml.common.LoaderException
 import net.minecraftforge.fml.common.ModContainer
 import net.minecraftforge.fml.common.discovery.ASMDataTable
@@ -35,21 +35,17 @@ class AsyncModDiscoverer(
 
     fun discover(): Pair<List<ModContainer>?, ArrayList<File>?> {
         val start = System.currentTimeMillis()
-        logger.info("Searching for mods in async...")
         val modList = mutableListOf<ModContainer>()
-        val mutex = Mutex()
+        logger.info("Searching for mods in async...")
         runBlocking(MCDispatchers.IO) {
-            val jobs = candidates.map { candidate ->
-
-                launch {
+            candidates.map { candidate ->
+                async {
                     try {
                         val mods = candidate.explore(dataTable)
-                        mutex.withLock {
-                            if (mods.isEmpty() && !candidate.isClasspath) {
-                                nonModLibs.add(candidate.modContainer)
-                            } else {
-                                modList.addAll(mods)
-                            }
+                        if (mods.isEmpty() && !candidate.isClasspath) {
+                            nonModLibs.add(candidate.modContainer)
+                        } else {
+                            modList.addAll(mods)
                         }
                     } catch (le: LoaderException) {
                         logger.warn(
@@ -60,12 +56,10 @@ class AsyncModDiscoverer(
                         Throwables.propagate(t)
                     }
                 }
-            }
-
-            jobs.forEach { it.join() }
+            }.awaitAll()
         }
 
-        logger.info("Finished searching for mods in ${(System.currentTimeMillis() - start) / 1000F}s.")
+        logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000}s.")
         return Pair(modList, nonModLibs)
     }
 }
