@@ -14,18 +14,14 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.SharedDrawable;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class EnhancedFontRenderer implements Enhancement {
 
+    private static final List<EnhancedFontRenderer> instances = new ArrayList<>();
     public static SharedDrawable drawable;
     private final List<StringHash> obfuscated = new ArrayList<>();
-    private static final List<EnhancedFontRenderer> instances = new ArrayList<>();
     private final Map<String, Integer> stringWidthCache = new HashMap<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
     private final Cache<StringHash, CachedString> stringCache = Caffeine.newBuilder()
@@ -35,6 +31,10 @@ public final class EnhancedFontRenderer implements Enhancement {
 
     public EnhancedFontRenderer() {
         instances.add(this);
+    }
+
+    public static List<EnhancedFontRenderer> getInstances() {
+        return instances;
     }
 
     @Override
@@ -75,10 +75,6 @@ public final class EnhancedFontRenderer implements Enhancement {
 
     public void invalidateAll() {
         this.stringCache.invalidateAll();
-    }
-
-    public static List<EnhancedFontRenderer> getInstances() {
-        return instances;
     }
 
     public List<StringHash> getObfuscated() {
