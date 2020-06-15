@@ -280,7 +280,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Single Model Render Call",
-        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.\nDoes not work with Frames+ installed.",
+        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.",
         category = "Performance", subcategory = "World"
     )
     public static boolean singleModelCall = true;
@@ -696,7 +696,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",
-        description = "Preview image links sent in chat. \nPress Shift to use fullscreen and Control to render in native image resolution",
+        description = "Preview image links sent in chat.\nPress Shift to use fullscreen and Control to render in native image resolution.",
         category = "Quality of Life", subcategory = "Image Preview"
     )
     public static boolean imagePreview = true;
@@ -736,6 +736,13 @@ public class PatcherConfig extends Vigilant {
         category = "Fixes", subcategory = "Security"
     )
     public static boolean resourceExploitFix = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Async Texture Updating",
+        description = "Updates mipmap textures on an alternate thread.",
+        category = "Performance", subcategory = "General"
+    )
+    public static boolean asyncMipmapUpdates = true;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

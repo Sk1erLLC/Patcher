@@ -59,7 +59,7 @@ class AsyncModDiscoverer(
             }.awaitAll()
         }
 
-        logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000}s.")
+        logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000f}s.")
         return Pair(modList, nonModLibs)
     }
 }

@@ -47,14 +47,6 @@ public class ModelRendererTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        for (FieldNode fieldNode : classNode.fields) {
-            if (fieldNode.name.equals("frames_compiled_state")) {
-                System.out.println("User has Frames+, not using single model render call system.");
-                return;
-            }
-        }
-
-        System.out.println("Creating BakedQuad#patcherCompiledState.");
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "patcherCompiledState", "Z", null, null));
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);

@@ -112,6 +112,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                 }
             } else if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/TextureMapHook", "latch", "()V", false));
                 boolean foundFirst = false;
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 LabelNode ifne = new LabelNode();

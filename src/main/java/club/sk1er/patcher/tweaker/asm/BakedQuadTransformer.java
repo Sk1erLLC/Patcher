@@ -39,14 +39,6 @@ public class BakedQuadTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        for (MethodNode methodNode : classNode.methods) {
-            if (methodNode.name.equals("equals")) {
-                System.out.println("User has Frames+, not creating BakedQuad#equals.");
-                return;
-            }
-        }
-
-        System.out.println("Creating BakedQuad#equals.");
         MethodNode equals = new MethodNode(Opcodes.ACC_PUBLIC, "equals", "(Ljava/lang/Object;)Z", null, null);
         equals.instructions.add(getEquals());
         classNode.methods.add(equals);

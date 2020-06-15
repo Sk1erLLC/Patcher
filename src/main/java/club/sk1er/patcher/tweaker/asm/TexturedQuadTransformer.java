@@ -42,14 +42,6 @@ public class TexturedQuadTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        for (FieldNode fieldNode : classNode.fields) {
-            if (fieldNode.name.equals("texturedQuadHook")) {
-                System.out.println("User has Frames+, not using single model render call system.");
-                return;
-            }
-        }
-
-        System.out.println("Creating TexturedQuad#patcherTexturedQuad.");
         classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL,
             "patcherTexturedQuad",
             "Lclub/sk1er/patcher/hooks/TexturedQuadHook;",
