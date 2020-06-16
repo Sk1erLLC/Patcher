@@ -13,6 +13,7 @@ package club.sk1er.patcher.command;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.benchmark.impl.ItemBenchmark;
@@ -64,6 +65,52 @@ public class PatcherCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length >= 2) {
+            if (args[0].equalsIgnoreCase("mode")) {
+                switch (args[1]) {
+                    case "vanilla": {
+                        PatcherConfig.asyncMipmapUpdates = false;
+                        PatcherConfig.cullParticles = false;
+                        PatcherConfig.entityCulling = false;
+                        PatcherConfig.searchingOptimizationFix = false;
+                        PatcherConfig.fullbright = false;
+                        PatcherConfig.disableConstantFogColorChecking = false;
+                        PatcherConfig.lowAnimationTick = false;
+                        PatcherConfig.staticParticleColor = false;
+                        PatcherConfig.optimizedFontRenderer = false;
+                        PatcherConfig.cacheFontData = false;
+                        PatcherConfig.removeCloudTransparency = false;
+                        PatcherConfig.gpuCloudRenderer = false;
+                        PatcherConfig.glErrorChecking = false;
+                        PatcherConfig.optimizedItemRenderer = false;
+                        Patcher.instance.getImagePreview().setMode("Vanilla");
+                        sendMessage("Set mode: Vanilla");
+                        return;
+                    }
+                    case "optimized": {
+                        PatcherConfig.asyncMipmapUpdates = true;
+                        PatcherConfig.cullParticles = true;
+                        PatcherConfig.entityCulling = true;
+                        PatcherConfig.searchingOptimizationFix = true;
+                        PatcherConfig.fullbright = true;
+                        PatcherConfig.disableConstantFogColorChecking = true;
+                        PatcherConfig.lowAnimationTick = true;
+                        PatcherConfig.staticParticleColor = true;
+                        PatcherConfig.optimizedFontRenderer = true;
+                        PatcherConfig.cacheFontData = true;
+                        PatcherConfig.removeCloudTransparency = true;
+                        PatcherConfig.gpuCloudRenderer = true;
+                        PatcherConfig.glErrorChecking = true;
+                        PatcherConfig.optimizedItemRenderer = true;
+                        Patcher.instance.getImagePreview().setMode("Optimized");
+                        sendMessage("Set mode: Optimized");
+                        return;
+                    }
+                    default: {
+                        sendMessage("Unknown mode");
+                        return;
+                    }
+                }
+            }
             if (args[0].equals("benchmark") || args[0].equals("bench")) {
                 if (args[1].equals("all")) {
                     long totalMillis = 0;
@@ -93,6 +140,10 @@ public class PatcherCommand extends CommandBase {
             EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
             EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
             sendMessage("Cleared Enhancement cache.");
+            return;
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("debugfps")) {
+            Patcher.instance.getImagePreview().toggleFPS();
+            sendMessage("Toggled");
             return;
         }
 
