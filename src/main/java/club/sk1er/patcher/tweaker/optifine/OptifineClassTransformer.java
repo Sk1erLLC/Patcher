@@ -13,10 +13,7 @@ package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.*;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
@@ -46,7 +43,8 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new OptifineRenderTransformer());
         registerTransformer(new OptifineRendererLivingEntityTransformer());
         registerTransformer(new OptifineRenderItemFrameTransformer());
-
+        registerTransformer(new OptifineFontRendererTransformer());
+        registerTransformer(new FontRendererHookTransformer());
         registerTransformer(new TagRendererTransformer());
         registerTransformer(new TagRendererListenerTransformer());
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
