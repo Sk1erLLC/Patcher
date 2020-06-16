@@ -13,18 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -49,8 +38,9 @@ public class EffectRendererTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-
-            if (methodName.equals("renderParticles") || methodName.equals("func_78874_a")) {
+            if (methodName.equalsIgnoreCase("updateEffects") || methodName.equalsIgnoreCase("func_78873_a")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getCullHook());
+            } else if (methodName.equals("renderParticles") || methodName.equals("func_78874_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 LabelNode ifeq = new LabelNode();
@@ -91,6 +81,12 @@ public class EffectRendererTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList getCullHook() {
+        final InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "begin", "()V", false));
+        return list;
     }
 
     private InsnList checkIfCull(int entityfxIndex) {
