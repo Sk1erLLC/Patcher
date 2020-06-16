@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -36,16 +37,17 @@ public class ImagePreview {
 
     private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net"};
     private final DecimalFormat format = new DecimalFormat("#.00");
+    private final List<Long> frames = new ArrayList<>();
+    private final String[] renderStrings = new String[5];
     private String loaded;
     private int tex = -1;
     private int width = 100;
     private int height = 100;
     private BufferedImage image;
-    private List<Long> frames = new ArrayList<>();
     private boolean frameRender = false;
-    private String[] renderStrings = new String[5];
     private long updated = 0;
     private String mode = "???";
+
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -72,7 +74,6 @@ public class ImagePreview {
                 font.drawString(render, scaledResolution.getScaledWidth() - 5 - font.getStringWidth(render), y, Color.RED.getRGB(), true);
                 y += 10;
             }
-
         }
         if (!PatcherConfig.imagePreview) return;
         final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();

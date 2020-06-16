@@ -106,7 +106,11 @@ public final class FontRendererHook {
         if (GL_TEX == -1 || forceRefresh) {
             create();
         }
-
+        fontRenderer.randomStyle = false;
+        fontRenderer.boldStyle = false;
+        fontRenderer.italicStyle = false;
+        fontRenderer.underlineStyle = false;
+        fontRenderer.strikethroughStyle = false;
         while (text.startsWith('\u00a7' + "r")) {
             text = text.substring(2);
         }
@@ -172,6 +176,7 @@ public final class FontRendererHook {
         int[] colorCode = this.fontRenderer.colorCode;
         Deque<RenderPair> underline = new LinkedList<>();
         Deque<RenderPair> strikeThough = new LinkedList<>();
+
         for (int i = 0; i < text.length(); ++i) {
             char c0 = text.charAt(i);
 
@@ -253,7 +258,6 @@ public final class FontRendererHook {
                 }
 
                 float effectiveWidth = this.renderChar(c0, this.fontRenderer.italicStyle);
-
                 if (flag) {
                     this.fontRenderer.posX += boldWidth;
                     this.fontRenderer.posY += boldWidth;
@@ -274,7 +278,6 @@ public final class FontRendererHook {
                         this.fontRenderer.posX += boldWidth;
                         this.fontRenderer.posY += boldWidth;
                     }
-
                     effectiveWidth += boldWidth;
                 }
 
@@ -290,7 +293,6 @@ public final class FontRendererHook {
                 this.fontRenderer.posX += effectiveWidth;
             }
         }
-
         endDrawing();
         boolean hasStyle = underline.size() > 0 || strikeThough.size() > 0;
 
