@@ -23,6 +23,7 @@ import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
+import club.sk1er.patcher.tweaker.asm.EntityArmorStandTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityDiggingFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityFXTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
@@ -215,6 +216,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new TextureMapTransformer());
+        registerTransformer(new EntityArmorStandTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
