@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -23,7 +24,7 @@ public class EntityArmorStandTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "cachedHeightResult", "F", null, null));
-        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "cachedSmallResult", "Z", null, null));
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "cachedSmallResult", "B", null, null));
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
@@ -43,13 +44,56 @@ public class EntityArmorStandTransformer implements PatcherTransformer {
                     methodNode.instructions.insert(getCachedSmallResult());
                     break;
             }
+
+            if (methodNode.name.equals("<init>")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), initializeCachedSmallResult());
+            }
         }
+    }
+
+    private InsnList initializeCachedSmallResult() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new InsnNode(Opcodes.ICONST_M1));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "B"));
+        return list;
     }
 
     private InsnList getCachedSmallResult() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "B"));
+        list.add(new InsnNode(Opcodes.ICONST_M1));
+        LabelNode ificmpne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, ificmpne));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/item/EntityArmorStand", "field_70180_af", "Lnet/minecraft/entity/DataWatcher;"));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 10));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/DataWatcher", "func_75683_a", "(I)B", false));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new InsnNode(Opcodes.IAND));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(gotoInsn);
+        list.add(new InsnNode(Opcodes.I2B));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "B"));
+        list.add(ificmpne);
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "B"));
+        LabelNode ifle = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode gotoInsn2 = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn2));
+        list.add(ifle);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(gotoInsn2);
         list.add(new InsnNode(Opcodes.IRETURN));
         return list;
     }
@@ -58,7 +102,16 @@ public class EntityArmorStandTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(gotoInsn);
+        list.add(new InsnNode(Opcodes.I2B));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityArmorStand", "cachedSmallResult", "B"));
         return list;
     }
 
