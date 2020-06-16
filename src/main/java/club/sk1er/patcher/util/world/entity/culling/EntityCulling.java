@@ -84,6 +84,7 @@ public class EntityCulling {
     }
 
     public static void begin() {
+        if (!PatcherConfig.entityCulling) return;
         exclude.clear();
         World theWorld = Minecraft.getMinecraft().theWorld;
         Entity thePlayer = Minecraft.getMinecraft().thePlayer;
@@ -161,6 +162,7 @@ public class EntityCulling {
      * @return The ray trace result.
      */
     private static MovingObjectPosition rayTraceBlocks(World theWorld, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean stopOnTranslucentBlock, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+
         if (!Double.isNaN(from.xCoord) && !Double.isNaN(from.yCoord) && !Double.isNaN(from.zCoord)) {
             if (!Double.isNaN(to.xCoord) && !Double.isNaN(to.yCoord) && !Double.isNaN(to.zCoord)) {
                 int i = MathHelper.floor_double(to.xCoord);
@@ -330,6 +332,7 @@ public class EntityCulling {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
+        if (!PatcherConfig.entityCulling) return;
         if (event.phase != TickEvent.Phase.END || latch == null) return;
         try {
             latch.await();
