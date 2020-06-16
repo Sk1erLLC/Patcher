@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.world.entity.culling;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.util.world.particles.ParticleCulling;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
@@ -22,61 +23,21 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Used for stopping entities from rendering if they are not visible to the player.
  */
 public class EntityCulling {
 
-    /**
-     * Fire rays from the player's eyes, detecting on if it can see an entity or not.
-     * If it can see an entity, continue to render the entity, otherwise save some time
-     * performing rendering and cancel the entity render.
-     *
-     * @param event {@link RenderLivingEvent.Pre}
-     */
-    @SubscribeEvent
-    public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling) return;
-
-        World theWorld = event.renderer.getRenderManager().worldObj;
-        Entity thePlayer = event.renderer.getRenderManager().livingPlayer;
-        Entity objEntity = event.entity;
-        //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-        if (theWorld != null && thePlayer != null && objEntity != null && !objEntity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
-            AxisAlignedBB box = objEntity.getEntityBoundingBox();
-            if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
-                return;
-            }
-
-            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
-                return;
-            }
-
-            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
-                return;
-            }
-
-            if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
-                return;
-            }
-
-            event.setCanceled(true);
-
-            if (PatcherConfig.dontCullNametags && canRenderName(event.entity) && event.isCanceled()) {
-                event.renderer.renderName(event.entity, event.x, event.y, event.z);
-            }
-        }
-    }
+    private final Set<Entity> exclude = new HashSet<>();
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -115,6 +76,61 @@ public class EntityCulling {
             && entity != Minecraft.getMinecraft().getRenderManager().livingPlayer
             && !entity.isInvisibleToPlayer(entityplayersp)
             && entity.riddenByEntity == null;
+    }
+
+    /**
+     * Fire rays from the player's eyes, detecting on if it can see an entity or not.
+     * If it can see an entity, continue to render the entity, otherwise save some time
+     * performing rendering and cancel the entity render.
+     *
+     * @param event {@link RenderLivingEvent.Pre}
+     */
+    @SubscribeEvent
+    public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
+        if (!PatcherConfig.entityCulling) return;
+
+        if (exclude.contains(event.entity)) {
+            event.setCanceled(true);
+            if (PatcherConfig.dontCullNametags && canRenderName(event.entity) && event.isCanceled()) {
+                event.renderer.renderName(event.entity, event.x, event.y, event.z);
+            }
+        }
+
+    }
+
+    @SubscribeEvent
+    public void tick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        exclude.clear();
+        World theWorld = Minecraft.getMinecraft().theWorld;
+        Entity thePlayer = Minecraft.getMinecraft().thePlayer;
+        if (theWorld == null) return;
+        for (Entity entity : theWorld.loadedEntityList) {
+            //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
+            if (thePlayer != null && entity != null && !entity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
+                AxisAlignedBB box = entity.getEntityBoundingBox();
+                if (ParticleCulling.camera == null || ParticleCulling.camera.isBoundingBoxInFrustum(box)) {
+                    if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
+                        continue;
+                    }
+
+                    if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
+                        continue;
+                    }
+
+                    if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
+                        continue;
+                    }
+
+                    if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
+                        continue;
+                    }
+                }
+                exclude.add(entity);
+
+            }
+        }
+
     }
 
     /**

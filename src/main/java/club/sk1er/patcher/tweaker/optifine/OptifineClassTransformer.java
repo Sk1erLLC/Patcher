@@ -43,8 +43,7 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new OptifineRenderTransformer());
         registerTransformer(new OptifineRendererLivingEntityTransformer());
         registerTransformer(new OptifineRenderItemFrameTransformer());
-        registerTransformer(new OptifineFontRendererTransformer());
-        registerTransformer(new FontRendererHookTransformer());
+
         registerTransformer(new TagRendererTransformer());
         registerTransformer(new TagRendererListenerTransformer());
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
@@ -84,6 +83,8 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new FaceBakeryReflectionOptimizer());
         registerTransformer(new ModelRotationReflectionOptimizer());
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
+        registerTransformer(new OptifineFontRendererTransformer());
+        registerTransformer(new FontRendererHookTransformer());
     }
 
     private void registerI7Transformers() {
