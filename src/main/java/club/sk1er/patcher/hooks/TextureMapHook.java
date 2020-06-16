@@ -13,9 +13,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.SharedDrawable;
 
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TextureMapHook {
@@ -23,24 +23,27 @@ public class TextureMapHook {
     private static final Object lock = new Object();
     private static final Profiler mcProfiler = Minecraft.getMinecraft().mcProfiler;
     private static final AtomicInteger count = new AtomicInteger(0);
-    private static final ExecutorService service = Executors.newFixedThreadPool(1, r -> new Thread(r, "Mipmap Updater"));
+    private static final Worker target = new Worker();
+    private static final Thread task = new Thread(target, "Mipmap Updater");
     private static SharedDrawable drawable;
     private static CountDownLatch latch;
     private static TextureMap instance;
     private static List<TextureAtlasSprite> spriteList;
-    private static boolean setup;
+    private static boolean setup = false;
+
 
     public static void latch() {
-        if(latch == null) return;
+        if (latch == null) return;
         try {
             mcProfiler.startSection("texture_wait");
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        latch = null;
-        count.set(0);
+        synchronized (lock) {
+            latch = null;
+            count.set(0);
+        }
         mcProfiler.endSection();
     }
 
@@ -55,6 +58,7 @@ public class TextureMapHook {
             if (drawable == null) {
                 try {
                     drawable = new SharedDrawable(Display.getDrawable());
+                    task.start();
                 } catch (LWJGLException e) {
                     e.printStackTrace();
                 }
@@ -64,27 +68,27 @@ public class TextureMapHook {
                 PatcherConfig.asyncMipmapUpdates = false;
                 return false; //Failed to create new drawable, run normally and disable
             }
-            service.execute(TextureMapHook::update);
-        } else latch = null;
+            target.execute(TextureMapHook::update);
+        } else synchronized (lock) {
+            latch = null;
+        }
 
         return PatcherConfig.asyncMipmapUpdates;
     }
 
     private static void setup() {
-        if (!setup) {
-            setup = true;
-            try {
+        try {
+            if (!setup) {
+                setup = true;
                 drawable.makeCurrent();
-            } catch (LWJGLException e) {
-                e.printStackTrace();
             }
+        } catch (LWJGLException e) {
+            e.printStackTrace();
         }
     }
 
     private static void update() {
-
         try {
-            setup();
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, instance.getGlTextureId());
             for (TextureAtlasSprite textureAtlasSprite : spriteList) {
                 textureAtlasSprite.updateAnimation();
@@ -95,6 +99,27 @@ public class TextureMapHook {
         synchronized (lock) {
             latch.countDown();
             count.decrementAndGet();
+        }
+    }
+
+    public static class Worker implements Runnable {
+        private final BlockingQueue<Runnable> runnables = new LinkedBlockingQueue<>();
+
+        @Override
+        public void run() {
+            setup();
+
+            try {
+                while (true) {
+                    runnables.take().run();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void execute(Runnable update) {
+            runnables.add(update);
         }
     }
 }
