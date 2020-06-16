@@ -14,13 +14,7 @@ package club.sk1er.patcher;
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.patcher.command.BlacklistServerCommand;
-import club.sk1er.patcher.command.CoordsCommand;
-import club.sk1er.patcher.command.FovChangerCommand;
-import club.sk1er.patcher.command.NameHistoryCommand;
-import club.sk1er.patcher.command.PatcherCommand;
-import club.sk1er.patcher.command.PatcherSoundsCommand;
-import club.sk1er.patcher.command.SkinCacheRefresh;
+import club.sk1er.patcher.command.*;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
@@ -141,6 +135,7 @@ public class Patcher {
      * allow it, such as macOS.
      */
     private KeyBinding dropModifier;
+    private ImagePreview imagePreview;
 
     /**
      * Check if the current environment is development, or production.
@@ -154,6 +149,10 @@ public class Patcher {
 
     public KeyBinding getDropModifier() {
         return dropModifier;
+    }
+
+    public ImagePreview getImagePreview() {
+        return imagePreview;
     }
 
     /**
@@ -210,7 +209,7 @@ public class Patcher {
         registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
         registerClass(new KeybindHandler());
-        registerClass(new ImagePreview());
+        registerClass(imagePreview = new ImagePreview());
         registerClass(new WorldHandler());
 
         checkLogs();

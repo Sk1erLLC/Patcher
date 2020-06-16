@@ -3,6 +3,7 @@ package club.sk1er.patcher.util.chat;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,24 +21,59 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ImagePreview {
 
     private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net"};
+    private final DecimalFormat format = new DecimalFormat("#.00");
     private String loaded;
     private int tex = -1;
     private int width = 100;
     private int height = 100;
     private BufferedImage image;
-
+    private List<Long> frames = new ArrayList<>();
+    private boolean frameRender = false;
+    private String[] renderStrings = new String[5];
+    private long updated = 0;
+    private String mode = "???";
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
+        if (frameRender) {
+            frames.add(System.currentTimeMillis());
+            frames.removeIf(aLong -> System.currentTimeMillis() - aLong > TimeUnit.MINUTES.toMillis(1));
+            if (System.currentTimeMillis() - updated > TimeUnit.SECONDS.toMillis(1)) {
+                updated = System.currentTimeMillis();
+                renderStrings[0] = "Mode: " + mode;
+                int[] intervals = new int[]{1, 10, 30, 60};
+                int e = 0;
+                for (int interval : intervals) {
+                    int amt = 0;
+                    for (Long frame : frames) {
+                        if (System.currentTimeMillis() - frame < TimeUnit.SECONDS.toMillis(interval)) amt++;
+                    }
+                    renderStrings[++e] = "Avg on " + interval + "s: " + format.format(amt / ((float) interval));
+                }
+            }
+            final ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+            final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+            int y = 40;
+            for (String render : renderStrings) {
+                font.drawString(render, scaledResolution.getScaledWidth() - 5 - font.getStringWidth(render), y, Color.RED.getRGB(), true);
+                y += 10;
+            }
+
+        }
         if (!PatcherConfig.imagePreview) return;
         final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
         final IChatComponent chatComponent = chat.getChatComponent(Mouse.getX(), Mouse.getY());
@@ -154,5 +190,21 @@ public class ImagePreview {
                 connection.disconnect();
             }
         }
+    }
+
+    public List<Long> getFrames() {
+        return frames;
+    }
+
+    public void toggleFPS() {
+        this.frameRender = !this.frameRender;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }
