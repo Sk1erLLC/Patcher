@@ -99,7 +99,7 @@ public class EntityCulling {
             service.submit(() -> {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
                 if (thePlayer != null && !entity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
-                    AxisAlignedBB box = entity.getEntityBoundingBox();
+                    AxisAlignedBB box = entity.getEntityBoundingBox().expand(1, 1, 1);
                     if (ParticleCulling.camera == null || ParticleCulling.camera.isBoundingBoxInFrustum(box)) {
                         if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
                             latch.countDown();
