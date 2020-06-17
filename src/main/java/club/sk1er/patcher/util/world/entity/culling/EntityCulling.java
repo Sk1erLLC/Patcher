@@ -95,7 +95,7 @@ public class EntityCulling {
         }
         latch = new CountDownLatch(amt);
         for (Entity entity : theWorld.loadedEntityList) {
-            if (!(entity instanceof EntityLivingBase)) continue;
+            if (!(entity instanceof EntityLivingBase) || entity == thePlayer) continue;
             service.submit(() -> {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
                 if (thePlayer != null && !entity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
