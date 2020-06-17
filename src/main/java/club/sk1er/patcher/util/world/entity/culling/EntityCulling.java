@@ -116,7 +116,7 @@ public class EntityCulling {
                             return;
                         }
 
-                        if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ)) {
+                        if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ)) {
                             latch.countDown();
                             return;
                         }
