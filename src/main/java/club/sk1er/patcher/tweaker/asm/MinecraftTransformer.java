@@ -61,9 +61,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof MethodInsnNode
-                        && node.getOpcode() == Opcodes.INVOKESTATIC
-                        && ((MethodInsnNode) node).name.equals("setFullscreen")) {
+                    if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setFullscreen")) {
                         methodNode.instructions.insert(node, resetScreenState());
                         break;
                     }
@@ -138,8 +136,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                     } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) node;
                         String methodInsnName = mapMethodNameFromNode(methodInsnNode);
-                        if (methodInsnName.equals("loadEntityShader")
-                            || methodInsnName.equals("func_175066_a")) {
+                        if (methodInsnName.equals("loadEntityShader") || methodInsnName.equals("func_175066_a")) {
                             if (!foundFirst) {
                                 foundFirst = true;
                             } else {
