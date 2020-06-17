@@ -205,6 +205,16 @@ public class MinecraftTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("clickMouse") || methodName.equals("func_147116_af")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 10) {
+                        ((IntInsnNode) next).operand = 0;
+                    }
+                }
             }
         }
     }
