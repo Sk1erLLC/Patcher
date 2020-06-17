@@ -91,7 +91,7 @@ public class EntityCulling {
         if (theWorld == null) return;
         int amt = 0;
         for (Entity entity : theWorld.loadedEntityList) {
-            if (entity instanceof EntityLivingBase) amt++;
+            if (entity instanceof EntityLivingBase && entity != thePlayer) amt++;
         }
         latch = new CountDownLatch(amt);
         for (Entity entity : theWorld.loadedEntityList) {
@@ -100,26 +100,34 @@ public class EntityCulling {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
                 if (thePlayer != null && !entity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                     AxisAlignedBB box = entity.getEntityBoundingBox();
+                    long l = System.nanoTime();
                     if (ParticleCulling.camera == null || ParticleCulling.camera.isBoundingBoxInFrustum(box.expand(1, 1, 1))) {
-                        if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ)) {
+                        double centerX = (box.maxX + box.minX) / 2;
+                        double centerZ = (box.maxZ + box.minZ) / 2;
+
+                        if (
+                            //8 corners
+                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.maxZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.minZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.minZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)
+                                ||
+//
+//                                //4 points running down center of hitbox
+                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY, centerZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                                doesRayHitEntity(theWorld, thePlayer, centerX, box.minY, centerZ)
+                        ) {
                             latch.countDown();
                             return;
                         }
 
-                        if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ)) {
-                            latch.countDown();
-                            return;
-                        }
 
-                        if (doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)) {
-                            latch.countDown();
-                            return;
-                        }
-
-                        if (doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ)) {
-                            latch.countDown();
-                            return;
-                        }
                     }
                     exclude.add(entity);
                 }
