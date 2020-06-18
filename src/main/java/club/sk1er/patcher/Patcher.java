@@ -37,6 +37,7 @@ import club.sk1er.patcher.util.keybind.KeybindDropStack;
 import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
+import club.sk1er.patcher.util.screenshot.viewer.Viewer;
 import club.sk1er.patcher.util.sound.SoundHandler;
 import club.sk1er.patcher.util.status.ProtocolDetector;
 import club.sk1er.patcher.util.world.WorldHandler;
@@ -211,6 +212,7 @@ public class Patcher {
         registerClass(new KeybindHandler());
         registerClass(imagePreview = new ImagePreview());
         registerClass(new WorldHandler());
+        registerClass(Viewer.getInstance());
 
         checkLogs();
     }

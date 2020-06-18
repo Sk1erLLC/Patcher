@@ -92,7 +92,6 @@ public class AsyncScreenshots implements Runnable {
             if (PatcherConfig.screenshotPreview) {
                 Viewer.getInstance().newCapture(image);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(prefix + "Couldn't capture screenshot."));
