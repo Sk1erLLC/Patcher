@@ -130,14 +130,14 @@ public class AsyncScreenshots implements Runnable {
                     "&cThis is not recoverable and cannot be deleted once a\n" +
                     "&cnew screenshot is taken, or favorited."))));
 
-        IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
+        /*IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "UPL" : "UPLOAD"));
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Upload the screenshot to Imgur, a picture sharing site.\n" +
                     "&cYour game might freeze for a bit uploading this.\n" +
-                    "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));
+                    "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));*/
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "CPY" : "COPY"));
@@ -158,8 +158,8 @@ public class AsyncScreenshots implements Runnable {
         controlsMessage.appendSibling(favoriteComponent);
         controlsMessage.appendText(" ");
         controlsMessage.appendSibling(deleteComponent);
-        controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(imgurComponent);
+        /*controlsMessage.appendText(" ");
+        controlsMessage.appendSibling(imgurComponent);*/
         controlsMessage.appendText(" ");
         controlsMessage.appendSibling(copyComponent);
         controlsMessage.appendText(" ");
