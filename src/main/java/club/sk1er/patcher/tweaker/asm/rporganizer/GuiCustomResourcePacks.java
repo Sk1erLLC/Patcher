@@ -28,7 +28,10 @@ public class GuiCustomResourcePacks implements PatcherTransformer {
      */
     @Override
     public String[] getClassName() {
-        return new String[]{"chylex.respack.gui.GuiCustomResourcePacks"};
+        return new String[]{
+            "chylex.respack.gui.GuiCustomResourcePacks",
+            "me.aycy.resourcepackmanager.gui.screens.GuiResourcePacks"
+        };
     }
 
     /**
