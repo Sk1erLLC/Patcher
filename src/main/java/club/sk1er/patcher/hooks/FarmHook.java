@@ -1,3 +1,14 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.mods.core.util.MinecraftUtils;
@@ -9,6 +20,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("unused")
 public class FarmHook {
     private static final AxisAlignedBB[] AABB = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),

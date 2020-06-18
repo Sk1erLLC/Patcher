@@ -12,9 +12,9 @@
 package club.sk1er.patcher.database;
 
 public class DatabaseReturn {
-    private byte[] data;
-    private byte[] mcMeta;
-    private String packName;
+    private final byte[] data;
+    private final byte[] mcMeta;
+    private final String packName;
 
     public DatabaseReturn(byte[] data, byte[] mcMeta, String packName) {
         this.data = data;

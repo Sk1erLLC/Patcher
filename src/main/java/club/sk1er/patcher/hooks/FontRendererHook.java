@@ -1,3 +1,14 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
@@ -368,8 +379,8 @@ public final class FontRendererHook {
      * Render a single character with the default.png font at current (posX,posY) location...
      */
     protected float renderDefaultChar(int characterIndex, boolean italic, char ch) {
-        float characterX = characterIndex % 16 * 8 * regularCharDim / 128 + .01f;
-        float characterY = (characterIndex / 16 * 8 * regularCharDim / 128) + 16 * texSheetDim + .01f;
+        float characterX = (characterIndex % 16 * 8 * regularCharDim >> 7) + .01f;
+        float characterY = ((characterIndex >> 4) * 8 * regularCharDim >> 7) + 16 * texSheetDim + .01f;
         int k = italic ? 1 : 0;
         float l = getCharWidthFloat(ch);
         float f = l - 0.01F;

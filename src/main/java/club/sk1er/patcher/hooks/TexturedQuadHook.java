@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings("unused")
 public class TexturedQuadHook {
     private final TexturedQuad parent;
 
