@@ -314,6 +314,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableArmorstands;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Disable Semitransparent Players",
+        description = "Stop semi-transparent players from rendering.",
+        category = "Performance", subcategory = "Rendering"
+    )
+    public static boolean disableSemitransparentEntities;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Enchantment Books",
         description = "Stop enchantment table books from rendering.",
         category = "Performance", subcategory = "Rendering"

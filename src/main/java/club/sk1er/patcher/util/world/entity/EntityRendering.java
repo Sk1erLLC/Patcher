@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -58,8 +59,9 @@ public class EntityRendering {
      * @param event {@link RenderLivingEvent.Pre}
      */
     @SubscribeEvent
-    public void cancelRendering(RenderLivingEvent.Pre<EntityArmorStand> event) {
-        if (PatcherConfig.disableArmorstands && event.entity instanceof EntityArmorStand) {
+    public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
+        if ((PatcherConfig.disableArmorstands && event.entity instanceof EntityArmorStand) ||
+            (PatcherConfig.disableSemitransparentEntities && event.entity.isInvisible() && event.entity instanceof EntityPlayer)) {
             event.setCanceled(true);
         }
     }

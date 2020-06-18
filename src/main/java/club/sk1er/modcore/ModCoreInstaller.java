@@ -35,6 +35,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -469,7 +470,9 @@ public class ModCoreInstaller {
 
         public List<String> getKeys() {
             List<String> tmp = new ArrayList<>();
-            object.entrySet().forEach(e -> tmp.add(e.getKey()));
+            for (Map.Entry<String, JsonElement> e : object.entrySet()) {
+                tmp.add(e.getKey());
+            }
             return tmp;
         }
 

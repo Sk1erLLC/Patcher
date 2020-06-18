@@ -102,7 +102,9 @@ import club.sk1er.patcher.tweaker.asm.forge.ModDiscovererTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterSmoothAoTransformer;
+import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
+import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -186,7 +188,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ResourcePackRepositoryTransformer());
         registerTransformer(new ServerListTransformer());
         registerTransformer(new S14PacketEntityTransformer());
-        registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
@@ -238,6 +239,11 @@ public class ClassTransformer implements IClassTransformer {
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
+
+        // lwjgl
+        registerTransformer(new WindowsDisplayTransformer());
+        registerTransformer(new WindowsKeycodesTransformer());
+        registerTransformer(new KeyboardTransformer());
 
         // disabled
         //registerTransformer(new BlockDoublePlantTransformer());
