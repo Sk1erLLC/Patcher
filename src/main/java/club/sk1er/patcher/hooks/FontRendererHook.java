@@ -150,8 +150,7 @@ public final class FontRendererHook {
             colorState.green = cachedString.getLastGreen();
             colorState.blue = cachedString.getLastBlue();
             colorState.alpha = cachedString.getLastAlpha();
-
-            GlStateManager.resetColor(); //force reset
+            GlStateManager.color(1, 1, 1, 1);
             GlStateManager.translate(-posX, -posY, 0.0f);
 
             this.fontRenderer.posX = posX + cachedString.getWidth();
