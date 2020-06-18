@@ -26,14 +26,14 @@ import org.apache.logging.log4j.Logger
 import java.io.File
 
 class AsyncModDiscoverer(
-    private val candidates: ArrayList<ModCandidate>,
-    private val nonModLibs: ArrayList<File>,
+    private val candidates: List<ModCandidate>,
+    private val nonModLibs: MutableList<File>,
     private val dataTable: ASMDataTable
 ) {
 
     private val logger: Logger = LogManager.getLogger("Patcher - AsyncModDiscoverer")
 
-    fun discover(): Pair<List<ModContainer>?, ArrayList<File>?> {
+    fun discover(): Pair<List<ModContainer>?, List<File>?> {
         val start = System.currentTimeMillis()
         val modList = mutableListOf<ModContainer>()
         logger.info("Searching for mods in async...")

@@ -12,7 +12,7 @@
 package club.sk1er.patcher.util.status;
 
 import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.patcher.util.Tuple;
+import kotlin.Pair;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.NetworkManager;
@@ -32,13 +32,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProtocolDetector {
 
     public static final ProtocolDetector instance = new ProtocolDetector();
-    private final Map<Tuple<String, Integer>, CompletableFuture<Boolean>> futures = new ConcurrentHashMap<>();
+    private final Map<Pair<String, Integer>, CompletableFuture<Boolean>> futures = new ConcurrentHashMap<>();
 
     public CompletableFuture<Boolean> isCompatibleWithVersion(String ip, int version) {
-        CompletableFuture<Boolean> cached = futures.get(new Tuple<>(ip, version));
+        CompletableFuture<Boolean> cached = futures.get(new Pair<>(ip, version));
         if (cached != null) return cached;
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        Tuple<String, Integer> tuple = new Tuple<>(ip, version);
+        Pair<String, Integer> tuple = new Pair<>(ip, version);
         futures.put(tuple, future);
         Multithreading.runAsync(() -> {
             try {
