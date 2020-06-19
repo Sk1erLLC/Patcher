@@ -12,7 +12,6 @@
 package club.sk1er.patcher.util.world.entity.culling;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.util.world.particles.ParticleCulling;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -101,33 +100,29 @@ public class EntityCulling {
                 if (thePlayer != null && !entity.isEntityInsideOpaqueBlock() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                     AxisAlignedBB box = entity.getEntityBoundingBox();
                     long l = System.nanoTime();
-                    if (ParticleCulling.camera == null || ParticleCulling.camera.isBoundingBoxInFrustum(box.expand(1, 1, 1))) {
-                        double centerX = (box.maxX + box.minX) / 2;
-                        double centerZ = (box.maxZ + box.minZ) / 2;
+                    double centerX = (box.maxX + box.minX) / 2;
+                    double centerZ = (box.maxZ + box.minZ) / 2;
 
-                        if (
-                            //8 corners
-                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.maxZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.minZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.minZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)
-                                ||
+                    if (
+                        //8 corners
+                        doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.minZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.minZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)
+                            ||
 //
 //                                //4 points running down center of hitbox
-                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY, centerZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                                doesRayHitEntity(theWorld, thePlayer, centerX, box.minY, centerZ)
-                        ) {
-                            latch.countDown();
-                            return;
-                        }
-
-
+                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY, centerZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                            doesRayHitEntity(theWorld, thePlayer, centerX, box.minY, centerZ)
+                    ) {
+                        latch.countDown();
+                        return;
                     }
                     exclude.add(entity);
                 }
