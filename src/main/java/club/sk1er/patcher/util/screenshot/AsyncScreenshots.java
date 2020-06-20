@@ -14,9 +14,9 @@ package club.sk1er.patcher.util.screenshot;
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.ModCoreDesktop;
 import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.screenshot.imgur.Imgur;
 import club.sk1er.patcher.util.screenshot.viewer.Viewer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -138,7 +138,6 @@ public class AsyncScreenshots implements Runnable {
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Upload the screenshot to Imgur, a picture sharing site.\n" +
-                    "&cYour game might freeze for a bit uploading this.\n" +
                     "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
@@ -306,25 +305,7 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-            try {
-                if (screenshot != null) {
-                    ChatUtilities.sendMessage("&aUploading screenshot...");
-                    new Imgur("649f2fb48e59767", screenshot).run();
-
-                    if (Imgur.link.isEmpty()) {
-                        ChatUtilities.sendMessage("&cFailed to upload screenshot, link returned empty. Maybe the file was moved/deleted?");
-                    } else {
-                        IChatComponent uploadedComponent = new ChatComponentText(prefix + ChatColor.GREEN + "Screenshot was uploaded to " + Imgur.link);
-                        uploadedComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Imgur.link));
-                        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
-                    }
-                } else {
-                    ChatUtilities.sendMessage("&cFailed to upload screenshot, maybe the file was moved/deleted?");
-                }
-            } catch (Throwable e) {
-                ChatUtilities.sendMessage("&cFailed to upload screenshot. " + e.getMessage());
-                e.printStackTrace();
-            }
+            Multithreading.runAsync(() -> new UploadScreenshotTask().upload(screenshot));
         }
 
         @Override
