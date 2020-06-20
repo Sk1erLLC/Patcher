@@ -18,7 +18,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +33,7 @@ import java.net.URLEncoder;
  */
 public class Imgur implements Runnable {
 
-    public static String link;
+    public static String link = "";
     private final String clientId;
     private final File uploadFile;
 
@@ -46,8 +45,6 @@ public class Imgur implements Runnable {
     @Override
     public void run() {
         HttpURLConnection connection = null;
-        OutputStreamWriter outputStreamWriter = null;
-        BufferedReader bufferedReader = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             URL url = new URL("https://api.imgur.com/3/image");
             connection = (HttpURLConnection) url.openConnection();
@@ -64,35 +61,28 @@ public class Imgur implements Runnable {
             connection.setDoInput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Authorization", "Client-ID " + clientId);
-            connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.connect();
-            outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write(data);
 
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream())) {
+                outputStreamWriter.write(data);
+            }
+
             JsonParser parser = new JsonParser();
-            JsonObject imgurJson = parser.parse(bufferedReader).getAsJsonObject();
+
+            if (connection.getResponseCode() != 200) {
+                JsonObject errorJson = parser.parse(new InputStreamReader(connection.getErrorStream())).getAsJsonObject();
+                Patcher.instance.getLogger().error("Response code returned {} : {}", connection.getResponseCode(), errorJson);
+            }
+
+            JsonObject imgurJson = parser.parse(new InputStreamReader(connection.getInputStream())).getAsJsonObject();
             JsonObject dataJson = imgurJson.getAsJsonObject("data");
             link = dataJson.get("link").getAsString();
         } catch (IOException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed uploading screenshot to Imgur.", e);
         } finally {
             if (connection != null) {
                 connection.disconnect();
-            }
-
-            try {
-                if (outputStreamWriter != null) {
-                    outputStreamWriter.flush();
-                    outputStreamWriter.close();
-                }
-
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
-            } catch (Exception e) {
-                Patcher.instance.getLogger().error("Failed cleaning up Imgur uploader.", e);
             }
         }
     }

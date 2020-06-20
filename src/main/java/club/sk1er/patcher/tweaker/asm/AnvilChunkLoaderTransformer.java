@@ -64,9 +64,7 @@ public class AnvilChunkLoaderTransformer implements PatcherTransformer {
     private InsnList closeInputStream() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 6));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "close", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/io/DataInputStream", "close", "()V", false));
         return list;
     }
 }

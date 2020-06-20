@@ -13,6 +13,7 @@ package club.sk1er.patcher.util.screenshot;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.ModCoreDesktop;
+import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.screenshot.imgur.Imgur;
@@ -21,15 +22,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -130,14 +132,14 @@ public class AsyncScreenshots implements Runnable {
                     "&cThis is not recoverable and cannot be deleted once a\n" +
                     "&cnew screenshot is taken, or favorited."))));
 
-        /*IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
+        IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "UPL" : "UPLOAD"));
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             ChatColor.translateAlternateColorCodes('&',
                 "&7Upload the screenshot to Imgur, a picture sharing site.\n" +
                     "&cYour game might freeze for a bit uploading this.\n" +
-                    "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));*/
+                    "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "CPY" : "COPY"));
@@ -158,8 +160,8 @@ public class AsyncScreenshots implements Runnable {
         controlsMessage.appendSibling(favoriteComponent);
         controlsMessage.appendText(" ");
         controlsMessage.appendSibling(deleteComponent);
-        /*controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(imgurComponent);*/
+        controlsMessage.appendText(" ");
+        controlsMessage.appendSibling(imgurComponent);
         controlsMessage.appendText(" ");
         controlsMessage.appendSibling(copyComponent);
         controlsMessage.appendText(" ");
@@ -209,7 +211,7 @@ public class AsyncScreenshots implements Runnable {
         }
 
         @Override
-        public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+        public void processCommand(ICommandSender sender, String[] args) {
             try {
                 ModCoreDesktop.INSTANCE.open(screenshot.getCanonicalFile());
             } catch (Exception e) {
@@ -306,11 +308,13 @@ public class AsyncScreenshots implements Runnable {
         public void processCommand(ICommandSender sender, String[] args) {
             try {
                 if (screenshot != null) {
+                    ChatUtilities.sendMessage("&aUploading screenshot...");
                     new Imgur("649f2fb48e59767", screenshot).run();
-                    if (Imgur.link == null) {
-                        ChatUtilities.sendMessage("&cFailed to upload screenshot, link returned null. Maybe the file was moved/deleted?");
+
+                    if (Imgur.link.isEmpty()) {
+                        ChatUtilities.sendMessage("&cFailed to upload screenshot, link returned empty. Maybe the file was moved/deleted?");
                     } else {
-                        IChatComponent uploadedComponent = new ChatComponentText(ChatColor.GREEN + "Screenshot was uploaded to " + Imgur.link);
+                        IChatComponent uploadedComponent = new ChatComponentText(prefix + ChatColor.GREEN + "Screenshot was uploaded to " + Imgur.link);
                         uploadedComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Imgur.link));
                         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
                     }
@@ -318,7 +322,7 @@ public class AsyncScreenshots implements Runnable {
                     ChatUtilities.sendMessage("&cFailed to upload screenshot, maybe the file was moved/deleted?");
                 }
             } catch (Throwable e) {
-                ChatUtilities.sendMessage("&cFailed to upload screenshot, maybe the file was moved/deleted?");
+                ChatUtilities.sendMessage("&cFailed to upload screenshot. " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -379,8 +383,8 @@ public class AsyncScreenshots implements Runnable {
         }
 
         // Returns image
-        public Object getTransferData(DataFlavor flavor)
-            throws UnsupportedFlavorException, IOException {
+        @NotNull
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
             if (!DataFlavor.imageFlavor.equals(flavor)) {
                 throw new UnsupportedFlavorException(flavor);
             }

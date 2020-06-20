@@ -189,7 +189,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.DeleteScreenshot());
-        //ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
+        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
         ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
