@@ -15,7 +15,6 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -44,7 +43,6 @@ public class EntityTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "cachedSprintingResult", "Z", null, null));
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
@@ -54,29 +52,8 @@ public class EntityTransformer implements PatcherTransformer {
             } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(getFixedBrightness());
-            } else if (methodName.equals("isSprinting") || methodName.equals("func_70051_ag")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(getCachedSprintingResult());
-            } else if (methodName.equals("setSprinting") || methodName.equals("func_70031_b")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setCachedSprintingResult());
             }
         }
-    }
-
-    private InsnList setCachedSprintingResult() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/Entity", "cachedSprintingResult", "Z"));
-        return list;
-    }
-
-    private InsnList getCachedSprintingResult() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/Entity", "cachedSprintingResult", "Z"));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        return list;
     }
 
     private InsnList getFixedBrightness() {
