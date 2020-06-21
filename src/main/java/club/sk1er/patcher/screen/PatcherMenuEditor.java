@@ -12,6 +12,7 @@
 package club.sk1er.patcher.screen;
 
 import club.sk1er.mods.core.ModCore;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
@@ -20,6 +21,7 @@ import net.minecraft.client.gui.GuiCustomizeSkin;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreenOptionsSounds;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -99,6 +101,8 @@ public class PatcherMenuEditor {
                     150,
                     20,
                     "Refresh Skin"));
+            } else if (event.gui instanceof GuiScreenOptionsSounds) {
+                mcButtonList.add(new GuiButton(85348, 2, height - 22, 100, 20, "All Sounds"));
             }
         }
     }
@@ -117,6 +121,8 @@ public class PatcherMenuEditor {
             mc.theWorld.sendQuittingDisconnectingPacket();
             mc.loadWorld(null);
             mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+        } else if (event.gui instanceof GuiScreenOptionsSounds && event.button.id == 85348) {
+            mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
         }
     }
 
