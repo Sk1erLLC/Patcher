@@ -68,7 +68,6 @@ public class PatcherCommand extends CommandBase {
             if (args[0].equalsIgnoreCase("mode")) {
                 switch (args[1]) {
                     case "vanilla": {
-                        PatcherConfig.asyncMipmapUpdates = false;
                         PatcherConfig.cullParticles = false;
                         PatcherConfig.entityCulling = false;
                         PatcherConfig.searchingOptimizationFix = false;
@@ -83,11 +82,10 @@ public class PatcherCommand extends CommandBase {
                         PatcherConfig.glErrorChecking = false;
                         PatcherConfig.optimizedItemRenderer = false;
                         Patcher.instance.getImagePreview().setMode("Vanilla");
-                        sendMessage("Set mode: Vanilla");
+                        ChatUtilities.sendMessage("Set mode: Vanilla");
                         return;
                     }
                     case "optimized": {
-                        PatcherConfig.asyncMipmapUpdates = true;
                         PatcherConfig.cullParticles = true;
                         PatcherConfig.entityCulling = true;
                         PatcherConfig.searchingOptimizationFix = true;
@@ -102,16 +100,15 @@ public class PatcherCommand extends CommandBase {
                         PatcherConfig.glErrorChecking = true;
                         PatcherConfig.optimizedItemRenderer = true;
                         Patcher.instance.getImagePreview().setMode("Optimized");
-                        sendMessage("Set mode: Optimized");
+                        ChatUtilities.sendMessage("Set mode: Optimized");
                         return;
                     }
                     default: {
-                        sendMessage("Unknown mode");
+                        ChatUtilities.sendMessage("Unknown mode");
                         return;
                     }
                 }
-            }
-            if (args[0].equals("benchmark") || args[0].equals("bench")) {
+            } else if (args[0].equals("benchmark") || args[0].equals("bench")) {
                 if (args[1].equals("all")) {
                     long totalMillis = 0;
 
@@ -133,6 +130,8 @@ public class PatcherCommand extends CommandBase {
                 }
 
                 runBenchmark(args[1], Arrays.copyOfRange(args, 2, args.length), benchmark);
+            } else if (args[0].equals("sounds")) {
+                ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
             }
 
             return;

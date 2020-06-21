@@ -110,7 +110,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                 }
             } else if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/TextureMapHook", "latch", "()V", false));
                 boolean foundFirst = false;
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 LabelNode ifne = new LabelNode();
@@ -122,15 +121,8 @@ public class MinecraftTransformer implements PatcherTransformer {
                         if (fieldInsnName.equals("thirdPersonView") || fieldInsnName.equals("field_74320_O")) {
                             if (node.getNext().getOpcode() == Opcodes.IFNE) {
                                 AbstractInsnNode prevNode = node.getPrevious().getPrevious();
-                                methodNode.instructions.insertBefore(
-                                    prevNode,
-                                    new FieldInsnNode(
-                                        Opcodes.GETSTATIC,
-                                        getPatcherConfigClass(),
-                                        "keepShadersOnPerspectiveChange",
-                                        "Z"));
-                                methodNode.instructions.insertBefore(
-                                    prevNode, new JumpInsnNode(Opcodes.IFNE, ifne));
+                                methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "keepShadersOnPerspectiveChange", "Z"));
+                                methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifne));
                             }
                         }
                     } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
@@ -243,18 +235,14 @@ public class MinecraftTransformer implements PatcherTransformer {
 
     private InsnList setSystemTime() {
         InsnList list = new InsnList();
-        list.add(
-            new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "instantWorldSwapping", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "instantWorldSwapping", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new InsnNode(Opcodes.LCONST_0));
-        list.add(
-            new FieldInsnNode(
-                Opcodes.PUTFIELD,
-                "net/minecraft/client/Minecraft",
-                "field_71423_H",
-                "J")); // systemTime
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/Minecraft",
+                "field_71423_H", // systemTime
+                "J"));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;
@@ -266,13 +254,9 @@ public class MinecraftTransformer implements PatcherTransformer {
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
         list.add(ifeq);
         return list;
     }

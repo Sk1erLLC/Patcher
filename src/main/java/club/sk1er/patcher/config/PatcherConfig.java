@@ -744,13 +744,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean resourceExploitFix = true;
 
-    @Property(
-        type = PropertyType.SWITCH, name = "Async Texture Updating",
-        description = "Updates mipmap textures on an alternate thread.",
-        category = "Performance", subcategory = "General"
-    )
-    public static boolean asyncMipmapUpdates = true;
-
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

@@ -76,7 +76,6 @@ import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
-import club.sk1er.patcher.tweaker.asm.TextureMapTransformer;
 import club.sk1er.patcher.tweaker.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
@@ -216,7 +215,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelRendererTransformer());
         registerTransformer(new GuiTransformer());
         registerTransformer(new EffectRendererTransformer());
-        registerTransformer(new TextureMapTransformer());
         registerTransformer(new EntityArmorStandTransformer());
 
         // forge classes
