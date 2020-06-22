@@ -280,7 +280,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Single Model Render Call",
-        description = "Render entire model in a single draw call.\n§cMay cause coloration issues.",
+        description = "Render entire model in a single draw call.",
         category = "Performance", subcategory = "World"
     )
     public static boolean singleModelCall = true;
