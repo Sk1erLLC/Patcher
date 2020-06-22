@@ -184,7 +184,6 @@ public class Patcher {
         resourceManager.registerReloadListener(new ReloadListener());
 
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
-        ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand()); // ve replacement
         ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.FavoriteScreenshot());

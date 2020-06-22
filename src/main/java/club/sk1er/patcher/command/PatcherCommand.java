@@ -53,7 +53,7 @@ public class PatcherCommand extends CommandBase {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName();
+        return "/" + getCommandName() + "[mode <vanilla|optimized>|benchmark <all, text, item>|debugfps|sounds|resetcache]";
     }
 
     /**
@@ -108,7 +108,7 @@ public class PatcherCommand extends CommandBase {
                         return;
                     }
                 }
-            } else if (args[0].equals("benchmark") || args[0].equals("bench")) {
+            } else if (args[0].equalsIgnoreCase("benchmark") || args[0].equalsIgnoreCase("bench")) {
                 if (args[1].equals("all")) {
                     long totalMillis = 0;
 
@@ -130,12 +130,10 @@ public class PatcherCommand extends CommandBase {
                 }
 
                 runBenchmark(args[1], Arrays.copyOfRange(args, 2, args.length), benchmark);
-            } else if (args[0].equals("sounds")) {
-                ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
             }
 
             return;
-        } else if (args.length == 1 && args[0].equals("resetcache")) {
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("resetcache")) {
             EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
             EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
             sendMessage("Cleared Enhancement cache.");
@@ -143,6 +141,9 @@ public class PatcherCommand extends CommandBase {
         } else if (args.length == 1 && args[0].equalsIgnoreCase("debugfps")) {
             Patcher.instance.getImagePreview().toggleFPS();
             sendMessage("Toggled");
+            return;
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("sounds")) {
+            ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
             return;
         }
 
