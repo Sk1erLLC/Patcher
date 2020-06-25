@@ -13,7 +13,18 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -38,55 +49,62 @@ public class EffectRendererTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-            if (methodName.equalsIgnoreCase("updateEffects") || methodName.equalsIgnoreCase("func_78873_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getCullHook());
-            } else if (methodName.equals("renderParticles") || methodName.equals("func_78874_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "updateEffects":
+                case "func_78873_a":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                        "club/sk1er/patcher/util/world/entity/culling/EntityCulling",
+                        "begin",
+                        "()V",
+                        false));
+                    break;
+                case "renderParticles":
+                case "func_78874_a": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                LabelNode ifeq = new LabelNode();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    LabelNode ifeq = new LabelNode();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("get")) {
-                        next = next.getNext().getNext();
+                        if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("get")) {
+                            next = next.getNext().getNext();
 
-                        methodNode.instructions.insertBefore(next.getNext(), determineRender(ifeq));
-                    } else if (next instanceof InsnNode && next.getOpcode() == Opcodes.ATHROW) {
-                        methodNode.instructions.insertBefore(next.getNext(), ifeq);
+                            methodNode.instructions.insertBefore(next.getNext(), determineRender(ifeq));
+                        } else if (next instanceof InsnNode && next.getOpcode() == Opcodes.ATHROW) {
+                            methodNode.instructions.insertBefore(next.getNext(), ifeq);
+                        }
                     }
+                    break;
                 }
-            } else if (methodName.equals("updateEffectAlphaLayer") || methodName.equals("func_178925_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                case "updateEffectAlphaLayer":
+                case "func_178925_a": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                int entityfxIndex = -1;
+                    int entityfxIndex = -1;
 
-                for (LocalVariableNode var : methodNode.localVariables) {
-                    if (var.name.equals("entityfx") || var.name.equals("var4")) {
-                        entityfxIndex = var.index;
-                        break;
-                    }
-                }
-
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-                        if (methodInsnName.equals("tickParticle") || methodInsnName.equals("func_178923_d")) {
-                            methodNode.instructions.insertBefore(next.getNext(), checkIfCull(entityfxIndex));
+                    for (LocalVariableNode var : methodNode.localVariables) {
+                        if (var.name.equals("entityfx") || var.name.equals("var4")) {
+                            entityfxIndex = var.index;
                             break;
                         }
                     }
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("tickParticle") || methodInsnName.equals("func_178923_d")) {
+                                methodNode.instructions.insertBefore(next.getNext(), checkIfCull(entityfxIndex));
+                                break;
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }
-    }
-
-    private InsnList getCullHook() {
-        final InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "begin", "()V", false));
-        return list;
     }
 
     private InsnList checkIfCull(int entityfxIndex) {
