@@ -125,7 +125,7 @@ public class ClassTransformer implements IClassTransformer {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-    private final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    public static final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
     public static String optifineVersion = "NONE";
 
     public ClassTransformer() {
@@ -255,10 +255,10 @@ public class ClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
     }
 
-    public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger, boolean outputBytecode) {
+    public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger) {
         if (bytes == null) return null;
 
         Collection<PatcherTransformer> transformers = transformerMap.get(transformedName);

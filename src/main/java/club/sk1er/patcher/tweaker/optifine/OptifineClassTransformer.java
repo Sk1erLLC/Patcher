@@ -13,7 +13,12 @@ package club.sk1er.patcher.tweaker.optifine;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.*;
+import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineFontRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
@@ -35,8 +40,6 @@ public class OptifineClassTransformer implements IClassTransformer {
 
     private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
-    private final boolean outputBytecode =
-        Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
 
     public OptifineClassTransformer() {
         registerTransformer(new OptifineEntityRendererTransformer());
@@ -75,7 +78,7 @@ public class OptifineClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER, outputBytecode);
+        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER);
     }
 
     private void registerCommonTransformers() {
@@ -83,6 +86,7 @@ public class OptifineClassTransformer implements IClassTransformer {
         registerTransformer(new FaceBakeryReflectionOptimizer());
         registerTransformer(new ModelRotationReflectionOptimizer());
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
+
         registerTransformer(new OptifineFontRendererTransformer());
         registerTransformer(new FontRendererHookTransformer());
     }
