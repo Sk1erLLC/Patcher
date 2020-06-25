@@ -30,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Used for rendering the current screenshot on the screen when "Screenshot Preview" is enabled.
- * TODO: Fix, currently doesn't render anything.
  */
 public class Viewer {
 
