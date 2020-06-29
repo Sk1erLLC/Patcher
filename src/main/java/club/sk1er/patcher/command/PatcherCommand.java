@@ -12,6 +12,8 @@
 package club.sk1er.patcher.command;
 
 import club.sk1er.mods.core.ModCore;
+import club.sk1er.mods.core.config.ModCoreConfig;
+import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
@@ -82,7 +84,7 @@ public class PatcherCommand extends CommandBase {
                         PatcherConfig.glErrorChecking = false;
                         PatcherConfig.optimizedItemRenderer = false;
                         Patcher.instance.getImagePreview().setMode("Vanilla");
-                        ChatUtilities.sendMessage("Set mode: Vanilla");
+                        sendNotification("Set mode: Vanilla", "&aSet mode: &cVanilla&a.");
                         return;
                     }
                     case "optimized": {
@@ -100,11 +102,11 @@ public class PatcherCommand extends CommandBase {
                         PatcherConfig.glErrorChecking = true;
                         PatcherConfig.optimizedItemRenderer = true;
                         Patcher.instance.getImagePreview().setMode("Optimized");
-                        ChatUtilities.sendMessage("Set mode: Optimized");
+                        sendNotification("Set mode: Optimized", "&aSet mode: &eOptimized&a.");
                         return;
                     }
                     default: {
-                        ChatUtilities.sendMessage("Unknown mode");
+                        sendNotification("Unknown mode.", "&cUnknown mode.");
                         return;
                     }
                 }
@@ -118,14 +120,16 @@ public class PatcherCommand extends CommandBase {
                     }
 
                     float seconds = totalMillis / 1000F;
-                    sendMessage("&3All of the benchmarks completed in " + seconds + "s.");
+                    String message = "All of the benchmarks completed in " + seconds + "s.";
+                    sendNotification(message, "&3" + message);
                     return;
                 }
 
                 AbstractBenchmark benchmark = benchmarkMap.get(args[1]);
 
                 if (benchmark == null) {
-                    sendMessage("&cCan't find a \"" + args[1] + "\" benchmark by the name of \"" + args[1] + "\".");
+                    String message = "Can't find a \"" + args[1] + "\" benchmark by the name of \"" + args[1] + "\".";
+                    sendNotification(message, "&c" + message);
                     return;
                 }
 
@@ -133,18 +137,25 @@ public class PatcherCommand extends CommandBase {
             }
 
             return;
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("resetcache")) {
-            EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-            EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
-            sendMessage("Cleared Enhancement cache.");
-            return;
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("debugfps")) {
-            Patcher.instance.getImagePreview().toggleFPS();
-            sendMessage("Toggled");
-            return;
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("sounds")) {
-            ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
-            return;
+        }
+
+        if (args.length == 1) {
+            switch (args[0]) {
+                case "resetcache":
+                    EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
+                    EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
+                    sendNotification("Cleared Enhancement cache.", "&aCleared enhancement cache.");
+                    break;
+
+                case "debugfps":
+                    Patcher.instance.getImagePreview().toggleFPS();
+                    sendNotification("Toggled debug fps preview.", "&aToggled debug fps preview.");
+                    break;
+
+                case "sounds":
+                    ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
+                    break;
+            }
         }
 
         ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherConfig().gui());
@@ -179,8 +190,8 @@ public class PatcherCommand extends CommandBase {
         return totalMillis;
     }
 
-    private void sendMessage(String text) {
-        ChatUtilities.sendMessage(text, false);
+    private void sendMessage(String message) {
+        ChatUtilities.sendMessage(message, false);
     }
 
     @Override
@@ -190,5 +201,13 @@ public class PatcherCommand extends CommandBase {
 
     public Map<String, AbstractBenchmark> getBenchmarkMap() {
         return benchmarkMap;
+    }
+
+    private void sendNotification(String notificationMessage, String chatMessage) {
+        if (!ModCoreConfig.INSTANCE.getDisableAllNotifications()) {
+            Notifications.INSTANCE.pushNotification("Patcher", notificationMessage);
+        } else {
+            ChatUtilities.sendMessage(chatMessage);
+        }
     }
 }

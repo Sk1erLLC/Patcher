@@ -68,42 +68,58 @@ public class WorldTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("getHorizon") || methodName.equals("func_72919_O")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setSkyHeight());
-                break;
-            } else if (brightness.contains(methodName)) {
+            // take out of switch as it's looking for equals, not contains
+            if (brightness.contains(methodName)) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
-            } else if (methodName.equals("updateEntityWithOptionalForce") || methodName.equals("func_72866_a")) {
-                Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-                    if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        MethodInsnNode methodInsnNode = (MethodInsnNode) node;
-                        if (methodInsnNode.name.equals("getPersistentChunks")) {
-                            AbstractInsnNode prevNode = node.getPrevious();
-                            methodNode.instructions.insertBefore(prevNode, new VarInsnNode(Opcodes.ALOAD, 0));
-                            methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", "field_72995_K", "Z"));
-                            methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.ICONST_1));
-                            methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.IXOR));
+            }
+
+            switch (methodName) {
+                case "getHorizon":
+                case "func_72919_O":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setSkyHeight());
+                    break;
+
+                case "updateEntityWithOptionalForce":
+                case "func_72866_a": {
+                    Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
+                        if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+                            if (methodInsnNode.name.equals("getPersistentChunks")) {
+                                AbstractInsnNode prevNode = node.getPrevious();
+                                methodNode.instructions.insertBefore(prevNode, new VarInsnNode(Opcodes.ALOAD, 0));
+                                methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/World", "field_72995_K", "Z"));
+                                methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.ICONST_1));
+                                methodNode.instructions.insertBefore(prevNode, new InsnNode(Opcodes.IXOR));
+                            }
+                        } else if (node.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) node).var == 5) {
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
+                            break;
                         }
-                    } else if (node.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) node).var == 5) {
-                        methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
-                        break;
                     }
+                    break;
                 }
-            } else if (methodName.equals("updateEntities") || methodName.equals("func_72939_s")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                case "updateEntities":
+                case "func_72939_s": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("blockEntities")) {
-                        methodNode.instructions.insertBefore(next.getNext().getNext(), removeTileEntities());
-                        break;
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("blockEntities")) {
+                            methodNode.instructions.insertBefore(next.getNext().getNext(), removeTileEntities());
+                            break;
+                        }
                     }
+                    break;
                 }
-            } else if (methodName.equals("getSkyColor") || methodName.equals("func_72833_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getFasterSkyColor());
+
+                case "getSkyColor":
+                case "func_72833_a":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getFasterSkyColor());
+                    break;
             }
         }
     }
