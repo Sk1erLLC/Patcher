@@ -56,8 +56,6 @@ repositories {
 }
 
 dependencies {
-    implementation "com.squareup.okhttp3:okhttp:4.5.0"
-
     provided files("libs/modcore.jar")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     embed('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7') {
