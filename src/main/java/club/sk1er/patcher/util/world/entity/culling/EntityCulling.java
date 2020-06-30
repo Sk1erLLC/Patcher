@@ -328,39 +328,6 @@ public class EntityCulling {
         }
     }
 
-    static class BetterBlockPos extends BlockPos {
-
-        private int x, y, z;
-
-        public BetterBlockPos(int x, int y, int z) {
-            super(x, y, z);
-            this.x = x;
-            this.z = z;
-            this.y = y;
-        }
-
-        private void update(int x, int y, int z) {
-            this.x = x;
-            this.z = z;
-            this.y = y;
-        }
-
-        @Override
-        public int getX() {
-            return x;
-        }
-
-        @Override
-        public int getY() {
-            return y;
-        }
-
-        @Override
-        public int getZ() {
-            return z;
-        }
-    }
-
     static final class Vec3 {
         private double xCoord, yCoord, zCoord;
 

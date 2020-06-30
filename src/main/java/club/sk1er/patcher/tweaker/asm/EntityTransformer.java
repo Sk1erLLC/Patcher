@@ -12,17 +12,11 @@
 package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
+
+import java.util.ListIterator;
 
 public class EntityTransformer implements PatcherTransformer {
     /**
@@ -52,8 +46,54 @@ public class EntityTransformer implements PatcherTransformer {
             } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(getFixedBrightness());
+            } else if (methodName.equalsIgnoreCase("func_145775_I") || methodName.equalsIgnoreCase("doBlockCollisions")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                int it = 0;
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof TypeInsnNode) {
+                        if (FMLDeobfuscatingRemapper.INSTANCE.map(((TypeInsnNode) next).desc).equalsIgnoreCase("net/minecraft/util/BlockPos")) {
+                            it++;
+                            int var = 0;
+                            if (it == 3) {
+                                AbstractInsnNode tmp;
+                                int steps = 0;
+                                while ((tmp = iterator.next()) != null) {
+                                    steps++;
+                                    if (tmp.getOpcode() == Opcodes.ASTORE) {
+                                        var = ((VarInsnNode) tmp).var;
+                                        iterator.remove();
+                                        break;
+                                    }
+                                }
+                                for (int i = 0; i < steps ; i++) {
+                                    iterator.previous(); //Rewind
+                                }
+                                iterator.remove();
+                                iterator.next();
+                                iterator.remove();
+                                methodNode.instructions.insertBefore(iterator.next(), new VarInsnNode(Opcodes.ALOAD, var));
+                                while ((tmp = iterator.next()) != null) {
+                                    if (tmp.getOpcode() == Opcodes.INVOKESPECIAL) {
+                                        iterator.remove();
+                                        methodNode.instructions.insertBefore(iterator.next(), new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/util/world/entity/culling/BetterBlockPos", "update", "(III)V", false));
+                                        break;
+                                    }
+                                }
+                                final InsnList insns = new InsnList();
+                                insns.add(new TypeInsnNode(Opcodes.NEW, "club/sk1er/patcher/util/world/entity/culling/BetterBlockPos"));
+                                insns.add(new InsnNode(Opcodes.DUP));
+                                insns.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/util/world/entity/culling/BetterBlockPos", "<init>", "()V", false));
+                                insns.add(new VarInsnNode(Opcodes.ASTORE, var));
+                                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insns);
+
+                            }
+                        }
+                    }
+                }
             }
         }
+
     }
 
     private InsnList getFixedBrightness() {
