@@ -146,6 +146,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new EntityArmorStandTransformer());
+        registerTransformer(new BlockPosTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

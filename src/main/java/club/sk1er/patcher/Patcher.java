@@ -406,7 +406,7 @@ public class Patcher {
 
     /**
      * Allow for accessing our cloud handler outside of the class.
-     * Suppressing unused as it is used in an ASM method {@link RenderGlobalTransformer}.
+     * Suppressing as it is used in an ASM method {@link RenderGlobalTransformer}.
      *
      * @return The Cloud Handler instance.
      */

@@ -51,148 +51,184 @@ public class MinecraftTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
             String methodDesc = mapMethodDesc(methodNode);
 
-            if (methodName.equals("startGame") || methodName.equals("func_71384_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
-            } else if (methodName.equals("checkGLError") || methodName.equals("func_71361_d")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());
-            } else if (methodName.equals("toggleFullscreen") || methodName.equals("func_71352_k")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "startGame":
+                case "func_71384_a":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
+                    break;
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                case "checkGLError":
+                case "func_71361_d":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());
+                    break;
 
-                    if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setFullscreen")) {
-                        methodNode.instructions.insert(node, resetScreenState());
-                        break;
-                    }
-                }
-                InsnList insnList = new InsnList();
-                LabelNode labelNode = new LabelNode();
-                insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "fullscreen", "()Z", false));
-                insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
-                insnList.add(new InsnNode(Opcodes.RETURN));
-                insnList.add(labelNode);
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
-            } else if ((methodName.equals("loadWorld") || methodName.equals("func_71353_a")) && methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                case "toggleFullscreen":
+                case "func_71352_k": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
-                        methodNode.instructions.insertBefore(node, setSystemTime());
-                    } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
-                        String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) node);
-
-                        if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
-                            methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                "net/minecraftforge/client/MinecraftForgeClient",
-                                "clearRenderCache",
-                                "()V",
-                                false));
-                        }
-                    }
-                }
-            } else if (methodName.equals("displayGuiScreen") || methodName.equals("func_147108_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-
-                    if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
-                        if (methodInsnName.equals("clearChatMessages") || methodInsnName.equals("func_146231_a")) {
-                            LabelNode ifne = new LabelNode();
-                            methodNode.instructions.insertBefore(node.getPrevious().getPrevious().getPrevious().getPrevious(), addConfigOption(ifne));
-                            methodNode.instructions.insertBefore(node.getNext(), ifne);
+                        if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setFullscreen")) {
+                            methodNode.instructions.insert(node, resetScreenState());
                             break;
                         }
                     }
+                    InsnList insnList = new InsnList();
+                    LabelNode labelNode = new LabelNode();
+                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "fullscreen", "()Z", false));
+                    insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+                    insnList.add(new InsnNode(Opcodes.RETURN));
+                    insnList.add(labelNode);
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
+                    break;
                 }
-            } else if (methodName.equals("runTick") || methodName.equals("func_71407_l")) {
-                boolean foundFirst = false;
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                LabelNode ifne = new LabelNode();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-                    if (node.getOpcode() == Opcodes.GETFIELD) {
-                        FieldInsnNode fieldInsnNode = (FieldInsnNode) node;
-                        String fieldInsnName = mapFieldNameFromNode(fieldInsnNode);
-                        if (fieldInsnName.equals("thirdPersonView") || fieldInsnName.equals("field_74320_O")) {
-                            if (node.getNext().getOpcode() == Opcodes.IFNE) {
-                                AbstractInsnNode prevNode = node.getPrevious().getPrevious();
-                                methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "keepShadersOnPerspectiveChange", "Z"));
-                                methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifne));
+
+                case "loadWorld":
+                case "func_71353_a":
+                    if (methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
+
+                        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                        while (iterator.hasNext()) {
+                            AbstractInsnNode node = iterator.next();
+
+                            if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
+                                methodNode.instructions.insertBefore(node, setSystemTime());
+                            } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
+                                String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) node);
+
+                                if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
+                                    methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                        "net/minecraftforge/client/MinecraftForgeClient",
+                                        "clearRenderCache",
+                                        "()V",
+                                        false));
+                                }
                             }
                         }
-                    } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        MethodInsnNode methodInsnNode = (MethodInsnNode) node;
-                        String methodInsnName = mapMethodNameFromNode(methodInsnNode);
-                        if (methodInsnName.equals("loadEntityShader") || methodInsnName.equals("func_175066_a")) {
-                            if (!foundFirst) {
-                                foundFirst = true;
-                            } else {
-                                methodNode.instructions.insert(node, ifne);
+                    }
+                    break;
+
+                case "displayGuiScreen":
+                case "func_147108_a": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
+
+                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                            if (methodInsnName.equals("clearChatMessages") || methodInsnName.equals("func_146231_a")) {
+                                LabelNode ifne = new LabelNode();
+                                methodNode.instructions.insertBefore(node.getPrevious().getPrevious().getPrevious().getPrevious(), addConfigOption(ifne));
+                                methodNode.instructions.insertBefore(node.getNext(), ifne);
                                 break;
                             }
-                        } else if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
-                            methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
-                                Opcodes.INVOKESTATIC,
-                                "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
-                                "clearCache",
-                                "()V",
-                                false
-                            ));
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("setIngameFocus") || methodName.equals("func_71381_h")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-                    if (node.getOpcode() == Opcodes.ICONST_1) {
-                        LabelNode ifeq = new LabelNode();
-                        methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "newKeybindHandling", "Z"));
-                        methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/client/Minecraft", "field_142025_a", "Z"));
-                        methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.ICONST_1));
-                        methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
-                        methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
-                        methodNode.instructions.insertBefore(node, new JumpInsnNode(Opcodes.IFEQ, ifeq));
-                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "updateKeyBindState", "()V", false));
-                        methodNode.instructions.insertBefore(node, ifeq);
-                        break;
+
+                case "runTick":
+                case "func_71407_l": {
+                    boolean foundFirst = false;
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    LabelNode ifne = new LabelNode();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
+                        if (node.getOpcode() == Opcodes.GETFIELD) {
+                            FieldInsnNode fieldInsnNode = (FieldInsnNode) node;
+                            String fieldInsnName = mapFieldNameFromNode(fieldInsnNode);
+                            if (fieldInsnName.equals("thirdPersonView") || fieldInsnName.equals("field_74320_O")) {
+                                if (node.getNext().getOpcode() == Opcodes.IFNE) {
+                                    AbstractInsnNode prevNode = node.getPrevious().getPrevious();
+                                    methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "keepShadersOnPerspectiveChange", "Z"));
+                                    methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifne));
+                                }
+                            }
+                        } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+                            String methodInsnName = mapMethodNameFromNode(methodInsnNode);
+                            if (methodInsnName.equals("loadEntityShader") || methodInsnName.equals("func_175066_a")) {
+                                if (!foundFirst) {
+                                    foundFirst = true;
+                                } else {
+                                    methodNode.instructions.insert(node, ifne);
+                                    break;
+                                }
+                            } else if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
+                                methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
+                                    Opcodes.INVOKESTATIC,
+                                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                    "clearCache",
+                                    "()V",
+                                    false
+                                ));
+                            }
+                        }
                     }
+                    break;
                 }
-            } else if (methodName.equals("dispatchKeypresses") || methodName.equals("func_152348_aa")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
-                        MethodInsnNode method = (MethodInsnNode) next;
-                        if (method.owner.equals("org/lwjgl/input/Keyboard") && method.name.equals("getEventCharacter") && method.desc.equals("()C")) {
-                            methodNode.instructions.insert(method, keybindFixer());
+                case "setIngameFocus":
+                case "func_71381_h": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
+                        if (node.getOpcode() == Opcodes.ICONST_1) {
+                            LabelNode ifeq = new LabelNode();
+                            methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "newKeybindHandling", "Z"));
+                            methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/client/Minecraft", "field_142025_a", "Z"));
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.ICONST_1));
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
+                            methodNode.instructions.insertBefore(node, new JumpInsnNode(Opcodes.IFEQ, ifeq));
+                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "updateKeyBindState", "()V", false));
+                            methodNode.instructions.insertBefore(node, ifeq);
                             break;
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("runGameLoop") || methodName.equals("func_71411_J")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                case "dispatchKeypresses":
+                case "func_152348_aa": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("stream")) {
-                        for (int i = 0; i < 33; ++i) {
-                            methodNode.instructions.remove(next.getNext());
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
+                            MethodInsnNode method = (MethodInsnNode) next;
+                            if (method.owner.equals("org/lwjgl/input/Keyboard") && method.name.equals("getEventCharacter") && method.desc.equals("()C")) {
+                                methodNode.instructions.insert(method, keybindFixer());
+                                break;
+                            }
                         }
-
-                        methodNode.instructions.remove(next.getPrevious().getPrevious());
-                        methodNode.instructions.remove(next.getPrevious());
-                        methodNode.instructions.remove(next);
-                        break;
                     }
+                    break;
+                }
+
+                case "runGameLoop":
+                case "func_71411_J": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("stream")) {
+                            for (int i = 0; i < 33; ++i) {
+                                methodNode.instructions.remove(next.getNext());
+                            }
+
+                            methodNode.instructions.remove(next.getPrevious().getPrevious());
+                            methodNode.instructions.remove(next.getPrevious());
+                            methodNode.instructions.remove(next);
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
         }
