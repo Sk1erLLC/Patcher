@@ -287,13 +287,12 @@ public final class FontRendererHook {
                     effectiveWidth += boldWidth;
                 }
 
-                RenderPair next = new RenderPair(this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha());
                 if (this.fontRenderer.strikethroughStyle) {
-                    adjustOrAppend(strikeThough, next);
+                    adjustOrAppend(strikeThough, this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha());
                 }
 
                 if (this.fontRenderer.underlineStyle) {
-                    adjustOrAppend(underline, next);
+                    adjustOrAppend(underline, this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha());
                 }
 
                 this.fontRenderer.posX += effectiveWidth;
@@ -347,16 +346,17 @@ public final class FontRendererHook {
         return true;
     }
 
-    private void adjustOrAppend(Deque<RenderPair> underline, RenderPair next) {
+    private void adjustOrAppend(Deque<RenderPair> underline, float posX, float effectiveWidth, float lastRed, float lastGreen, float lastBlue, float lastAlpha) {
         RenderPair lastStart = underline.peekLast();
-        if (lastStart != null && lastStart.alpha == next.alpha && lastStart.red == next.red && lastStart.green == next.green && lastStart.blue == next.blue) {
-            if (lastStart.posX + lastStart.width >= next.posX - 1) {
-                lastStart.width = next.posX + next.width - lastStart.posX;
+        if (lastStart != null && lastStart.red == lastRed && lastStart.green == lastGreen && lastStart.blue == lastBlue && lastStart.alpha == lastAlpha) {
+            if (lastStart.posX + lastStart.width >= posX - 1) {
+                lastStart.width = posX + effectiveWidth - lastStart.posX;
             }
         } else {
-            underline.add(next);
+            underline.add(new RenderPair(posX, effectiveWidth, lastRed, lastGreen, lastBlue, lastAlpha));
         }
     }
+
 
     private float getBoldOffset(int j) {
         return fontRenderer.unicodeFlag || j == -1 ? 0.5F : getOptifineBoldOffset();

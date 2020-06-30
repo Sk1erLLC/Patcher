@@ -86,7 +86,7 @@ public class EntityCulling {
         if (!PatcherConfig.entityCulling) return;
         exclude.clear();
         World theWorld = Minecraft.getMinecraft().theWorld;
-        Entity thePlayer = Minecraft.getMinecraft().thePlayer;
+        final Entity thePlayer = Minecraft.getMinecraft().thePlayer;
         if (theWorld == null) return;
         int amt = 0;
         for (Entity entity : theWorld.loadedEntityList) {
@@ -102,24 +102,24 @@ public class EntityCulling {
                     long l = System.nanoTime();
                     double centerX = (box.maxX + box.minX) / 2;
                     double centerZ = (box.maxZ + box.minZ) / 2;
-
+                    final net.minecraft.util.Vec3 base = thePlayer.getPositionVector().addVector(0, thePlayer.getEyeHeight(), 0);
                     if (
                         //8 corners
-                        doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.maxZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.maxY, box.minZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.maxZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.maxX, box.minY, box.minZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.maxZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.maxY, box.minZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.maxZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, box.minX, box.minY, box.minZ)
+                        doesRayHitEntity(theWorld, base, box.maxX, box.maxY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, base, box.maxX, box.maxY, box.minZ) ||
+                            doesRayHitEntity(theWorld, base, box.maxX, box.minY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, base, box.maxX, box.minY, box.minZ) ||
+                            doesRayHitEntity(theWorld, base, box.minX, box.maxY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, base, box.minX, box.maxY, box.minZ) ||
+                            doesRayHitEntity(theWorld, base, box.minX, box.minY, box.maxZ) ||
+                            doesRayHitEntity(theWorld, base, box.minX, box.minY, box.minZ)
                             ||
 //
 //                                //4 points running down center of hitbox
-                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY, centerZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                            doesRayHitEntity(theWorld, thePlayer, centerX, box.minY, centerZ)
+                            doesRayHitEntity(theWorld, base, centerX, box.maxY, centerZ) ||
+                            doesRayHitEntity(theWorld, base, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                            doesRayHitEntity(theWorld, base, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                            doesRayHitEntity(theWorld, base, centerX, box.minY, centerZ)
                     ) {
                         latch.countDown();
                         return;
@@ -136,35 +136,29 @@ public class EntityCulling {
      * Does the ray fired from the players eyes land on an entity?
      *
      * @param worldObj Current world.
-     * @param player   Our player.
+     * @param base   Our player.
      * @param x        Entity bounding box X.
      * @param y        Entity bounding box Y.
      * @param z        Entity bounding box Z.
      * @return The status on if the raytrace hits the entity.
      */
-    private static boolean doesRayHitEntity(World worldObj, Entity player, double x, double y, double z) {
+    private static boolean doesRayHitEntity(World worldObj, net.minecraft.util.Vec3 base, double x, double y, double z) {
         return rayTraceBlocks(worldObj,
-            player.getPositionVector().addVector(0, player.getEyeHeight(), 0),
-            new Vec3(x, y, z),
-            false,
-            false,
-            false,
-            false) == null;
+//            new Vec3(player.getPositionVector().addVector(0, player.getEyeHeight(), 0)),
+            new Vec3(base),
+            new Vec3(x, y, z)
+        ) == null;
     }
 
     /**
      * Fire a ray hitting blocks, used for checking if an entity is behind a block.
      *
-     * @param theWorld                      Current world.
-     * @param from                          From the player.
-     * @param to                            To the block.
-     * @param stopOnLiquid                  Stop on liquids - always false.
-     * @param stopOnTranslucentBlock        Stop on translucent blocks - always false.
-     * @param ignoreBlockWithoutBoundingBox Ignore any block without a bounding box - always false,
-     * @param returnLastUncollidableBlock   Return the last uncollidable block - always false.
+     * @param theWorld Current world.
+     * @param from     From the player.
+     * @param to       To the block.
      * @return The ray trace result.
      */
-    private static MovingObjectPosition rayTraceBlocks(World theWorld, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean stopOnTranslucentBlock, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+    private static MovingObjectPosition rayTraceBlocks(World theWorld, Vec3 from, Vec3 to) {
 
         if (!Double.isNaN(from.xCoord) && !Double.isNaN(from.yCoord) && !Double.isNaN(from.zCoord)) {
             if (!Double.isNaN(to.xCoord) && !Double.isNaN(to.yCoord) && !Double.isNaN(to.zCoord)) {
@@ -174,24 +168,23 @@ public class EntityCulling {
                 int l = MathHelper.floor_double(from.xCoord);
                 int i1 = MathHelper.floor_double(from.yCoord);
                 int j1 = MathHelper.floor_double(from.zCoord);
-                BlockPos blockpos = new BlockPos(l, i1, j1);
+                BetterBlockPos blockpos = new BetterBlockPos(l, i1, j1);
                 IBlockState iblockstate = theWorld.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
 
-                if (!(block instanceof BlockAir) && !stopOnTranslucentBlock) {
+                if (!(block instanceof BlockAir)) {
                     if (!block.isOpaqueCube() || !block.isFullCube()) {
                         return null;
                     }
                 }
 
-                if ((!ignoreBlockWithoutBoundingBox || block.getCollisionBoundingBox(theWorld, blockpos, iblockstate) != null) && block.canCollideCheck(iblockstate, stopOnLiquid)) {
-                    MovingObjectPosition movingobjectposition = block.collisionRayTrace(theWorld, blockpos, from, to);
+                if (block.canCollideCheck(iblockstate, false)) {
+                    MovingObjectPosition movingobjectposition = block.collisionRayTrace(theWorld, blockpos, from.toMc(), to.toMc());
                     if (movingobjectposition != null) {
                         return movingobjectposition;
                     }
                 }
 
-                MovingObjectPosition movingobjectposition2 = null;
                 int k1 = 200;
 
                 while (k1-- >= 0) {
@@ -200,7 +193,7 @@ public class EntityCulling {
                     }
 
                     if (l == i && i1 == j && j1 == k) {
-                        return returnLastUncollidableBlock ? movingobjectposition2 : null;
+                        return null;
                     }
 
                     boolean flag2 = true;
@@ -269,48 +262,39 @@ public class EntityCulling {
 
                     if (d3 < d4 && d3 < d5) {
                         enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
-                        from = new Vec3(d0, from.yCoord + d7 * d3, from.zCoord + d8 * d3);
+                        from.reset(d0, from.yCoord + d7 * d3, from.zCoord + d8 * d3);
                     } else if (d4 < d5) {
                         enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
-                        from = new Vec3(from.xCoord + d6 * d4, d1, from.zCoord + d8 * d4);
+                        from.reset(from.xCoord + d6 * d4, d1, from.zCoord + d8 * d4);
                     } else {
                         enumfacing = k > j1 ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                        from = new Vec3(from.xCoord + d6 * d5, from.yCoord + d7 * d5, d2);
+                        from.reset(from.xCoord + d6 * d5, from.yCoord + d7 * d5, d2);
                     }
 
                     l = MathHelper.floor_double(from.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
                     i1 = MathHelper.floor_double(from.yCoord) - (enumfacing == EnumFacing.UP ? 1 : 0);
                     j1 = MathHelper.floor_double(from.zCoord) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
-                    blockpos = new BlockPos(l, i1, j1);
+                    blockpos.update(l, i1, j1);
                     IBlockState iblockstate1 = theWorld.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if (!(block1 instanceof BlockAir) && !stopOnTranslucentBlock) {
+                    if (!(block1 instanceof BlockAir)) {
                         if (!block1.isOpaqueCube() || !block1.isFullCube()) {
                             return null;
                         }
                     }
 
-                    if (!ignoreBlockWithoutBoundingBox || block1.getCollisionBoundingBox(theWorld, blockpos, iblockstate1) != null) {
-                        if (block1.canCollideCheck(iblockstate1, stopOnLiquid)) {
-                            MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(theWorld, blockpos, from, to);
-
-                            if (movingobjectposition1 != null) {
-                                return movingobjectposition1;
-                            }
-                        } else {
-                            movingobjectposition2 = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, from, enumfacing, blockpos);
+                    if (block1.canCollideCheck(iblockstate1, false)) {
+                        MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(theWorld, blockpos, from.toMc(), to.toMc());
+                        if (movingobjectposition1 != null) {
+                            return movingobjectposition1;
                         }
                     }
                 }
 
-                return returnLastUncollidableBlock ? movingobjectposition2 : null;
-            } else {
-                return null;
             }
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -341,6 +325,63 @@ public class EntityCulling {
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    static class BetterBlockPos extends BlockPos {
+
+        private int x, y, z;
+
+        public BetterBlockPos(int x, int y, int z) {
+            super(x, y, z);
+            this.x = x;
+            this.z = z;
+            this.y = y;
+        }
+
+        private void update(int x, int y, int z) {
+            this.x = x;
+            this.z = z;
+            this.y = y;
+        }
+
+        @Override
+        public int getX() {
+            return x;
+        }
+
+        @Override
+        public int getY() {
+            return y;
+        }
+
+        @Override
+        public int getZ() {
+            return z;
+        }
+    }
+
+    static final class Vec3 {
+        private double xCoord, yCoord, zCoord;
+
+        public Vec3(double xCoord, double yCoord, double zCoord) {
+            this.xCoord = xCoord;
+            this.yCoord = yCoord;
+            this.zCoord = zCoord;
+        }
+
+        public Vec3(net.minecraft.util.Vec3 addVector) {
+            this(addVector.xCoord, addVector.yCoord, addVector.zCoord);
+        }
+
+        private net.minecraft.util.Vec3 toMc() {
+            return new net.minecraft.util.Vec3(xCoord, yCoord, zCoord);
+        }
+
+        private void reset(double xCoord, double yCoord, double zCoord) {
+            this.xCoord = xCoord;
+            this.yCoord = yCoord;
+            this.zCoord = zCoord;
         }
     }
 }
