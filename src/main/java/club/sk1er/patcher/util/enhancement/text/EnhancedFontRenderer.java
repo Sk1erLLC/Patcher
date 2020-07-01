@@ -31,7 +31,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public final class EnhancedFontRenderer implements Enhancement {
 
     private static final List<EnhancedFontRenderer> instances = new ArrayList<>();
-    public static SharedDrawable drawable;
     private final List<StringHash> obfuscated = new ArrayList<>();
     private final Map<String, Integer> stringWidthCache = new HashMap<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
@@ -58,18 +57,19 @@ public final class EnhancedFontRenderer implements Enhancement {
         stringCache.invalidateAll(obfuscated);
         obfuscated.clear();
 
-        if (drawable == null) {
-            try {
-                drawable = new SharedDrawable(Display.getDrawable());
-            } catch (LWJGLException e) {
-                Patcher.instance.getLogger().error("Failed to create shared drawable.", e);
-            }
-        }
     }
 
     public int getGlList() {
         Integer poll = glRemoval.poll();
         return poll == null ? GLAllocation.generateDisplayLists(1) : poll;
+    }
+
+    public Queue<Integer> getGlRemoval() {
+        return glRemoval;
+    }
+
+    public void invalidate() {
+        stringCache.invalidateAll();
     }
 
     public CachedString get(StringHash key) {
