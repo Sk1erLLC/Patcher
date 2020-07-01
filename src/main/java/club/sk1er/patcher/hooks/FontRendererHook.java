@@ -19,6 +19,7 @@ import club.sk1er.patcher.util.hash.StringHash;
 import kotlin.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.IResource;
@@ -107,8 +108,13 @@ public final class FontRendererHook {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    public boolean renderStringAtPos(String text, boolean shadow) {
-        if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) return false;
+    public boolean renderStringAtPos(String text, boolean shadow) { if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) {
+            if (GL_TEX != -1) {
+                GlStateManager.deleteTexture(GL_TEX);
+                GL_TEX = -1;
+            }
+            return false;
+        }
         if (GL_TEX == -1 || forceRefresh) {
             create();
         }
@@ -461,7 +467,7 @@ public final class FontRendererHook {
         }
     }
 
-    private float getCharWidthFloat(char c) {
+    private float getCharWidthFloat(char c) { //Remapped to optifine's stuff if needed
         return hook.getCharWidth(fontRenderer, c);
     }
 

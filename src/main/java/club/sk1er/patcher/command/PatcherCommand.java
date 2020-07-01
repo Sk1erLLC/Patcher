@@ -145,16 +145,16 @@ public class PatcherCommand extends CommandBase {
                     EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
                     EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
                     sendNotification("Cleared Enhancement cache.", "&aCleared enhancement cache.");
-                    break;
+                    return;
 
                 case "debugfps":
                     Patcher.instance.getImagePreview().toggleFPS();
                     sendNotification("Toggled debug fps preview.", "&aToggled debug fps preview.");
-                    break;
+                    return;
 
                 case "sounds":
                     ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
-                    break;
+                    return;
             }
         }
 
