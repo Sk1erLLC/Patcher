@@ -16,10 +16,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -37,12 +35,6 @@ public class BlockPosTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
             String methodDesc = mapMethodDesc(methodNode);
             switch (methodName) {
-                case "func_177986_g":
-                case "toLong":
-                    clearInstructions(methodNode);
-                    methodNode.instructions.insert(inlinedLongConversion());
-                    break;
-
                 case "func_177981_b":
                 case "func_177984_a":
                 case "up":
@@ -285,37 +277,6 @@ public class BlockPosTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/BlockPos", "<init>", "(III)V", false));
         list.add(new InsnNode(Opcodes.ARETURN));
 
-        return list;
-    }
-
-    // return (((long) getX() & 67108863L) << 38) | (((long) getY() & 4095L)) | (((long) getZ() & 67108863L) << 12);
-    // better inline the method jvm go brr
-    private InsnList inlinedLongConversion() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177958_n", "()I", false));
-        list.add(new InsnNode(Opcodes.I2L));
-        list.add(new LdcInsnNode(67108863L));
-        list.add(new InsnNode(Opcodes.LAND));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 38));
-        list.add(new InsnNode(Opcodes.LSHL));
-
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177956_o", "()I", false));
-        list.add(new InsnNode(Opcodes.I2L));
-        list.add(new LdcInsnNode(4095L));
-        list.add(new InsnNode(Opcodes.LAND));
-        list.add(new InsnNode(Opcodes.LOR));
-
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177952_p", "()I", false));
-        list.add(new InsnNode(Opcodes.I2L));
-        list.add(new LdcInsnNode(67108863L));
-        list.add(new InsnNode(Opcodes.LAND));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 12));
-        list.add(new InsnNode(Opcodes.LSHL));
-        list.add(new InsnNode(Opcodes.LOR));
-        list.add(new InsnNode(Opcodes.LRETURN));
         return list;
     }
 }
