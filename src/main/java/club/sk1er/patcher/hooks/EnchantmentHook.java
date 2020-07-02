@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.tweaker.asm.EnchantmentTransformer;
+import club.sk1er.patcher.asm.EnchantmentTransformer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.StatCollector;
 import org.objectweb.asm.tree.ClassNode;

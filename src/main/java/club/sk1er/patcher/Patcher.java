@@ -229,7 +229,7 @@ public class Patcher {
      */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        float time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000f;
+        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
 
         if (PatcherConfig.startupNotification) {
             Notifications.INSTANCE.pushNotification(
