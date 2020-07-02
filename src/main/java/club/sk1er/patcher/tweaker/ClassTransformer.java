@@ -13,7 +13,7 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.forge.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.*;
-import club.sk1er.patcher.tweaker.asm.block.BlockPotatoTransformer;
+import club.sk1er.patcher.tweaker.asm.BlockPotatoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.BlockInfoTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
@@ -173,9 +173,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new WindowsKeycodesTransformer());
         registerTransformer(new KeyboardTransformer());
-
-        // disabled
-        //registerTransformer(new BlockDoublePlantTransformer());
     }
 
     private void registerTransformer(PatcherTransformer transformer) {

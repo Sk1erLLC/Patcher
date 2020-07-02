@@ -23,6 +23,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,8 +74,66 @@ public class ChunkTransformer implements PatcherTransformer {
                         }
                     }
                 }
+            } else if (methodName.equals("getBlockState") || methodName.equals("func_177435_g")) {
+                clearInstructions(methodNode);
+                methodNode.instructions.insert(getBlockStateFast());
             }
         }
+    }
+
+    private InsnList getBlockStateFast() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177958_n", "()I", false));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177956_o", "()I", false));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 3));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/BlockPos", "func_177952_p", "()I", false));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 4));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLT, labelNode));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new InsnNode(Opcodes.ICONST_4));
+        list.add(new InsnNode(Opcodes.ISHR));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76652_q", "[Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;"));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGE, labelNode));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76652_q", "[Lnet/minecraft/world/chunk/storage/ExtendedBlockStorage;"));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new InsnNode(Opcodes.ICONST_4));
+        list.add(new InsnNode(Opcodes.ISHR));
+        list.add(new InsnNode(Opcodes.AALOAD));
+        list.add(new VarInsnNode(Opcodes.ASTORE, 5));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 5));
+        list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 15));
+        list.add(new InsnNode(Opcodes.IAND));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 6));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 15));
+        list.add(new InsnNode(Opcodes.IAND));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 7));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 4));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 15));
+        list.add(new InsnNode(Opcodes.IAND));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 8));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 5));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 6));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 7));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 8));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/chunk/storage/ExtendedBlockStorage", "func_177485_a", "(III)Lnet/minecraft/block/state/IBlockState;", false));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(labelNode);
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/init/Blocks", "field_150350_a", "Lnet/minecraft/block/Block;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/block/Block", "func_176223_P", "()Lnet/minecraft/block/state/IBlockState;", false));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        return list;
     }
 
     private InsnList setLightLevel() {
