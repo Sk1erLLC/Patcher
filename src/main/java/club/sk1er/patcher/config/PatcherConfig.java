@@ -744,6 +744,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean resourceExploitFix = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Mob Spawning",
+        description = "Reduce memory usage by disabling the check for mob spawning despite the set game rule.\n§eThis will disable mob spawning in a singleplayer world.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean mobSpawningOptimization;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
