@@ -24,6 +24,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Arrays;
@@ -51,19 +52,13 @@ public class WorldTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        List<String> brightness =
-            Arrays.asList(
-                "checkLightFor",
-                "func_180500_c",
-                "getLightFromNeighborsFor",
-                "func_175671_l",
-                "getLightFromNeighbors",
-                "func_175705_a",
-                "getRawLight",
-                "func_175638_a",
-                "getLight",
-                "func_175699_k",
-                "func_175721_c");
+        List<String> brightness = Arrays.asList(
+            "checkLightFor", "func_180500_c",
+            "getLightFromNeighborsFor", "func_175671_l",
+            "getLightFromNeighbors", "func_175705_a",
+            "getRawLight", "func_175638_a",
+            "getLight", "func_175699_k", "func_175721_c"
+        );
 
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
@@ -120,8 +115,47 @@ public class WorldTransformer implements PatcherTransformer {
                 case "func_72833_a":
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getFasterSkyColor());
                     break;
+
+                case "func_72945_a":
+                case "getCollidingBoundingBoxes": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(0.25D)) {
+                            methodNode.instructions.insertBefore(next, filterEntities());
+                            break;
+                        }
+                    }
+
+                    break;
+                }
             }
         }
+    }
+
+    private InsnList filterEntities() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/entity/item/EntityTNTPrimed"));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/entity/item/EntityFallingBlock"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/entity/item/EntityItem"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/client/particle/EntityFX"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(ifne);
+        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList getFasterSkyColor() {

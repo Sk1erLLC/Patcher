@@ -8,7 +8,7 @@
  * Mount Vernon, NY
  * sk1er.club
  */
-package club.sk1er.patcher.asm.forge
+package club.sk1er.patcher.asm
 
 import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer

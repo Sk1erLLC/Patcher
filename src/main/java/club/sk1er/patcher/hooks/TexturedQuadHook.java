@@ -28,6 +28,7 @@ public class TexturedQuadHook {
         this.parent = parent;
     }
 
+    // todo inline parent into this method and make this static
     public void draw(WorldRenderer renderer, float scale) {
         Vec3 xVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[0].vector3D);
         Vec3 zVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[2].vector3D);

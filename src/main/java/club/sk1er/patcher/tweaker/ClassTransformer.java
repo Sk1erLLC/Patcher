@@ -12,7 +12,7 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.EnchantmentTransformer;
-import club.sk1er.patcher.asm.forge.GuiIngameTransformer;
+import club.sk1er.patcher.asm.GuiIngameTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
