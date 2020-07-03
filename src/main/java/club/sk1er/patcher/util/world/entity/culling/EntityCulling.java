@@ -46,7 +46,7 @@ public class EntityCulling {
     private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final EntityPlayerSP player = mc.thePlayer;
+    private static EntityPlayerSP player = null;
     private static CountDownLatch latch = null;
 
     /**
@@ -88,6 +88,7 @@ public class EntityCulling {
 
     public static void begin() {
         if (!PatcherConfig.entityCulling) return;
+        player = mc.thePlayer;
         exclude.clear();
 
         World world = mc.theWorld;
@@ -95,7 +96,6 @@ public class EntityCulling {
         if (world == null || player == null) {
             return;
         }
-
         int amt = 0;
 
         for (Entity entity : world.loadedEntityList) {
