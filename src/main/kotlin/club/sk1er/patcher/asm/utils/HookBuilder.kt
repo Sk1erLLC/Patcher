@@ -4,10 +4,7 @@ import club.sk1er.patcher.asm.utils.HookInlining.Companion.storeOpcode
 import codes.som.anthony.koffee.BlockAssembly
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
-import org.objectweb.asm.tree.AbstractInsnNode
-import org.objectweb.asm.tree.InsnList
-import org.objectweb.asm.tree.MethodNode
-import org.objectweb.asm.tree.VarInsnNode
+import org.objectweb.asm.tree.*
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -27,6 +24,7 @@ class HookBuilder {
     private var shouldRemapReturns = false
 
     var instructions = InsnList()
+    var tryCatchBlocks = mutableListOf<TryCatchBlockNode>()
 
     fun finalize() {
         val methodArgs = Type.getArgumentTypes(methodNode?.desc)
@@ -62,6 +60,9 @@ class HookBuilder {
         )
         finalInstructionList.insertBefore(finalInstructionList.first, paramsStoring)
         instructions.add(finalInstructionList)
+        if (methodNode?.tryCatchBlocks?.isNotEmpty() == true) {
+            tryCatchBlocks.addAll(methodNode?.tryCatchBlocks!!)
+        }
     }
 
     fun inject() {
@@ -69,6 +70,12 @@ class HookBuilder {
             injectBefore != null -> target?.instructions?.insertBefore(injectBefore, instructions)
             injectAfter != null -> target?.instructions?.insert(injectAfter, instructions)
             else -> target?.instructions?.add(instructions)
+        }
+    }
+
+    fun injectTryCatchNodes() {
+        if (tryCatchBlocks.isNotEmpty()) {
+            target?.tryCatchBlocks?.addAll(tryCatchBlocks)
         }
     }
 
@@ -126,9 +133,24 @@ fun injectInstructions(routine: HookBuilder.() -> Unit) {
     hookBuilder.inject()
 }
 
+fun injectInstructionsWithTryCatchNodes(routine: HookBuilder.() -> Unit) {
+    val hookBuilder = HookBuilder()
+    routine(hookBuilder)
+    hookBuilder.finalize()
+    hookBuilder.inject()
+    hookBuilder.injectTryCatchNodes()
+}
+
 fun getInstructions(routine: HookBuilder.() -> Unit): InsnList {
     val hookBuilder = HookBuilder()
     routine(hookBuilder)
     hookBuilder.finalize()
     return hookBuilder.instructions
+}
+
+fun getInstructionsWithTryCatchNodes(routine: HookBuilder.() -> Unit): Pair<InsnList, MutableList<TryCatchBlockNode>> {
+    val hookBuilder = HookBuilder()
+    routine(hookBuilder)
+    hookBuilder.finalize()
+    return Pair(hookBuilder.instructions, hookBuilder.tryCatchBlocks)
 }
