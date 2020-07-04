@@ -37,7 +37,7 @@ public class ASMDataTableHook {
      * Create a copy of {@link ASMDataTable}'s containerAnnotationData,
      * safely used as it's only used in {@link ASMDataTableHook#getAnnotationsFor(ModContainer, List, SetMultimap)}.
      */
-    private static Map<ModContainer, ImmutableSetMultimap<String, ASMDataTable.ASMData>> containerAnnotationData;
+    public static Map<ModContainer, ImmutableSetMultimap<String, ASMDataTable.ASMData>> containerAnnotationData;
 
     /**
      * Create a much more efficient annotation check by running in a parallel stream and wrapping
@@ -60,7 +60,7 @@ public class ASMDataTableHook {
         return containerAnnotationData.get(container);
     }
 
-    private static <K, V> Map<K, V> toImmutableMap(List<Pair<K, V>> pairs) {
+    public static <K, V> Map<K, V> toImmutableMap(List<Pair<K, V>> pairs) {
         ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
         for (Pair<K, V> pair : pairs) {
             builder.put(pair.getKey(), pair.getValue());
@@ -74,7 +74,7 @@ public class ASMDataTableHook {
      * once (in {@link ASMDataTable#getAnnotationsFor(ModContainer)} so we can create a direct copy without
      * worrying about other classes not being able to redirect to the proper method.
      */
-    private static class ModContainerPredicate implements Predicate<ASMDataTable.ASMData> {
+    public static class ModContainerPredicate implements Predicate<ASMDataTable.ASMData> {
         private final ModContainer container;
 
         public ModContainerPredicate(ModContainer container) {
