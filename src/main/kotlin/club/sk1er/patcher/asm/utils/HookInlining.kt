@@ -103,13 +103,13 @@ class HookInlining {
         fun getMethodNode(owner: Class<*>, name: String): MethodNode {
             val hookVisitor = HookVisitor(name)
             val stream = owner.classLoader.getResourceAsStream(owner.name.replace('.', '/') + ".class")
-            try {
-                val classReader = ClassReader(stream)
-                classReader.accept(hookVisitor, 0)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } finally {
-                stream?.close()
+            stream.use {
+                try {
+                    val classReader = ClassReader(stream)
+                    classReader.accept(hookVisitor, 0)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
 
             return hookVisitor.hookNode!!
