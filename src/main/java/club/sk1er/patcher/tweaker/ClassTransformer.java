@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.EnchantmentTransformer;
+import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.asm.GuiIngameTransformer;
 import club.sk1er.patcher.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
@@ -37,7 +38,6 @@ import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityTransformer;
 import club.sk1er.patcher.tweaker.asm.EntityXPOrbTransformer;
-import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.GameRulesValueTransformer;
 import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;

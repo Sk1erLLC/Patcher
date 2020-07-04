@@ -12,7 +12,6 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.database.AssetsDatabase;
-import club.sk1er.patcher.tweaker.asm.FallbackResourceManagerTransformer;
 import net.minecraft.client.resources.FallbackResourceManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourcePack;
@@ -33,7 +32,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
-    private static final AssetsDatabase database = new AssetsDatabase();
+    public static final AssetsDatabase database = new AssetsDatabase();
 
     static {
         try {
@@ -75,7 +74,7 @@ public class FallbackResourceManagerHook {
         throw new FileNotFoundException(location.toString());
     }
 
-    private static InputStream getFromFile(IResourcePack pack, ResourceLocation location) {
+    public static InputStream getFromFile(IResourcePack pack, ResourceLocation location) {
         try {
             return new BufferedInputStream(pack.getInputStream(location));
         } catch (Throwable ignored) {
