@@ -101,19 +101,18 @@ class HookInlining {
          */
         @JvmStatic
         fun getMethodNode(owner: Class<*>, name: String): MethodNode {
-            var classNode: ClassNode? = null
+            val hookVisitor = HookVisitor(name)
             val stream = owner.classLoader.getResourceAsStream(owner.name.replace('.', '/') + ".class")
             try {
-                classNode = ClassNode()
                 val classReader = ClassReader(stream)
-                classReader.accept(classNode, 0)
+                classReader.accept(hookVisitor, 0)
             } catch (e: IOException) {
                 e.printStackTrace()
             } finally {
                 stream?.close()
             }
 
-            return classNode?.methods?.first { it.name == name }!!
+            return hookVisitor.hookNode!!
         }
 
         /**
