@@ -34,13 +34,8 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
 
 
 
-                    it.instructions.insertBefore(it.instructions.first, assembleBlock {
-                        invokestatic("club/sk1er/patcher/hooks/GuiPlayerTabOverlayHook", "moveTabDownPushMatrix", void)
-                    }.first)
-
-                    it.instructions.insertBefore(it.instructions.last.previous, assembleBlock {
-                        invokestatic("club/sk1er/patcher/hooks/GuiPlayerTabOverlayHook", "moveTabDownPopMatrix", void)
-                    }.first)
+                    it.instructions.insertBefore(it.instructions.first, moveDownInstructions(it, true))
+                    it.instructions.insertBefore(it.instructions.last.previous, moveDownInstructions(it, false))
                 }
 
                 "drawPing", "func_175245_a" -> {
@@ -48,6 +43,28 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                 }
             }
         }
+    }
+
+    private fun moveDownInstructions(method: MethodNode, push: Boolean): InsnList {
+        val list = InsnList()
+        list.add(getInstructions {
+            if (push) {
+                of(GuiPlayerTabOverlayHook::moveTabDownPushMatrix)
+            } else {
+                of(GuiPlayerTabOverlayHook::moveTabDownPopMatrix)
+            }
+
+            target(method)
+
+            if (push) {
+                before(method.instructions.first)
+            } else {
+                before(method.instructions.last.previous)
+            }
+
+            remapReturns
+        })
+        return list
     }
 
     private fun createNumberPing(method: MethodNode): InsnList {
