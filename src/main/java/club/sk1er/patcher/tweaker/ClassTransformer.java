@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.EnchantmentTransformer;
 import club.sk1er.patcher.asm.GuiIngameTransformer;
+import club.sk1er.patcher.asm.forge.VertexLighterSmoothAoTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
@@ -102,7 +103,6 @@ import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModDiscovererTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
-import club.sk1er.patcher.tweaker.asm.forge.VertexLighterSmoothAoTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsKeycodesTransformer;

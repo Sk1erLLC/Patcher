@@ -2,6 +2,7 @@ package club.sk1er.patcher.asm.utils
 
 import club.sk1er.patcher.asm.utils.HookInlining.Companion.storeOpcode
 import codes.som.anthony.koffee.BlockAssembly
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.InsnList
@@ -54,10 +55,10 @@ class HookBuilder {
         }
 
         val finalInstructionList = HookInlining.getMethodInstructions(
-            methodNode!!,
-            shouldRemapReturns,
-            index,
-            *localVariableIndexes.toIntArray()
+                methodNode!!,
+                shouldRemapReturns,
+                index - methodArgs.size + if (methodNode!!.access and Opcodes.ACC_STATIC == Opcodes.ACC_STATIC) 1 else 0,
+                *localVariableIndexes.toIntArray()
         )
         finalInstructionList.insertBefore(finalInstructionList.first, paramsStoring)
         instructions.add(finalInstructionList)

@@ -16,10 +16,10 @@ class HookInlining {
     companion object {
         @JvmStatic
         fun getMethodInstructions(
-            methodNode: MethodNode,
-            remapReturns: Boolean,
-            startingIndex: Int,
-            vararg paramIndexes: Int
+                methodNode: MethodNode,
+                remapReturns: Boolean,
+                startingIndex: Int,
+                vararg paramIndexes: Int
         ): InsnList {
             val list = methodNode.instructions
             val static = methodNode.access and Opcodes.ACC_STATIC == Opcodes.ACC_STATIC
@@ -42,8 +42,17 @@ class HookInlining {
                             continue@loop
                         }
                     }
-
                     node.`var` += startingIndex
+
+                } else if (node is IincInsnNode) {
+                    for (i in offset until paramIndexes.size + offset) {
+                        if (node.`var` == i) {
+                            node.`var` = paramIndexes[i - offset]
+                            continue@loop
+                        }
+                    }
+                    node.`var` += startingIndex
+
                 } else if (remapReturns && node.opcode in Opcodes.IRETURN..Opcodes.RETURN) {
                     list.set(node, JumpInsnNode(Opcodes.GOTO, end))
                 }
@@ -54,10 +63,10 @@ class HookInlining {
 
         @JvmStatic
         fun getMethodInstructions(
-            owner: Class<*>,
-            name: String,
-            startingIndex: Int,
-            vararg paramIndexes: Int
+                owner: Class<*>,
+                name: String,
+                startingIndex: Int,
+                vararg paramIndexes: Int
         ): InsnList {
             return getMethodInstructions(owner, name, true, startingIndex, *paramIndexes)
         }
@@ -76,11 +85,11 @@ class HookInlining {
          */
         @JvmStatic
         fun getMethodInstructions(
-            owner: Class<*>,
-            name: String,
-            remapReturns: Boolean,
-            startingIndex: Int,
-            vararg paramIndexes: Int
+                owner: Class<*>,
+                name: String,
+                remapReturns: Boolean,
+                startingIndex: Int,
+                vararg paramIndexes: Int
         ): InsnList {
             return getMethodInstructions(getMethodNode(owner, name), remapReturns, startingIndex, *paramIndexes)
         }
@@ -120,11 +129,11 @@ class HookInlining {
          */
         @JvmStatic
         fun getMethodInstructionsWithNewVars(
-            owner: Class<*>,
-            name: String,
-            remapReturns: Boolean,
-            startingIndex: Int,
-            vararg params: InsnList
+                owner: Class<*>,
+                name: String,
+                remapReturns: Boolean,
+                startingIndex: Int,
+                vararg params: InsnList
         ): InsnList {
             val methodNode = getMethodNode(owner, name)
             val methodArgs = Type.getArgumentTypes(methodNode.desc)
@@ -140,17 +149,17 @@ class HookInlining {
             }
 
             val finalInstructionList =
-                getMethodInstructions(methodNode, remapReturns, index, *localVariableIndexes.toIntArray())
+                    getMethodInstructions(methodNode, remapReturns, index, *localVariableIndexes.toIntArray())
             finalInstructionList.insertBefore(finalInstructionList.first, paramsStoring)
             return finalInstructionList
         }
 
         @JvmStatic
         fun getMethodInstructionsWithNewVars(
-            owner: Class<*>,
-            name: String,
-            startingIndex: Int,
-            vararg params: InsnList
+                owner: Class<*>,
+                name: String,
+                startingIndex: Int,
+                vararg params: InsnList
         ): InsnList = getMethodInstructionsWithNewVars(owner, name, true, startingIndex, *params)
 
         /**
@@ -165,13 +174,15 @@ class HookInlining {
                 if (node === insertionPoint) break
                 if (node is VarInsnNode && node.`var` > maxIndex) {
                     maxIndex = node.`var`
+                } else if (node is IincInsnNode && node.`var` > maxIndex) {
+                    maxIndex = node.`var`
                 }
             }
 
             return max(
-                maxIndex,
-                Type.getArgumentTypes(methodNode.desc).size - if (methodNode.access and Opcodes.ACC_STATIC == Opcodes.ACC_STATIC) 1 else 0
-            )
+                    maxIndex,
+                    Type.getArgumentTypes(methodNode.desc).size) - if (methodNode.access and Opcodes.ACC_STATIC == Opcodes.ACC_STATIC) 1 else 0
+
         }
 
         /**
