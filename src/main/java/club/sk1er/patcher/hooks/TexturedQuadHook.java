@@ -22,14 +22,8 @@ import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings("unused")
 public class TexturedQuadHook {
-    private final TexturedQuad parent;
 
-    public TexturedQuadHook(TexturedQuad parent) {
-        this.parent = parent;
-    }
-
-    // todo inline parent into this method and make this static
-    public void draw(WorldRenderer renderer, float scale) {
+    public static void draw(TexturedQuad parent, WorldRenderer renderer, float scale) {
         Vec3 xVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[0].vector3D);
         Vec3 zVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[2].vector3D);
         Vec3 crossVertex = zVertex.crossProduct(xVertex).normalize();
