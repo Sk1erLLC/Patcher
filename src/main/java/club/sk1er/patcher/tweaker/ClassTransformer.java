@@ -11,10 +11,12 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.asm.EnchantmentTransformer;
 import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.asm.GuiIngameTransformer;
 import club.sk1er.patcher.asm.GuiPlayerTabOverlayTransformer;
+import club.sk1er.patcher.asm.LongHashMapTransformer;
 import club.sk1er.patcher.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.forge.VertexLighterSmoothAoTransformer;
@@ -26,7 +28,6 @@ import club.sk1er.patcher.tweaker.asm.BlockPotatoTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
-import club.sk1er.patcher.tweaker.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
 import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.asm.EffectRendererTransformer;
@@ -57,7 +58,6 @@ import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
-import club.sk1er.patcher.tweaker.asm.LongHashMapTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;

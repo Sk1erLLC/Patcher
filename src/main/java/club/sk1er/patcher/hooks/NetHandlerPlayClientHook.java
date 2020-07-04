@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -46,7 +47,7 @@ public class NetHandlerPlayClientHook {
             url = URLDecoder.decode(url.substring("level://".length()), StandardCharsets.UTF_8.toString());
 
             if (isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip"))) {
-                System.out.println("Malicious server tried to access " + url);
+                Patcher.instance.getLogger().warn("Malicious server tried to access " + url);
                 EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
                 if (player != null) {

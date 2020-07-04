@@ -118,7 +118,6 @@ public class MinecraftHook {
     }
 
     public void fix(boolean fullscreen) {
-        System.out.println("Running fix: " + fullscreen);
         try {
             if (fullscreen) {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
