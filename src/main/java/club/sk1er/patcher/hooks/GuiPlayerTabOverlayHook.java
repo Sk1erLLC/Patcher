@@ -11,8 +11,8 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
