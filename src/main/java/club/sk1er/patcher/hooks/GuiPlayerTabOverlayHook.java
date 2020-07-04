@@ -11,8 +11,8 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.tweaker.asm.GuiPlayerTabOverlayTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,17 +25,17 @@ import org.objectweb.asm.tree.ClassNode;
 @SuppressWarnings("unused")
 public class GuiPlayerTabOverlayHook {
 
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    public static final Minecraft mc = Minecraft.getMinecraft();
 
     public static void moveTabDownPushMatrix() {
-        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeight) {
+        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeightAllow) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 16, 0);
+            GlStateManager.translate(0, PatcherConfig.tabHeight, 0);
         }
     }
 
     public static void moveTabDownPopMatrix() {
-        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeight) {
+        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeightAllow) {
             GlStateManager.popMatrix();
         }
     }

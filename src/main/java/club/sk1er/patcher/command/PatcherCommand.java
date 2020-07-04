@@ -24,6 +24,7 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -70,37 +71,13 @@ public class PatcherCommand extends CommandBase {
             if (args[0].equalsIgnoreCase("mode")) {
                 switch (args[1]) {
                     case "vanilla": {
-                        PatcherConfig.cullParticles = false;
-                        PatcherConfig.entityCulling = false;
-                        PatcherConfig.searchingOptimizationFix = false;
-                        PatcherConfig.fullbright = false;
-                        PatcherConfig.disableConstantFogColorChecking = false;
-                        PatcherConfig.lowAnimationTick = false;
-                        PatcherConfig.staticParticleColor = false;
-                        PatcherConfig.optimizedFontRenderer = false;
-                        PatcherConfig.cacheFontData = false;
-                        PatcherConfig.removeCloudTransparency = false;
-                        PatcherConfig.gpuCloudRenderer = false;
-                        PatcherConfig.glErrorChecking = false;
-                        PatcherConfig.optimizedItemRenderer = false;
+                        toggleOptions(false);
                         Patcher.instance.getImagePreview().setMode("Vanilla");
                         sendNotification("Set mode: Vanilla", "&aSet mode: &cVanilla&a.");
                         return;
                     }
                     case "optimized": {
-                        PatcherConfig.cullParticles = true;
-                        PatcherConfig.entityCulling = true;
-                        PatcherConfig.searchingOptimizationFix = true;
-                        PatcherConfig.fullbright = true;
-                        PatcherConfig.disableConstantFogColorChecking = true;
-                        PatcherConfig.lowAnimationTick = true;
-                        PatcherConfig.staticParticleColor = true;
-                        PatcherConfig.optimizedFontRenderer = true;
-                        PatcherConfig.cacheFontData = true;
-                        PatcherConfig.removeCloudTransparency = true;
-                        PatcherConfig.gpuCloudRenderer = true;
-                        PatcherConfig.glErrorChecking = true;
-                        PatcherConfig.optimizedItemRenderer = true;
+                        toggleOptions(true);
                         Patcher.instance.getImagePreview().setMode("Optimized");
                         sendNotification("Set mode: Optimized", "&aSet mode: &eOptimized&a.");
                         return;
@@ -209,5 +186,24 @@ public class PatcherCommand extends CommandBase {
         } else {
             ChatUtilities.sendMessage(chatMessage);
         }
+    }
+
+    private void toggleOptions(boolean status) {
+        PatcherConfig.cullParticles = status;
+        PatcherConfig.entityCulling = status;
+        PatcherConfig.searchingOptimizationFix = status;
+        PatcherConfig.fullbright = status;
+        PatcherConfig.disableConstantFogColorChecking = status;
+        PatcherConfig.lowAnimationTick = status;
+        PatcherConfig.staticParticleColor = status;
+        PatcherConfig.optimizedFontRenderer = status;
+        PatcherConfig.cacheFontData = status;
+        PatcherConfig.removeCloudTransparency = status;
+        PatcherConfig.gpuCloudRenderer = status;
+        PatcherConfig.glErrorChecking = status;
+        PatcherConfig.optimizedItemRenderer = status;
+
+        // fullbright requires a chunk reload once toggled, perform automatically
+        Minecraft.getMinecraft().renderGlobal.loadRenderers();
     }
 }

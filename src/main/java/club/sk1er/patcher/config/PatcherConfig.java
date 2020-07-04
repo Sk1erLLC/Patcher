@@ -259,10 +259,18 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Tab Height",
-        description = "Move the tab overlay down 16 pixels when there's an active bossbar.",
+        description = "Move the tab overlay down n pixels when there's an active bossbar.",
         category = "Quality of Life", subcategory = "Tab"
     )
-    public static boolean tabHeight = true;
+    public static boolean tabHeightAllow = true;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Set Tab Height",
+        description = "Choose how many pixels down the tab will go when there's an active bossbar.",
+        category = "Quality of Life", subcategory = "Tab",
+        max = 24
+    )
+    public static int tabHeight = 10;
 
     @Property(
         type = PropertyType.SWITCH, name = "Constant Fog Color Checking",
@@ -743,6 +751,13 @@ public class PatcherConfig extends Vigilant {
         category = "Fixes", subcategory = "Security"
     )
     public static boolean resourceExploitFix = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Mob Spawning",
+        description = "Reduce memory usage by disabling the check for mob spawning despite the set game rule.\n§eThis will disable mob spawning in a singleplayer world.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean mobSpawningOptimization;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
