@@ -102,7 +102,7 @@ import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
 import club.sk1er.patcher.asm.forge.ModDiscovererTransformer;
-import club.sk1er.patcher.tweaker.asm.forge.ModelLoaderTransformer;
+import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
