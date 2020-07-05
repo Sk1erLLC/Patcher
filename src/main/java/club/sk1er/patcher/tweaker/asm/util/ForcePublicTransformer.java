@@ -11,7 +11,10 @@ import org.objectweb.asm.tree.MethodNode;
 public class ForcePublicTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"club.sk1er.patcher.hooks.ModelLoaderHook"};
+        return new String[]{
+            "club.sk1er.patcher.hooks.ModelLoaderHook",
+            "club.sk1er.patcher.hooks.ASMDataTableHook"
+        };
     }
 
     @Override

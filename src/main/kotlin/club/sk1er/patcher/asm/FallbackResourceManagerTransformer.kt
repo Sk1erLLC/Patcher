@@ -9,7 +9,7 @@ class FallbackResourceManagerTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf("net.minecraft.client.resources.FallbackResourceManager")
 
     override fun transform(classNode: ClassNode, name: String) {
-        classNode.methods.find {
+        classNode.methods.first {
             val methodName = mapMethodName(classNode, it)
             methodName == "getResource" || methodName == "func_110536_a"
         }?.apply {

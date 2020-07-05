@@ -13,8 +13,8 @@ package club.sk1er.patcher.asm.forge
 import club.sk1er.patcher.asm.utils.getInstructionsWithTryCatchNodes
 import club.sk1er.patcher.hooks.ModelLoaderHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import codes.som.anthony.koffee.insns.jvm.aload_0
-import codes.som.anthony.koffee.insns.jvm.getfield
+import codes.som.anthony.koffee.assembleBlock
+import codes.som.anthony.koffee.insns.jvm.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -72,7 +72,11 @@ class ModelLoaderTransformer : PatcherTransformer {
             param(0)
             param {
                 aload_0
-                getfield("net/minecraftforge/client/model/ModelLoader", "missingModel", "net/minecraftforge/client/model/IModel")
+                getfield(
+                    "net/minecraftforge/client/model/ModelLoader",
+                    "missingModel",
+                    "net/minecraftforge/client/model/IModel"
+                )
             }
             param {
                 aload_0
@@ -88,30 +92,24 @@ class ModelLoaderTransformer : PatcherTransformer {
         return list
     }
 
-    private fun createCallLoadItems(): InsnList {
-        val list = InsnList()
-        list.add(VarInsnNode(Opcodes.ALOAD, 0))
-        list.add(MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/client/model/ModelLoader", "loadItems", "()V", false))
-        list.add(InsnNode(Opcodes.RETURN))
-        return list
-    }
+    private fun createCallLoadItems() = assembleBlock {
+        aload_0
+        invokespecial("net/minecraftforge/client/model/ModelLoader", "loadItems", void)
+        _return
+    }.first
 
-    private fun createCallLoadBlocks(): InsnList {
-        val list = InsnList()
-        list.add(VarInsnNode(Opcodes.ALOAD, 0))
-        list.add(MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/client/model/ModelLoader", "loadBlocks", "()V", false))
-        list.add(InsnNode(Opcodes.RETURN))
-        return list
-    }
+    private fun createCallLoadBlocks() = assembleBlock {
+        aload_0
+        invokespecial("net/minecraftforge/client/model/ModelLoader", "loadBlocks", void)
+        _return
+    }.first
 
-    private fun clearMemory(): InsnList {
-        val list = InsnList()
-        list.add(VarInsnNode(Opcodes.ALOAD, 0))
-        list.add(FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/ModelLoader", "loadingExceptions", "Ljava/util/Map;"))
-        list.add(MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Map", "clear", "()V", true))
-        list.add(VarInsnNode(Opcodes.ALOAD, 0))
-        list.add(FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/ModelLoader", "missingVariants", "Ljava/util/Set;"))
-        list.add(MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Set", "clear", "()V", true))
-        return list
-    }
+    private fun clearMemory() = assembleBlock {
+        aload_0
+        getfield("net/minecraftforge/client/model/ModelLoader", "loadingExceptions", Map::class)
+        invokeinterface(Map::class, "clear", void)
+        aload_0
+        getfield("net/minecraftforge/client/model/ModelLoader", "missingVariants", Set::class)
+        invokeinterface(Set::class, "clear", void)
+    }.first
 }
