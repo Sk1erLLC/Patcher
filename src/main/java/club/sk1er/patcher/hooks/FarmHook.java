@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 
 @SuppressWarnings("unused")
 public class FarmHook {
-    private static final AxisAlignedBB[] AABB = {
+    public static final AxisAlignedBB[] AABB = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.1875D, 1.0D),
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D),

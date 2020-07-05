@@ -24,7 +24,7 @@ import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockPosTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockPotatoTransformer;
+import club.sk1er.patcher.asm.BlockPotatoTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
