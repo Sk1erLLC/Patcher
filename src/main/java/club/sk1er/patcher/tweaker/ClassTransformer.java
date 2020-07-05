@@ -28,6 +28,7 @@ import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockPistonBaseTransformer;
+import club.sk1er.patcher.tweaker.asm.BlockPistonStructureHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockPosTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
@@ -225,6 +226,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockPosTransformer());
         registerTransformer(new WorldServerTransformer());
         registerTransformer(new BlockPistonBaseTransformer());
+        registerTransformer(new BlockPistonStructureHelperTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
