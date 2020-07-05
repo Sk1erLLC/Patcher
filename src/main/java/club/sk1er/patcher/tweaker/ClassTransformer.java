@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.asm.BlockPotatoTransformer;
 import club.sk1er.patcher.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.asm.EnchantmentTransformer;
 import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
@@ -20,12 +21,14 @@ import club.sk1er.patcher.asm.LongHashMapTransformer;
 import club.sk1er.patcher.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
+import club.sk1er.patcher.asm.forge.ModDiscovererTransformer;
+import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.forge.VertexLighterSmoothAoTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.BakedQuadTransformer;
+import club.sk1er.patcher.tweaker.asm.BlockPistonBaseTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockPosTransformer;
-import club.sk1er.patcher.asm.BlockPotatoTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
@@ -101,8 +104,6 @@ import club.sk1er.patcher.tweaker.asm.forge.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.GuiModListTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.ModClassLoaderTransformer;
-import club.sk1er.patcher.asm.forge.ModDiscovererTransformer;
-import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.forge.VertexLighterFlatTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
@@ -223,6 +224,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityArmorStandTransformer());
         registerTransformer(new BlockPosTransformer());
         registerTransformer(new WorldServerTransformer());
+        registerTransformer(new BlockPistonBaseTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
