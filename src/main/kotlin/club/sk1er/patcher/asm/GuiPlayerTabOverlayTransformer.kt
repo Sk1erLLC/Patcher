@@ -1,10 +1,9 @@
 package club.sk1er.patcher.asm
 
 import club.sk1er.patcher.asm.utils.getInstructions
+import club.sk1er.patcher.asm.utils.injectInstructions
 import club.sk1er.patcher.hooks.GuiPlayerTabOverlayHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import codes.som.anthony.koffee.assembleBlock
-import codes.som.anthony.koffee.insns.jvm.invokestatic
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -20,14 +19,13 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                             val methodName = mapMethodNameFromNode(insn)
 
                             if (methodName == "drawRect" || methodName == "func_73734_a") {
-                                it.instructions.insertBefore(insn, assembleBlock {
-                                    invokestatic(
-                                        "club/sk1er/patcher/hooks/GuiPlayerTabOverlayHook",
-                                        "getNewColor",
-                                        int,
-                                        int
-                                    )
-                                }.first)
+                                injectInstructions {
+                                    of(GuiPlayerTabOverlayHook::getNewColor)
+                                    into(it)
+                                    before(insn)
+                                    param {} // Left blank as value is already on the stack
+                                    remapReturns
+                                }
                             }
                         }
                     }
