@@ -33,6 +33,7 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -96,18 +97,14 @@ public class EntityCulling {
         if (world == null || player == null) {
             return;
         }
-        int amt = 0;
 
-        for (Entity entity : world.loadedEntityList) {
-            if (entity instanceof EntityLivingBase && entity != player) {
-                amt++;
-            }
-        }
+        latch = new CountDownLatch(world.loadedEntityList.size());
 
-        latch = new CountDownLatch(amt);
-
-        for (Entity entity : world.loadedEntityList) {
+        Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
+        while (entityIterator.hasNext()) {
+            Entity entity = entityIterator.next();
             if (!(entity instanceof EntityLivingBase) || entity == player) {
+                latch.countDown();
                 continue;
             }
 
@@ -144,6 +141,7 @@ public class EntityCulling {
                 latch.countDown();
             });
         }
+        entityIterator = null;
     }
 
     /**
