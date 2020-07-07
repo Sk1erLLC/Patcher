@@ -22,6 +22,7 @@ public class ParticleCulling {
 
     public static boolean shouldRender(EntityFX entityFX) {
         if (!PatcherConfig.cullParticles) return true;
+        if (entityFX == null) return false;
         return camera == null || entityFX.distanceWalkedModified > -1;
     }
 }

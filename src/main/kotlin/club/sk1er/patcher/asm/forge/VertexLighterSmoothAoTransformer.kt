@@ -21,11 +21,8 @@ class VertexLighterSmoothAoTransformer : PatcherTransformer {
     /**
      * The class name that's being transformed
      *
-     * @return the class name
      */
-    override fun getClassName(): Array<String> {
-        return arrayOf("net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo")
-    }
+    override fun getClassName() = arrayOf("net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo")
 
     /**
      * Perform any asm in order to transform code
@@ -51,7 +48,15 @@ class VertexLighterSmoothAoTransformer : PatcherTransformer {
                     fload_3
                     fload(4)
                     fload(5)
-                    invokevirtual("net/minecraftforge/client/model/pipeline/VertexLighterSmoothAo", "calcLightmap", void, FloatArray::class, float, float, float)
+                    invokevirtual(
+                        "net/minecraftforge/client/model/pipeline/VertexLighterSmoothAo",
+                        "calcLightmap",
+                        void,
+                        FloatArray::class,
+                        float,
+                        float,
+                        float
+                    )
                     _return
                 }.first)
             }
