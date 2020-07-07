@@ -346,7 +346,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(
             new MethodInsnNode(
                 Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer",
+                "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer",
                 "getModifier",
                 "()F",
                 false)); // Call my method
@@ -358,7 +358,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(
             new MethodInsnNode(
                 Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer",
+                "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer",
                 "resetCurrent",
                 "()V",
                 false)); // Call my method
@@ -368,7 +368,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList setZoomed(int zoomActiveIndex) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ILOAD, zoomActiveIndex));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/OptifineEntityRendererTransformer", "zoomed", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "zoomed", "Z"));
         return list;
     }
 }

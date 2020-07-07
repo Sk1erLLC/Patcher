@@ -74,7 +74,7 @@ public class TagRendererTransformer implements PatcherTransformer {
         list.add(
             new MethodInsnNode(
                 Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/tweaker/asm/optifine/OptifineRenderTransformer",
+                "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer",
                 "checkPerspective",
                 "()F",
                 false));

@@ -142,7 +142,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
     private InsnList timesByModifier() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/tweaker/asm/optifine/OptifineRenderTransformer", "checkPerspective",
+            "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer", "checkPerspective",
             "()F", false));
         list.add(new InsnNode(Opcodes.FMUL));
         return list;
