@@ -9,16 +9,16 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.tweaker.optifine;
+package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineEntityRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineFontRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderItemFrameTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineRendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.RenderItemFrameTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.RenderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.RendererLivingEntityTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.I7.MapGenStructureReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
@@ -37,24 +37,41 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class OptifineClassTransformer implements IClassTransformer {
+/**
+ * Used for editing other mods (OptiFine, LevelHead, TNT Timer, etc) after they've loaded.
+ */
+public class ModClassTransformer implements IClassTransformer {
 
-    private final Logger LOGGER = LogManager.getLogger("Patcher - OptiFine Class Transformer");
+    private final Logger LOGGER = LogManager.getLogger("Patcher - Mod Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
-    public OptifineClassTransformer() {
-        registerTransformer(new OptifineEntityRendererTransformer());
-        registerTransformer(new OptifineRenderTransformer());
-        registerTransformer(new OptifineRendererLivingEntityTransformer());
-        registerTransformer(new OptifineRenderItemFrameTransformer());
+    public ModClassTransformer() {
+        // OptiFine loads these classes after we do, overwriting our changes,
+        // so transform it AFTER OptiFine loads.
+        registerTransformer(new EntityRendererTransformer());
+        registerTransformer(new RenderTransformer());
+        registerTransformer(new RendererLivingEntityTransformer());
+        registerTransformer(new RenderItemFrameTransformer());
 
+        // PingTag by Powns
         registerTransformer(new TagRendererTransformer());
         registerTransformer(new TagRendererListenerTransformer());
+
+        // LevelHead by Sk1er LLC (i know that guy!)
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
+
+        // TNT Timer by Sk1er LLC
         registerTransformer(new TNTTimeTransformer());
+
+        // ResourcePackOrganizer by chylex & ResourcePackManager by aycy (shares similar method)
         registerTransformer(new GuiCustomResourcePacks());
 
-        // Reflection Optimizations
+        // OptiFine uses Reflection for compatibility between Forge & itself,
+        // and since we know they're using Forge, we're able to change methods back
+        // to how they normally were (using Forge's changes).
+        //
+        // Only I7 & L5 are supported due to them being the two biggest 1.8.9 versions
+        // of OptiFine (I7 - 5.69% / L5 - 6.48%, attributing to OptiFine's biggest versions up to 1.15.2).
         switch (ClassTransformer.optifineVersion) {
             case "I7":
                 LOGGER.info("Found optifine I7");

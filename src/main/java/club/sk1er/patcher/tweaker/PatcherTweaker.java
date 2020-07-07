@@ -46,7 +46,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
             URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
             File mod = new File(path.toURI().getSchemeSpecificPart().split("!")[0]);
-            loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.optifine.OptifinePatcherTweaker", mod);
+            loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
         } catch (Exception e) {
             System.out.println("Failed creating a second tweaker");
         }

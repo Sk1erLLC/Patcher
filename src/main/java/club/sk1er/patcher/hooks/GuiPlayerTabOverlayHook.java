@@ -22,7 +22,6 @@ import org.objectweb.asm.tree.ClassNode;
 /**
  * Used in {@link GuiPlayerTabOverlayTransformer#transform(ClassNode, String)}
  */
-@SuppressWarnings("unused")
 public class GuiPlayerTabOverlayHook {
 
     public static final Minecraft mc = Minecraft.getMinecraft();
@@ -40,6 +39,7 @@ public class GuiPlayerTabOverlayHook {
         }
     }
 
+    @SuppressWarnings("unused")
     public static int getNewColor(int color) {
         if (!PatcherConfig.customTabOpacity) return color;
         int prevOpacity = Math.abs(color >> 24);

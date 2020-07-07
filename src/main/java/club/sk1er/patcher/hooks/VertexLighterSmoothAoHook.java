@@ -15,7 +15,6 @@ import club.sk1er.patcher.hooks.accessors.IVertexLighterFlat;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 
-@SuppressWarnings("unused")
 public class VertexLighterSmoothAoHook {
     public static void fastCalcLightmap(VertexLighterFlat lighter, float[] lightmap, float x, float y, float z) {
         x *= 2;

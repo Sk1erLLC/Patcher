@@ -26,7 +26,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
 
-public class OptifineRenderTransformer implements PatcherTransformer {
+public class RenderTransformer implements PatcherTransformer {
 
     /**
      * The class name that's being transformed

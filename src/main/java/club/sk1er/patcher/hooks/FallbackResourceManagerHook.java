@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.database.AssetsDatabase;
 import net.minecraft.client.resources.FallbackResourceManager;
 import net.minecraft.client.resources.IResource;
@@ -29,7 +30,6 @@ import java.util.Set;
 /**
  * Used in {@link FallbackResourceManagerTransformer#transform(ClassNode, String)}
  */
-@SuppressWarnings("unused")
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
     public static final AssetsDatabase database = new AssetsDatabase();
@@ -42,6 +42,7 @@ public class FallbackResourceManagerHook {
         }
     }
 
+    @SuppressWarnings("unused")
     public static void clearCache() {
         negativeResourceCache.clear();
     }

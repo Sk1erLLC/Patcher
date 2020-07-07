@@ -27,7 +27,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
-public class OptifineRendererLivingEntityTransformer implements PatcherTransformer {
+public class RendererLivingEntityTransformer implements PatcherTransformer {
 
     /**
      * The class name that's being transformed

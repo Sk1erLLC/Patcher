@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.tweaker.optifine;
+package club.sk1er.patcher.tweaker.other;
 
 import java.util.Map;
 import net.minecraftforge.common.ForgeVersion;
@@ -17,11 +17,12 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class OptifinePatcherTweaker implements IFMLLoadingPlugin {
+@SuppressWarnings("unused")
+public class ModTweaker implements IFMLLoadingPlugin {
 
   @Override
   public String[] getASMTransformerClass() {
-    return new String[] {OptifineClassTransformer.class.getName()};
+    return new String[] {ModClassTransformer.class.getName()};
   }
 
   @Override

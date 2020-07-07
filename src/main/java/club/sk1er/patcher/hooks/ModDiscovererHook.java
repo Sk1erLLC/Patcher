@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 public class ModDiscovererHook {
     public static List<ModContainer> identifyModsAsync(List<ModCandidate> candidates, ASMDataTable dataTable, List<File> nonModLibs) {
         AsyncModDiscoverer asyncModDiscoverer = new AsyncModDiscoverer(candidates, nonModLibs, dataTable);

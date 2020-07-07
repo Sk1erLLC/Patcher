@@ -23,7 +23,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
 
-public class OptifineRenderItemFrameTransformer implements PatcherTransformer {
+public class RenderItemFrameTransformer implements PatcherTransformer {
 
     /**
      * The class name that's being transformed

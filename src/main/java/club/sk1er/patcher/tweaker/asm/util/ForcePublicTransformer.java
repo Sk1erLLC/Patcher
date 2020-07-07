@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 /**
  * Used to make all methods within a class public to avoid {@link IllegalAccessException} when inlining hooks.
+ * Typically only ever used in the case of a lambda, as those are inner classes that are set to private.
  */
 public class ForcePublicTransformer implements PatcherTransformer {
     @Override

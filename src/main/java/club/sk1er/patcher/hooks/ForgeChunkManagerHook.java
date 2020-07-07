@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * Used in {@link ForgeChunkManagerTransformer#transform(ClassNode, String)}
  */
-@SuppressWarnings("unused")
 public class ForgeChunkManagerHook {
 
     public static ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunksFor(World world, Map<World, ImmutableSetMultimap<ChunkCoordIntPair, Ticket>> forcedChunks) {

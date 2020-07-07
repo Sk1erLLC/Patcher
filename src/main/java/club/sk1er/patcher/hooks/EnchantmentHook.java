@@ -18,8 +18,8 @@ import org.objectweb.asm.tree.ClassNode;
 
 /**
  * Used in {@link EnchantmentTransformer#transform(ClassNode, String)}
+ * todo: this doesn't need to be a hook at all
  */
-@SuppressWarnings("unused")
 public class EnchantmentHook {
     public static String getNumericalName(Enchantment enchantment, int level) {
         return StatCollector.translateToLocal(enchantment.getName()) + " " + level;

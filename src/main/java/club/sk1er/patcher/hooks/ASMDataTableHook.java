@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 /**
  * Much more efficient version of {@link ASMDataTable}, used in {@link ASMDataTableTransformer#transform(ClassNode, String)}.
  */
-@SuppressWarnings("unused")
 public class ASMDataTableHook {
 
     /**

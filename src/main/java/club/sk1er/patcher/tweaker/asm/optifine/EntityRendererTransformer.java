@@ -38,7 +38,7 @@ import java.util.ListIterator;
 
 // By LlamaLad7
 @SuppressWarnings("unused")
-public class OptifineEntityRendererTransformer implements PatcherTransformer {
+public class EntityRendererTransformer implements PatcherTransformer {
     private static final float normalModifier = 4f;
     private static float currentModifier = 4f;
     public static boolean zoomed = false;
