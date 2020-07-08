@@ -16,6 +16,7 @@ import club.sk1er.patcher.asm.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.asm.EnchantmentTransformer;
 import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.asm.GuiIngameTransformer;
+import club.sk1er.patcher.asm.GuiMultiplayerTransformer;
 import club.sk1er.patcher.asm.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.asm.LongHashMapTransformer;
 import club.sk1er.patcher.asm.TexturedQuadTransformer;
@@ -86,6 +87,7 @@ import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
+import club.sk1er.patcher.tweaker.asm.ServerSelectionListTransformer;
 import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
@@ -227,6 +229,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new WorldServerTransformer());
         registerTransformer(new BlockPistonBaseTransformer());
         registerTransformer(new BlockPistonStructureHelperTransformer());
+        registerTransformer(new GuiMultiplayerTransformer());
+        registerTransformer(new ServerSelectionListTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

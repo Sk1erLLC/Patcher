@@ -56,7 +56,6 @@ public final class EnhancedFontRenderer implements Enhancement {
     public void tick() {
         stringCache.invalidateAll(obfuscated);
         obfuscated.clear();
-
     }
 
     public int getGlList() {

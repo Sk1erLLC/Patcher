@@ -156,8 +156,7 @@ public class EntityTrace {
                 }
             }
 
-            if (targetEntity != null && objectPosition != null
-                && position.distanceTo(objectPosition) > 12) {
+            if (targetEntity != null && objectPosition != null && position.distanceTo(objectPosition) > 12) {
                 targetEntity = null;
                 mc.objectMouseOver = new MovingObjectPosition(MovingObjectType.MISS, objectPosition, null, new BlockPos(objectPosition));
             }

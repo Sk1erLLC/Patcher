@@ -16,7 +16,7 @@ public final class CachedString {
     private final String text;
     private final int listId;
 
-    private float height;
+    private final float height;
     private float width;
 
     private float lastRed;

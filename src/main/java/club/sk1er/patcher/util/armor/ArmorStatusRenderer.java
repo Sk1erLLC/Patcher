@@ -27,14 +27,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ArmorStatusRenderer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
+    private EntityPlayer player = null;
 
     @SubscribeEvent
     public void onRenderArmor(GuiScreenEvent.DrawScreenEvent e) {
-        if ((PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) && (
-            e.gui instanceof GuiInventory || e.gui instanceof GuiContainerCreative)) {
+        if ((PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) && (e.gui instanceof GuiInventory || e.gui instanceof GuiContainerCreative)) {
             ScaledResolution res = new ScaledResolution(mc);
-            String message = getArmorString();
-            mc.currentScreen.drawString(mc.fontRendererObj, message, 10, res.getScaledHeight() - 16, -1);
+            mc.fontRendererObj.drawString(getArmorString(), 10, res.getScaledHeight() - 16, -1, true);
         }
     }
 
@@ -67,7 +66,10 @@ public class ArmorStatusRenderer {
     }
 
     private double getArmorPotential(boolean getProj) {
-        EntityPlayer player = mc.thePlayer;
+        if (player == null) {
+            player = mc.thePlayer;
+        }
+
         double armor = 0;
         int epf = 0;
         int resistance = 0;

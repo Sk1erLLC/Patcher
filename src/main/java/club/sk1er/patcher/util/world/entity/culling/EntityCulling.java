@@ -101,6 +101,7 @@ public class EntityCulling {
         latch = new CountDownLatch(world.loadedEntityList.size());
 
         Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
+        //noinspection WhileLoopReplaceableByForEach
         while (entityIterator.hasNext()) {
             Entity entity = entityIterator.next();
             if (!(entity instanceof EntityLivingBase) || entity == player) {
