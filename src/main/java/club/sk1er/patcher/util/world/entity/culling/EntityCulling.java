@@ -60,6 +60,10 @@ public class EntityCulling {
      * @return The status on if the nametag is liable for rendering.
      */
     public static boolean canRenderName(EntityLivingBase entity) {
+        if (player == null) {
+            player = mc.thePlayer;
+        }
+
         if (entity instanceof EntityPlayer && entity != player) {
             Team otherEntityTeam = entity.getTeam();
             Team playerTeam = player.getTeam();
