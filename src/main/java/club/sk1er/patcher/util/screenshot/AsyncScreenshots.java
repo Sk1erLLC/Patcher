@@ -360,15 +360,16 @@ public class AsyncScreenshots implements Runnable {
 
         // Returns true if flavor is supported
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return DataFlavor.imageFlavor.equals(flavor);
+            return DataFlavor.imageFlavor == flavor;
         }
 
         // Returns image
         @NotNull
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
-            if (!DataFlavor.imageFlavor.equals(flavor)) {
+            if (DataFlavor.imageFlavor != flavor) {
                 throw new UnsupportedFlavorException(flavor);
             }
+
             return image;
         }
 

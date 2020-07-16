@@ -55,7 +55,7 @@ public class ModelLoaderHook {
         IFlexibleBakedModel missingBaked = missingModel.bake(missingModel.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 
         for (Map.Entry<ModelResourceLocation, IModel> entry : stateModels.entrySet()) {
-            if (entry.getValue().equals(modelLoader.getMissingModel())) {
+            if (entry.getValue() == modelLoader.getMissingModel()) {
                 modelLoader.bakedRegistry.putObject(entry.getKey(), missingBaked);
             } else {
                 modelLoader.bakedRegistry.putObject(entry.getKey(), entry.getValue().bake(entry.getValue().getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter()));

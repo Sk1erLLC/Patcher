@@ -100,7 +100,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                             }
 
                             while ((next = next.getNext()) != null) {
-                                if (next.equals(node)) {
+                                if (next == node) {
                                     InsnList insnList = new InsnList();
                                     insnList.add(labelNode);
                                     insnList.add(

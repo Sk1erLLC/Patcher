@@ -43,8 +43,7 @@ public class MenuPreviewHandler {
 
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
-        if (!event.type.equals(RenderGameOverlayEvent.ElementType.ALL)) return;
-
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
         WorldClient world = mc.theWorld;
         ScaledResolution resolution = new ScaledResolution(mc);

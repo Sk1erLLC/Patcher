@@ -50,7 +50,7 @@ public class Viewer {
      */
     @SubscribeEvent
     public void renderScreenshot(RenderGameOverlayEvent.Post event) {
-        if (!event.type.equals(RenderGameOverlayEvent.ElementType.TEXT)) return;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
         if (currentWindow == null) return;
         currentWindow.draw();
     }

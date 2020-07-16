@@ -61,7 +61,7 @@ public class FovHandler {
             base += (float) (0.15000000596046448 * PatcherConfig.sprintingFovModifier);
         }
 
-        if (event.entity.getItemInUse() != null && event.entity.getItemInUse().getItem().equals(Items.bow)) {
+        if (event.entity.getItemInUse() != null && event.entity.getItemInUse().getItem() == Items.bow) {
             int duration = (int) Math.min(event.entity.getItemInUseDuration(), MAX_BOW_TICKS);
             float modifier = MODIFIER_BY_TICK.get(duration);
             base -= modifier * PatcherConfig.bowFovModifier;

@@ -82,7 +82,7 @@ public class ASMDataTableHook {
 
         @Override
         public boolean apply(ASMDataTable.ASMData data) {
-            return container.getSource().equals(Objects.requireNonNull(data).getCandidate().getModContainer());
+            return container.getSource() == Objects.requireNonNull(data).getCandidate().getModContainer();
         }
     }
 }

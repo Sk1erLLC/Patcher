@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -51,42 +52,39 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                int fIndex = -1;
+                int f1Index = -1;
+                int f2Index = -1;
+
+                for (LocalVariableNode var : methodNode.localVariables) {
+                    switch (var.name) {
+                        case "var10":
+                        case "f":
+                            fIndex = var.index;
+                            break;
+
+                        case "var11":
+                        case "f1":
+                            f1Index = var.index;
+                            break;
+
+                        case "var12":
+                        case "f2":
+                            f2Index = var.index;
+                            break;
+                    }
+                }
+
                 /*
                 Find if (shouldSit && entity.ridingEntity instanceof EntityLivingBase)
-                    go back to find vars # of f2, f1, f
-
                     go forward until we find the label we jump to if that statement if false, retract 1 insn, then read f2 = f1 -f
                  */
-                int f = 0;
-                int f1 = 0;
-                int f2 = 0;
 
-                int i = 0;
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
                     if (next instanceof TypeInsnNode) {
                         if (next.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode) next).desc.equals("net/minecraft/entity/EntityLivingBase")) {
-
-                            //Find values of f2,f1,f
-                            while ((next = next.getPrevious()) != null) {
-                                if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.FSTORE) {
-                                    if (i == 0) {
-                                        f2 = ((VarInsnNode) next).var;
-                                    } else if (i == 1) {
-                                        f1 = ((VarInsnNode) next).var;
-                                    } else {
-                                        f = ((VarInsnNode) next).var;
-                                    }
-                                    i++;
-                                    if (i == 3) {
-                                        break;
-                                    }
-                                }
-                            }
-                            if (next == null) {
-                                return;
-                            }
-
                             LabelNode node = null; //Find label
                             while ((next = next.getNext()) != null) {
                                 if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFEQ) {
@@ -94,6 +92,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                                     break;
                                 }
                             }
+
                             if (next == null) {
                                 return;
                             }
@@ -106,23 +105,22 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                                     break;
                                 }
                             }
+
                             if (next == null) {
                                 return;
                             }
 
                             while ((next = next.getNext()) != null) {
-                                if (next.equals(node)) {
+                                if (next == node) {
                                     InsnList insnList = new InsnList();
                                     insnList.add(labelNode);
-                                    insnList.add(
-                                        new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "headRotation",
-                                            "Z"));
+                                    insnList.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "headRotation", "Z"));
                                     LabelNode ifeq = new LabelNode();
                                     insnList.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-                                    insnList.add(new VarInsnNode(Opcodes.FLOAD, f1));
-                                    insnList.add(new VarInsnNode(Opcodes.FLOAD, f));
+                                    insnList.add(new VarInsnNode(Opcodes.FLOAD, f1Index));
+                                    insnList.add(new VarInsnNode(Opcodes.FLOAD, fIndex));
                                     insnList.add(new InsnNode(Opcodes.FSUB));
-                                    insnList.add(new VarInsnNode(Opcodes.FSTORE, f2));
+                                    insnList.add(new VarInsnNode(Opcodes.FSTORE, f2Index));
                                     insnList.add(ifeq);
                                     methodNode.instructions.insertBefore(next, insnList);
                                     return;
@@ -131,9 +129,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            }
-
-            if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+            } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
             }
         }

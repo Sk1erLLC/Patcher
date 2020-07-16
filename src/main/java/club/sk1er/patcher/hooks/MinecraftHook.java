@@ -53,9 +53,10 @@ public class MinecraftHook {
     }
 
     public static boolean fullscreen() {
-        if (!PatcherConfig.instantFullscreen || !PatcherConfig.windowedFullscreen || !Util.getOSType().equals(Util.EnumOS.WINDOWS)) {
+        if (!PatcherConfig.instantFullscreen || !PatcherConfig.windowedFullscreen || Util.getOSType() != Util.EnumOS.WINDOWS) {
             return false;
         }
+
         Minecraft minecraft = Minecraft.getMinecraft();
         minecraft.fullscreen = !minecraft.fullscreen;
 
