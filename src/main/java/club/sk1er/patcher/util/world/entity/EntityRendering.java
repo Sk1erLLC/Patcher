@@ -60,8 +60,13 @@ public class EntityRendering {
      */
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
-        if ((PatcherConfig.disableArmorstands && event.entity instanceof EntityArmorStand) ||
-            (PatcherConfig.disableSemitransparentEntities && event.entity.isInvisible() && event.entity instanceof EntityPlayer)) {
+        EntityLivingBase entity = event.entity;
+
+        if ((PatcherConfig.disableArmorstands && entity instanceof EntityArmorStand) || (PatcherConfig.disableSemitransparentEntities && entity.isInvisible() && entity instanceof EntityPlayer)) {
+            event.setCanceled(true);
+        }
+
+        if (entity.getDistanceToEntity(mc.thePlayer) >= PatcherConfig.entityRenderDistance) {
             event.setCanceled(true);
         }
     }

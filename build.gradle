@@ -36,6 +36,8 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = project.mcpVersion
     makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+
+    clientJvmArgs += "-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker"
 }
 
 compileKotlin {

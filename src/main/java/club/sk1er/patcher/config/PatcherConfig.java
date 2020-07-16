@@ -759,6 +759,14 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean mobSpawningOptimization;
 
+    @Property(
+        type = PropertyType.SLIDER, name = "Entity Render Distance",
+        description = "Stop rendering entities outside of the specified radius.",
+        category = "Performance", subcategory = "Rendering",
+        min = 1, max = 64
+    )
+    public static int entityRenderDistance = 64;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

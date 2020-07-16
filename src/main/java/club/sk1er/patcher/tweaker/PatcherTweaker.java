@@ -13,35 +13,33 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.patcher.Patcher;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.relauncher.CoreModManager;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.CoreModManager;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-
 import java.util.Map;
 import java.util.Set;
-
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public static long clientLoadTime;
 
+    @SuppressWarnings("unchecked")
     public PatcherTweaker() {
         clientLoadTime = System.currentTimeMillis();
 
         try {
-          FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
+            // Create a second internal tweaker, creating after OptiFine does its thing.
+            FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
             LaunchClassLoader classLoader = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, launchHandler, "classLoader");
             Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
             URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
@@ -50,8 +48,10 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         } catch (Exception e) {
             System.out.println("Failed creating a second tweaker");
         }
+
         boolean lwjglUnlock = false;
         try {
+            // Unlock LWJGL, allowing for it to be transformed.
             Field transformerExceptions = LaunchClassLoader.class.getDeclaredField("classLoaderExceptions");
             transformerExceptions.setAccessible(true);
             Object o = transformerExceptions.get(Launch.classLoader);
@@ -59,8 +59,9 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        if(!lwjglUnlock) {
-            System.out.println("Failed to unlock LWJGL. Mouse button 4 fix thing will not work");
+
+        if (!lwjglUnlock) {
+            System.out.println("Failed to unlock LWJGL, several fixes will not work.");
         }
     }
 
