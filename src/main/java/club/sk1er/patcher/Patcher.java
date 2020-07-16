@@ -20,7 +20,7 @@ import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
-import club.sk1er.patcher.screen.tab.TabToggleHandler;
+import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
@@ -32,6 +32,7 @@ import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindDropStack;
 import club.sk1er.patcher.util.keybind.KeybindHandler;
@@ -67,10 +68,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -101,6 +105,8 @@ public class Patcher {
      */
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
+    private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
+
     /**
      * Create an instance of our config using {@link Vigilant}.
      */
@@ -119,23 +125,11 @@ public class Patcher {
      */
     private CloudHandler cloudHandler;
 
-    /**
-     * Create a keybind for {@link KeybindNameHistory}, allowing people to check the name history of any user.
-     */
     private KeyBinding nameHistory;
-
-    /**
-     * Create a keybind for {@link KeybindDropStack}, allowing people to drop entire stacks on computers that don't
-     * allow it, such as macOS.
-     */
     private KeyBinding dropKeybind;
-
-
-    /**
-     * Create a keybind for {@link KeybindDropStack}, allowing people to drop entire stacks on computers that don't
-     * allow it, such as macOS.
-     */
     private KeyBinding dropModifier;
+    private KeyBinding chatPeek;
+
     private ImagePreview imagePreview;
 
     /**
@@ -171,6 +165,7 @@ public class Patcher {
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
         ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
+        ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
@@ -197,7 +192,7 @@ public class Patcher {
 
         registerClass(this);
         registerClass(target);
-        registerClass(new TabToggleHandler());
+        registerClass(new MenuPreviewHandler());
         registerClass(new EntityRendering());
         registerClass(new FovHandler());
         registerClass(new ChatHandler());
@@ -214,6 +209,7 @@ public class Patcher {
         registerClass(Viewer.getInstance());
 
         checkLogs();
+        loadBlacklistedServers();
     }
 
     @EventHandler
@@ -359,8 +355,6 @@ public class Patcher {
      * Save the currently blacklisted servers to a text file, allowing the file to be read on server join.
      */
     public void saveBlacklistedServers() {
-        File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
             if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
                 return;
@@ -374,6 +368,22 @@ public class Patcher {
                 writer.write(server + System.lineSeparator());
             }
         } catch (IOException ignored) {
+        }
+    }
+
+    private void loadBlacklistedServers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(blacklistedServersFile))) {
+            if (!blacklistedServersFile.exists()) {
+                return;
+            }
+
+            String servers;
+
+            while ((servers = reader.readLine()) != null) {
+                blacklistedServers.add(servers);
+            }
+        } catch (IOException e) {
+            LOGGER.error("Failed to load blacklisted servers.", e);
         }
     }
 
@@ -431,5 +441,9 @@ public class Patcher {
      */
     public KeyBinding getDropKeybind() {
         return dropKeybind;
+    }
+
+    public KeyBinding getChatPeek() {
+        return chatPeek;
     }
 }

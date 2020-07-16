@@ -20,6 +20,6 @@ import org.lwjgl.input.Keyboard;
  */
 public class KeybindNameHistory extends KeyBinding {
     public KeybindNameHistory() {
-        super("Name History", Keyboard.KEY_N, "Patcher");
+        super("Name History", Keyboard.KEY_NONE, "Patcher");
     }
 }
