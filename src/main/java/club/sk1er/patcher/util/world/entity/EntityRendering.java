@@ -66,7 +66,7 @@ public class EntityRendering {
             event.setCanceled(true);
         }
 
-        if (entity.getDistanceToEntity(mc.thePlayer) > PatcherConfig.entityRenderDistance) {
+        if ((entity.getDistanceToEntity(mc.thePlayer) > PatcherConfig.entityRenderDistance) && PatcherConfig.entityRenderDistanceToggle) {
             event.setCanceled(true);
         }
     }
