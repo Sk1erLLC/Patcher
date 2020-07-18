@@ -19,7 +19,6 @@ import club.sk1er.patcher.util.hash.StringHash;
 import kotlin.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.IResource;
@@ -47,6 +46,7 @@ public final class FontRendererHook {
     private float fontTexWidth = 16 * texSheetDim;
     private int regularCharDim = 128;
     private boolean drawing = false;
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     public FontRendererHook(FontRenderer fontRenderer) {
         this.fontRenderer = fontRenderer;
@@ -57,22 +57,25 @@ public final class FontRendererHook {
         for (int i = 0; i < 256; i++) {
             final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
             try {
-                final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
+                final IResource resource = mc.getResourceManager().getResource(resourceLocation);
                 final BufferedImage read = ImageIO.read(resource.getInputStream());
                 regWidth = read.getWidth();
                 break;
             } catch (IOException ignored) {
             }
         }
+
         texSheetDim = regWidth;
         int specWidth = 128;
+
         try {
-            final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(fontRenderer.locationFontTexture);
+            final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
             final BufferedImage read = ImageIO.read(resource.getInputStream());
             specWidth = read.getWidth();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         regularCharDim = specWidth;
         fontTexHeight = 16 * texSheetDim + specWidth;
         fontTexWidth = 16 * texSheetDim;
@@ -82,14 +85,16 @@ public final class FontRendererHook {
         establishSize();
         hook = new OptifineHook();
         forceRefresh = false;
+
         if (GL_TEX != -1) {
             GlStateManager.deleteTexture(GL_TEX);
         }
+
         final BufferedImage bufferedImage = new BufferedImage((int) fontTexWidth, (int) fontTexHeight, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < 256; i++) {
             final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
             try {
-                final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation);
+                final IResource resource = mc.getResourceManager().getResource(resourceLocation);
                 final BufferedImage read = ImageIO.read(resource.getInputStream());
                 bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
             } catch (IOException ignored) {
@@ -97,35 +102,42 @@ public final class FontRendererHook {
         }
 
         try {
-            final IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(fontRenderer.locationFontTexture);
+            final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
             final BufferedImage read = ImageIO.read(resource.getInputStream());
             bufferedImage.getGraphics().drawImage(read, 0, 16 * texSheetDim, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         final DynamicTexture dynamicTexture = new DynamicTexture(bufferedImage);
         GL_TEX = dynamicTexture.getGlTextureId();
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    public boolean renderStringAtPos(String text, boolean shadow) { if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) {
+    public boolean renderStringAtPos(String text, boolean shadow) {
+        if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) {
             if (GL_TEX != -1) {
                 GlStateManager.deleteTexture(GL_TEX);
                 GL_TEX = -1;
             }
+
             return false;
         }
+
         if (GL_TEX == -1 || forceRefresh) {
             create();
         }
+
         fontRenderer.randomStyle = false;
         fontRenderer.boldStyle = false;
         fontRenderer.italicStyle = false;
         fontRenderer.underlineStyle = false;
         fontRenderer.strikethroughStyle = false;
+
         while (text.startsWith('\u00a7' + "r")) {
             text = text.substring(2);
         }
+
         while (text.endsWith('\u00a7' + "r")) {
             text = text.substring(0, text.length() - 2);
         }
@@ -189,28 +201,28 @@ public final class FontRendererHook {
         Deque<RenderPair> underline = new LinkedList<>();
         Deque<RenderPair> strikeThough = new LinkedList<>();
 
-        for (int i = 0; i < text.length(); ++i) {
-            char c0 = text.charAt(i);
+        for (int messageChar = 0; messageChar < text.length(); ++messageChar) {
+            char letter = text.charAt(messageChar);
 
-            if (c0 == 167 && i + 1 < text.length()) {
-                int i1 = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1));
+            if (letter == 167 && messageChar + 1 < text.length()) {
+                int styleIndex = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
 
-                if (i1 < 16) {
+                if (styleIndex < 16) {
                     this.fontRenderer.strikethroughStyle = false;
                     this.fontRenderer.underlineStyle = false;
                     this.fontRenderer.italicStyle = false;
                     this.fontRenderer.randomStyle = false;
                     this.fontRenderer.boldStyle = false;
 
-                    if (i1 < 0) {
-                        i1 = 15;
+                    if (styleIndex < 0) {
+                        styleIndex = 15;
                     }
 
                     if (shadow) {
-                        i1 += 16;
+                        styleIndex += 16;
                     }
 
-                    int j1 = colorCode[i1];
+                    int j1 = colorCode[styleIndex];
                     this.fontRenderer.textColor = j1;
                     float colorRed = (float) (j1 >> 16) / 255.0F;
                     float colorGreen = (float) (j1 >> 8 & 255) / 255.0F;
@@ -221,16 +233,16 @@ public final class FontRendererHook {
                     value.setLastGreen(colorGreen);
                     value.setLastBlue(colorBlue);
                     value.setLastRed(colorRed);
-                } else if (i1 == 16) {
+                } else if (styleIndex == 16) {
                     this.fontRenderer.randomStyle = true;
                     obfuscated = true;
-                } else if (i1 == 17) {
+                } else if (styleIndex == 17) {
                     this.fontRenderer.boldStyle = true;
-                } else if (i1 == 18) {
+                } else if (styleIndex == 18) {
                     this.fontRenderer.strikethroughStyle = true;
-                } else if (i1 == 19) {
+                } else if (styleIndex == 19) {
                     this.fontRenderer.underlineStyle = true;
-                } else if (i1 == 20) {
+                } else if (styleIndex == 20) {
                     this.fontRenderer.italicStyle = true;
                 } else {
                     this.fontRenderer.strikethroughStyle = this.fontRenderer.underlineStyle = false;
@@ -244,33 +256,33 @@ public final class FontRendererHook {
                     value.setLastRed(red);
                 }
 
-                ++i;
+                ++messageChar;
             } else {
-                int j = shadow || this.fontRenderer.randomStyle ? characterDictionary.indexOf(c0) : 0; //save calculation
+                int obfuscationIndex = shadow || this.fontRenderer.randomStyle ? characterDictionary.indexOf(letter) : 0; //save calculation
 
-                if (this.fontRenderer.randomStyle && j != -1) {
-                    float k = getCharWidthFloat(c0);
-                    char c1;
+                if (this.fontRenderer.randomStyle && obfuscationIndex != -1) {
+                    float charWidthFloat = getCharWidthFloat(letter);
+                    char charIndex;
 
                     do {
-                        j = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
-                        c1 = characterDictionary.charAt(j);
-                    } while (k != getCharWidthFloat(c1));
+                        obfuscationIndex = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
+                        charIndex = characterDictionary.charAt(obfuscationIndex);
+                    } while (charWidthFloat != getCharWidthFloat(charIndex));
 
-                    c0 = c1;
+                    letter = charIndex;
                 }
 
                 boolean unicode = this.fontRenderer.unicodeFlag;
-                float boldWidth = getBoldOffset(j);
-                boolean flag = (c0 == 0 || j == -1 || unicode) && shadow;
+                float boldWidth = getBoldOffset(obfuscationIndex);
+                boolean small = (letter == 0 || obfuscationIndex == -1 || unicode) && shadow;
 
-                if (flag) {
+                if (small) {
                     this.fontRenderer.posX -= boldWidth;
                     this.fontRenderer.posY -= boldWidth;
                 }
 
-                float effectiveWidth = this.renderChar(c0, this.fontRenderer.italicStyle);
-                if (flag) {
+                float effectiveWidth = this.renderChar(letter, this.fontRenderer.italicStyle);
+                if (small) {
                     this.fontRenderer.posX += boldWidth;
                     this.fontRenderer.posY += boldWidth;
                 }
@@ -278,15 +290,15 @@ public final class FontRendererHook {
                 if (this.fontRenderer.boldStyle) {
                     this.fontRenderer.posX += boldWidth;
 
-                    if (flag) {
+                    if (small) {
                         this.fontRenderer.posX -= boldWidth;
                         this.fontRenderer.posY -= boldWidth;
                     }
 
-                    this.renderChar(c0, this.fontRenderer.italicStyle);
+                    this.renderChar(letter, this.fontRenderer.italicStyle);
                     this.fontRenderer.posX -= boldWidth;
 
-                    if (flag) {
+                    if (small) {
                         this.fontRenderer.posX += boldWidth;
                         this.fontRenderer.posY += boldWidth;
                     }
@@ -304,6 +316,7 @@ public final class FontRendererHook {
                 this.fontRenderer.posX += effectiveWidth;
             }
         }
+
         endDrawing();
         boolean hasStyle = underline.size() > 0 || strikeThough.size() > 0;
 
@@ -311,7 +324,6 @@ public final class FontRendererHook {
             GlStateManager.disableTexture2D();
             GL11.glBegin(GL11.GL_QUADS);
         }
-
 
         for (RenderPair renderPair : strikeThough) {
             GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
@@ -334,12 +346,13 @@ public final class FontRendererHook {
         }
 
         GlStateManager.enableTexture2D();
+
         if (cacheFontData) {
             GL11.glEndList();
             this.enhancedFontRenderer.cache(hash, value);
         }
-        value.setWidth(this.fontRenderer.posX);
 
+        value.setWidth(this.fontRenderer.posX);
 
         this.fontRenderer.posY = posY + value.getHeight();
         this.fontRenderer.posX = posX + value.getWidth();
@@ -376,8 +389,8 @@ public final class FontRendererHook {
         if (ch == 32 || ch == 160) {
             return fontRenderer.unicodeFlag ? 4.0F : getCharWidthFloat(ch);
         } else {
-            int i = characterDictionary.indexOf(ch);
-            return i != -1 && !this.fontRenderer.unicodeFlag ? this.renderDefaultChar(i, italic, ch) : this.renderUnicodeChar(ch, italic);
+            int charIndex = characterDictionary.indexOf(ch);
+            return charIndex != -1 && !this.fontRenderer.unicodeFlag ? this.renderDefaultChar(charIndex, italic, ch) : this.renderUnicodeChar(ch, italic);
         }
     }
 
@@ -387,26 +400,30 @@ public final class FontRendererHook {
     protected float renderDefaultChar(int characterIndex, boolean italic, char ch) {
         float characterX = (characterIndex % 16 * 8 * regularCharDim >> 7) + .01f;
         float characterY = ((characterIndex >> 4) * 8 * regularCharDim >> 7) + 16 * texSheetDim + .01f;
-        int k = italic ? 1 : 0;
-        float l = getCharWidthFloat(ch);
-        float f = l - 0.01F;
+
+        int italicStyle = italic ? 1 : 0;
+        float charWidth = getCharWidthFloat(ch);
+        float smallCharWidth = charWidth - 0.01F;
+
         startDrawing();
+
         float uvHeight = 7.99F * regularCharDim / 128;
-        float uvWidth = f * regularCharDim / 128;
+        float uvWidth = smallCharWidth * regularCharDim / 128;
+
         GL11.glTexCoord2f(characterX / fontTexWidth, characterY / fontTexHeight);
-        GL11.glVertex2f(this.fontRenderer.posX + (float) k, this.fontRenderer.posY);
+        GL11.glVertex2f(this.fontRenderer.posX + (float) italicStyle, this.fontRenderer.posY);
 
         GL11.glTexCoord2f(characterX / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
-        GL11.glVertex2f(this.fontRenderer.posX - (float) k, this.fontRenderer.posY + 7.99F);
+        GL11.glVertex2f(this.fontRenderer.posX - (float) italicStyle, this.fontRenderer.posY + 7.99F);
 
         final int offset = regularCharDim / 128;
         GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
-        GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F - (float) k, this.fontRenderer.posY + 7.99F);
+        GL11.glVertex2f(this.fontRenderer.posX + smallCharWidth - 1.0F - (float) italicStyle, this.fontRenderer.posY + 7.99F);
 
         GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, characterY / fontTexHeight);
-        GL11.glVertex2f(this.fontRenderer.posX + f - 1.0F + (float) k, this.fontRenderer.posY);
+        GL11.glVertex2f(this.fontRenderer.posX + smallCharWidth - 1.0F + (float) italicStyle, this.fontRenderer.posY);
 
-        return l;
+        return charWidth;
     }
 
     private void startDrawing() {
@@ -427,10 +444,10 @@ public final class FontRendererHook {
         int page = characterIndex / 256;
         int row = page / 16;
         int column = page % 16;
-        int j = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
-        float f2 = (float) (characterIndex % 16 * 16) + j;
-        float f3 = (float) ((characterIndex & 255) / 16 * 16 + .1);
-        return new Pair<>((row * texSheetDim + f2 + .05f) / fontTexWidth, (column * texSheetDim + f3) / fontTexHeight); //16 rows each with a size of 64px
+        int glyphWidth = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
+        float charX = (float) (characterIndex % 16 * 16) + glyphWidth;
+        float charY = (float) ((characterIndex & 255) / 16 * 16 + .1);
+        return new Pair<>((row * texSheetDim + charX + .05f) / fontTexWidth, (column * texSheetDim + charY) / fontTexHeight); //16 rows each with a size of 64px
     }
 
     /**
@@ -441,29 +458,29 @@ public final class FontRendererHook {
             return 0.0F;
         } else {
             final Pair<Float, Float> uv = getUV(ch);
-            int j = this.fontRenderer.glyphWidth[ch] >>> 4;
-            int k = this.fontRenderer.glyphWidth[ch] & 15;
-            float f = (float) j;
-            float f1 = (float) (k + 1);
-            float f4 = f1 - f - 0.02F;
-            float f5 = italic ? 1.0F : 0.0F;
+            int glyphX = this.fontRenderer.glyphWidth[ch] >>> 4;
+            int glyphY = this.fontRenderer.glyphWidth[ch] & 15;
+            float floatGlyphX = (float) glyphX;
+            float modifiedY = (float) (glyphY + 1);
+            float combinedGlyphSize = modifiedY - floatGlyphX - 0.02F;
+            float italicStyle = italic ? 1.0F : 0.0F;
             startDrawing();
 
             final float v = 15.98F * texSheetDim / 256;
             GL11.glTexCoord2f(uv.component1(), uv.component2());
-            GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY);
+            GL11.glVertex2f(this.fontRenderer.posX + italicStyle, this.fontRenderer.posY);
 
             GL11.glTexCoord2f(uv.component1(), uv.component2() + v / fontTexHeight);
-            GL11.glVertex2f(this.fontRenderer.posX + f5, this.fontRenderer.posY + 7.99F);
+            GL11.glVertex2f(this.fontRenderer.posX + italicStyle, this.fontRenderer.posY + 7.99F);
 
-            final float texAdj = f4 + .5f;
+            final float texAdj = combinedGlyphSize + .5f;
             GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2() + v / fontTexHeight);
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F - f5, this.fontRenderer.posY + 7.99F);
+            GL11.glVertex2f(this.fontRenderer.posX + combinedGlyphSize / 2.0F - italicStyle, this.fontRenderer.posY + 7.99F);
 
             GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2());
-            GL11.glVertex2f(this.fontRenderer.posX + f4 / 2.0F + f5, this.fontRenderer.posY);
+            GL11.glVertex2f(this.fontRenderer.posX + combinedGlyphSize / 2.0F + italicStyle, this.fontRenderer.posY);
 
-            return (f1 - f) / 2.0F + 1.0F;
+            return (modifiedY - floatGlyphX) / 2.0F + 1.0F;
         }
     }
 
