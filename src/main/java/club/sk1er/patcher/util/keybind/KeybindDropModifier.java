@@ -11,6 +11,8 @@
 
 package club.sk1er.patcher.util.keybind;
 
+import club.sk1er.patcher.Patcher;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
@@ -19,6 +21,10 @@ import org.lwjgl.input.Keyboard;
  */
 public class KeybindDropModifier extends KeyBinding {
     public KeybindDropModifier() {
-        super("Drop stack modifier", Keyboard.KEY_NONE, "Patcher");
+        super("Drop Stack Modifier", Keyboard.KEY_NONE, "Patcher");
+    }
+
+    public boolean bruh() {
+        return GuiScreen.isCtrlKeyDown() || Keyboard.isKeyDown(Patcher.instance.getDropModifier().getKeyCode());
     }
 }

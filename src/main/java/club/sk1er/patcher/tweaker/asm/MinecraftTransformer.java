@@ -13,18 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -150,21 +139,31 @@ public class MinecraftTransformer implements PatcherTransformer {
                         } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                             MethodInsnNode methodInsnNode = (MethodInsnNode) node;
                             String methodInsnName = mapMethodNameFromNode(methodInsnNode);
-                            if (methodInsnName.equals("loadEntityShader") || methodInsnName.equals("func_175066_a")) {
-                                if (!foundFirst) {
-                                    foundFirst = true;
-                                } else {
-                                    methodNode.instructions.insert(node, ifne);
+                            switch (methodInsnName) {
+                                case "loadEntityShader":
+                                case "func_175066_a":
+                                    if (!foundFirst) {
+                                        foundFirst = true;
+                                    } else {
+                                        methodNode.instructions.insert(node, ifne);
+                                    }
                                     break;
-                                }
-                            } else if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
-                                methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC,
-                                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
-                                    "clearCache",
-                                    "()V",
-                                    false
-                                ));
+
+                                case "refreshResources":
+                                case "func_110436_a":
+                                    methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
+                                        Opcodes.INVOKESTATIC,
+                                        "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                        "clearCache",
+                                        "()V",
+                                        false
+                                    ));
+                                    break;
+
+                                case "dropOneItem":
+                                case "func_71040_bB":
+                                    methodNode.instructions.insertBefore(methodInsnNode, getCustomModifierKey());
+                                    break;
                             }
                         }
                     }
@@ -234,6 +233,26 @@ public class MinecraftTransformer implements PatcherTransformer {
         }
     }
 
+    private InsnList getCustomModifierKey() {
+        InsnList list = new InsnList();
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", "getDropModifier", "()Lnet/minecraft/client/settings/KeyBinding;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "func_151463_i", "()I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/input/Keyboard", "isKeyDown", "(I)Z", false));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(ifne);
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(gotoInsn);
+        return list;
+    }
+
     private InsnList keybindFixer() {
         InsnList list = new InsnList();
         list.add(new IntInsnNode(Opcodes.SIPUSH, 256));
@@ -277,8 +296,8 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new InsnNode(Opcodes.LCONST_0));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/Minecraft",
-                "field_71423_H", // systemTime
-                "J"));
+            "field_71423_H", // systemTime
+            "J"));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;

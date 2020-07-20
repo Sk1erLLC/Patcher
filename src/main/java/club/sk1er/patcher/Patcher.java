@@ -34,8 +34,6 @@ import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
-import club.sk1er.patcher.util.keybind.KeybindDropStack;
-import club.sk1er.patcher.util.keybind.KeybindHandler;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.screenshot.viewer.Viewer;
@@ -68,13 +66,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.*;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -126,29 +118,10 @@ public class Patcher {
     private CloudHandler cloudHandler;
 
     private KeyBinding nameHistory;
-    private KeyBinding dropKeybind;
     private KeyBinding dropModifier;
     private KeyBinding chatPeek;
 
     private ImagePreview imagePreview;
-
-    /**
-     * Check if the current environment is development, or production.
-     *
-     * @return If the client is being ran in a development environment, return true, otherwise return false.
-     */
-    public static boolean isDevelopment() {
-        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        return o != null && (boolean) o;
-    }
-
-    public KeyBinding getDropModifier() {
-        return dropModifier;
-    }
-
-    public ImagePreview getImagePreview() {
-        return imagePreview;
-    }
 
     /**
      * Process important things that should be available by the time the game is done loading.
@@ -163,7 +136,6 @@ public class Patcher {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
-        ClientRegistry.registerKeyBinding(dropKeybind = new KeybindDropStack());
         ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
         ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
 
@@ -203,7 +175,6 @@ public class Patcher {
         registerClass(new EntityTrace());
         registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
-        registerClass(new KeybindHandler());
         registerClass(imagePreview = new ImagePreview());
         registerClass(new WorldHandler());
         registerClass(Viewer.getInstance());
@@ -388,6 +359,16 @@ public class Patcher {
     }
 
     /**
+     * Check if the current environment is development, or production.
+     *
+     * @return If the client is being ran in a development environment, return true, otherwise return false.
+     */
+    public static boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return o != null && (boolean) o;
+    }
+
+    /**
      * Allow for accessing super methods in the {@link PatcherConfig} class.
      *
      * @return The Patcher Config instance.
@@ -434,16 +415,16 @@ public class Patcher {
         return nameHistory;
     }
 
-    /**
-     * Allow for accessing our drop stack keybind outside of the class.
-     *
-     * @return The Drop Entire Stack keybind.
-     */
-    public KeyBinding getDropKeybind() {
-        return dropKeybind;
-    }
-
     public KeyBinding getChatPeek() {
         return chatPeek;
+    }
+
+    @SuppressWarnings("unused")
+    public KeyBinding getDropModifier() {
+        return dropModifier;
+    }
+
+    public ImagePreview getImagePreview() {
+        return imagePreview;
     }
 }
