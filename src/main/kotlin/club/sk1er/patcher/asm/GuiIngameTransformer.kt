@@ -94,20 +94,19 @@ class GuiIngameTransformer : PatcherTransformer {
     }
 
     private fun disableCrosshairRendering() = assembleBlock {
-        getstatic(patcherConfigClass, "crosshairPerspective", boolean)
-        ifeq(L["1"])
+        aload_0
+        getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
+        getfield("net/minecraft/client/Minecraft", "field_71462_r", "net/minecraft/client/gui/GuiScreen")
+        ifnull(L["1"])
+        getstatic(patcherConfigClass, "guiCrosshair", boolean)
+        ifne(L["2"])
+        +L["1"]
         aload_0
         getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
         getfield("net/minecraft/client/Minecraft", "field_71474_y", "net/minecraft/client/settings/GameSettings")
         getfield("net/minecraft/client/settings/GameSettings", "field_74320_O", int)
-        ifne(L["2"])
-        +L["1"]
-        getstatic(patcherConfigClass, "inventoryCrosshair", boolean)
         ifeq(L["3"])
-        aload_0
-        getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
-        getfield("net/minecraft/client/Minecraft", "field_71462_r", "net/minecraft/client/gui/GuiScreen")
-        instanceof("net/minecraft/client/gui/inventory/GuiContainer")
+        getstatic(patcherConfigClass, "crosshairPerspective", boolean)
         ifeq(L["3"])
         +L["2"]
         iconst_0
