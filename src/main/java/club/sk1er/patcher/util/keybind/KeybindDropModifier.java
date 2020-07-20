@@ -23,8 +23,4 @@ public class KeybindDropModifier extends KeyBinding {
     public KeybindDropModifier() {
         super("Drop Stack Modifier", Keyboard.KEY_NONE, "Patcher");
     }
-
-    public boolean bruh() {
-        return GuiScreen.isCtrlKeyDown() || Keyboard.isKeyDown(Patcher.instance.getDropModifier().getKeyCode());
-    }
 }
