@@ -10,13 +10,10 @@
  */
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
-import jdk.internal.org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.MethodInsnNode
 
 class GuiIngameTransformer : PatcherTransformer {
     /**
@@ -35,10 +32,9 @@ class GuiIngameTransformer : PatcherTransformer {
     override fun transform(classNode: ClassNode, name: String) {
         for (method in classNode.methods) {
             when (mapMethodName(classNode, method)) {
-                "showCrosshair", "func_175183_b" -> {
-                    method.instructions.insertBefore(method.instructions.first, disableCrosshairRendering())
-                }
-                "renderScoreboard", "func_180475_a" -> {
+                "showCrosshair", "func_175183_b" -> method.instructions.insertBefore(method.instructions.first, disableCrosshairRendering())
+
+                /*"renderScoreboard", "func_180475_a" -> {
                     if (ClassTransformer.optifineVersion == "L5" || ClassTransformer.optifineVersion == "NONE") {
                         var foundOneDrawRect = false
                         for (node in method.instructions) {
@@ -92,7 +88,7 @@ class GuiIngameTransformer : PatcherTransformer {
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }

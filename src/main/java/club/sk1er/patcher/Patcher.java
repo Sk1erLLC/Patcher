@@ -372,11 +372,11 @@ public class Patcher {
     }
 
     private void loadBlacklistedServers() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(blacklistedServersFile))) {
-            if (!blacklistedServersFile.exists()) {
-                return;
-            }
+        if (!blacklistedServersFile.exists()) {
+            return;
+        }
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(blacklistedServersFile))) {
             String servers;
 
             while ((servers = reader.readLine()) != null) {
