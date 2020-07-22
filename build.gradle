@@ -93,7 +93,7 @@ processResources {
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
+        include "mcmod.info", "LICENSE.txt"
 
         // replace version and mcversion
         expand "version": project.version, "mcversion": project.minecraft.version
