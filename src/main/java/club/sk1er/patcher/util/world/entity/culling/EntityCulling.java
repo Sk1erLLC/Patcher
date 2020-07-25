@@ -115,7 +115,7 @@ public class EntityCulling {
 
             service.submit(() -> {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-                if (!entity.isEntityInsideOpaqueBlock() && mc.gameSettings.thirdPersonView == 0) {
+                if (!entity.isEntityInsideOpaqueBlock() || mc.gameSettings.thirdPersonView == 0) {
                     AxisAlignedBB box = entity.getEntityBoundingBox();
                     double centerX = (box.maxX + box.minX) / 2;
                     double centerZ = (box.maxZ + box.minZ) / 2;

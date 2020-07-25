@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 
+@SuppressWarnings("unused")
 public class GuiMultiplayerHook {
 
     public static void keyTyped(GuiMultiplayer screen) {
