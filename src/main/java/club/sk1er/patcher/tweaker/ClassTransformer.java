@@ -157,6 +157,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ForgeBlockModelRendererTransformer());
         registerTransformer(new ModDiscovererTransformer());
         registerTransformer(new VertexLighterSmoothAoTransformer());
+        registerTransformer(new MinecraftForgeTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
@@ -186,14 +187,11 @@ public class ClassTransformer implements IClassTransformer {
         Collection<PatcherTransformer> transformers = transformerMap.get(transformedName);
         if (transformers.isEmpty()) return bytes;
 
-        logger.info("Found {} transformers for {}", transformers.size(), transformedName);
-
         ClassReader classReader = new ClassReader(bytes);
         ClassNode classNode = new ClassNode();
         classReader.accept(classNode, ClassReader.EXPAND_FRAMES);
 
         for (PatcherTransformer transformer : transformers) {
-            logger.info("Applying transformer {} on {}...", transformer.getClass().getName(), transformedName);
             transformer.transform(classNode, transformedName);
         }
 
