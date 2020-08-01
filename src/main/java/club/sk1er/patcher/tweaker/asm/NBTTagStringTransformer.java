@@ -17,13 +17,13 @@ public class NBTTagStringTransformer implements PatcherTransformer {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "dataCache", "Ljava/lang/String;", null, null));
         for (MethodNode method : classNode.methods) {
             final String s = mapMethodName(classNode, method);
-            if (s.equalsIgnoreCase("read") || s.equalsIgnoreCase("func_152446_a")) {
+            if (s.equals("read") || s.equals("func_152446_a")) {
                 final InsnList insns = new InsnList();
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
                 insns.add(new InsnNode(Opcodes.ACONST_NULL));
                 insns.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/nbt/NBTTagString", "dataCache", "Ljava/lang/String;"));
                 method.instructions.insertBefore(method.instructions.getFirst(), insns);
-            } else if (s.equalsIgnoreCase("toString")) {
+            } else if (s.equals("toString")) {
                 final InsnList list = new InsnList();
                 list.add(new VarInsnNode(Opcodes.ALOAD, 0));
                 list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/nbt/NBTTagString", "dataCache", "Ljava/lang/String;"));

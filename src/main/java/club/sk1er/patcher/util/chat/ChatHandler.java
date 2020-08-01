@@ -48,7 +48,7 @@ public class ChatHandler {
             String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
             if (PatcherConfig.compactChat) {
                 String message = event.message.getUnformattedText();
-                if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
+                if (message.trim().isEmpty()) {
                     return; // die!
                 }
                 if (lastAmount != PatcherConfig.superCompactChatAmount) {
@@ -61,10 +61,13 @@ public class ChatHandler {
                 // If the last message sent is the same as the newly posted message
                 ChatEntry print = null;
                 for (ChatEntry entry : entries) {
-                    if (entry.text.equalsIgnoreCase(message) || (entry.noSpace.length() == 0 && message.replace(" ", "").length() == 0)) {
+                    if (entry.text.equals(message) || (entry.noSpace.length() == 0 && message.replace(" ", "").length() == 0)) {
                         chat.deleteChatLine(entry.id);
                         entry.amount++;
-                        event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
+                        // compact line breakers, but dont add the number because it looks weird
+                        if (!message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
+                            event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
+                        }
                         print = entry;
                         break;
                     }

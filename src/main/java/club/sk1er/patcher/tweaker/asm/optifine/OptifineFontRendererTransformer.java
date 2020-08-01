@@ -25,8 +25,9 @@ public class OptifineFontRendererTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            if (method.name.equalsIgnoreCase("getCharWidthFloat")) {
+            if (method.name.equals("getCharWidthFloat")) {
                 method.access = Opcodes.ACC_PUBLIC;
+                break;
             }
         }
     }

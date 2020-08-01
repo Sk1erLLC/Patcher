@@ -24,14 +24,15 @@ public class FontRendererHookTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            if (method.name.equalsIgnoreCase("getOptifineBoldOffset")) {
+            String methodName = method.name;
+            if (methodName.equals("getOptifineBoldOffset")) {
                 method.instructions.clear();
                 final InsnList insns = new InsnList();
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
                 insns.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "offsetBold", "F"));
                 insns.add(new InsnNode(Opcodes.FRETURN));
                 method.instructions.add(insns);
-            } else if (method.name.equalsIgnoreCase("getCharWidth")) {
+            } else if (methodName.equals("getCharWidth")) {
                 method.instructions.clear();
                 final InsnList insns = new InsnList();
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
