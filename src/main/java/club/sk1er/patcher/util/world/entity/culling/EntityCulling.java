@@ -23,11 +23,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -47,7 +43,6 @@ public class EntityCulling {
     private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static EntityPlayerSP player = null;
     private static CountDownLatch latch = null;
 
     /**
@@ -60,10 +55,7 @@ public class EntityCulling {
      * @return The status on if the nametag is liable for rendering.
      */
     public static boolean canRenderName(EntityLivingBase entity) {
-        if (player == null) {
-            player = mc.thePlayer;
-        }
-
+        EntityPlayerSP player = mc.thePlayer;
         if (entity instanceof EntityPlayer && entity != player) {
             Team otherEntityTeam = entity.getTeam();
             Team playerTeam = player.getTeam();
@@ -93,12 +85,12 @@ public class EntityCulling {
 
     public static void begin() {
         if (!PatcherConfig.entityCulling) return;
-        player = mc.thePlayer;
         exclude.clear();
 
         World world = mc.theWorld;
 
-        if (world == null || player == null) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (world == null || player == null || mc.gameSettings.thirdPersonView != 0) {
             return;
         }
 
@@ -113,35 +105,37 @@ public class EntityCulling {
                 continue;
             }
 
+            if (entity.isEntityInsideOpaqueBlock()) {
+                return;
+            }
+
             service.submit(() -> {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-                if (!entity.isEntityInsideOpaqueBlock() || mc.gameSettings.thirdPersonView == 0) {
-                    AxisAlignedBB box = entity.getEntityBoundingBox();
-                    double centerX = (box.maxX + box.minX) / 2;
-                    double centerZ = (box.maxZ + box.minZ) / 2;
-                    final Vec3 baseVector = player.getPositionVector().addVector(0, player.getEyeHeight(), 0);
-                    if (
-                        //8 corners
-                        doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
-                            doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.minZ) ||
-                            doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.maxZ) ||
-                            doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.minZ) ||
-                            doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.maxZ) ||
-                            doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.minZ) ||
-                            doesRayHitEntity(world, baseVector, box.minX, box.minY, box.maxZ) ||
-                            doesRayHitEntity(world, baseVector, box.minX, box.minY, box.minZ) ||
-                            //4 points running down center of hitbox
-                            doesRayHitEntity(world, baseVector, centerX, box.maxY, centerZ) ||
-                            doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                            doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                            doesRayHitEntity(world, baseVector, centerX, box.minY, centerZ)
-                    ) {
-                        latch.countDown();
-                        return;
-                    }
-
-                    exclude.add(entity);
+                AxisAlignedBB box = entity.getEntityBoundingBox();
+                double centerX = (box.maxX + box.minX) / 2;
+                double centerZ = (box.maxZ + box.minZ) / 2;
+                final Vec3 baseVector = player.getPositionVector().addVector(0, player.getEyeHeight(), 0);
+                if (
+                    //8 corners
+                    doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
+                        doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.minZ) ||
+                        doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.maxZ) ||
+                        doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.minZ) ||
+                        doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.maxZ) ||
+                        doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.minZ) ||
+                        doesRayHitEntity(world, baseVector, box.minX, box.minY, box.maxZ) ||
+                        doesRayHitEntity(world, baseVector, box.minX, box.minY, box.minZ) ||
+                        //4 points running down center of hitbox
+                        doesRayHitEntity(world, baseVector, centerX, box.maxY, centerZ) ||
+                        doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                        doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                        doesRayHitEntity(world, baseVector, centerX, box.minY, centerZ)
+                ) {
+                    latch.countDown();
+                    return;
                 }
+
+                exclude.add(entity);
 
                 latch.countDown();
             });
