@@ -13,11 +13,11 @@ package club.sk1er.patcher.util.armor;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ArmorStatusRenderer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private EntityPlayer player = null;
 
     @SubscribeEvent
     public void onRenderArmor(GuiScreenEvent.DrawScreenEvent e) {
@@ -40,19 +39,25 @@ public class ArmorStatusRenderer {
     private String getArmorString() {
         double protectionPotential = roundDecimals(getArmorPotential(false));
         double projectileProtectionPotential = roundDecimals(getArmorPotential(true));
-        if (PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) {
+
+        // man dont even try and make me understand what this is doing
+        if (!PatcherConfig.protectionPercentage || !PatcherConfig.projectileProtectionPercentage) {
             if (PatcherConfig.protectionPercentage) {
                 return protectionPotential + "%";
-            } else {
+            }
+
+            if (PatcherConfig.projectileProtectionPercentage) {
                 return projectileProtectionPotential + "%";
             }
+
+            return "";
         }
 
         if (protectionPotential == projectileProtectionPotential) {
             return protectionPotential + "%";
-        } else {
-            return protectionPotential + "% | " + projectileProtectionPotential + "%";
         }
+
+        return protectionPotential + "% | " + projectileProtectionPotential + "%";
     }
 
     private double roundDecimals(double num) {
@@ -66,14 +71,11 @@ public class ArmorStatusRenderer {
     }
 
     private double getArmorPotential(boolean getProj) {
-        if (player == null) {
-            player = mc.thePlayer;
-        }
-
         double armor = 0;
         int epf = 0;
         int resistance = 0;
 
+        EntityPlayerSP player = mc.thePlayer;
         if (player.isPotionActive(Potion.resistance)) {
             resistance = player.getActivePotionEffect(Potion.resistance).getAmplifier() + 1;
         }

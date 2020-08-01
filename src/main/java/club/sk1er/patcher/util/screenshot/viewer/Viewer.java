@@ -71,7 +71,7 @@ public class Viewer {
      * @param image The screenshot just taken and created by {@link Viewer#newCapture(BufferedImage)}
      */
     private void instantiateComponents(BufferedImage image) {
-        UIComponent imageComponent = new UIImage(CompletableFuture.supplyAsync(() -> image), DefaultLoadingImage.INSTANCE)
+        UIComponent imageComponent = new UIImage(CompletableFuture.completedFuture(image), DefaultLoadingImage.INSTANCE)
             .setX(new PixelConstraint(0))
             .setY(new PixelConstraint(0))
             .setWidth(new RelativeConstraint(1))
