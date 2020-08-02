@@ -138,6 +138,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockPistonStructureHelperTransformer());
         registerTransformer(new GuiMultiplayerTransformer());
         registerTransformer(new ServerSelectionListTransformer());
+        registerTransformer(new GuiOverlayDebugTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

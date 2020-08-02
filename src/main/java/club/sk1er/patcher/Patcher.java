@@ -72,7 +72,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
-@Mod(modid = "patcher", name = "Patcher", version = "1.3")
+@Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
 public class Patcher {
 
     /**
@@ -84,7 +84,9 @@ public class Patcher {
     @Mod.Instance("patcher")
     public static Patcher instance;
 
-    private final Logger LOGGER = LogManager.getLogger("Patcher");
+    public static final String VERSION = "1.3";
+
+    private final Logger logger = LogManager.getLogger("Patcher");
 
     /**
      * Create a file link to the .minecraft/logs folder, used for {@link Patcher#checkLogs()}.
@@ -203,7 +205,7 @@ public class Patcher {
                 "Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
-        LOGGER.info("Minecraft started in {} seconds.", time);
+        logger.info("Minecraft started in {} seconds.", time);
     }
 
     /**
@@ -224,14 +226,14 @@ public class Patcher {
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
-            LOGGER.info("User is in singleplayer, setting string length to 256.");
+            logger.info("User is in singleplayer, setting string length to 256.");
             GuiChatTransformer.maxChatLength = 256;
             return;
         }
 
         String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
         if (blacklistedServers.contains(serverIP)) {
-            LOGGER.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+            logger.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;
             return;
         }
@@ -244,10 +246,10 @@ public class Patcher {
         Multithreading.runAsync(() -> {
             try {
                 if (future.get()) {
-                    LOGGER.info("Server supports 1.11+, setting string length to 256.");
+                    logger.info("Server supports 1.11+, setting string length to 256.");
                     GuiChatTransformer.maxChatLength = 256;
                 } else {
-                    LOGGER.info("Server doesn't support 1.11+, setting string length to 100.");
+                    logger.info("Server doesn't support 1.11+, setting string length to 100.");
                     GuiChatTransformer.maxChatLength = 100;
                 }
             } catch (Exception e) {
@@ -272,7 +274,7 @@ public class Patcher {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
                 if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000)) {
-                    LOGGER.info("Deleted log {}", file.getName());
+                    logger.info("Deleted log {}", file.getName());
                     file.delete();
                 }
             }
@@ -354,7 +356,7 @@ public class Patcher {
                 blacklistedServers.add(servers);
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to load blacklisted servers.", e);
+            logger.error("Failed to load blacklisted servers.", e);
         }
     }
 
@@ -392,7 +394,7 @@ public class Patcher {
      * @return The Patcher logger instance.
      */
     public Logger getLogger() {
-        return LOGGER;
+        return logger;
     }
 
     /**

@@ -84,13 +84,15 @@ public class EntityCulling {
     }
 
     public static void begin() {
-        if (!PatcherConfig.entityCulling) return;
+        if (!PatcherConfig.entityCulling) {
+            return;
+        }
+
         exclude.clear();
 
         World world = mc.theWorld;
 
-        EntityPlayerSP player = mc.thePlayer;
-        if (world == null || player == null || mc.gameSettings.thirdPersonView != 0) {
+        if (world == null || mc.thePlayer == null) {
             return;
         }
 
@@ -100,13 +102,10 @@ public class EntityCulling {
         //noinspection WhileLoopReplaceableByForEach
         while (entityIterator.hasNext()) {
             Entity entity = entityIterator.next();
-            if (!(entity instanceof EntityLivingBase) || entity == player) {
+
+            if (!(entity instanceof EntityLivingBase) || entity == mc.thePlayer) {
                 latch.countDown();
                 continue;
-            }
-
-            if (entity.isEntityInsideOpaqueBlock()) {
-                return;
             }
 
             service.submit(() -> {
@@ -114,7 +113,7 @@ public class EntityCulling {
                 AxisAlignedBB box = entity.getEntityBoundingBox();
                 double centerX = (box.maxX + box.minX) / 2;
                 double centerZ = (box.maxZ + box.minZ) / 2;
-                final Vec3 baseVector = player.getPositionVector().addVector(0, player.getEyeHeight(), 0);
+                final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
                 if (
                     //8 corners
                     doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
@@ -313,13 +312,14 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling) return;
+        if (!PatcherConfig.entityCulling || mc.gameSettings.thirdPersonView != 0) return;
 
-        if (exclude.contains(event.entity)) {
+        EntityLivingBase entity = event.entity;
+        if (exclude.contains(entity) && !entity.isEntityInsideOpaqueBlock()) {
             event.setCanceled(true);
 
-            if (PatcherConfig.dontCullNametags && canRenderName(event.entity) && event.isCanceled()) {
-                event.renderer.renderName(event.entity, event.x, event.y, event.z);
+            if (PatcherConfig.dontCullNametags && canRenderName(entity) && event.isCanceled()) {
+                event.renderer.renderName(entity, event.x, event.y, event.z);
             }
         }
 
