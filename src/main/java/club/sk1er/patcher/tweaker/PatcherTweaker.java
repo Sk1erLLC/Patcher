@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -71,31 +71,33 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             System.out.println("Failed to unlock LWJGL, several fixes will not work.");
         }
 
-        final File mods = new File(Launch.minecraftHome, "mods");
+        File mods = new File(Launch.minecraftHome, "mods");
         File[] coreModList = mods.listFiles((dir, name) -> name.endsWith(".jar"));
         for (File file : coreModList) {
             try {
-                ZipFile zipFile = new ZipFile(file);
-                final ZipEntry entry = zipFile.getEntry("mcmod.info");
+                try (ZipFile zipFile = new ZipFile(file)) {
+                    ZipEntry entry = zipFile.getEntry("mcmod.info");
 
-                if (zipFile.getEntry("io/framesplus/FramesPlus.class") != null) {
-                    halt("Patcher is no longer compatible with Frames+ as of 1.3. The Frames+ enhancements have been rewritten for even greater performance and compatibility.");
-                    continue;
-                }
-                if (entry != null) {
-                    final InputStream inputStream = zipFile.getInputStream(entry);
-                    final byte[] b = new byte[inputStream.available()];
-                    inputStream.read(b, 0, inputStream.available());
-                    final JsonObject asJsonObject = new JsonParser().parse(new String(b)).getAsJsonArray().get(0).getAsJsonObject();
-                    if (!asJsonObject.has("modid")) {
+                    if (zipFile.getEntry("io/framesplus/FramesPlus.class") != null) {
+                        halt("Patcher is no longer compatible with Frames+ as of 1.3. The Frames+ enhancements have been rewritten for even greater performance and compatibility, and are now included in Patcher.");
                         continue;
                     }
-                    inputStream.close();
-                    final String modId = asJsonObject.get("modid").getAsString();
-                    if (modId.equals("the5zigMod") && (asJsonObject.has("url") && !asJsonObject.get("url").getAsString().equalsIgnoreCase("https://5zigreborn.eu"))) {
-                        halt("<html><p>Patcher is not compatible with old 5zig. Please use 5zig reborn found at <a href=\"https://5zigreborn.eu\">https://5zigreborn.eu</a></p></html>");
+
+                    if (entry != null) {
+                        try (InputStream inputStream = zipFile.getInputStream(entry)) {
+                            byte[] availableBytes = new byte[inputStream.available()];
+                            inputStream.read(availableBytes, 0, inputStream.available());
+                            JsonObject modInfo = new JsonParser().parse(new String(availableBytes)).getAsJsonArray().get(0).getAsJsonObject();
+                            if (!modInfo.has("modid")) {
+                                continue;
+                            }
+
+                            String modId = modInfo.get("modid").getAsString();
+                            if (modId.equals("the5zigMod") && (modInfo.has("url") && !modInfo.get("url").getAsString().equalsIgnoreCase("https://5zigreborn.eu"))) {
+                                halt("<html><p>Patcher is not compatible with old 5zig. Please use 5zig reborn found at <a href=\"https://5zigreborn.eu\">https://5zigreborn.eu</a></p></html>");
+                            }
+                        }
                     }
-                    zipFile.close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
