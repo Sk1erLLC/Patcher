@@ -172,7 +172,10 @@ class HookInlining {
             for (node in methodNode.instructions) {
                 if (node === insertionPoint) break
                 if (node is VarInsnNode && node.`var` > maxIndex) {
-                    maxIndex = node.`var`
+                    maxIndex = when (node.opcode) {
+                        Opcodes.LSTORE, Opcodes.LLOAD, Opcodes.DSTORE, Opcodes.DLOAD -> node.`var` + 1
+                        else -> node.`var`
+                    }
                 } else if (node is IincInsnNode && node.`var` > maxIndex) {
                     maxIndex = node.`var`
                 }
