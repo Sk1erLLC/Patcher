@@ -44,6 +44,9 @@ public class ASMDataTableHook {
      */
     public static Map<ModContainer, SetMultimap<String, ASMDataTable.ASMData>> mutableContainerAnnotationData;
 
+
+    public static boolean postedInfo = false;
+
     /**
      * Create a much more efficient annotation check by running in a parallel stream and wrapping
      * the annotation data into an immutable map.
@@ -57,7 +60,10 @@ public class ASMDataTableHook {
                                                                               List<ModContainer> containers,
                                                                               SetMultimap<String, ASMDataTable.ASMData> globalAnnotationData) {
         try {
-            System.out.println("Attempting to use optimized annotation search.");
+            if (!postedInfo) {
+                postedInfo = true;
+                System.out.println("Attempting to use optimized annotation search.");
+            }
             if (immutableContainerAnnotationData == null) {
                 immutableContainerAnnotationData = containers.parallelStream()
                     .map(cont -> Pair.of(cont, ImmutableSetMultimap.copyOf(Multimaps.filterValues(globalAnnotationData, new ModContainerPredicate(cont)))))
