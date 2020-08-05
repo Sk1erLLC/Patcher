@@ -84,7 +84,7 @@ public class Patcher {
     @Mod.Instance("patcher")
     public static Patcher instance;
 
-    public static final String VERSION = "1.3";
+    public static final String VERSION = "1.3 - beta-13";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 

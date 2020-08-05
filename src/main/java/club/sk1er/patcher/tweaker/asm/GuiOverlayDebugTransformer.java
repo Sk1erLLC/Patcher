@@ -14,6 +14,7 @@ package club.sk1er.patcher.tweaker.asm;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -22,6 +23,8 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class GuiOverlayDebugTransformer implements PatcherTransformer {
     @Override
@@ -42,7 +45,17 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                     break;
                 }
 
-                method.instructions.insertBefore(method.instructions.getLast().getPrevious(), insertPatcher(listIndex));
+                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("addAll")) {
+                        method.instructions.insertBefore(next.getNext(), insertPatcher(listIndex));
+                        break;
+                    }
+                }
+
                 break;
             }
         }
