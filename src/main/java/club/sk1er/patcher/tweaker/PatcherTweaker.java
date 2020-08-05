@@ -39,18 +39,6 @@ import java.util.zip.ZipFile;
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public static long clientLoadTime;
-    private void halt(final String message) {
-        JOptionPane.showMessageDialog(null, message, "Launch Aborted", JOptionPane.ERROR_MESSAGE);
-        try {
-            final Class<?> aClass = Class.forName("java.lang.Shutdown");
-            final Method exit = aClass.getDeclaredMethod("exit", int.class);
-            exit.setAccessible(true);
-            exit.invoke(null, 0);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @SuppressWarnings("unchecked")
     public PatcherTweaker() {
@@ -102,17 +90,31 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
                     if (!asJsonObject.has("modid")) {
                         continue;
                     }
+                    inputStream.close();
                     final String modId = asJsonObject.get("modid").getAsString();
                     if (modId.equals("the5zigMod") && (asJsonObject.has("url") && !asJsonObject.get("url").getAsString().equalsIgnoreCase("https://5zigreborn.eu"))) {
-                        halt("Patcher is not compatible with old 5zig. Please use 5zig reborn found at https://5zigreborn.eu");
+                        halt("<html><p>Patcher is not compatible with old 5zig. Please use 5zig reborn found at <a href=\"https://5zigreborn.eu\">https://5zigreborn.eu</a></p></html>");
                     }
-
+                    zipFile.close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
+    }
+
+    private void halt(final String message) {
+        JOptionPane.showMessageDialog(null, message, "Launch Aborted", JOptionPane.ERROR_MESSAGE);
+        try {
+            final Class<?> aClass = Class.forName("java.lang.Shutdown");
+            final Method exit = aClass.getDeclaredMethod("exit", int.class);
+            exit.setAccessible(true);
+            exit.invoke(null, 0);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
