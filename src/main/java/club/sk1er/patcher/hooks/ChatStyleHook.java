@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -11,6 +12,9 @@ public class ChatStyleHook {
 
     public static HoverEvent getChatHoverEvent(ChatStyle chatComponent) {
         final HoverEvent hoverEvent = chatComponent.chatHoverEvent == null ? chatComponent.getParent().getChatHoverEvent() : chatComponent.chatHoverEvent;
+        if (!PatcherConfig.safeChatClicks) {
+            return hoverEvent;
+        }
         final ClickEvent chatClickEvent = chatComponent.chatClickEvent;
         if (chatClickEvent == null || !(chatClickEvent.getAction().equals(ClickEvent.Action.OPEN_FILE)
             || chatClickEvent.getAction().equals(ClickEvent.Action.OPEN_URL)
