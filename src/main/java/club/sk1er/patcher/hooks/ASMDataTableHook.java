@@ -11,9 +11,13 @@
 
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.tweaker.asm.forge.ASMDataTableTransformer;
+import club.sk1er.patcher.asm.forge.ASMDataTableTransformer;
 import com.google.common.base.Predicate;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.apache.commons.lang3.tuple.Pair;
@@ -64,6 +68,7 @@ public class ASMDataTableHook {
                 postedInfo = true;
                 System.out.println("Attempting to use optimized annotation search.");
             }
+
             if (immutableContainerAnnotationData == null) {
                 immutableContainerAnnotationData = containers.parallelStream()
                     .map(cont -> Pair.of(cont, ImmutableSetMultimap.copyOf(Multimaps.filterValues(globalAnnotationData, new ModContainerPredicate(cont)))))

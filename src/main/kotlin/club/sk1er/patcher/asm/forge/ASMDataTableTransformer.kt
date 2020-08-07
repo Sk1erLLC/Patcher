@@ -1,6 +1,6 @@
 package club.sk1er.patcher.asm.forge
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.patcher.asm.utils.injectInstructionsWithTryCatchNodes
 import club.sk1er.patcher.hooks.ASMDataTableHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.insns.jvm.aload_0
@@ -19,7 +19,7 @@ class ASMDataTableTransformer : PatcherTransformer {
             it.name == "getAnnotationsFor"
         }?.apply {
             clearInstructions(this)
-            injectInstructions {
+            injectInstructionsWithTryCatchNodes {
                 of(ASMDataTableHook::getAnnotationsFor)
                 into(this@apply)
                 param(1)
