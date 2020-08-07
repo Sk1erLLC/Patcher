@@ -90,12 +90,12 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         }
     }
 
-    private MethodInsnNode disableBlend() {
+    public static MethodInsnNode disableBlend() {
         return new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",
             "func_179084_k", "()V", false);
     }
 
-    private InsnList enableBlend() {
+    public static InsnList enableBlend() {
         InsnList list = new InsnList();
         list.add(
             new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",

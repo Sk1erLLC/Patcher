@@ -10,18 +10,13 @@
  */
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.getInstructions
 import club.sk1er.patcher.asm.utils.injectInstructions
 import club.sk1er.patcher.hooks.ChatStyleHook
-import club.sk1er.patcher.hooks.FarmHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.ClassNode
 
 class ChatStyleTransformer : PatcherTransformer {
-    override fun getClassName(): Array<String> {
-        return arrayOf("net.minecraft.util.ChatStyle")
-    }
+    override fun getClassName() = arrayOf("net.minecraft.util.ChatStyle")
 
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.first {
@@ -35,6 +30,5 @@ class ChatStyleTransformer : PatcherTransformer {
                 param(0)
             }
         }
-
     }
 }

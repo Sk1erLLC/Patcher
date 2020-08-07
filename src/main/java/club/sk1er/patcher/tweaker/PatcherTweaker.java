@@ -116,7 +116,6 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

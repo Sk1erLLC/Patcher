@@ -13,13 +13,17 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+
+import java.util.ListIterator;
 
 public class TileEntitySkullRendererTransformer implements PatcherTransformer {
 
@@ -46,7 +50,28 @@ public class TileEntitySkullRendererTransformer implements PatcherTransformer {
 
             if (methodName.equals("renderTileEntityAt") || methodName.equals("func_180535_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
-                break;
+            } else if (methodName.equals("renderSkull") || methodName.equals("func_180543_a")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode) {
+                        if (next.getOpcode() == Opcodes.INVOKESTATIC) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("enableAlpha") || methodInsnName.equals("func_179141_d")) {
+                                methodNode.instructions.insertBefore(next.getNext(), RenderPlayerTransformer.enableBlend());
+                            }
+                        } else if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("render") || methodInsnName.equals("func_78088_a")) {
+                                methodNode.instructions.insertBefore(next.getNext(), RenderPlayerTransformer.disableBlend());
+                            }
+                        }
+                    }
+                }
             }
         }
     }

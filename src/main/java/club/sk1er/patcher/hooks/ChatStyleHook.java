@@ -11,31 +11,41 @@ import net.minecraft.util.IChatComponent;
 public class ChatStyleHook {
 
     public static HoverEvent getChatHoverEvent(ChatStyle chatComponent) {
-        final HoverEvent hoverEvent = chatComponent.chatHoverEvent == null ? chatComponent.getParent().getChatHoverEvent() : chatComponent.chatHoverEvent;
+        HoverEvent hoverEvent = chatComponent.chatHoverEvent == null ? chatComponent.getParent().getChatHoverEvent() : chatComponent.chatHoverEvent;
         if (!PatcherConfig.safeChatClicks) {
             return hoverEvent;
         }
-        final ClickEvent chatClickEvent = chatComponent.chatClickEvent;
-        if (chatClickEvent == null || !(chatClickEvent.getAction().equals(ClickEvent.Action.OPEN_FILE)
-            || chatClickEvent.getAction().equals(ClickEvent.Action.OPEN_URL)
-            || chatClickEvent.getAction().equals(ClickEvent.Action.RUN_COMMAND))) {
+
+        ClickEvent chatClickEvent = chatComponent.chatClickEvent;
+        if (chatClickEvent == null) {
             return hoverEvent;
         }
-        final String msg = EnumChatFormatting.YELLOW.toString() + (chatClickEvent.getAction() == ClickEvent.Action.RUN_COMMAND ? "Runs " : "Opens ") + EnumChatFormatting.AQUA + chatClickEvent.getValue() + EnumChatFormatting.YELLOW.toString() + " on click";
+
+        ClickEvent.Action action = chatClickEvent.getAction();
+
+        if (!(action.equals(ClickEvent.Action.OPEN_FILE) || action.equals(ClickEvent.Action.OPEN_URL) || action.equals(ClickEvent.Action.RUN_COMMAND))) {
+            return hoverEvent;
+        }
+
+        String msg = EnumChatFormatting.YELLOW.toString() + (action == ClickEvent.Action.RUN_COMMAND ? "Runs " : "Opens ") + EnumChatFormatting.AQUA + chatClickEvent.getValue() + EnumChatFormatting.YELLOW.toString() + " on click";
         if (hoverEvent == null) {
             return new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(msg));
         }
+
         if (hoverEvent.getAction().equals(HoverEvent.Action.SHOW_TEXT)) {
-            final ChatComponentText append = new ChatComponentText(msg);
-            final IChatComponent value = hoverEvent.getValue();
+            ChatComponentText append = new ChatComponentText(msg);
+            IChatComponent value = hoverEvent.getValue();
+
             if (value.getSiblings().contains(append) || value.getFormattedText().contains(msg)) {
                 return hoverEvent;
             }
-            final IChatComponent copy = value.createCopy();
+
+            IChatComponent copy = value.createCopy();
             copy.appendText("\n");
             copy.appendText(msg);
             return new HoverEvent(HoverEvent.Action.SHOW_TEXT, copy);
         }
+
         return hoverEvent;
     }
 }

@@ -776,12 +776,10 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Safe Chat Clicks",
-        description = "Show the command or link that is ran / opened on click",
+        description = "Show the command or link that is ran/opened on click.",
         category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean safeChatClicks = true;
-
-
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
