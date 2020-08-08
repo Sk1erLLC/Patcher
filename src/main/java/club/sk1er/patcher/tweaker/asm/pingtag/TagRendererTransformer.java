@@ -46,9 +46,7 @@ public class TagRendererTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = methodNode.name;
-
-            if (methodName.equals("renderTag")) {
+            if (methodNode.name.equals("renderTag")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

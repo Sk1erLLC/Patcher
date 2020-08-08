@@ -44,9 +44,7 @@ public class BlockRedstoneTorchTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = methodNode.name;
-
-            if (methodName.equals("<clinit>")) {
+            if (methodNode.name.equals("<clinit>")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();

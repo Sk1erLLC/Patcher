@@ -59,8 +59,8 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
     private InsnList downscaleImageSize() {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "downscalePackImages", "Z"));
-        LabelNode l1 = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new LdcInsnNode("pack.png"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/resources/AbstractResourcePack", "func_110591_a", // getInputStreamByName
@@ -69,11 +69,11 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
             "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        LabelNode l4 = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNONNULL, l4));
+        LabelNode ifnonnull = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNONNULL, ifnonnull));
         list.add(new InsnNode(Opcodes.ACONST_NULL));
         list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(l4);
+        list.add(ifnonnull);
         list.add(new TypeInsnNode(Opcodes.NEW, "java/awt/image/BufferedImage"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
@@ -97,7 +97,7 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/Graphics", "dispose", "()V", false));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(l1);
+        list.add(ifeq);
         return list;
     }
 }

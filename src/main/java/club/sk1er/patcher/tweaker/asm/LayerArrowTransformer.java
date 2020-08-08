@@ -54,17 +54,15 @@ public class LayerArrowTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof MethodInsnNode) {
-                        if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-                            if (methodInsnName.equals("disableStandardItemLighting") || methodInsnName.equals("func_74518_a")) {
-                                methodNode.instructions.insertBefore(next, fixArrowLighting(true));
-                                methodNode.instructions.remove(next);
-                            } else if (methodInsnName.equals("enableStandardItemLighting") || methodInsnName.equals("func_74519_b")) {
-                                methodNode.instructions.insertBefore(next, fixArrowLighting(false));
-                                methodNode.instructions.remove(next);
-                                break;
-                            }
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
+                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        if (methodInsnName.equals("disableStandardItemLighting") || methodInsnName.equals("func_74518_a")) {
+                            methodNode.instructions.insertBefore(next, fixArrowLighting(true));
+                            methodNode.instructions.remove(next);
+                        } else if (methodInsnName.equals("enableStandardItemLighting") || methodInsnName.equals("func_74519_b")) {
+                            methodNode.instructions.insertBefore(next, fixArrowLighting(false));
+                            methodNode.instructions.remove(next);
+                            break;
                         }
                     }
                 }
