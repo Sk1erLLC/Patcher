@@ -316,7 +316,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
-        description = "Stop armorstands from rendering.",
+        description = "Stop armorstands from rendering.\nArmorstands are commonly used for NPC nametag rendering. Enabling this will stop those from rendering as well.",
         category = "Performance", subcategory = "Rendering"
     )
     public static boolean disableArmorstands;
