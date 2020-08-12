@@ -406,6 +406,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean normalZoomSensitivity;
 
     @Property(
+            type = PropertyType.SWITCH, name = "Simplify OptiFine FPS Counter",
+            description = "Remove the additions OptiFine L5 makes to the debug screen fps counter.",
+            category = "Quality of Life", subcategory = "OptiFine"
+    )
+    public static boolean normalFpsCounter = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Compact Chat",
         description = "Clean up chat by stacking duplicate messages.",
         category = "Quality of Life", subcategory = "Chat"
