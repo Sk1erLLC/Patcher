@@ -152,7 +152,7 @@ public class PatcherConfig extends Vigilant {
         description = "Allow for modifying FOV change states.",
         category = "Quality of Life", subcategory = "Field of View"
     )
-    public static boolean allowFovModifying = true;
+    public static boolean allowFovModifying;
 
     @Property(
         type = PropertyType.SLIDER, name = "Sprinting FOV",

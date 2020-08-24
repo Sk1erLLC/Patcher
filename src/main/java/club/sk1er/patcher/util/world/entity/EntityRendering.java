@@ -42,22 +42,9 @@ public class EntityRendering {
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fontRenderer = mc.fontRendererObj;
     private final RenderManager renderManager = mc.getRenderManager();
-
-    /**
-     * Create a key for potion effects.
-     */
     private final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
-
-    /**
-     * Create a weak reference, allowing the garbage collector to easily access it.
-     */
     private WeakReference<EntityLivingBase> reference;
 
-    /**
-     * Stop any entity (currently only armor stands) from being rendered into the world.
-     *
-     * @param event {@link RenderLivingEvent.Pre}
-     */
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
         EntityLivingBase entity = event.entity;
@@ -120,8 +107,7 @@ public class EntityRendering {
 
     private void renderTag(EntityLivingBase entity) {
         String name = entity.getDisplayName().getFormattedText();
-        float playerHeight = 1.6f;
-        float nametagScale = 0.016666668F * playerHeight;
+        float nametagScale = 0.016666668F * 1.6f;
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1f);
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, entity.height + 0.5f, 0);
@@ -146,9 +132,9 @@ public class EntityRendering {
         GlStateManager.disableDepth();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        int stringWidth = fontRenderer.getStringWidth(name) / 2;
         GlStateManager.disableTexture2D();
 
+        int stringWidth = fontRenderer.getStringWidth(name) / 2;
         if (!PatcherConfig.transparentNameTags) {
             GlStateManager.color(0, 0, 0, .25F);
             GL11.glBegin(GL11.GL_QUADS);
@@ -163,11 +149,7 @@ public class EntityRendering {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
 
-        if (entity.isSneaking()) {
-            fontRenderer.drawString(name, -stringWidth, 0, 553648127);
-        } else {
-            fontRenderer.drawString(name, -stringWidth, 0, -1);
-        }
+        fontRenderer.drawString(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
 
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();

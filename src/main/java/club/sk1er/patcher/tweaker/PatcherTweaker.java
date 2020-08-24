@@ -72,6 +72,11 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         }
 
         File mods = new File(Launch.minecraftHome, "mods");
+
+        if (!mods.exists()) {
+            mods.mkdirs(); // make the mods folder for forge if it doesnt exist already
+        }
+
         File[] coreModList = mods.listFiles((dir, name) -> name.endsWith(".jar"));
         for (File file : coreModList) {
             try {

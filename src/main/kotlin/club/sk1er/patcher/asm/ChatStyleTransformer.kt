@@ -23,7 +23,7 @@ class ChatStyleTransformer : PatcherTransformer {
             val methodName = mapMethodName(classNode, it)
             methodName == "getChatHoverEvent" || methodName == "func_150210_i"
         }?.apply {
-            clearInstructions(this); // The one you're overwriting
+            clearInstructions(this) // The one you're overwriting
             injectInstructions {
                 of(ChatStyleHook::getChatHoverEvent)
                 into(this@apply) // Same one as earlier

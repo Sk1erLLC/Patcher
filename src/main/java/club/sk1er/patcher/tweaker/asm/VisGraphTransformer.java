@@ -52,7 +52,7 @@ public class VisGraphTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodNode.name.equals("func_178604_a")) {
+            if (methodName.equals("func_178604_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {

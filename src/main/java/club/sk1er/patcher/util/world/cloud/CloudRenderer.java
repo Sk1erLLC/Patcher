@@ -132,10 +132,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
                         // X sides
                         if (slice > -CULL_DIST) {
                             slice += INSET;
-                            buffer.pos(slice, 0, sectZ1).tex(sliceCoord0, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, HEIGHT, sectZ1).tex(sliceCoord1, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, HEIGHT, sectZ0).tex(sliceCoord1, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, 0, sectZ0).tex(sliceCoord0, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+                            positionXCloudVertex(buffer, sectZ0, sectZ1, v0, v1, slice, sliceCoord0, sliceCoord1);
                             slice -= INSET;
                         }
 
@@ -143,10 +140,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
                         if (slice <= CULL_DIST) {
                             slice -= INSET;
-                            buffer.pos(slice, 0, sectZ0).tex(sliceCoord0, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, HEIGHT, sectZ0).tex(sliceCoord1, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, HEIGHT, sectZ1).tex(sliceCoord1, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
-                            buffer.pos(slice, 0, sectZ1).tex(sliceCoord0, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+                            positionXCloudVertex(buffer, sectZ1, sectZ0, v1, v0, slice, sliceCoord0, sliceCoord1);
                             slice += INSET;
                         }
                     }
@@ -158,10 +152,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
                         // Z sides
                         if (slice > -CULL_DIST) {
                             slice += INSET;
-                            buffer.pos(sectX0, 0, slice).tex(u0, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX0, HEIGHT, slice).tex(u0, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX1, HEIGHT, slice).tex(u1, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX1, 0, slice).tex(u1, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
+                            positionZCloudVertex(buffer, sectX0, sectX1, u0, u1, slice, sliceCoord0, sliceCoord1);
                             slice -= INSET;
                         }
 
@@ -169,10 +160,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
                         if (slice <= CULL_DIST) {
                             slice -= INSET;
-                            buffer.pos(sectX1, 0, slice).tex(u1, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX1, HEIGHT, slice).tex(u1, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX0, HEIGHT, slice).tex(u0, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
-                            buffer.pos(sectX0, 0, slice).tex(u0, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
+                            positionZCloudVertex(buffer, sectX1, sectX0, u1, u0, slice, sliceCoord0, sliceCoord1);
                             slice += INSET;
                         }
                     }
@@ -183,6 +171,20 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
             sectX0 = sectX1;
         }
+    }
+
+    private void positionXCloudVertex(WorldRenderer buffer, float sectZ0, float sectZ1, float v0, float v1, float slice, float sliceCoord0, float sliceCoord1) {
+        buffer.pos(slice, 0, sectZ1).tex(sliceCoord0, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+        buffer.pos(slice, HEIGHT, sectZ1).tex(sliceCoord1, v1).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+        buffer.pos(slice, HEIGHT, sectZ0).tex(sliceCoord1, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+        buffer.pos(slice, 0, sectZ0).tex(sliceCoord0, v0).color(0.9F, 0.9F, 0.9F, ALPHA).endVertex();
+    }
+
+    private void positionZCloudVertex(WorldRenderer buffer, float sectX0, float sectX1, float u0, float u1, float slice, float sliceCoord0, float sliceCoord1) {
+        buffer.pos(sectX0, 0, slice).tex(u0, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
+        buffer.pos(sectX0, HEIGHT, slice).tex(u0, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
+        buffer.pos(sectX1, HEIGHT, slice).tex(u1, sliceCoord1).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
+        buffer.pos(sectX1, 0, slice).tex(u1, sliceCoord0).color(0.8F, 0.8F, 0.8F, ALPHA).endVertex();
     }
 
     private void dispose() {
