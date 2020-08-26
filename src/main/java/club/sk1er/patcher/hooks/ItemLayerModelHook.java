@@ -19,6 +19,9 @@ public class ItemLayerModelHook {
     public static final EnumFacing[] HORIZONTALS = {EnumFacing.UP, EnumFacing.DOWN};
     public static final EnumFacing[] VERTICALS = {EnumFacing.WEST, EnumFacing.EAST};
 
+    // todo: fix
+    // models don't render quite correctly in this kind of
+    // environment but they do just fine in a real forge env
     public static ImmutableList<BakedQuad> getQuadsForSprite(int tint, TextureAtlasSprite sprite, VertexFormat format, Optional<TRSRTransformation> transform) {
         ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 

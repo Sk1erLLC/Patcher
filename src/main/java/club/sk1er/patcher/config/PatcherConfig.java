@@ -788,6 +788,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean safeChatClicks = true;
 
+    /*@Property(
+        type = PropertyType.SWITCH, name = "Optimized Model Generation",
+        description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
+        category = "Performance", subcategory = "Models"
+    )
+    public static boolean optimizedModelGeneration;*/
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

@@ -1,21 +1,32 @@
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.patcher.asm.utils.getInstructions
 import club.sk1er.patcher.hooks.ItemLayerModelHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.*
 
 class ItemLayerModelTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf("net.minecraftforge.client.model.ItemLayerModel")
 
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.first { it.name == "getQuadsForSprite" }?.apply {
-            clearInstructions(this)
-            injectInstructions {
-                of(ItemLayerModelHook::getQuadsForSprite)
-                into(this@apply)
-                params(1, 2, 3, 4)
-            }
+            instructions.insertBefore(instructions.first, optimizeModelGeneration(this))
         }
+    }
+
+    private fun optimizeModelGeneration(methodNode: MethodNode): InsnList {
+        val list = InsnList()
+        list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "optimizedModelGeneration", "Z"))
+        val ifeq = LabelNode()
+        list.add(JumpInsnNode(Opcodes.IFEQ, ifeq))
+        list.add(getInstructions {
+            of(ItemLayerModelHook::getQuadsForSprite)
+            target(methodNode)
+            before(methodNode.instructions.first)
+            params(1, 2, 3, 4)
+        })
+        list.add(ifeq)
+        return list
     }
 }

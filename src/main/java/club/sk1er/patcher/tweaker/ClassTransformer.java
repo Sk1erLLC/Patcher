@@ -58,6 +58,7 @@ public class ClassTransformer implements IClassTransformer {
         } catch (IOException e) {
             LOGGER.info("Something went wrong, or the user doesn't have optifine");
         }
+
         registerTransformer(new S2EPacketCloseWindowTransformer());
         registerTransformer(new EntityItemTransformer());
         registerTransformer(new MinecraftTransformer());
@@ -140,6 +141,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiMultiplayerTransformer());
         registerTransformer(new ServerSelectionListTransformer());
         registerTransformer(new GuiOverlayDebugTransformer());
+        registerTransformer(new VertexFormatTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -159,7 +161,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModDiscovererTransformer());
         registerTransformer(new VertexLighterSmoothAoTransformer());
         registerTransformer(new MinecraftForgeTransformer());
-        registerTransformer(new ItemLayerModelTransformer());
+        //registerTransformer(new ItemLayerModelTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
