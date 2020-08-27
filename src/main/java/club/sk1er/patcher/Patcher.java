@@ -165,6 +165,7 @@ public class Patcher {
         ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
         ClientCommandHandler.instance.registerCommand(new SkinCacheRefresh());
         ClientCommandHandler.instance.registerCommand(new CoordsCommand());
+        ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
 
         registerClass(this);
         registerClass(target);
