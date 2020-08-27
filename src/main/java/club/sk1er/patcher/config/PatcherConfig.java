@@ -706,7 +706,7 @@ public class PatcherConfig extends Vigilant {
         description = "Remove the 'Open to Lan' button when in a multiplayer server with a server list button.",
         category = "Quality of Life", subcategory = "General"
     )
-    public static boolean replaceOpenToLan = true;
+    public static boolean replaceOpenToLan;
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Inverted Colors from Crosshair",
@@ -714,7 +714,6 @@ public class PatcherConfig extends Vigilant {
         category = "Quality of Life", subcategory = "General"
     )
     public static boolean removeInvertFromCrosshair;
-
 
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",

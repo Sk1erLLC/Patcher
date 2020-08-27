@@ -13,6 +13,7 @@ package club.sk1er.patcher.util.hotbar;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -89,11 +90,16 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderDamage(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance || player == null) {
             return;
         }
 
-        ItemStack heldItemStack = Minecraft.getMinecraft().thePlayer.inventory.getCurrentItem();
+        if (player.isSpectator()) {
+            return;
+        }
+
+        ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
@@ -122,12 +128,17 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderItemCount(final RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance || player == null) {
             return;
         }
 
-        if (mc.thePlayer.getCurrentEquippedItem() != null) {
-            boolean holdingBow = mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBow;
+        if (player.isSpectator()) {
+            return;
+        }
+
+        if (player.getCurrentEquippedItem() != null) {
+            boolean holdingBow = player.getCurrentEquippedItem().getItem() instanceof ItemBow;
             int count = getHeldItemCount(holdingBow);
 
             if (count > 1 || (holdingBow && count > 0)) {
@@ -149,11 +160,16 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderEnchantments(final RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null) {
             return;
         }
 
-        ItemStack heldItemStack = mc.thePlayer.inventory.getCurrentItem();
+        if (player.isSpectator()) {
+            return;
+        }
+
+        ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
             String toDraw = heldItemStack.getItem() instanceof ItemPotion ? getPotionEffectString(heldItemStack) : getEnchantmentString(heldItemStack);
 
