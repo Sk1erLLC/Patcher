@@ -26,12 +26,12 @@ public class NameHistoryCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "names";
+        return "pnames";
     }
 
     @Override
     public String getCommandUsage(ICommandSender iCommandSender) {
-        return "/names <username>";
+        return "/pnames <username>";
     }
 
     @Override
@@ -46,14 +46,14 @@ public class NameHistoryCommand extends CommandBase {
                 break;
 
             default:
-                ChatUtilities.sendMessage("Usage: /name <username>");
+                ChatUtilities.sendMessage("Usage: /pname <username>");
                 break;
         }
     }
 
     @Override
     public List<String> getCommandAliases() {
-        return Arrays.asList("namehistory", "name", "username");
+        return Arrays.asList("pnamehistory", "pname", "pusername");
     }
 
     @Override
