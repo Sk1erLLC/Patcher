@@ -274,14 +274,18 @@ public class AsyncScreenshots implements Runnable {
         @SuppressWarnings("ResultOfMethodCallIgnored")
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-            if (screenshot.exists()) {
-                ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
-                screenshot.delete();
+            try {
+                if (screenshot.exists()) {
+                    ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
+                    screenshot.delete();
 
-                // not on disk, remove from memory
-                screenshot = null;
-            } else {
-                ChatUtilities.sendMessage("&cCouldn't find " + screenshot.getName());
+                    // not on disk, remove from memory
+                    screenshot = null;
+                } else {
+                    ChatUtilities.sendMessage("&cCouldn't find " + screenshot.getName());
+                }
+            } catch (NullPointerException e) {
+                ChatUtilities.sendMessage("&cFailed to delete screenshot, maybe the file was moved/deleted?");
             }
         }
 
