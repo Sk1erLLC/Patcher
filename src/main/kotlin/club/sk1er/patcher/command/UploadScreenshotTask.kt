@@ -11,34 +11,32 @@
 
 package club.sk1er.patcher.command
 
+import club.sk1er.patcher.coroutines.MCDispatchers
 import club.sk1er.patcher.imgur.Imgur
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.EnumChatFormatting
 import java.io.File
 
-class UploadScreenshotTask {
-    fun upload(file: File?) {
+object UploadScreenshotTask {
+    private val client = Imgur("649f2fb48e59767")
+
+    fun execute(file: File?) {
         try {
             if (file != null) {
                 ChatUtilities.sendMessage("&aUploading screenshot...")
 
-                runBlocking {
-                    withContext(Dispatchers.Default) {
-                        Imgur("649f2fb48e59767").upload(file)
-                    }
+                MCDispatchers.PATCHER_SCOPE.launch(Dispatchers.IO) {
+                    val link = client.upload(file)
+                    val message = ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to $link.")
+                    message.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
+                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(message)
                 }
-
-                val uploadedComponent =
-                    ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to ${Imgur.link}.")
-                uploadedComponent.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, Imgur.link)
-                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent)
             } else {
                 ChatUtilities.sendMessage("&cFailed to upload screenshot, maybe the file was moved/deleted?")
             }

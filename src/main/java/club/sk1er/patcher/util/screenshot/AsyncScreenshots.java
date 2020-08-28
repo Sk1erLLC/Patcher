@@ -13,7 +13,6 @@ package club.sk1er.patcher.util.screenshot;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.ModCoreDesktop;
-import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.chat.ChatUtilities;
@@ -309,7 +308,7 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-            Multithreading.runAsync(() -> new UploadScreenshotTask().upload(screenshot));
+           UploadScreenshotTask.INSTANCE.execute(screenshot);
         }
 
         @Override

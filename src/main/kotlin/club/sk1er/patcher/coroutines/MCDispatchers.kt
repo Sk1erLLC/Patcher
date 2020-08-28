@@ -19,8 +19,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 @OptIn(ObsoleteCoroutinesApi::class)
 object MCDispatchers {
 
-    private val RENDERER = Dispatchers.Default
-    val PATCHER_SCOPE = CoroutineScope(RENDERER)
+    val PATCHER_SCOPE = CoroutineScope(Dispatchers.Default)
     val IO = newFixedThreadPoolContext(8, "IO")
 
 }
