@@ -103,8 +103,25 @@ public class EffectRendererTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+
+                case "func_180533_a":
+                case "addBlockDestroyEffects":
+                case "func_180532_a":
+                case "addBlockHitEffects":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelParticles());
+                    break;
             }
         }
+    }
+
+    private InsnList cancelParticles() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableBlockBreakParticles", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList checkIfCull(int entityfxIndex) {

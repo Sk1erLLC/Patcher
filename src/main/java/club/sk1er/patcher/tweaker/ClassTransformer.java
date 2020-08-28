@@ -110,7 +110,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
-        registerTransformer(new EntityDiggingFXTransformer());
         registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
