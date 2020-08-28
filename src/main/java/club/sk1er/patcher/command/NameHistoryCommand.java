@@ -11,13 +11,9 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.mods.core.ModCore;
-import club.sk1er.mods.core.util.MinecraftUtils;
-import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,19 +32,7 @@ public class NameHistoryCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender iCommandSender, String[] strings) {
-        switch (strings.length) {
-            case 0:
-                ModCore.getInstance().getGuiHandler().open(new ScreenHistory());
-                break;
-
-            case 1:
-                ModCore.getInstance().getGuiHandler().open(new ScreenHistory(strings[0], false));
-                break;
-
-            default:
-                ChatUtilities.sendMessage("Usage: /pname <username>");
-                break;
-        }
+        ChatUtilities.sendMessage("&cThis command has moved to &b/patcher name [username]&c. This message will be removed in Patcher 1.4.");
     }
 
     @Override

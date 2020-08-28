@@ -45,6 +45,8 @@ public class ScreenHistory extends GuiScreen {
     // height offset
     private int offset;
 
+    private String exceptionName;
+
     public ScreenHistory() {
         this("", true);
     }
@@ -67,6 +69,7 @@ public class ScreenHistory extends GuiScreen {
                 try {
                     uuid = MojangAPI.getUUID(username);
                 } catch (Exception e) {
+                    exceptionName = e.getClass().getSimpleName();
                     Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
                 }
 
@@ -81,7 +84,7 @@ public class ScreenHistory extends GuiScreen {
                         }
                     }
                 } else {
-                    names.add("Failed to fetch " + username + "'s names.");
+                    names.add("Failed to fetch " + username + "'s names: " + exceptionName);
                 }
             });
         } catch (Exception e) {
@@ -171,6 +174,7 @@ public class ScreenHistory extends GuiScreen {
         names.clear();
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
+        exceptionName = null;
     }
 
     @Override

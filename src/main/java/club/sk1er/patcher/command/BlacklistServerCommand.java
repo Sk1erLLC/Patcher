@@ -44,16 +44,8 @@ public class BlacklistServerCommand extends CommandBase {
      */
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0) {
-            ChatUtilities.sendMessage("&cPlease input the server ip to blacklist.");
-            return;
-        }
+        ChatUtilities.sendMessage("&cThis command has moved to &b/patcher blacklist <ip>&c. This message will be removed in Patcher 1.4.");
 
-        String command = args[0];
-        boolean blacklisted = Patcher.instance.addOrRemoveBlacklist(command);
-        String color = blacklisted ? "&c" : "&a";
-        ChatUtilities.sendMessage("Server &e\"" + command + "\" &ris " + color + (blacklisted ? "now" : "no longer") + " &rblacklisted from chat length extension.");
-        Patcher.instance.saveBlacklistedServers();
     }
 
     @Override

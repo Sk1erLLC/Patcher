@@ -16,6 +16,7 @@ import club.sk1er.mods.core.config.ModCoreConfig;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.benchmark.impl.ItemBenchmark;
@@ -56,7 +57,7 @@ public class PatcherCommand extends CommandBase {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + "[mode <vanilla|optimized>|benchmark <all, text, item>|debugfps|sounds|resetcache]";
+        return "/" + getCommandName() + "[mode <vanilla|optimized>|benchmark [all, text, item]|debugfps|sounds|resetcache|name [username]|blacklist <ip>]";
     }
 
     /**
@@ -111,12 +112,19 @@ public class PatcherCommand extends CommandBase {
                 }
 
                 runBenchmark(args[1], Arrays.copyOfRange(args, 2, args.length), benchmark);
+                return;
+            } else if (args[0].equalsIgnoreCase("name") || args[0].equalsIgnoreCase("names")) {
+                ModCore.getInstance().getGuiHandler().open(new ScreenHistory(args[1], false));
+                return;
+            } else if (args[0].equalsIgnoreCase("blacklist")) {
+                String status = Patcher.instance.addOrRemoveBlacklist(args[1]) ? "&cnow" : "&ano longer";
+                ChatUtilities.sendMessage("Server &e\"" + args[1] + "\" &ris " + status + " &rblacklisted from chat length extension.");
+                Patcher.instance.saveBlacklistedServers();
+                return;
             }
 
             return;
-        }
-
-        if (args.length == 1) {
+        } else if (args.length == 1) {
             switch (args[0]) {
                 case "resetcache":
                     EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
@@ -132,8 +140,18 @@ public class PatcherCommand extends CommandBase {
                 case "sounds":
                     ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
                     return;
+
+                case "name":
+                case "names":
+                    ModCore.getInstance().getGuiHandler().open(new ScreenHistory());
+                    return;
+
+                case "blacklist":
+                    ChatUtilities.sendMessage("&cPlease input the server ip to blacklist.");
+                    return;
             }
         }
+
 
         ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherConfig().gui());
     }
