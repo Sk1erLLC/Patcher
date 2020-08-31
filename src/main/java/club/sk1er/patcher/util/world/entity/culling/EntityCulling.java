@@ -44,6 +44,7 @@ public class EntityCulling {
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static CountDownLatch latch = null;
+    public static boolean uiRendering;
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -84,7 +85,7 @@ public class EntityCulling {
     }
 
     public static void begin() {
-        if (!PatcherConfig.entityCulling) {
+        if (!PatcherConfig.entityCulling || uiRendering) {
             return;
         }
 
