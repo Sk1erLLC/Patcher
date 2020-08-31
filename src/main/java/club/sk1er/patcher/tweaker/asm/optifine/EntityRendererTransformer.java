@@ -18,20 +18,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -40,8 +27,8 @@ import java.util.ListIterator;
 @SuppressWarnings("unused")
 public class EntityRendererTransformer implements PatcherTransformer {
     private static final float normalModifier = 4f;
-    private static float currentModifier = 4f;
     public static boolean zoomed = false;
+    private static float currentModifier = 4f;
 
     public static float getModifier() {
         if (!PatcherConfig.scrollToZoom) {
@@ -307,7 +294,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
     private InsnList checkFullbright() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fullbright", "Z"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/FullbrightTicker", "isFullbright", "()Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
