@@ -62,12 +62,7 @@ public class TileEntitySkullRendererTransformer implements PatcherTransformer {
 
                             if (methodInsnName.equals("enableAlpha") || methodInsnName.equals("func_179141_d")) {
                                 methodNode.instructions.insertBefore(next.getNext(), RenderPlayerTransformer.enableBlend());
-                            }
-                        } else if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-
-                            if (methodInsnName.equals("render") || methodInsnName.equals("func_78088_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), RenderPlayerTransformer.disableBlend());
+                                break;
                             }
                         }
                     }
