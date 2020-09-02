@@ -102,7 +102,7 @@ public class EntityCulling {
         double centerX = (box.maxX + box.minX) / 2;
         double centerZ = (box.maxZ + box.minZ) / 2;
         final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
-        if (
+        if (true ||
             //8 corners
             doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
                 doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
@@ -192,15 +192,14 @@ public class EntityCulling {
                     otherPotentialBox.maxY - playerPosition.yCoord,
                     otherPotentialBox.maxZ - playerPosition.zCoord).normalize();
                 final double v = tmp.dotProduct(direction);
-//            System.out.println(v);
-                if (v >= bottom.dotProduct(direction)) {
+//                if (v >= bottom.dotProduct(direction)) {
                     dest.add(otherPotentialBox);
-                }
+//                }
             }
-            System.out.println(dest.size());
-            if (dest.size() == 0 ||
+            if (dest.size() == 0 || entity.getCustomNameTag().contains("Test")||
                 //8 corners
-                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest)
+                ||
                 doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.minZ, dest) ||
                 doesRayHitEntity(playerPosition, box.maxX, box.minY, box.maxZ, dest) ||
                 doesRayHitEntity(playerPosition, box.maxX, box.minY, box.minZ, dest) ||
@@ -240,28 +239,48 @@ public class EntityCulling {
         return rayTraceBlocks(worldObj, new TripleVector(base), new TripleVector(x, y, z)) == null;
     }
 
-    private static boolean interceptsInRange(AxisAlignedBB box, Vec3 linePoint, Vec3 path, Vec3 v1, Vec3 v2, Vec3 planePoint) {
+    /***
+     *
+     * @param la
+     * @param lb
+     * @param v1
+     * @param v2
+     * @param planePoint
+     * @return true of it intercepted the hitbox
+     */
+    private static boolean interceptsInRange(Vec3 la, Vec3 lb, Vec3 v1, Vec3 v2, Vec3 planePoint) {
         //Is not facing the right direction
-        if (v1.crossProduct(v2).dotProduct(path) > 0) return false;
+         Vec3 cross = v1.crossProduct(v2);
+        final double v3 = cross.dotProduct(la.subtract(lb));
+//        System.out.println(v3);
+        if (v3 > 0) {
+            return false;
+        }
 
         //Find the point where the plane intercepts (dot product > 0 means it has to intersect somewhere)
 
-        return true;
+        final Vec3 ab = lb.subtract(la);
+        final Vec3 minusAB = new Vec3(-ab.xCoord, -ab.yCoord, -ab.zCoord);
+        double u = v2.crossProduct(minusAB).dotProduct(la.subtract(planePoint)) / (minusAB.dotProduct(v1.crossProduct(v2)));
+        double v = minusAB.crossProduct(v1).dotProduct(la.subtract(planePoint)) / (minusAB.dotProduct(v1.crossProduct(v2)));
+//        System.out.println("U: " + u + " V: " + v);
+
+        return (u >= 0 && u <= 1 && v >= 0 && v <= 1);
     }
 
     /**
      * Does the ray fired from the players eyes land on an entity?
      *
-     * @param base Our player.
-     * @param x    Entity bounding box X.
-     * @param y    Entity bounding box Y.
-     * @param z    Entity bounding box Z.
+     * @param la Our player.
+     * @param x  Entity bounding box X.
+     * @param y  Entity bounding box Y.
+     * @param z  Entity bounding box Z.
      * @return The status on if the raytrace hits the entity.
      */
-    private static boolean doesRayHitEntity(Vec3 base, double x, double y, double z, List<AxisAlignedBB> boxes) {
-        final Vec3 path = new Vec3(x - base.xCoord, y - base.yCoord, z - base.zCoord); //Maybe not need to normalize?
+    private static boolean doesRayHitEntity(Vec3 la, double x, double y, double z, List<AxisAlignedBB> boxes) {
+        final Vec3 lb = new Vec3(x, y, z); //Maybe not need to normalize?
 
-        //Parametric form of line is base + path * u
+        //Parametric form of line is la + lb * u
         for (AxisAlignedBB box : boxes) {
             //First plane
             double[] data = new double[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ};
@@ -275,23 +294,30 @@ public class EntityCulling {
             //Find out which planes are visible: Take cross
             if (
                 //S1, S2, S3
-                interceptsInRange(box, base, path, v1, v2, p1) ||
-                    interceptsInRange(box, base, path, v2, v3, p1) ||
-                    interceptsInRange(box, base, path, v1, v3, p1) ||
-                    //S4, S5, S6
-                    interceptsInRange(box, base, path, v3, v2, p2) ||
-                    interceptsInRange(box, base, path, v2, v1, p2) ||
-                    interceptsInRange(box, base, path, v3, v1, p2)
+                interceptsInRange(la, lb, v1, v2, p1)
+                    ||
+                    interceptsInRange(la, lb, v2, v3, p1)
+                        ||
+                    interceptsInRange(la, lb, v1, v3, p1)
+                        ||
+//                    //S4, S5, S6
+                    interceptsInRange(la, lb, invert(v3), invert(v2), p2)
+                        ||
+                    interceptsInRange(la, lb, invert(v2), invert(v1), p2)
+                    ||
+                    interceptsInRange(la, lb, invert(v3), invert(v1), p2)
             ) {
-                hits.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
+                misses.add(new Pair<>(new TripleVector(la), new TripleVector(x, y, z)));
 
-                return true;
+                return false;
             }
         }
-        misses.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
-        return false;
+        hits.add(new Pair<>(new TripleVector(la), new TripleVector(x, y, z)));
+        return true;
     }
-
+    private static Vec3 invert(Vec3 src) {
+        return new Vec3(-src.xCoord,-src.yCoord,-src.zCoord);
+    }
     /**
      * Fire a ray hitting blocks, used for checking if an entity is behind a block.
      *
@@ -532,7 +558,6 @@ public class EntityCulling {
                     fromZ = MathHelper.floor_double(fromPoint.zCoord) - (direction == EnumFacing.SOUTH ? 1 : 0);
                     for (AxisAlignedBB axisAlignedBB : boxes) {
                         if (axisAlignedBB.isVecInside(new Vec3(fromPoint.xCoord, fromPoint.yCoord, fromPoint.zCoord))) {
-//                            System.out.println(":GG");
                             return true;
                         }
                     }
@@ -548,7 +573,8 @@ public class EntityCulling {
     public void renderWorld(RenderWorldLastEvent event) {
         if ((hits.size() > 0 || misses.size() > 0)) {
 
-
+            lock.lock();
+            lock.unlock();
             GlStateManager.pushMatrix();
             final EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
             GlStateManager.translate(-thePlayer.posX, -thePlayer.posY, -thePlayer.posZ);
@@ -589,8 +615,6 @@ public class EntityCulling {
 //            GL11.glVertex3d(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord);
 //        }
 
-        } else {
-//            System.out.println("REEE");
         }
     }
 
@@ -645,7 +669,7 @@ public class EntityCulling {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Wait time: " + (System.currentTimeMillis() - start));
+//        System.out.println("Wait time: " + (System.currentTimeMillis() - start));
     }
 
     static final class TripleVector {
