@@ -787,6 +787,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean safeChatClicks = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Layers In Tab",
+        description = "Fixes players sometimes not having a hat layer in Tab.",
+        category = "Fixes", subcategory = "General"
+    )
+    public static boolean layersInTab = true;
+
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
         description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
