@@ -11,14 +11,20 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
+import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import com.google.common.collect.Sets;
+import kotlin.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,14 +32,17 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Used for stopping entities from rendering if they are not visible to the player.
@@ -43,8 +52,13 @@ public class EntityCulling {
     private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final ReentrantLock lock = new ReentrantLock();
+    private static final List<Pair<TripleVector, TripleVector>> hits = new ArrayList<>();
+    private static final List<Pair<TripleVector, TripleVector>> misses = new ArrayList<>();
     public static boolean uiRendering;
     private static CountDownLatch latch = null;
+    int culled;
+    int not;
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -99,11 +113,11 @@ public class EntityCulling {
 
         latch = new CountDownLatch(world.loadedEntityList.size());
 
+        final Set<Entity> render = Sets.newConcurrentHashSet();
         Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
         //noinspection WhileLoopReplaceableByForEach
         while (entityIterator.hasNext()) {
-            Entity entity = entityIterator.next();
-
+            final Entity entity = entityIterator.next();
             if (!(entity instanceof EntityLivingBase) || entity == mc.thePlayer) {
                 latch.countDown();
                 continue;
@@ -111,27 +125,28 @@ public class EntityCulling {
 
             service.submit(() -> {
                 //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-                AxisAlignedBB box = entity.getEntityBoundingBox();
+                AxisAlignedBB box = entity.getEntityBoundingBox().expand(0, .25, 0);
                 double centerX = (box.maxX + box.minX) / 2;
                 double centerZ = (box.maxZ + box.minZ) / 2;
                 final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
                 if (
                     //8 corners
-                    doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
-                        doesRayHitEntity(world, baseVector, box.maxX, box.maxY, box.minZ) ||
-                        doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.maxZ) ||
-                        doesRayHitEntity(world, baseVector, box.maxX, box.minY, box.minZ) ||
-                        doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.maxZ) ||
-                        doesRayHitEntity(world, baseVector, box.minX, box.maxY, box.minZ) ||
-                        doesRayHitEntity(world, baseVector, box.minX, box.minY, box.maxZ) ||
-                        doesRayHitEntity(world, baseVector, box.minX, box.minY, box.minZ) ||
+                    doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
+                        doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
+                        doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
+                        doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
+                        doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
+                        doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
+                        doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
+                        doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
                         //4 points running down center of hitbox
-                        doesRayHitEntity(world, baseVector, centerX, box.maxY, centerZ) ||
-                        doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                        doesRayHitEntity(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                        doesRayHitEntity(world, baseVector, centerX, box.minY, centerZ)
+                        doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
+                        doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                        doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                        doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
                 ) {
                     latch.countDown();
+                    render.add(entity);
                     return;
                 }
 
@@ -140,7 +155,68 @@ public class EntityCulling {
                 latch.countDown();
             });
         }
-        entityIterator = null;
+        Multithreading.submit(() -> {
+            lock.lock();
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            PriorityQueue<Entity> entities = new PriorityQueue<>(Math.max(1, render.size()), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
+            entities.addAll(render);
+            int addl = 0;
+            List<AxisAlignedBB> list = new ArrayList<>();
+            for (Entity entity : entities) {
+                final AxisAlignedBB box = entity.getEntityBoundingBox();
+                if (list.isEmpty()) {
+                    list.add(box);
+                    continue;
+                }
+
+                double centerX = (box.maxX + box.minX) / 2;
+                double centerZ = (box.maxZ + box.minZ) / 2;
+                final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+                final Vec3 direction = new Vec3((box.maxX + box.minX) / 2 - baseVector.xCoord,
+                    (box.maxY + box.minY) / 2 - baseVector.yCoord,
+                    (box.maxZ + box.minZ) / 2 - baseVector.zCoord).normalize();
+                final ArrayList<AxisAlignedBB> dest = new ArrayList<>();
+                for (AxisAlignedBB box1 : list) {
+                    Vec3 tmp = new Vec3((box1.maxX + box1.minX) / 2 - baseVector.xCoord,
+                        (box1.maxY + box1.minY) / 2 - baseVector.yCoord,
+                        (box1.maxZ + box1.minZ) / 2 - baseVector.zCoord).normalize();
+                    final double v = tmp.dotProduct(direction);
+//            System.out.println(v);
+                    if (v > .5) {
+                        dest.add(box1);
+                    }
+                }
+                if (dest.size() == 0 ||
+                    //8 corners
+                    doesRayHitEntity(baseVector, box.maxX, box.maxY, box.maxZ, dest) ||
+                    doesRayHitEntity(baseVector, box.maxX, box.maxY, box.minZ, dest) ||
+                    doesRayHitEntity(baseVector, box.maxX, box.minY, box.maxZ, dest) ||
+                    doesRayHitEntity(baseVector, box.maxX, box.minY, box.minZ, dest) ||
+                    doesRayHitEntity(baseVector, box.minX, box.maxY, box.maxZ, dest) ||
+                    doesRayHitEntity(baseVector, box.minX, box.maxY, box.minZ, dest) ||
+                    doesRayHitEntity(baseVector, box.minX, box.minY, box.maxZ, dest) ||
+                    doesRayHitEntity(baseVector, box.minX, box.minY, box.minZ, dest) ||
+                    //4 points running down center of hitbox
+                    doesRayHitEntity(baseVector, centerX, box.maxY, centerZ, dest) ||
+                    doesRayHitEntity(baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ, dest) ||
+                    doesRayHitEntity(baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ, dest) ||
+                    doesRayHitEntity(baseVector, centerX, box.minY, centerZ, dest)
+                ) {
+                    dest.add(box);
+                    continue;
+                }
+//                System.out.println("exclude: " + entity.getName());
+                exclude.add(entity);
+                addl++;
+            }
+//            System.out.println("ADDL: " + addl);
+            lock.unlock();
+
+        });
     }
 
     /**
@@ -153,8 +229,29 @@ public class EntityCulling {
      * @param z        Entity bounding box Z.
      * @return The status on if the raytrace hits the entity.
      */
-    private static boolean doesRayHitEntity(World worldObj, Vec3 base, double x, double y, double z) {
+    private static boolean doesRayHitBlock(World worldObj, Vec3 base, double x, double y, double z) {
         return rayTraceBlocks(worldObj, new TripleVector(base), new TripleVector(x, y, z)) == null;
+    }
+
+
+    /**
+     * Does the ray fired from the players eyes land on an entity?
+     *
+     * @param base Our player.
+     * @param x    Entity bounding box X.
+     * @param y    Entity bounding box Y.
+     * @param z    Entity bounding box Z.
+     * @return The status on if the raytrace hits the entity.
+     */
+    private static boolean doesRayHitEntity(Vec3 base, double x, double y, double z, List<AxisAlignedBB> boxes) {
+
+        final boolean b = !rayTraceEntity(new TripleVector(base), new TripleVector(x, y, z), boxes);
+        if (b) {
+            hits.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
+        } else {
+            misses.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
+        }
+        return b;
     }
 
     /**
@@ -290,6 +387,187 @@ public class EntityCulling {
 
 
     /**
+     * Fire a ray hitting entities, used for checking if an entity is behind another entity.
+     *
+     * @param fromPoint From the player.
+     * @param toPoint   To the block.
+     * @param boxes     list of boxes to check for inclusion within
+     * @return The ray trace result.
+     */
+    private static boolean rayTraceEntity(TripleVector fromPoint, TripleVector toPoint, List<AxisAlignedBB> boxes) {
+        if (!Double.isNaN(fromPoint.xCoord) && !Double.isNaN(fromPoint.yCoord) && !Double.isNaN(fromPoint.zCoord)) {
+            if (!Double.isNaN(toPoint.xCoord) && !Double.isNaN(toPoint.yCoord) && !Double.isNaN(toPoint.zCoord)) {
+                int fromX = MathHelper.floor_double(fromPoint.xCoord);
+                int fromY = MathHelper.floor_double(fromPoint.yCoord);
+                int fromZ = MathHelper.floor_double(fromPoint.zCoord);
+                int toX = MathHelper.floor_double(toPoint.xCoord);
+                int toY = MathHelper.floor_double(toPoint.yCoord);
+                int toZ = MathHelper.floor_double(toPoint.zCoord);
+
+                int counter = 200;
+                while (counter-- >= 0) {
+                    if (Double.isNaN(fromPoint.xCoord) || Double.isNaN(fromPoint.yCoord) || Double.isNaN(fromPoint.zCoord)) {
+                        return false;
+                    }
+
+                    if (fromX == toX && fromY == toY && fromZ == toZ) {
+                        return false;
+                    }
+
+                    boolean xBoundaryMet = true;
+                    boolean yBoundaryMet = true;
+                    boolean zBoundaryMet = true;
+                    double distX = 999.0D;
+                    double distY = 999.0D;
+                    double distZ = 999.0D;
+
+                    if (toX > fromX) {
+                        distX = (double) fromX + 1.0D;
+                    } else if (toX < fromX) {
+                        distX = (double) fromX + 0.0D;
+                    } else {
+                        xBoundaryMet = false;
+                    }
+
+                    if (toY > fromY) {
+                        distY = (double) fromY + 1.0D;
+                    } else if (toY < fromY) {
+                        distY = (double) fromY + 0.0D;
+                    } else {
+                        yBoundaryMet = false;
+                    }
+
+                    if (toZ > fromZ) {
+                        distZ = (double) fromZ + 1.0D;
+                    } else if (toZ < fromZ) {
+                        distZ = (double) fromZ + 0.0D;
+                    } else {
+                        zBoundaryMet = false;
+                    }
+
+                    double finalX = 999.0D;
+                    double finalY = 999.0D;
+                    double finalZ = 999.0D;
+                    double xAvg = toPoint.xCoord - fromPoint.xCoord;
+                    double yAvg = toPoint.yCoord - fromPoint.yCoord;
+                    double zAvg = toPoint.zCoord - fromPoint.zCoord;
+
+                    if (xBoundaryMet) {
+                        finalX = (distX - fromPoint.xCoord) / xAvg;
+                    }
+
+                    if (yBoundaryMet) {
+                        finalY = (distY - fromPoint.yCoord) / yAvg;
+                    }
+
+                    if (zBoundaryMet) {
+                        finalZ = (distZ - fromPoint.zCoord) / zAvg;
+                    }
+
+                    if (finalX == -0.0D) {
+                        finalX = -1.0E-4D;
+                    }
+
+                    if (finalY == -0.0D) {
+                        finalY = -1.0E-4D;
+                    }
+
+                    if (finalZ == -0.0D) {
+                        finalZ = -1.0E-4D;
+                    }
+
+                    EnumFacing direction;
+
+                    if (finalX < finalY && finalX < finalZ) {
+                        direction = toX > fromX ? EnumFacing.WEST : EnumFacing.EAST;
+                        fromPoint.reset(distX, fromPoint.yCoord + yAvg * finalX, fromPoint.zCoord + zAvg * finalX);
+                    } else if (finalY < finalZ) {
+                        direction = toY > fromY ? EnumFacing.DOWN : EnumFacing.UP;
+                        fromPoint.reset(fromPoint.xCoord + xAvg * finalY, distY, fromPoint.zCoord + zAvg * finalY);
+                    } else {
+                        direction = toZ > fromZ ? EnumFacing.NORTH : EnumFacing.SOUTH;
+                        fromPoint.reset(fromPoint.xCoord + xAvg * finalZ, fromPoint.yCoord + yAvg * finalZ, distZ);
+                    }
+
+                    fromX = MathHelper.floor_double(fromPoint.xCoord) - (direction == EnumFacing.EAST ? 1 : 0);
+                    fromY = MathHelper.floor_double(fromPoint.yCoord) - (direction == EnumFacing.UP ? 1 : 0);
+                    fromZ = MathHelper.floor_double(fromPoint.zCoord) - (direction == EnumFacing.SOUTH ? 1 : 0);
+                    for (AxisAlignedBB axisAlignedBB : boxes) {
+                        if (axisAlignedBB.isVecInside(new Vec3(fromPoint.xCoord, fromPoint.yCoord, fromPoint.zCoord))) {
+//                            System.out.println(":GG");
+                            return true;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return false;
+    }
+
+    @SubscribeEvent
+    public void renderWorld(RenderWorldLastEvent event) {
+        if ((hits.size() > 0 || misses.size() > 0)) {
+
+
+            GlStateManager.pushMatrix();
+            final EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
+            GlStateManager.translate(-thePlayer.posX, -thePlayer.posY, -thePlayer.posZ);
+            GlStateManager.depthMask(false);
+            GlStateManager.disableTexture2D();
+//        GlStateManager.disableLighting();
+//        GlStateManager.disableCull();
+//        GlStateManager.disableBlend();
+            for (Pair<TripleVector, TripleVector> hit : hits) {
+                if (hit == null || hit.component1() == null || hit.component2() == null) continue;
+                Tessellator tessellator = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+                worldrenderer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+                worldrenderer.pos(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord).color(0, 255, 0, 255).endVertex();
+                worldrenderer.pos(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord).color(0, 255, 0, 255).endVertex();
+                tessellator.draw();
+
+            }
+            for (Pair<TripleVector, TripleVector> hit : misses) {
+                if (hit == null || hit.component1() == null || hit.component2() == null) continue;
+
+                Tessellator tessellator = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+                worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+                worldrenderer.pos(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord).color(255, 0, 0, 255).endVertex();
+                worldrenderer.pos(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord).color(255, 0, 0, 255).endVertex();
+                tessellator.draw();
+            }
+            GlStateManager.enableTexture2D();
+            GlStateManager.enableLighting();
+            GlStateManager.enableCull();
+            GlStateManager.disableBlend();
+            GlStateManager.depthMask(true);
+            GlStateManager.popMatrix();
+
+//        for (Pair<TripleVector, TripleVector> hit : misses) {
+//            GL11.glVertex3d(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord);
+//            GL11.glVertex3d(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord);
+//        }
+
+        } else {
+//            System.out.println("REEE");
+        }
+    }
+
+    @SubscribeEvent
+    public void renderTickEvent(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
+//        System.out.println(culled + ", " + not);
+        culled = 0;
+        not = 0;
+    }
+
+    /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
      * If it can see an entity, continue to render the entity, otherwise save some time
      * performing rendering and cancel the entity render.
@@ -298,15 +576,19 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling || mc.gameSettings.thirdPersonView != 0) return;
+//        event.setCanceled(true);
+//        if (!PatcherConfig.entityCulling || mc.gameSettings.thirdPersonView != 0) return;
 
         EntityLivingBase entity = event.entity;
+        if (exclude.contains(entity)) {
+            culled++;
+        }
         if (exclude.contains(entity) && !entity.isEntityInsideOpaqueBlock()) {
             event.setCanceled(true);
             if (PatcherConfig.dontCullNametags && canRenderName(entity) && event.isCanceled()) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
-        }
+        } else not++;
 
     }
 
@@ -315,13 +597,17 @@ public class EntityCulling {
         if (!PatcherConfig.entityCulling || event.phase != TickEvent.Phase.END || latch == null) {
             return;
         }
-//        long start = System.nanoTime();
+        hits.clear();
+        misses.clear();
+        long start = System.currentTimeMillis();
         try {
             latch.await();
+            lock.lock();
+            lock.unlock();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        System.out.println("Wait time: " + (System.nanoTime() - start));
+        System.out.println("Wait time: " + (System.currentTimeMillis() - start));
     }
 
     static final class TripleVector {
