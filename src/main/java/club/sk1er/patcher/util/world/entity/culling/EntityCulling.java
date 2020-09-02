@@ -43,8 +43,8 @@ public class EntityCulling {
     private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static CountDownLatch latch = null;
     public static boolean uiRendering;
+    private static CountDownLatch latch = null;
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -175,24 +175,8 @@ public class EntityCulling {
                 int toY = MathHelper.floor_double(toPoint.yCoord);
                 int toZ = MathHelper.floor_double(toPoint.zCoord);
                 BetterBlockPos blockPosition = new BetterBlockPos(fromX, fromY, fromZ);
-                IBlockState blockState = world.getBlockState(blockPosition);
-                Block block = blockState.getBlock();
-
-                if (!(block instanceof BlockAir)) {
-                    if (!block.isOpaqueCube() || !block.isFullCube()) {
-                        return null;
-                    }
-                }
-
-                if (block.canCollideCheck(blockState, false)) {
-                    MovingObjectPosition collisionRayTrace = block.collisionRayTrace(world, blockPosition, fromPoint.toMinecraftVector(), toPoint.toMinecraftVector());
-                    if (collisionRayTrace != null) {
-                        return collisionRayTrace;
-                    }
-                }
 
                 int counter = 200;
-
                 while (counter-- >= 0) {
                     if (Double.isNaN(fromPoint.xCoord) || Double.isNaN(fromPoint.yCoord) || Double.isNaN(fromPoint.zCoord)) {
                         return null;
@@ -286,7 +270,7 @@ public class EntityCulling {
 
                     if (!(newBlock instanceof BlockAir)) {
                         if (!newBlock.isOpaqueCube() || !newBlock.isFullCube()) {
-                            return null;
+                            continue;
                         }
                     }
 
@@ -304,6 +288,7 @@ public class EntityCulling {
         return null;
     }
 
+
     /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
      * If it can see an entity, continue to render the entity, otherwise save some time
@@ -318,7 +303,6 @@ public class EntityCulling {
         EntityLivingBase entity = event.entity;
         if (exclude.contains(entity) && !entity.isEntityInsideOpaqueBlock()) {
             event.setCanceled(true);
-
             if (PatcherConfig.dontCullNametags && canRenderName(entity) && event.isCanceled()) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
@@ -331,12 +315,13 @@ public class EntityCulling {
         if (!PatcherConfig.entityCulling || event.phase != TickEvent.Phase.END || latch == null) {
             return;
         }
-
+//        long start = System.nanoTime();
         try {
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+//        System.out.println("Wait time: " + (System.nanoTime() - start));
     }
 
     static final class TripleVector {

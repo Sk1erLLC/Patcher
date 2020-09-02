@@ -174,8 +174,11 @@ public final class FontRendererHook {
             textureState.textureName = GL_TEX;
 
             // Save thing as texture, it updated in GL so we need to update the MC cache of that value
-            GlStateManager.resetColor();
-            GL11.glColor4f(1f, 1f, 1f, 1f);
+            GlStateManager.Color colorState = GlStateManager.colorState;
+            colorState.red = cachedString.getLastRed();
+            colorState.green = cachedString.getLastGreen();
+            colorState.blue = cachedString.getLastBlue();
+            colorState.alpha = cachedString.getLastAlpha();
             GlStateManager.translate(-posX, -posY, 0.0f);
 
             this.fontRenderer.posX = posX + cachedString.getWidth();
@@ -402,7 +405,6 @@ public final class FontRendererHook {
         float smallCharWidth = charWidth - 0.01F;
 
         startDrawing();
-
         float uvHeight = 7.99F * regularCharDim / 128;
         float uvWidth = smallCharWidth * regularCharDim / 128;
 
