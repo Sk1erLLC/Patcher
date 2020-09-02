@@ -263,6 +263,7 @@ public class EntityCulling {
             Vec3 v1 = new Vec3(data[3] - data[0], 0, 0);
             Vec3 v2 = new Vec3(0, data[4] - data[1], 0);
             Vec3 v3 = new Vec3(0, 0, data[5] - data[2]);
+            //TODO some dot product to see which 3 planes are potentially visible
         }
         final boolean b = !rayTraceEntity(new TripleVector(base), new TripleVector(x, y, z), boxes);
         if (b) {
