@@ -150,6 +150,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerSpiderEyesTransformer());
         registerTransformer(new LayerCreeperChargeTransformer());
         registerTransformer(new LayerWitherAuraTransformer());
+        registerTransformer(new GuiLanguageTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
