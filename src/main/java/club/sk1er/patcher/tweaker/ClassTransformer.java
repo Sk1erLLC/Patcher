@@ -142,6 +142,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
         registerTransformer(new LayerHeldItemTransformer());
+        registerTransformer(new StatBaseTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
