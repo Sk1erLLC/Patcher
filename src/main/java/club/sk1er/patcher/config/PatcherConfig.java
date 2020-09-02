@@ -794,6 +794,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean layersInTab = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Chunk Lighting",
+        description = "Fixes chunks sometimes not displaying any light when empty.",
+        category = "Fixes", subcategory = "Lighting"
+    )
+    public static boolean chunkLighting = true;
+
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
         description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
