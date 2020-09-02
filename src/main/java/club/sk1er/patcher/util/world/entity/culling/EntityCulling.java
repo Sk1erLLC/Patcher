@@ -23,10 +23,10 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.*;
@@ -35,7 +35,6 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -53,15 +52,14 @@ public class EntityCulling {
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ReentrantLock lock = new ReentrantLock();
-    private static final List<Pair<TripleVector, TripleVector>> hits = new ArrayList<>();
-    private static final List<Pair<TripleVector, TripleVector>> misses = new ArrayList<>();
+    private static final List<Pair<TripleVector, TripleVector>> hits = Collections.synchronizedList(new ArrayList<>());
+    private static final List<Pair<TripleVector, TripleVector>> misses = Collections.synchronizedList(new ArrayList<>());
     public static boolean uiRendering;
     private static CountDownLatch latch = null;
     int culled;
     int not;
 
-    /**
-     * Used for checking if the entities nametag can be rendered if the user still wants
+    /*]     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
      * <p>
      * Mirrored from {@link RendererLivingEntity} as it's originally protected.
@@ -98,6 +96,38 @@ public class EntityCulling {
             && entity.riddenByEntity == null;
     }
 
+    private static void doBlockVisibityCheck(Entity entity, World world, Set<Entity> render) {
+        //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
+        AxisAlignedBB box = entity.getEntityBoundingBox().expand(0, .25, 0);
+        double centerX = (box.maxX + box.minX) / 2;
+        double centerZ = (box.maxZ + box.minZ) / 2;
+        final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+        if (
+            //8 corners
+            doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
+                //4 points running down center of hitbox
+                doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
+        ) {
+            latch.countDown();
+            render.add(entity);
+            return;
+        }
+
+        exclude.add(entity);
+
+        latch.countDown();
+    }
+
     public static void begin() {
         if (!PatcherConfig.entityCulling || uiRendering) {
             return;
@@ -105,7 +135,7 @@ public class EntityCulling {
 
         exclude.clear();
 
-        World world = mc.theWorld;
+        final World world = mc.theWorld;
 
         if (world == null || mc.thePlayer == null) {
             return;
@@ -122,101 +152,78 @@ public class EntityCulling {
                 latch.countDown();
                 continue;
             }
-
-            service.submit(() -> {
-                //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
-                AxisAlignedBB box = entity.getEntityBoundingBox().expand(0, .25, 0);
-                double centerX = (box.maxX + box.minX) / 2;
-                double centerZ = (box.maxZ + box.minZ) / 2;
-                final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
-                if (
-                    //8 corners
-                    doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
-                        doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
-                        doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
-                        doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
-                        doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
-                        doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
-                        doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
-                        doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
-                        //4 points running down center of hitbox
-                        doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
-                        doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                        doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                        doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
-                ) {
-                    latch.countDown();
-                    render.add(entity);
-                    return;
-                }
-
-                exclude.add(entity);
-
-                latch.countDown();
-            });
+            service.submit(() -> doBlockVisibityCheck(entity, world, render));
         }
-        Multithreading.submit(() -> {
-            lock.lock();
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            PriorityQueue<Entity> entities = new PriorityQueue<>(Math.max(1, render.size()), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
-            entities.addAll(render);
-            int addl = 0;
-            List<AxisAlignedBB> list = new ArrayList<>();
-            for (Entity entity : entities) {
-                final AxisAlignedBB box = entity.getEntityBoundingBox();
-                if (list.isEmpty()) {
-                    list.add(box);
-                    continue;
-                }
+        Multithreading.submit(() -> doEntityRayTrace(render));
+    }
 
-                double centerX = (box.maxX + box.minX) / 2;
-                double centerZ = (box.maxZ + box.minZ) / 2;
-                final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
-                final Vec3 direction = new Vec3((box.maxX + box.minX) / 2 - baseVector.xCoord,
-                    (box.maxY + box.minY) / 2 - baseVector.yCoord,
-                    (box.maxZ + box.minZ) / 2 - baseVector.zCoord).normalize();
-                final ArrayList<AxisAlignedBB> dest = new ArrayList<>();
-                for (AxisAlignedBB box1 : list) {
-                    Vec3 tmp = new Vec3((box1.maxX + box1.minX) / 2 - baseVector.xCoord,
-                        (box1.maxY + box1.minY) / 2 - baseVector.yCoord,
-                        (box1.maxZ + box1.minZ) / 2 - baseVector.zCoord).normalize();
-                    final double v = tmp.dotProduct(direction);
+    private static void doEntityRayTrace(Set<Entity> render) {
+        lock.lock();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        PriorityQueue<Entity> entities = new PriorityQueue<>(Math.max(1, render.size()), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
+        entities.addAll(render);
+        int addl = 0;
+        List<AxisAlignedBB> list = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity == mc.thePlayer) continue;
+            final AxisAlignedBB box = entity.getEntityBoundingBox();
+            if (list.isEmpty()) {
+                list.add(box);
+                continue;
+            }
+
+            double centerX = (box.maxX + box.minX) / 2;
+            double centerZ = (box.maxZ + box.minZ) / 2;
+            final Vec3 playerPosition = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+            final Vec3 direction = new Vec3((box.maxX + box.minX) / 2 - playerPosition.xCoord,
+                (box.maxY + box.minY) / 2 - playerPosition.yCoord,
+                (box.maxZ + box.minZ) / 2 - playerPosition.zCoord).normalize();
+            final ArrayList<AxisAlignedBB> dest = new ArrayList<>();
+            for (AxisAlignedBB otherPotentialBox : list) {
+                Vec3 tmp = new Vec3((otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord,
+                    (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord,
+                    (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord).normalize();
+
+                Vec3 bottom = new Vec3(otherPotentialBox.maxX - playerPosition.xCoord,
+                    otherPotentialBox.maxY - playerPosition.yCoord,
+                    otherPotentialBox.maxZ - playerPosition.zCoord).normalize();
+                final double v = tmp.dotProduct(direction);
 //            System.out.println(v);
-                    if (v > .5) {
-                        dest.add(box1);
-                    }
+                if (v >= bottom.dotProduct(direction)) {
+                    dest.add(otherPotentialBox);
                 }
-                if (dest.size() == 0 ||
-                    //8 corners
-                    doesRayHitEntity(baseVector, box.maxX, box.maxY, box.maxZ, dest) ||
-                    doesRayHitEntity(baseVector, box.maxX, box.maxY, box.minZ, dest) ||
-                    doesRayHitEntity(baseVector, box.maxX, box.minY, box.maxZ, dest) ||
-                    doesRayHitEntity(baseVector, box.maxX, box.minY, box.minZ, dest) ||
-                    doesRayHitEntity(baseVector, box.minX, box.maxY, box.maxZ, dest) ||
-                    doesRayHitEntity(baseVector, box.minX, box.maxY, box.minZ, dest) ||
-                    doesRayHitEntity(baseVector, box.minX, box.minY, box.maxZ, dest) ||
-                    doesRayHitEntity(baseVector, box.minX, box.minY, box.minZ, dest) ||
-                    //4 points running down center of hitbox
-                    doesRayHitEntity(baseVector, centerX, box.maxY, centerZ, dest) ||
-                    doesRayHitEntity(baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ, dest) ||
-                    doesRayHitEntity(baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ, dest) ||
-                    doesRayHitEntity(baseVector, centerX, box.minY, centerZ, dest)
-                ) {
-                    dest.add(box);
-                    continue;
-                }
-//                System.out.println("exclude: " + entity.getName());
-                exclude.add(entity);
-                addl++;
             }
+            System.out.println(dest.size());
+            if (dest.size() == 0 ||
+                //8 corners
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.minZ, dest) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.maxZ, dest) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.minZ, dest) ||
+                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.maxZ, dest) ||
+                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.minZ, dest) ||
+                doesRayHitEntity(playerPosition, box.minX, box.minY, box.maxZ, dest) ||
+                doesRayHitEntity(playerPosition, box.minX, box.minY, box.minZ, dest) ||
+                //4 points running down center of hitbox
+                doesRayHitEntity(playerPosition, centerX, box.maxY, centerZ, dest) ||
+                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ, dest) ||
+                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ, dest) ||
+                doesRayHitEntity(playerPosition, centerX, box.minY, centerZ, dest)
+            ) {
+                if (!(entity instanceof EntityArmorStand))
+                    list.add(box);
+                continue;
+            }
+//                System.out.println("exclude: " + entity.getName());
+            exclude.add(entity);
+            addl++;
+        }
 //            System.out.println("ADDL: " + addl);
-            lock.unlock();
-
-        });
+        lock.unlock();
     }
 
     /**
@@ -244,7 +251,19 @@ public class EntityCulling {
      * @return The status on if the raytrace hits the entity.
      */
     private static boolean doesRayHitEntity(Vec3 base, double x, double y, double z, List<AxisAlignedBB> boxes) {
+        final Vec3 normalize = new Vec3(x - base.xCoord, y - base.yCoord, z - base.zCoord).normalize(); //Maybe not need to normalize?
 
+        //Parametric form of line is base + normalize * u
+        for (AxisAlignedBB box : boxes) {
+            //First plane
+            double[] data = new double[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ};
+            Vec3 p1 = new Vec3(data[0], data[1], data[2]);
+            Vec3 p2 = new Vec3(data[3], data[4], data[5]);
+
+            Vec3 v1 = new Vec3(data[3] - data[0], 0, 0);
+            Vec3 v2 = new Vec3(0, data[4] - data[1], 0);
+            Vec3 v3 = new Vec3(0, 0, data[5] - data[2]);
+        }
         final boolean b = !rayTraceEntity(new TripleVector(base), new TripleVector(x, y, z), boxes);
         if (b) {
             hits.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
@@ -516,9 +535,9 @@ public class EntityCulling {
             GlStateManager.translate(-thePlayer.posX, -thePlayer.posY, -thePlayer.posZ);
             GlStateManager.depthMask(false);
             GlStateManager.disableTexture2D();
-//        GlStateManager.disableLighting();
-//        GlStateManager.disableCull();
-//        GlStateManager.disableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.disableBlend();
             for (Pair<TripleVector, TripleVector> hit : hits) {
                 if (hit == null || hit.component1() == null || hit.component2() == null) continue;
                 Tessellator tessellator = Tessellator.getInstance();
