@@ -278,7 +278,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList getEyePosition() {
         InsnList list = new InsnList();
         list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "func_174824_e", "(F)Lnet/minecraft/util/Vec3;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "getPositionEyes", "(F)Lnet/minecraft/util/Vec3;", false));
         return list;
     }
 
