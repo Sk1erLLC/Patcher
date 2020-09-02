@@ -102,21 +102,21 @@ public class EntityCulling {
         double centerX = (box.maxX + box.minX) / 2;
         double centerZ = (box.maxZ + box.minZ) / 2;
         final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
-        if (true ||
+        if (
             //8 corners
             doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
-                doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
-                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
-                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
-                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
-                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
-                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
-                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
-                //4 points running down center of hitbox
-                doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
-                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-                doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
+            doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
+            doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
+            doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
+            doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
+            doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
+            doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
+            doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
+            //4 points running down center of hitbox
+            doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
+            doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+            doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+            doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
         ) {
             latch.countDown();
             render.add(entity);
@@ -188,15 +188,18 @@ public class EntityCulling {
                     (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord,
                     (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord).normalize();
 
-                Vec3 bottom = new Vec3(otherPotentialBox.maxX - playerPosition.xCoord,
-                    otherPotentialBox.maxY - playerPosition.yCoord,
-                    otherPotentialBox.maxZ - playerPosition.zCoord).normalize();
+                Vec3 bottom = new Vec3((otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord,
+                    (otherPotentialBox.maxY) - playerPosition.yCoord,
+                    (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord).normalize();
                 final double v = tmp.dotProduct(direction);
-//                if (v >= bottom.dotProduct(direction)) {
+//                final double v1 = 1 - ;
+
+//                System.out.println(v + " " + bottom.dotProduct(direction));
+                if (v >= bottom.dotProduct(tmp)) {
                     dest.add(otherPotentialBox);
-//                }
+                }
             }
-            if (dest.size() == 0 || entity.getCustomNameTag().contains("Test")||
+            if (dest.size() == 0 ||
                 //8 corners
                 doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest)
                 ||
@@ -250,7 +253,7 @@ public class EntityCulling {
      */
     private static boolean interceptsInRange(Vec3 la, Vec3 lb, Vec3 v1, Vec3 v2, Vec3 planePoint) {
         //Is not facing the right direction
-         Vec3 cross = v1.crossProduct(v2);
+        Vec3 cross = v1.crossProduct(v2);
         final double v3 = cross.dotProduct(la.subtract(lb));
 //        System.out.println(v3);
         if (v3 > 0) {
@@ -297,12 +300,12 @@ public class EntityCulling {
                 interceptsInRange(la, lb, v1, v2, p1)
                     ||
                     interceptsInRange(la, lb, v2, v3, p1)
-                        ||
+                    ||
                     interceptsInRange(la, lb, v1, v3, p1)
-                        ||
+                    ||
 //                    //S4, S5, S6
                     interceptsInRange(la, lb, invert(v3), invert(v2), p2)
-                        ||
+                    ||
                     interceptsInRange(la, lb, invert(v2), invert(v1), p2)
                     ||
                     interceptsInRange(la, lb, invert(v3), invert(v1), p2)
@@ -315,9 +318,11 @@ public class EntityCulling {
         hits.add(new Pair<>(new TripleVector(la), new TripleVector(x, y, z)));
         return true;
     }
+
     private static Vec3 invert(Vec3 src) {
-        return new Vec3(-src.xCoord,-src.yCoord,-src.zCoord);
+        return new Vec3(-src.xCoord, -src.yCoord, -src.zCoord);
     }
+
     /**
      * Fire a ray hitting blocks, used for checking if an entity is behind a block.
      *
