@@ -147,6 +147,9 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelPlayerTransformer());
         registerTransformer(new ExtendedBlockStorageTransformer());
         registerTransformer(new ServerAddressTransformer());
+        registerTransformer(new LayerSpiderEyesTransformer());
+        registerTransformer(new LayerCreeperChargeTransformer());
+        registerTransformer(new LayerWitherAuraTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
