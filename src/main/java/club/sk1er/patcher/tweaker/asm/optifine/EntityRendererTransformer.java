@@ -250,8 +250,36 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_78464_a":
+                case "updateRenderer": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("getLightBrightness")) {
+                                ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
+                                methodNode.instructions.insertBefore(next.getPrevious(), getEyePosition());
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
+    }
+
+    private InsnList getEyePosition() {
+        InsnList list = new InsnList();
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "func_174824_e", "(F)Lnet/minecraft/util/Vec3;", false));
+        return list;
     }
 
     private InsnList toggleCullingStatus(boolean status) {

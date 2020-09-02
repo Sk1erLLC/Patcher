@@ -599,7 +599,7 @@ public class EntityCulling {
         }
         hits.clear();
         misses.clear();
-        long start = System.currentTimeMillis();
+        //long start = System.currentTimeMillis();
         try {
             latch.await();
             lock.lock();
@@ -607,7 +607,7 @@ public class EntityCulling {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Wait time: " + (System.currentTimeMillis() - start));
+        //System.out.println("Wait time: " + (System.currentTimeMillis() - start));
     }
 
     static final class TripleVector {
