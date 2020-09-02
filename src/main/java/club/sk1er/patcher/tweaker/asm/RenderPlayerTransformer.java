@@ -51,43 +51,79 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderRightArm") || methodName.equals("func_177138_b")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "renderRightArm":
+                case "func_177138_b": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
 
-                    if (node instanceof MethodInsnNode) {
-                        if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
-                            if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
-                                methodNode.instructions.insertBefore(node.getNext(), enableBlend());
+                        if (node instanceof MethodInsnNode) {
+                            if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
+                                String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                                if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
+                                    methodNode.instructions.insertBefore(node.getNext(), enableBlend());
+                                }
+                            }
+                        } else if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ALOAD
+                            && ((VarInsnNode) node).var == 3 && node.getNext().getOpcode() == Opcodes.ICONST_0) {
+                            methodNode.instructions.insertBefore(node, newArmLogic());
+                        }
+                    }
+
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), disableBlend());
+                    break;
+                }
+                case "doRender":
+                case "func_76986_a": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            if (methodInsnName.equals("doRender") || methodInsnName.equals("func_76986_a")) {
+                                methodNode.instructions.insertBefore(next.getNext(), disableBlend());
+                            } else if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
+                                methodNode.instructions.insertBefore(next.getNext(), enableBlend());
                             }
                         }
-                    } else if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ALOAD
-                        && ((VarInsnNode) node).var == 3 && node.getNext().getOpcode() == Opcodes.ICONST_0) {
-                        methodNode.instructions.insertBefore(node, newArmLogic());
                     }
+                    break;
                 }
 
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), disableBlend());
-            } else if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                case "func_177137_d":
+                case "setModelVisibilities": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof MethodInsnNode) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
-                        if (methodInsnName.equals("doRender") || methodInsnName.equals("func_76986_a")) {
-                            methodNode.instructions.insertBefore(next.getNext(), disableBlend());
-                        } else if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
-                            methodNode.instructions.insertBefore(next.getNext(), enableBlend());
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            String fieldName = mapFieldNameFromNode((FieldInsnNode) next);
+
+                            if ((fieldName.equals("bipedHeadwear") || fieldName.equals("field_178720_f")) && next.getNext().getOpcode() == Opcodes.ICONST_1) {
+                                methodNode.instructions.remove(next.getNext());
+                                methodNode.instructions.insertBefore(next.getNext(), checkHatLayer());
+                                break;
+                            }
                         }
                     }
+
+                    break;
                 }
             }
         }
+    }
+
+    private InsnList checkHatLayer() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/entity/player/EnumPlayerModelParts", "HAT", "Lnet/minecraft/entity/player/EnumPlayerModelParts;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/AbstractClientPlayer", "func_175148_a", "(Lnet/minecraft/entity/player/EnumPlayerModelParts;)Z", false));
+        return list;
     }
 
     public static MethodInsnNode disableBlend() {
