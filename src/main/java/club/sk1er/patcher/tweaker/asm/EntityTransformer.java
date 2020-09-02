@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -23,6 +24,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class EntityTransformer implements PatcherTransformer {
     /**
@@ -52,8 +55,33 @@ public class EntityTransformer implements PatcherTransformer {
             } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(getFixedBrightness());
+            } else if (methodName.equals("spawnRunningParticles") || methodName.equals("func_174830_Y")) {
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                LabelNode ifeq = new LabelNode();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFNE) {
+                        methodNode.instructions.insert(next.getNext(), checkOnGround(ifeq));
+                    } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                        if (methodInsnName.equals("createRunningParticles") || methodInsnName.equals("func_174808_Z")) {
+                            methodNode.instructions.insert(next.getNext(), ifeq);
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList checkOnGround(LabelNode ifeq) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/Entity", "field_70122_E", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        return list;
     }
 
     private InsnList getFixedBrightness() {
