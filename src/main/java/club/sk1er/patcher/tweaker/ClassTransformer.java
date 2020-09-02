@@ -144,6 +144,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerHeldItemTransformer());
         registerTransformer(new StatBaseTransformer());
         registerTransformer(new ItemStackTransformer());
+        registerTransformer(new ModelPlayerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
