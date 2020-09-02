@@ -240,6 +240,14 @@ public class EntityCulling {
         return rayTraceBlocks(worldObj, new TripleVector(base), new TripleVector(x, y, z)) == null;
     }
 
+    private static boolean interceptsInRange(AxisAlignedBB box, Vec3 linePoint, Vec3 path, Vec3 v1, Vec3 v2, Vec3 planePoint) {
+        //Is not facing the right direction
+        if (v1.crossProduct(v2).dotProduct(path) > 0) return false;
+
+        //Find the point where the plane intercepts (dot product > 0 means it has to intersect somewhere)
+
+        return true;
+    }
 
     /**
      * Does the ray fired from the players eyes land on an entity?
@@ -251,9 +259,9 @@ public class EntityCulling {
      * @return The status on if the raytrace hits the entity.
      */
     private static boolean doesRayHitEntity(Vec3 base, double x, double y, double z, List<AxisAlignedBB> boxes) {
-        final Vec3 normalize = new Vec3(x - base.xCoord, y - base.yCoord, z - base.zCoord).normalize(); //Maybe not need to normalize?
+        final Vec3 path = new Vec3(x - base.xCoord, y - base.yCoord, z - base.zCoord); //Maybe not need to normalize?
 
-        //Parametric form of line is base + normalize * u
+        //Parametric form of line is base + path * u
         for (AxisAlignedBB box : boxes) {
             //First plane
             double[] data = new double[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ};
@@ -263,15 +271,25 @@ public class EntityCulling {
             Vec3 v1 = new Vec3(data[3] - data[0], 0, 0);
             Vec3 v2 = new Vec3(0, data[4] - data[1], 0);
             Vec3 v3 = new Vec3(0, 0, data[5] - data[2]);
-            //TODO some dot product to see which 3 planes are potentially visible
+
+            //Find out which planes are visible: Take cross
+            if (
+                //S1, S2, S3
+                interceptsInRange(box, base, path, v1, v2, p1) ||
+                    interceptsInRange(box, base, path, v2, v3, p1) ||
+                    interceptsInRange(box, base, path, v1, v3, p1) ||
+                    //S4, S5, S6
+                    interceptsInRange(box, base, path, v3, v2, p2) ||
+                    interceptsInRange(box, base, path, v2, v1, p2) ||
+                    interceptsInRange(box, base, path, v3, v1, p2)
+            ) {
+                hits.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
+
+                return true;
+            }
         }
-        final boolean b = !rayTraceEntity(new TripleVector(base), new TripleVector(x, y, z), boxes);
-        if (b) {
-            hits.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
-        } else {
-            misses.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
-        }
-        return b;
+        misses.add(new Pair<>(new TripleVector(base), new TripleVector(x, y, z)));
+        return false;
     }
 
     /**
