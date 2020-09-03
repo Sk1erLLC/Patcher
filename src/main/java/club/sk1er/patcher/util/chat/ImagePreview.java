@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,9 +32,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,10 +46,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ImagePreview {
 
-    private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net"};
+    private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net", "cdn.discordapp.com"};
     private final DecimalFormat format = new DecimalFormat("#.00");
     private final List<Long> frames = new ArrayList<>();
     private final String[] renderStrings = new String[5];
+    private final Minecraft mc = Minecraft.getMinecraft();
+    private final FontRenderer fontRenderer = mc.fontRendererObj;
     private String loaded;
     private int tex = -1;
     private int width = 100;
@@ -78,15 +80,18 @@ public class ImagePreview {
                     renderStrings[++e] = "Avg on " + interval + "s: " + format.format(amt / ((float) interval));
                 }
             }
-            final ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
-            final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+            final ScaledResolution scaledResolution = new ScaledResolution(mc);
             int y = 40;
             for (String render : renderStrings) {
-                font.drawString(render, scaledResolution.getScaledWidth() - 5 - font.getStringWidth(render), y, Color.RED.getRGB(), true);
+                fontRenderer.drawString(render, scaledResolution.getScaledWidth() - 5 - fontRenderer.getStringWidth(render), y, Color.RED.getRGB(), true);
                 y += 10;
             }
         }
-        if (!PatcherConfig.imagePreview) return;
+
+        if (!PatcherConfig.imagePreview) {
+            return;
+        }
+
         final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
         final IChatComponent chatComponent = chat.getChatComponent(Mouse.getX(), Mouse.getY());
         if (chatComponent != null) {
@@ -99,50 +104,59 @@ public class ImagePreview {
     }
 
     private void handle(String value) {
-
         try {
             final URL url = new URL(value);
             final String host = url.getHost();
             boolean found = false;
+
             for (String allowed_host : ALLOWED_HOSTS) {
                 if (host.equalsIgnoreCase(allowed_host)) {
                     found = true;
                     break;
                 }
             }
-            if (!found) return;
+
+            if (!found) {
+                return;
+            }
         } catch (MalformedURLException e) {
             return;
         }
+
         if (!value.startsWith("http")) {
             if (tex != -1)
                 GlStateManager.deleteTexture(tex);
             tex = -1;
             return;
         }
+
         if (value.contains("imgur.com/")) {
             final String[] split = value.split("/");
             value = String.format("https://i.imgur.com/%s.png", split[split.length - 1]);
         }
+
         if (!value.equals(loaded)) {
             loaded = value;
-            if (tex != -1)
+
+            if (tex != -1) {
                 GlStateManager.deleteTexture(tex);
+            }
+
             tex = -1;
             String finalValue = value;
             Multithreading.runAsync(() -> loadUrl(finalValue));
         }
+
         if (this.image != null) {
             final DynamicTexture dynamicTexture = new DynamicTexture(image);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
             dynamicTexture.updateDynamicTexture();
             this.tex = dynamicTexture.getGlTextureId();
             this.width = image.getWidth();
             this.height = image.getHeight();
             this.image = null;
-
         }
+
         if (tex != -1) {
             GlStateManager.pushMatrix();
             final ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
@@ -154,20 +168,24 @@ public class ImagePreview {
             GlStateManager.color(1, 1, 1, 1);
             float aspectRatio = width / (float) height;
             float scaleWidth = scaledResolution.getScaledWidth() * scaleFactor;
+            
             if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 scaleWidth *= PatcherConfig.imagePreviewWidth / 100D;
             }
+            
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
                 scaleWidth = this.width;
             }
+            
             float maxWidth = scaleWidth;
             float height = maxWidth / aspectRatio;
+            
             if (height > scaledResolution.getScaledHeight() * scaleFactor) {
                 height = scaledResolution.getScaledHeight() * scaleFactor;
                 maxWidth = height * aspectRatio;
             }
+            
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
             drawTexturedModalRect(0, 0, (int) maxWidth, (int) height);
             GlStateManager.popMatrix();
         }
@@ -195,7 +213,10 @@ public class ImagePreview {
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            image = TextureUtil.readBufferedImage(connection.getInputStream());
+
+            try (InputStream stream = connection.getInputStream()) {
+                image = TextureUtil.readBufferedImage(stream);
+            }
         } catch (IOException ignored) {
         } finally {
             if (connection != null) {

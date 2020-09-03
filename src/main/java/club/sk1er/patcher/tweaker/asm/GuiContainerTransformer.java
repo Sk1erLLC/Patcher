@@ -79,14 +79,14 @@ public class GuiContainerTransformer implements PatcherTransformer {
     private InsnList fixSplitRemnants(LabelNode gotoInsn) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "dragSplittingButton", "I"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "field_146988_G", "I"));
         list.add(new InsnNode(Opcodes.ICONST_2));
         LabelNode ificmpne = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, ificmpne));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "getMaxStackSize", "()I", false));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "dragSplittingRemnant", "I"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d", "()I", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "field_146996_I", "I"));
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
         list.add(ificmpne);
         return list;

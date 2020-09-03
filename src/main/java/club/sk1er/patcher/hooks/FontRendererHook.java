@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -58,9 +59,11 @@ public final class FontRendererHook {
             final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
             try {
                 final IResource resource = mc.getResourceManager().getResource(resourceLocation);
-                final BufferedImage read = ImageIO.read(resource.getInputStream());
-                regWidth = read.getWidth();
-                break;
+                try (InputStream stream = resource.getInputStream()) {
+                    final BufferedImage read = ImageIO.read(stream);
+                    regWidth = read.getWidth();
+                    break;
+                }
             } catch (IOException ignored) {
             }
         }
@@ -70,8 +73,10 @@ public final class FontRendererHook {
 
         try {
             final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
-            final BufferedImage read = ImageIO.read(resource.getInputStream());
-            specWidth = read.getWidth();
+            try (InputStream stream = resource.getInputStream()) {
+                final BufferedImage read = ImageIO.read(stream);
+                specWidth = read.getWidth();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,16 +100,20 @@ public final class FontRendererHook {
             final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
             try {
                 final IResource resource = mc.getResourceManager().getResource(resourceLocation);
-                final BufferedImage read = ImageIO.read(resource.getInputStream());
-                bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+                try (InputStream stream = resource.getInputStream()) {
+                    final BufferedImage read = ImageIO.read(stream);
+                    bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+                }
             } catch (IOException ignored) {
             }
         }
 
         try {
             final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
-            final BufferedImage read = ImageIO.read(resource.getInputStream());
-            bufferedImage.getGraphics().drawImage(read, 0, 16 * texSheetDim, null);
+            try (InputStream stream = resource.getInputStream()) {
+                final BufferedImage read = ImageIO.read(stream);
+                bufferedImage.getGraphics().drawImage(read, 0, 16 * texSheetDim, null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -443,8 +452,8 @@ public final class FontRendererHook {
         int row = page / 16;
         int column = page % 16;
         int glyphWidth = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
-        float charX = (float) (characterIndex % 16 * 16) + glyphWidth + (.05f * page / 39f );
-        float charY = (float) ((characterIndex & 255) / 16 * 16) + (.05f * page / 39f );
+        float charX = (float) (characterIndex % 16 * 16) + glyphWidth + (.05f * page / 39f);
+        float charY = (float) ((characterIndex & 255) / 16 * 16) + (.05f * page / 39f);
 
 
         return new Pair<>((row * texSheetDim + charX) / fontTexWidth, (column * texSheetDim + charY) / fontTexHeight); //16 rows each with a size of 64px

@@ -20,8 +20,14 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -209,7 +215,6 @@ public class ModCoreInstaller {
         frame.setVisible(true);
 
         HttpURLConnection connection = null;
-        InputStream is = null;
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             URL u = new URL(url);
             connection = (HttpURLConnection) u.openConnection();
@@ -219,16 +224,17 @@ public class ModCoreInstaller {
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            is = connection.getInputStream();
-            int contentLength = connection.getContentLength();
-            byte[] buffer = new byte[1024];
-            System.out.println("MAX: " + contentLength);
-            bar.setMaximum(contentLength);
-            int read;
-            bar.setValue(0);
-            while ((read = is.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, read);
-                bar.setValue(bar.getValue() + 1024);
+            try (InputStream is = connection.getInputStream()) {
+                int contentLength = connection.getContentLength();
+                byte[] buffer = new byte[1024];
+                System.out.println("MAX: " + contentLength);
+                bar.setMaximum(contentLength);
+                int read;
+                bar.setValue(0);
+                while ((read = is.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, read);
+                    bar.setValue(bar.getValue() + 1024);
+                }
             }
             FileUtils.write(new File(dataDir, "metadata.json"), versionData.put(mcver, version).toString());
         } catch (Exception e) {
@@ -236,17 +242,8 @@ public class ModCoreInstaller {
             frame.dispose();
             return false;
         } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Failed cleaning up ModCoreInstaller#download");
-                e.printStackTrace();
+            if (connection != null) {
+                connection.disconnect();
             }
         }
 
@@ -263,7 +260,6 @@ public class ModCoreInstaller {
         System.out.println("Fetching " + url);
 
         HttpURLConnection connection = null;
-        InputStream is = null;
         try {
             URL u = new URL(url);
             connection = (HttpURLConnection) u.openConnection();
@@ -273,22 +269,14 @@ public class ModCoreInstaller {
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            is = connection.getInputStream();
-            return IOUtils.toString(is, Charset.defaultCharset());
+            try (InputStream is = connection.getInputStream()) {
+                return IOUtils.toString(is, Charset.defaultCharset());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Failed cleaning up ModCoreInstaller#fetchString");
-                e.printStackTrace();
+            if (connection != null) {
+                connection.disconnect();
             }
         }
 
