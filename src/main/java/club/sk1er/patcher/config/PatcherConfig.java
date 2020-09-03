@@ -547,6 +547,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean entityCulling = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Blaze Culling",
+        description = "Use the Blaze Culling Algorithm to avoid rendering non visible entities",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean entitySightCulling = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Nametags",
         description = "Render nametags even with entity culling enabled.",
         category = "Performance", subcategory = "Culling"

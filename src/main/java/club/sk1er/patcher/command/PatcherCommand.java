@@ -210,6 +210,7 @@ public class PatcherCommand extends CommandBase {
         PatcherConfig.cullParticles = status;
         PatcherConfig.entityCulling = status;
         PatcherConfig.searchingOptimizationFix = status;
+        PatcherConfig.entitySightCulling = status;
         PatcherConfig.fullbright = status;
         PatcherConfig.disableConstantFogColorChecking = status;
         PatcherConfig.lowAnimationTick = status;

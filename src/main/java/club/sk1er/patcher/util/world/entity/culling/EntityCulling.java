@@ -14,16 +14,11 @@ package club.sk1er.patcher.util.world.entity.culling;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import com.google.common.collect.Sets;
-import kotlin.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -32,10 +27,8 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -48,16 +41,12 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class EntityCulling {
 
-    private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
+    private static final ExecutorService service = Executors.newFixedThreadPool(16, task -> new Thread(task, "Culling Thread"));
     private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ReentrantLock lock = new ReentrantLock();
-    private static final List<Pair<TripleVector, TripleVector>> hits = Collections.synchronizedList(new ArrayList<>());
-    private static final List<Pair<TripleVector, TripleVector>> misses = Collections.synchronizedList(new ArrayList<>());
     public static boolean uiRendering;
     private static CountDownLatch latch = null;
-    int culled;
-    int not;
 
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
@@ -105,18 +94,18 @@ public class EntityCulling {
         if (
             //8 corners
             doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
-            doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
-            doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
-            doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
-            doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
-            doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
-            doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
-            doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
-            //4 points running down center of hitbox
-            doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
-            doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
-            doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
-            doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
+                doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.maxX, box.minY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
+                doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
+                //4 points running down center of hitbox
+                doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
+                doesRayHitBlock(world, baseVector, centerX, box.minY, centerZ)
         ) {
             latch.countDown();
             render.add(entity);
@@ -129,14 +118,12 @@ public class EntityCulling {
     }
 
     public static void begin() {
+        exclude.clear();
         if (!PatcherConfig.entityCulling || uiRendering) {
             return;
         }
 
-        exclude.clear();
-
         final World world = mc.theWorld;
-
         if (world == null || mc.thePlayer == null) {
             return;
         }
@@ -154,7 +141,8 @@ public class EntityCulling {
             }
             service.submit(() -> doBlockVisibityCheck(entity, world, render));
         }
-        Multithreading.submit(() -> doEntityRayTrace(render));
+        if (PatcherConfig.entitySightCulling)
+            Multithreading.submit(() -> doEntityRayTrace(render));
     }
 
     private static void doEntityRayTrace(Set<Entity> render) {
@@ -166,8 +154,10 @@ public class EntityCulling {
         }
         PriorityQueue<Entity> entities = new PriorityQueue<>(Math.max(1, render.size()), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
         entities.addAll(render);
-        int addl = 0;
         List<AxisAlignedBB> list = new ArrayList<>();
+        final TripleVector tmp = new TripleVector();
+        final TripleVector bottom = new TripleVector();
+        final TripleVector direction = new TripleVector();
         for (Entity entity : entities) {
             if (entity == mc.thePlayer) continue;
             final AxisAlignedBB box = entity.getEntityBoundingBox();
@@ -179,30 +169,30 @@ public class EntityCulling {
             double centerX = (box.maxX + box.minX) / 2;
             double centerZ = (box.maxZ + box.minZ) / 2;
             final Vec3 playerPosition = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
-            final Vec3 direction = new Vec3((box.maxX + box.minX) / 2 - playerPosition.xCoord,
+            direction.reset((box.maxX + box.minX) / 2 - playerPosition.xCoord,
                 (box.maxY + box.minY) / 2 - playerPosition.yCoord,
-                (box.maxZ + box.minZ) / 2 - playerPosition.zCoord).normalize();
+                (box.maxZ + box.minZ) / 2 - playerPosition.zCoord);
+            direction.normalize();
             final ArrayList<AxisAlignedBB> dest = new ArrayList<>();
+
             for (AxisAlignedBB otherPotentialBox : list) {
-                Vec3 tmp = new Vec3((otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord,
-                    (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord,
-                    (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord).normalize();
+                final double xCoord = (otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord;
+                final double zCoord = (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord;
 
-                Vec3 bottom = new Vec3((otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord,
-                    (otherPotentialBox.maxY) - playerPosition.yCoord,
-                    (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord).normalize();
-                final double v = tmp.dotProduct(direction);
-//                final double v1 = 1 - ;
+                tmp.reset(xCoord, (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord, zCoord);
+                tmp.normalize();
 
-//                System.out.println(v + " " + bottom.dotProduct(direction));
-                if (v >= bottom.dotProduct(tmp)) {
+                bottom.reset(xCoord, (otherPotentialBox.maxY) - playerPosition.yCoord, zCoord);
+                bottom.normalize();
+
+
+                if (tmp.dotProduct(direction) >= bottom.dotProduct(tmp)) {
                     dest.add(otherPotentialBox);
                 }
             }
             if (dest.size() == 0 ||
                 //8 corners
-                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest)
-                ||
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest) ||
                 doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.minZ, dest) ||
                 doesRayHitEntity(playerPosition, box.maxX, box.minY, box.maxZ, dest) ||
                 doesRayHitEntity(playerPosition, box.maxX, box.minY, box.minZ, dest) ||
@@ -220,11 +210,8 @@ public class EntityCulling {
                     list.add(box);
                 continue;
             }
-//                System.out.println("exclude: " + entity.getName());
             exclude.add(entity);
-            addl++;
         }
-//            System.out.println("ADDL: " + addl);
         lock.unlock();
     }
 
@@ -264,10 +251,10 @@ public class EntityCulling {
 
         final Vec3 ab = lb.subtract(la);
         final Vec3 minusAB = new Vec3(-ab.xCoord, -ab.yCoord, -ab.zCoord);
-        double u = v2.crossProduct(minusAB).dotProduct(la.subtract(planePoint)) / (minusAB.dotProduct(v1.crossProduct(v2)));
-        double v = minusAB.crossProduct(v1).dotProduct(la.subtract(planePoint)) / (minusAB.dotProduct(v1.crossProduct(v2)));
-//        System.out.println("U: " + u + " V: " + v);
-
+        final Vec3 subtract = la.subtract(planePoint);
+        final double v4 = minusAB.dotProduct(v1.crossProduct(v2));
+        double u = v2.crossProduct(minusAB).dotProduct(subtract) / v4;
+        double v = minusAB.crossProduct(v1).dotProduct(subtract) / v4;
         return (u >= 0 && u <= 1 && v >= 0 && v <= 1);
     }
 
@@ -284,43 +271,42 @@ public class EntityCulling {
         final Vec3 lb = new Vec3(x, y, z); //Maybe not need to normalize?
 
         //Parametric form of line is la + lb * u
+        final TripleVector p1 = new TripleVector();
+        final TripleVector p2 = new TripleVector();
+        final TripleVector v1 = new TripleVector();
+        final TripleVector v2 = new TripleVector();
+        final TripleVector v3 = new TripleVector();
+
         for (AxisAlignedBB box : boxes) {
             //First plane
-            double[] data = new double[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ};
-            Vec3 p1 = new Vec3(data[0], data[1], data[2]);
-            Vec3 p2 = new Vec3(data[3], data[4], data[5]);
+            p1.reset(box.minX, box.minY, box.minZ);
+            p2.reset(box.maxX, box.maxY, box.maxZ);
 
-            Vec3 v1 = new Vec3(data[3] - data[0], 0, 0);
-            Vec3 v2 = new Vec3(0, data[4] - data[1], 0);
-            Vec3 v3 = new Vec3(0, 0, data[5] - data[2]);
+            v1.reset(box.maxX - box.minX, 0, 0);
+            v2.reset(0, box.maxY - box.minY, 0);
+            v3.reset(0, 0, box.maxZ - box.minZ);
+            v3.reset(0, 0, box.maxZ - box.minZ);
 
-            //Find out which planes are visible: Take cross
-            if (
-                //S1, S2, S3
-                interceptsInRange(la, lb, v1, v2, p1)
-                    ||
-                    interceptsInRange(la, lb, v2, v3, p1)
-                    ||
-                    interceptsInRange(la, lb, v1, v3, p1)
-                    ||
-//                    //S4, S5, S6
-                    interceptsInRange(la, lb, invert(v3), invert(v2), p2)
-                    ||
-                    interceptsInRange(la, lb, invert(v2), invert(v1), p2)
-                    ||
-                    interceptsInRange(la, lb, invert(v3), invert(v1), p2)
-            ) {
-                misses.add(new Pair<>(new TripleVector(la), new TripleVector(x, y, z)));
-
-                return false;
-            }
+            if (checkFaces(la, x, y, z, lb, p1, v3, v2, v1)) return false;
+            invert(v1);
+            invert(v2);
+            invert(v3);
+            if (checkFaces(la, x, y, z, lb, p2, v1, v2, v3)) return false;
         }
-        hits.add(new Pair<>(new TripleVector(la), new TripleVector(x, y, z)));
         return true;
     }
 
-    private static Vec3 invert(Vec3 src) {
-        return new Vec3(-src.xCoord, -src.yCoord, -src.zCoord);
+    private static boolean checkFaces(Vec3 la, double x, double y, double z, Vec3 lb, TripleVector p2, TripleVector v1, TripleVector v2, TripleVector v3) {
+        //S4, S5, S6
+        return interceptsInRange(la, lb, v3.toMinecraftVector(), v2.toMinecraftVector(), p2.toMinecraftVector()) ||
+            interceptsInRange(la, lb, v2.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector()) ||
+            interceptsInRange(la, lb, v3.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector());
+    }
+
+    private static void invert(TripleVector src) {
+        src.xCoord = -src.xCoord;
+        src.yCoord = -src.yCoord;
+        src.zCoord = -src.zCoord;
     }
 
     /**
@@ -574,65 +560,6 @@ public class EntityCulling {
         return false;
     }
 
-    @SubscribeEvent
-    public void renderWorld(RenderWorldLastEvent event) {
-        if ((hits.size() > 0 || misses.size() > 0)) {
-
-            lock.lock();
-            lock.unlock();
-            GlStateManager.pushMatrix();
-            final EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
-            GlStateManager.translate(-thePlayer.posX, -thePlayer.posY, -thePlayer.posZ);
-            GlStateManager.depthMask(false);
-            GlStateManager.disableTexture2D();
-            GlStateManager.disableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.disableBlend();
-            for (Pair<TripleVector, TripleVector> hit : hits) {
-                if (hit == null || hit.component1() == null || hit.component2() == null) continue;
-                Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                worldrenderer.pos(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord).color(0, 255, 0, 255).endVertex();
-                worldrenderer.pos(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord).color(0, 255, 0, 255).endVertex();
-                tessellator.draw();
-
-            }
-            for (Pair<TripleVector, TripleVector> hit : misses) {
-                if (hit == null || hit.component1() == null || hit.component2() == null) continue;
-
-                Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-                worldrenderer.pos(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord).color(255, 0, 0, 255).endVertex();
-                worldrenderer.pos(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord).color(255, 0, 0, 255).endVertex();
-                tessellator.draw();
-            }
-            GlStateManager.enableTexture2D();
-            GlStateManager.enableLighting();
-            GlStateManager.enableCull();
-            GlStateManager.disableBlend();
-            GlStateManager.depthMask(true);
-            GlStateManager.popMatrix();
-
-//        for (Pair<TripleVector, TripleVector> hit : misses) {
-//            GL11.glVertex3d(hit.component1().xCoord, hit.component1().yCoord, hit.component1().zCoord);
-//            GL11.glVertex3d(hit.component2().xCoord, hit.component2().yCoord, hit.component2().zCoord);
-//        }
-
-        }
-    }
-
-    @SubscribeEvent
-    public void renderTickEvent(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
-            return;
-        }
-
-//        System.out.println(culled + ", " + not);
-        culled = 0;
-        not = 0;
-    }
 
     /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
@@ -643,30 +570,23 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-//        event.setCanceled(true);
-//        if (!PatcherConfig.entityCulling || mc.gameSettings.thirdPersonView != 0) return;
+        if (mc.gameSettings.thirdPersonView != 0) return; // TODO: 9/2/2020 3rd person culling
 
         EntityLivingBase entity = event.entity;
-        if (exclude.contains(entity)) {
-            culled++;
-        }
         if (exclude.contains(entity) && !entity.isEntityInsideOpaqueBlock()) {
             event.setCanceled(true);
             if (PatcherConfig.dontCullNametags && canRenderName(entity) && event.isCanceled()) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
-        } else not++;
+        }
 
     }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (!PatcherConfig.entityCulling || event.phase != TickEvent.Phase.END || latch == null) {
+        if ((!PatcherConfig.entitySightCulling && !PatcherConfig.entityCulling) || event.phase != TickEvent.Phase.END || latch == null) {
             return;
         }
-        hits.clear();
-        misses.clear();
-        long start = System.currentTimeMillis();
         try {
             latch.await();
             lock.lock();
@@ -674,11 +594,14 @@ public class EntityCulling {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        System.out.println("Wait time: " + (System.currentTimeMillis() - start));
     }
 
     static final class TripleVector {
         private double xCoord, yCoord, zCoord;
+
+        public TripleVector() {
+            this(0, 0, 0);
+        }
 
         public TripleVector(double xCoord, double yCoord, double zCoord) {
             this.xCoord = xCoord;
@@ -698,6 +621,26 @@ public class EntityCulling {
             this.xCoord = xCoord;
             this.yCoord = yCoord;
             this.zCoord = zCoord;
+        }
+
+        public TripleVector duplicate() {
+            return new TripleVector(this.xCoord, this.yCoord, this.zCoord);
+        }
+
+        public double dotProduct(TripleVector vec) {
+            return this.xCoord * vec.xCoord + this.yCoord * vec.yCoord + this.zCoord * vec.zCoord;
+        }
+
+        public TripleVector crossProduct(TripleVector vec) {
+            return new TripleVector(this.yCoord * vec.zCoord - this.zCoord * vec.yCoord, this.zCoord * vec.xCoord - this.xCoord * vec.zCoord, this.xCoord * vec.yCoord - this.yCoord * vec.xCoord);
+        }
+
+        public void normalize() {
+            double d0 = MathHelper.sqrt_double(this.xCoord * this.xCoord + this.yCoord * this.yCoord + this.zCoord * this.zCoord);
+            if (d0 < 1.0E-4D) {
+                reset(0, 0, 0);
+            }
+            reset(this.xCoord / d0, this.yCoord / d0, this.zCoord / d0);
         }
     }
 }
