@@ -792,7 +792,7 @@ public class PatcherConfig extends Vigilant {
         description = "Show the command or link that is ran/opened on click.",
         category = "Quality of Life", subcategory = "Chat"
     )
-    public static boolean safeChatClicks = true;
+    public static boolean safeChatClicks;
 
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
