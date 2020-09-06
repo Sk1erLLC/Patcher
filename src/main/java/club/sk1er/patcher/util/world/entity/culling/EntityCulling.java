@@ -37,60 +37,36 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Used for stopping entities from rendering if they are not visible to the player.
+ * Used for stopping entities from rendering if they are not visible to the player
+ * Subsequent entity on entity occlusion derived from https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
  */
 public class EntityCulling {
 
-    private static final ExecutorService service = Executors.newFixedThreadPool(16, task -> new Thread(task, "Culling Thread"));
-    private static final Set<Entity> exclude = Sets.newConcurrentHashSet();
-    private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final ReentrantLock lock = new ReentrantLock();
-    public static boolean uiRendering;
-    private static CountDownLatch latch = null;
+    private static final ExecutorService service = Executors.newFixedThreadPool(8, task -> new Thread(task, "Culling Thread"));
+    private static final Set<Entity> exclude = Sets.newConcurrentHashSet(); //Set of entities to not exclude from rendering
+    private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
+    private static final ReentrantLock lock = new ReentrantLock(); //Lock to manage syncing of async entity on entity checking
+    public static boolean uiRendering; //Set via asm to determine whether the UI is rendering. If the UI is rendering, we should still render the entity to avoid interfering with mods that render on screen entities
+    private static CountDownLatch latch = null; //Used to keep track of progress of async culling
 
-    /*]     * Used for checking if the entities nametag can be rendered if the user still wants
-     * to see nametags despite the entity being culled.
-     * <p>
-     * Mirrored from {@link RendererLivingEntity} as it's originally protected.
+
+
+    /**
+     * Determines whether the corners of this entity's bounding box and 4 points down the middle
+     * of the box are all hidden behind blocks. If all 12 rays fail to reach the target, it is
+     * added to the exclusion list. Otherwise it is added to the render list for use in the entity
+     * on entity visibility checks
      *
-     * @param entity The entity that's being culled.
-     * @return The status on if the nametag is liable for rendering.
+     * @param entity Entity to check
+     * @param world  World to check in
+     * @param render Set of entities to render. If any rays reach target, Entity will be added to this list
      */
-    public static boolean canRenderName(EntityLivingBase entity) {
-        EntityPlayerSP player = mc.thePlayer;
-        if (entity instanceof EntityPlayer && entity != player) {
-            Team otherEntityTeam = entity.getTeam();
-            Team playerTeam = player.getTeam();
-
-            if (otherEntityTeam != null) {
-                Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
-
-                switch (teamVisibilityRule) {
-                    case NEVER:
-                        return false;
-                    case HIDE_FOR_OTHER_TEAMS:
-                        return playerTeam == null || otherEntityTeam.isSameTeam(playerTeam);
-                    case HIDE_FOR_OWN_TEAM:
-                        return playerTeam == null || !otherEntityTeam.isSameTeam(playerTeam);
-                    case ALWAYS:
-                    default:
-                        return true;
-                }
-            }
-        }
-
-        return Minecraft.isGuiEnabled()
-            && entity != mc.getRenderManager().livingPlayer
-            && !entity.isInvisibleToPlayer(player)
-            && entity.riddenByEntity == null;
-    }
-
-    private static void doBlockVisibityCheck(Entity entity, World world, Set<Entity> render) {
-        //like top front left, top bottom right, bottom back left, top back right -> maxY maxX minZ, maxY minX maxZ, minY minX minZ,minY minX maxZ
+    private static void doBlockVisibilityCheck(Entity entity, World world, Set<Entity> render) {
         AxisAlignedBB box = entity.getEntityBoundingBox().expand(0, .25, 0);
         double centerX = (box.maxX + box.minX) / 2;
         double centerZ = (box.maxZ + box.minZ) / 2;
-        final Vec3 baseVector = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+        //Origin point where the rays are traced from
+        final Vec3 baseVector = getRayOrigin();
         if (
             //8 corners
             doesRayHitBlock(world, baseVector, box.maxX, box.maxY, box.maxZ) ||
@@ -101,7 +77,7 @@ public class EntityCulling {
                 doesRayHitBlock(world, baseVector, box.minX, box.maxY, box.minZ) ||
                 doesRayHitBlock(world, baseVector, box.minX, box.minY, box.maxZ) ||
                 doesRayHitBlock(world, baseVector, box.minX, box.minY, box.minZ) ||
-                //4 points running down center of hitbox
+                //4 points running down center of bounding box
                 doesRayHitBlock(world, baseVector, centerX, box.maxY, centerZ) ||
                 doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ) ||
                 doesRayHitBlock(world, baseVector, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ) ||
@@ -117,32 +93,49 @@ public class EntityCulling {
         latch.countDown();
     }
 
+
+    /**
+     *
+     * @return Point where all rays should be traced from for visibility checks
+     */
+    private static Vec3 getRayOrigin() {
+        return mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+    }
+
+    /**
+     * Begins the algorithm for checking whether entities are visible.
+     */
     public static void begin() {
         exclude.clear();
-        if (!PatcherConfig.entityCulling || uiRendering) {
+
+
+        if (!PatcherConfig.entityCulling) {
             return;
         }
 
+        //Don't begin if not in a world
         final World world = mc.theWorld;
         if (world == null || mc.thePlayer == null) {
             return;
         }
 
+        //Use a CountdownLatch of size for all entities in the world to keep track of concurrent progress
         latch = new CountDownLatch(world.loadedEntityList.size());
 
-        final Set<Entity> render = Sets.newConcurrentHashSet();
+        final Set<Entity> render = Sets.newConcurrentHashSet(); //Use concurrent set as many threads will be adding items async
         Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
-        //noinspection WhileLoopReplaceableByForEach
         while (entityIterator.hasNext()) {
             final Entity entity = entityIterator.next();
-            if (!(entity instanceof EntityLivingBase) || entity == mc.thePlayer) {
+            if (entity == mc.thePlayer) { //The player should always be visible to itself
                 latch.countDown();
                 continue;
             }
-            service.submit(() -> doBlockVisibityCheck(entity, world, render));
+            //Execute asynchronously in pool for faster total runtime on machines with multiple cores
+            service.submit(() -> doBlockVisibilityCheck(entity, world, render));
         }
+
         if (PatcherConfig.entitySightCulling)
-            Multithreading.submit(() -> doEntityRayTrace(render));
+            service.submit(() -> doEntityRayTrace(render));
     }
 
     private static void doEntityRayTrace(Set<Entity> render) {
@@ -239,27 +232,30 @@ public class EntityCulling {
      * @return true of it intercepted the hitbox
      */
     private static boolean interceptsInRange(Vec3 la, Vec3 lb, Vec3 v1, Vec3 v2, Vec3 planePoint) {
-        //Is not facing the right direction
+
+        //A maximum of three faces of a rectangular prism can be visible at once
+        //Determine if this face is visible and if its not, save calculations by not processing it
         Vec3 cross = v1.crossProduct(v2);
         final double v3 = cross.dotProduct(la.subtract(lb));
-//        System.out.println(v3);
         if (v3 > 0) {
             return false;
         }
 
-        //Find the point where the plane intercepts (dot product > 0 means it has to intersect somewhere)
-
+        //Determine the intersection of the ray and the plane
         final Vec3 ab = lb.subtract(la);
         final Vec3 minusAB = new Vec3(-ab.xCoord, -ab.yCoord, -ab.zCoord);
         final Vec3 subtract = la.subtract(planePoint);
         final double v4 = minusAB.dotProduct(v1.crossProduct(v2));
         double u = v2.crossProduct(minusAB).dotProduct(subtract) / v4;
         double v = minusAB.crossProduct(v1).dotProduct(subtract) / v4;
+
+        //If both u nad v are between [0,1] then the line intersections the plane within the area rectangle
+        //In this case, it is within the bounds of the bounding box
         return (u >= 0 && u <= 1 && v >= 0 && v <= 1);
     }
 
     /**
-     * Does the ray fired from the players eyes land on an entity?
+     * Does the ray fired from the players eyes land on an entity
      *
      * @param la Our player.
      * @param x  Entity bounding box X.
@@ -296,8 +292,20 @@ public class EntityCulling {
         return true;
     }
 
+    /**
+     * Checks for interception on faces
+     * @param la
+     * @param x
+     * @param y
+     * @param z
+     * @param lb
+     * @param p2
+     * @param v1
+     * @param v2
+     * @param v3
+     * @return
+     */
     private static boolean checkFaces(Vec3 la, double x, double y, double z, Vec3 lb, TripleVector p2, TripleVector v1, TripleVector v2, TripleVector v3) {
-        //S4, S5, S6
         return interceptsInRange(la, lb, v3.toMinecraftVector(), v2.toMinecraftVector(), p2.toMinecraftVector()) ||
             interceptsInRange(la, lb, v2.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector()) ||
             interceptsInRange(la, lb, v3.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector());
@@ -570,7 +578,7 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (mc.gameSettings.thirdPersonView != 0) return; // TODO: 9/2/2020 3rd person culling
+        if (mc.gameSettings.thirdPersonView != 0 || uiRendering) return; // TODO: 9/2/2020 3rd person culling
 
         EntityLivingBase entity = event.entity;
         if (exclude.contains(entity) && !entity.isEntityInsideOpaqueBlock()) {
@@ -581,7 +589,42 @@ public class EntityCulling {
         }
 
     }
+    /*]     * Used for checking if the entities nametag can be rendered if the user still wants
+     * to see nametags despite the entity being culled.
+     * <p>
+     * Mirrored from {@link RendererLivingEntity} as it's originally protected.
+     *
+     * @param entity The entity that's being culled.
+     * @return The status on if the nametag is liable for rendering.
+     */
+    public static boolean canRenderName(EntityLivingBase entity) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (entity instanceof EntityPlayer && entity != player) {
+            Team otherEntityTeam = entity.getTeam();
+            Team playerTeam = player.getTeam();
 
+            if (otherEntityTeam != null) {
+                Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
+
+                switch (teamVisibilityRule) {
+                    case NEVER:
+                        return false;
+                    case HIDE_FOR_OTHER_TEAMS:
+                        return playerTeam == null || otherEntityTeam.isSameTeam(playerTeam);
+                    case HIDE_FOR_OWN_TEAM:
+                        return playerTeam == null || !otherEntityTeam.isSameTeam(playerTeam);
+                    case ALWAYS:
+                    default:
+                        return true;
+                }
+            }
+        }
+
+        return Minecraft.isGuiEnabled()
+            && entity != mc.getRenderManager().livingPlayer
+            && !entity.isInvisibleToPlayer(player)
+            && entity.riddenByEntity == null;
+    }
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if ((!PatcherConfig.entitySightCulling && !PatcherConfig.entityCulling) || event.phase != TickEvent.Phase.END || latch == null) {
