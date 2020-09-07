@@ -305,11 +305,11 @@ public class EntityCulling {
             v3.reset(0, 0, box.maxZ - box.minZ);
             v3.reset(0, 0, box.maxZ - box.minZ);
 
-            if (checkFaces(la, x, y, z, lb, p1, v3, v2, v1)) return false;
+            if (checkFaces(la, lb, p1, v3, v2, v1)) return false;
             invert(v1);
             invert(v2);
             invert(v3);
-            if (checkFaces(la, x, y, z, lb, p2, v1, v2, v3)) return false;
+            if (checkFaces(la, lb, p2, v1, v2, v3)) return false;
         }
         return true;
     }
@@ -317,9 +317,6 @@ public class EntityCulling {
     /**
      * Checks for interception on faces
      * @param la
-     * @param x
-     * @param y
-     * @param z
      * @param lb
      * @param p2
      * @param v1
@@ -327,7 +324,7 @@ public class EntityCulling {
      * @param v3
      * @return
      */
-    private static boolean checkFaces(Vec3 la, double x, double y, double z, Vec3 lb, TripleVector p2, TripleVector v1, TripleVector v2, TripleVector v3) {
+    private static boolean checkFaces(Vec3 la, Vec3 lb, TripleVector p2, TripleVector v1, TripleVector v2, TripleVector v3) {
         return interceptsInRange(la, lb, v3.toMinecraftVector(), v2.toMinecraftVector(), p2.toMinecraftVector()) ||
             interceptsInRange(la, lb, v2.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector()) ||
             interceptsInRange(la, lb, v3.toMinecraftVector(), v1.toMinecraftVector(), p2.toMinecraftVector());
