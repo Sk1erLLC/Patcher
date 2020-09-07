@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
-import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -49,6 +48,41 @@ public class EntityCulling {
     public static boolean uiRendering; //Set via asm to determine whether the UI is rendering. If the UI is rendering, we should still render the entity to avoid interfering with mods that render on screen entities
     private static CountDownLatch latch = null; //Used to keep track of progress of async culling
 
+
+    /**
+     * Begins the algorithm for checking whether entities are visible.
+     */
+    public static void begin() {
+        exclude.clear();
+
+        if (!PatcherConfig.entityCulling) {
+            return;
+        }
+
+        //Don't begin if not in a world
+        final World world = mc.theWorld;
+        if (world == null || mc.thePlayer == null) {
+            return;
+        }
+
+        //Use a CountdownLatch of size for all entities in the world to keep track of concurrent progress
+        latch = new CountDownLatch(world.loadedEntityList.size());
+
+        final Set<Entity> render = Sets.newConcurrentHashSet(); //Use concurrent set as many threads will be adding items async
+        Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
+        while (entityIterator.hasNext()) {
+            final Entity entity = entityIterator.next();
+            if (entity == mc.thePlayer) { //The player should always be visible to itself
+                latch.countDown();
+                continue;
+            }
+            //Execute asynchronously in pool for faster total runtime on machines with multiple cores
+            service.submit(() -> doBlockVisibilityCheck(entity, world, render));
+        }
+
+        if (PatcherConfig.entitySightCulling) //Option to not perform entity on entity calculations
+            service.submit(() -> doEntityOnEntityVisibilityCheck(render));
+    }
 
 
     /**
@@ -102,58 +136,42 @@ public class EntityCulling {
         return mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
     }
 
+
     /**
-     * Begins the algorithm for checking whether entities are visible.
+     * Performs entity on entity
+     * @param render Set of entities to check for visibility on
      */
-    public static void begin() {
-        exclude.clear();
-
-
-        if (!PatcherConfig.entityCulling) {
-            return;
-        }
-
-        //Don't begin if not in a world
-        final World world = mc.theWorld;
-        if (world == null || mc.thePlayer == null) {
-            return;
-        }
-
-        //Use a CountdownLatch of size for all entities in the world to keep track of concurrent progress
-        latch = new CountDownLatch(world.loadedEntityList.size());
-
-        final Set<Entity> render = Sets.newConcurrentHashSet(); //Use concurrent set as many threads will be adding items async
-        Iterator<Entity> entityIterator = world.loadedEntityList.iterator();
-        while (entityIterator.hasNext()) {
-            final Entity entity = entityIterator.next();
-            if (entity == mc.thePlayer) { //The player should always be visible to itself
-                latch.countDown();
-                continue;
-            }
-            //Execute asynchronously in pool for faster total runtime on machines with multiple cores
-            service.submit(() -> doBlockVisibilityCheck(entity, world, render));
-        }
-
-        if (PatcherConfig.entitySightCulling)
-            service.submit(() -> doEntityRayTrace(render));
-    }
-
-    private static void doEntityRayTrace(Set<Entity> render) {
+    private static void doEntityOnEntityVisibilityCheck(Set<Entity> render) {
         lock.lock();
         try {
-            latch.await();
+            latch.await(); //Wait for block checks to complete first
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        PriorityQueue<Entity> entities = new PriorityQueue<>(Math.max(1, render.size()), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
+
+        //Nothing to do
+        if(render.size() == 0) {
+            return;
+        }
+        //Sort entities by distance from player. Assumption made that closer entities will take up a higher arc on the screen
+        PriorityQueue<Entity> entities = new PriorityQueue<>(render.size(), Comparator.comparingDouble(value -> mc.thePlayer.getDistanceSqToEntity(value)));
         entities.addAll(render);
-        List<AxisAlignedBB> list = new ArrayList<>();
-        final TripleVector tmp = new TripleVector();
+
+        List<AxisAlignedBB> list = new ArrayList<>(); //List of entities that are visible
+
+        //Use this over Minecraft's Vec3 in order to avoid the creation of tons of objects that saturate eden space
+        final TripleVector center = new TripleVector();
         final TripleVector bottom = new TripleVector();
         final TripleVector direction = new TripleVector();
         for (Entity entity : entities) {
-            if (entity == mc.thePlayer) continue;
+            if (entity == mc.thePlayer) continue; //Don't check the player
+
+            if(entity.isInvisible()) { //Don't run this check on invisible entities
+                continue;
+            }
             final AxisAlignedBB box = entity.getEntityBoundingBox();
+
+            //First entity checked should be visible
             if (list.isEmpty()) {
                 list.add(box);
                 continue;
@@ -161,45 +179,49 @@ public class EntityCulling {
 
             double centerX = (box.maxX + box.minX) / 2;
             double centerZ = (box.maxZ + box.minZ) / 2;
-            final Vec3 playerPosition = mc.thePlayer.getPositionVector().addVector(0, mc.thePlayer.getEyeHeight(), 0);
+
+            final Vec3 playerPosition = getRayOrigin();
             direction.reset((box.maxX + box.minX) / 2 - playerPosition.xCoord,
                 (box.maxY + box.minY) / 2 - playerPosition.yCoord,
                 (box.maxZ + box.minZ) / 2 - playerPosition.zCoord);
             direction.normalize();
-            final ArrayList<AxisAlignedBB> dest = new ArrayList<>();
+
+            final ArrayList<AxisAlignedBB> scan = new ArrayList<>(); //List of bounding boxes in the right direction
 
             for (AxisAlignedBB otherPotentialBox : list) {
                 final double xCoord = (otherPotentialBox.maxX + otherPotentialBox.minX) / 2 - playerPosition.xCoord;
                 final double zCoord = (otherPotentialBox.maxZ + otherPotentialBox.minZ) / 2 - playerPosition.zCoord;
 
-                tmp.reset(xCoord, (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord, zCoord);
-                tmp.normalize();
+                center.reset(xCoord, (otherPotentialBox.maxY + otherPotentialBox.minY) / 2 - playerPosition.yCoord, zCoord);
+                center.normalize();
 
                 bottom.reset(xCoord, (otherPotentialBox.maxY) - playerPosition.yCoord, zCoord);
                 bottom.normalize();
 
 
-                if (tmp.dotProduct(direction) >= bottom.dotProduct(tmp)) {
-                    dest.add(otherPotentialBox);
+                //Determine if this box is in the right direction to perform ray traces on
+                if (center.dotProduct(direction) >= bottom.dotProduct(center)) {
+                    scan.add(otherPotentialBox);
                 }
             }
-            if (dest.size() == 0 ||
+
+            if (scan.size() == 0 ||
                 //8 corners
-                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, dest) ||
-                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.minZ, dest) ||
-                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.maxZ, dest) ||
-                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.minZ, dest) ||
-                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.maxZ, dest) ||
-                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.minZ, dest) ||
-                doesRayHitEntity(playerPosition, box.minX, box.minY, box.maxZ, dest) ||
-                doesRayHitEntity(playerPosition, box.minX, box.minY, box.minZ, dest) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.maxZ, scan) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.maxY, box.minZ, scan) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.maxZ, scan) ||
+                doesRayHitEntity(playerPosition, box.maxX, box.minY, box.minZ, scan) ||
+                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.maxZ, scan) ||
+                doesRayHitEntity(playerPosition, box.minX, box.maxY, box.minZ, scan) ||
+                doesRayHitEntity(playerPosition, box.minX, box.minY, box.maxZ, scan) ||
+                doesRayHitEntity(playerPosition, box.minX, box.minY, box.minZ, scan) ||
                 //4 points running down center of hitbox
-                doesRayHitEntity(playerPosition, centerX, box.maxY, centerZ, dest) ||
-                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ, dest) ||
-                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ, dest) ||
-                doesRayHitEntity(playerPosition, centerX, box.minY, centerZ, dest)
+                doesRayHitEntity(playerPosition, centerX, box.maxY, centerZ, scan) ||
+                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) / 4), centerZ, scan) ||
+                doesRayHitEntity(playerPosition, centerX, box.maxY - ((box.maxY - box.minY) * 3 / 4), centerZ, scan) ||
+                doesRayHitEntity(playerPosition, centerX, box.minY, centerZ, scan)
             ) {
-                if (!(entity instanceof EntityArmorStand))
+                if (!(entity instanceof EntityArmorStand)) //These are generally visible
                     list.add(box);
                 continue;
             }
@@ -450,126 +472,6 @@ public class EntityCulling {
 
 
     /**
-     * Fire a ray hitting entities, used for checking if an entity is behind another entity.
-     *
-     * @param fromPoint From the player.
-     * @param toPoint   To the block.
-     * @param boxes     list of boxes to check for inclusion within
-     * @return The ray trace result.
-     */
-    private static boolean rayTraceEntity(TripleVector fromPoint, TripleVector toPoint, List<AxisAlignedBB> boxes) {
-        if (!Double.isNaN(fromPoint.xCoord) && !Double.isNaN(fromPoint.yCoord) && !Double.isNaN(fromPoint.zCoord)) {
-            if (!Double.isNaN(toPoint.xCoord) && !Double.isNaN(toPoint.yCoord) && !Double.isNaN(toPoint.zCoord)) {
-                int fromX = MathHelper.floor_double(fromPoint.xCoord);
-                int fromY = MathHelper.floor_double(fromPoint.yCoord);
-                int fromZ = MathHelper.floor_double(fromPoint.zCoord);
-                int toX = MathHelper.floor_double(toPoint.xCoord);
-                int toY = MathHelper.floor_double(toPoint.yCoord);
-                int toZ = MathHelper.floor_double(toPoint.zCoord);
-
-                int counter = 200;
-                while (counter-- >= 0) {
-                    if (Double.isNaN(fromPoint.xCoord) || Double.isNaN(fromPoint.yCoord) || Double.isNaN(fromPoint.zCoord)) {
-                        return false;
-                    }
-
-                    if (fromX == toX && fromY == toY && fromZ == toZ) {
-                        return false;
-                    }
-
-                    boolean xBoundaryMet = true;
-                    boolean yBoundaryMet = true;
-                    boolean zBoundaryMet = true;
-                    double distX = 999.0D;
-                    double distY = 999.0D;
-                    double distZ = 999.0D;
-
-                    if (toX > fromX) {
-                        distX = (double) fromX + 1.0D;
-                    } else if (toX < fromX) {
-                        distX = (double) fromX + 0.0D;
-                    } else {
-                        xBoundaryMet = false;
-                    }
-
-                    if (toY > fromY) {
-                        distY = (double) fromY + 1.0D;
-                    } else if (toY < fromY) {
-                        distY = (double) fromY + 0.0D;
-                    } else {
-                        yBoundaryMet = false;
-                    }
-
-                    if (toZ > fromZ) {
-                        distZ = (double) fromZ + 1.0D;
-                    } else if (toZ < fromZ) {
-                        distZ = (double) fromZ + 0.0D;
-                    } else {
-                        zBoundaryMet = false;
-                    }
-
-                    double finalX = 999.0D;
-                    double finalY = 999.0D;
-                    double finalZ = 999.0D;
-                    double xAvg = toPoint.xCoord - fromPoint.xCoord;
-                    double yAvg = toPoint.yCoord - fromPoint.yCoord;
-                    double zAvg = toPoint.zCoord - fromPoint.zCoord;
-
-                    if (xBoundaryMet) {
-                        finalX = (distX - fromPoint.xCoord) / xAvg;
-                    }
-
-                    if (yBoundaryMet) {
-                        finalY = (distY - fromPoint.yCoord) / yAvg;
-                    }
-
-                    if (zBoundaryMet) {
-                        finalZ = (distZ - fromPoint.zCoord) / zAvg;
-                    }
-
-                    if (finalX == -0.0D) {
-                        finalX = -1.0E-4D;
-                    }
-
-                    if (finalY == -0.0D) {
-                        finalY = -1.0E-4D;
-                    }
-
-                    if (finalZ == -0.0D) {
-                        finalZ = -1.0E-4D;
-                    }
-
-                    EnumFacing direction;
-
-                    if (finalX < finalY && finalX < finalZ) {
-                        direction = toX > fromX ? EnumFacing.WEST : EnumFacing.EAST;
-                        fromPoint.reset(distX, fromPoint.yCoord + yAvg * finalX, fromPoint.zCoord + zAvg * finalX);
-                    } else if (finalY < finalZ) {
-                        direction = toY > fromY ? EnumFacing.DOWN : EnumFacing.UP;
-                        fromPoint.reset(fromPoint.xCoord + xAvg * finalY, distY, fromPoint.zCoord + zAvg * finalY);
-                    } else {
-                        direction = toZ > fromZ ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                        fromPoint.reset(fromPoint.xCoord + xAvg * finalZ, fromPoint.yCoord + yAvg * finalZ, distZ);
-                    }
-
-                    fromX = MathHelper.floor_double(fromPoint.xCoord) - (direction == EnumFacing.EAST ? 1 : 0);
-                    fromY = MathHelper.floor_double(fromPoint.yCoord) - (direction == EnumFacing.UP ? 1 : 0);
-                    fromZ = MathHelper.floor_double(fromPoint.zCoord) - (direction == EnumFacing.SOUTH ? 1 : 0);
-                    for (AxisAlignedBB axisAlignedBB : boxes) {
-                        if (axisAlignedBB.isVecInside(new Vec3(fromPoint.xCoord, fromPoint.yCoord, fromPoint.zCoord))) {
-                            return true;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
      * If it can see an entity, continue to render the entity, otherwise save some time
      * performing rendering and cancel the entity render.
@@ -666,16 +568,8 @@ public class EntityCulling {
             this.zCoord = zCoord;
         }
 
-        public TripleVector duplicate() {
-            return new TripleVector(this.xCoord, this.yCoord, this.zCoord);
-        }
-
         public double dotProduct(TripleVector vec) {
             return this.xCoord * vec.xCoord + this.yCoord * vec.yCoord + this.zCoord * vec.zCoord;
-        }
-
-        public TripleVector crossProduct(TripleVector vec) {
-            return new TripleVector(this.yCoord * vec.zCoord - this.zCoord * vec.yCoord, this.zCoord * vec.xCoord - this.xCoord * vec.zCoord, this.xCoord * vec.yCoord - this.yCoord * vec.xCoord);
         }
 
         public void normalize() {
