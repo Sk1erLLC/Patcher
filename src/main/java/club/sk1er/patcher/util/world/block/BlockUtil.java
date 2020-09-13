@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.util.world.block;
 
+import club.sk1er.patcher.asm.BakedQuadTransformer;
 import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
