@@ -549,7 +549,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Blaze Culling",
-        description = "\u00a7r[EXPERIMENTAL] Use the Blaze Culling Algorithm to avoid rendering non visible entities",
+        description = "§c§l[EXPERIMENTAL] §rUse the Blaze Culling Algorithm to avoid rendering non visible entities",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean entitySightCulling = false;
