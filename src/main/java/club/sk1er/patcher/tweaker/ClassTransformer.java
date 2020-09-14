@@ -12,7 +12,6 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.*;
-import club.sk1er.patcher.asm.forge.ASMDataTableTransformer;
 import club.sk1er.patcher.asm.forge.*;
 import club.sk1er.patcher.tweaker.asm.*;
 import club.sk1er.patcher.tweaker.asm.forge.*;
@@ -39,10 +38,10 @@ import java.util.Collection;
 
 public class ClassTransformer implements IClassTransformer {
 
-    private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
-    private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
     public static final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
     public static String optifineVersion = "NONE";
+    private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
+    private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
     public ClassTransformer() {
         try {
@@ -83,6 +82,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NBTTagStringTransformer());
         registerTransformer(new BlockRendererDispatcherTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());
+        registerTransformer(new WorldRendererTransformer());
         registerTransformer(new GameSettingsTransformer());
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new FallbackResourceManagerTransformer());
@@ -173,17 +173,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ForcePublicTransformer());
     }
 
-    private void registerTransformer(PatcherTransformer transformer) {
-        for (String cls : transformer.getClassName()) {
-            transformerMap.put(cls, transformer);
-        }
-    }
-
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
-    }
-
     public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger) {
         if (bytes == null) return null;
 
@@ -227,5 +216,16 @@ public class ClassTransformer implements IClassTransformer {
         }
 
         return classWriter.toByteArray();
+    }
+
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
     }
 }
