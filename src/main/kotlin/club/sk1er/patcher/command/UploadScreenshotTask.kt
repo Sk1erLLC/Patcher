@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.command
 
+import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.coroutines.MCDispatchers
 import club.sk1er.patcher.imgur.Imgur
 import club.sk1er.patcher.util.chat.ChatUtilities
@@ -42,7 +43,7 @@ object UploadScreenshotTask {
             }
         } catch (t: Throwable) {
             ChatUtilities.sendMessage("&cFailed to upload screenshot. ${t.message}")
-            t.printStackTrace()
+            Patcher.instance.logger.error("Failed to upload screenshot.", t)
         }
     }
 }

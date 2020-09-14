@@ -109,50 +109,43 @@ public class AsyncScreenshots implements Runnable {
         }
 
         chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$openfolder"));
-        chatComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7Open screenshot"))));
+        chatComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(this.colorMessage("&7Open screenshot"))));
 
         IChatComponent favoriteComponent = new ChatComponentText(ChatColor.YELLOW.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "FAV" : "FAVORITE"));
         favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$favorite"));
         favoriteComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7This'll save the screenshot to a new folder called\n" +
-                    "&afavorite_screenshots &7in your Minecraft directory.\n" +
-                    "&cThis cannot be done once a new screenshot is taken."))));
+            this.colorMessage("&7This will save the screenshot to a new folder called\n" +
+                "&afavorite_screenshots &7in your Minecraft directory.\n" +
+                "&cThis cannot be done once a new screenshot is taken."))));
 
         IChatComponent deleteComponent = new ChatComponentText(ChatColor.RED.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "DEL" : "DELETE"));
         deleteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$delete"));
         deleteComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7This'll delete the screenshot from your screenshots folder.\n" +
-                    "&cThis is not recoverable and cannot be deleted once a\n" +
-                    "&cnew screenshot is taken, or favorited."))));
+            this.colorMessage("&7This will delete the screenshot from your screenshots folder.\n" +
+                "&cThis is not recoverable and cannot be deleted once a\n" +
+                "&cnew screenshot is taken or made favorite."))));
 
         IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "UPL" : "UPLOAD"));
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7Upload the screenshot to Imgur, a picture sharing site.\n" +
-                    "&cThis cannot be uploaded once a new screenshot is taken, favorited, or deleted."))));
+            this.colorMessage("&7Upload the screenshot to Imgur, an image hosting website.\n" +
+                "&cThis cannot be uploaded once a new screenshot is taken, made favorite, or deleted."))));
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "CPY" : "COPY"));
         copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$copyss"));
         copyComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7Copy this image to your system clipboard.\n" +
-                    "&cThis cannot be copied once a new screenshot is taken, favorited, or deleted."))));
+            this.colorMessage("&7Copy this image to your system clipboard.\n" +
+                "&cThis cannot be copied once a new screenshot is taken, made favorite, or deleted."))));
 
         IChatComponent folderComponent = new ChatComponentText(ChatColor.BLUE.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "DIR" : "FOLDER"));
         folderComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, screenshotDirectory.getCanonicalPath()));
         folderComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-            ChatColor.translateAlternateColorCodes('&',
-                "&7Open your screenshots folder."))));
+            this.colorMessage("&7Open your screenshots folder."))));
 
         IChatComponent controlsMessage = new ChatComponentText("");
         controlsMessage.appendSibling(favoriteComponent);
@@ -194,6 +187,10 @@ public class AsyncScreenshots implements Runnable {
         }
 
         return screenshot;
+    }
+
+    private String colorMessage(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public static class ScreenshotsFolder extends CommandBase {
@@ -308,7 +305,7 @@ public class AsyncScreenshots implements Runnable {
 
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
-           UploadScreenshotTask.INSTANCE.execute(screenshot);
+            UploadScreenshotTask.INSTANCE.execute(screenshot);
         }
 
         @Override
@@ -334,7 +331,6 @@ public class AsyncScreenshots implements Runnable {
             try {
                 ImageSelection sel = new ImageSelection(image);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
-
                 IChatComponent uploadedComponent = new ChatComponentText(ChatColor.GREEN + "Screenshot has been copied to your clipboard");
                 Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
             } catch (Exception e) {

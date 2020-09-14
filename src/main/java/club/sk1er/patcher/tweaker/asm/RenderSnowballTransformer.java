@@ -11,10 +11,10 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
 
-public class RenderFireballTransformer implements PatcherTransformer {
+public class RenderSnowballTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"net.minecraft.client.renderer.entity.RenderFireball"};
+        return new String[]{"net.minecraft.client.renderer.entity.RenderSnowball"};
     }
 
     @Override
@@ -34,7 +34,7 @@ public class RenderFireballTransformer implements PatcherTransformer {
                             method.instructions.insertBefore(node.getPrevious().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                                 "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer", "checkPerspective",
                                 "()F", false));
-                            method.instructions.insertBefore(node.getNext().getNext(), new InsnNode(Opcodes.FMUL));
+                            method.instructions.insertBefore(node.getNext(), new InsnNode(Opcodes.FMUL));
                             break;
                         }
                     }

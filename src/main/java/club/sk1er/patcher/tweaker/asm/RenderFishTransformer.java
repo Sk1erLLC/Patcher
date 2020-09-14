@@ -11,10 +11,10 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
 
-public class RenderFireballTransformer implements PatcherTransformer {
+public class RenderFishTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"net.minecraft.client.renderer.entity.RenderFireball"};
+        return new String[]{"net.minecraft.client.renderer.entity.RenderFish"};
     }
 
     @Override

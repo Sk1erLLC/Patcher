@@ -153,6 +153,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiLanguageTransformer());
         registerTransformer(new TileEntityPistonRendererTransformer());
         registerTransformer(new RenderFireballTransformer());
+        registerTransformer(new RenderFishTransformer());
+        registerTransformer(new RenderSnowballTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

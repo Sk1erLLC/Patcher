@@ -15,6 +15,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -53,7 +54,14 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
 
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(180.0f)) {
                         methodNode.instructions.insertBefore(next, fixRenderHeight());
-                        break;
+                    } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                        String fieldName = mapFieldNameFromNode((FieldInsnNode) next);
+                        if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
+                            methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                                "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer", "checkPerspective",
+                                "()F", false));
+                            methodNode.instructions.insertBefore(next.getNext().getNext(), new InsnNode(Opcodes.FMUL));
+                        }
                     }
                 }
 
