@@ -14,6 +14,7 @@ package club.sk1er.patcher.config;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.io.File;
 
@@ -548,10 +549,10 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Blaze Culling",
-        description = "Use the Blaze Culling Algorithm to avoid rendering non visible entities",
+        description = "\u00a7r[EXPERIMENTAL] Use the Blaze Culling Algorithm to avoid rendering non visible entities",
         category = "Performance", subcategory = "Culling"
     )
-    public static boolean entitySightCulling = true;
+    public static boolean entitySightCulling = false;
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Nametags",
