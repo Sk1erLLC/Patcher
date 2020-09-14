@@ -107,8 +107,35 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_147240_a":
+                case "handleCustomPayload": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            if (methodInsnName.equals("release")) {
+                                LabelNode ifeq = new LabelNode();
+                                methodNode.instructions.insertBefore(next.getPrevious(), createList(ifeq));
+                                methodNode.instructions.insertBefore(next.getNext().getNext(), ifeq);
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
+    }
+
+    public static InsnList createList(LabelNode ifeq) {
+        InsnList list = new InsnList();
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        return list;
     }
 
     private InsnList cancelIfNotSafe() {

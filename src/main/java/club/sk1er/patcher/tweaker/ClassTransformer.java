@@ -155,6 +155,10 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderFireballTransformer());
         registerTransformer(new RenderFishTransformer());
         registerTransformer(new RenderSnowballTransformer());
+        registerTransformer(new S3FPacketCustomPayloadTransformer());
+        registerTransformer(new NetHandlerPlayServerTransformer());
+        registerTransformer(new C17PacketCustomPayloadTransformer());
+        registerTransformer(new BlockCactusTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
