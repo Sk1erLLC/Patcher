@@ -160,7 +160,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
-                                break;
+                            } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap());
                             }
                         }
                     }
@@ -273,6 +274,26 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList clampLightmap() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.FLOAD, 12));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, 12));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 13));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, 13));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 14));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, 14));
+        return list;
     }
 
     private InsnList getEyePosition() {
