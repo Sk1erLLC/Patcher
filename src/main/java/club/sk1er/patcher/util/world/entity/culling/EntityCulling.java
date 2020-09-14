@@ -151,6 +151,7 @@ public class EntityCulling {
 
         //Nothing to do
         if(render.size() == 0) {
+            lock.unlock();
             return;
         }
         //Sort entities by distance from player. Assumption made that closer entities will take up a higher arc on the screen
