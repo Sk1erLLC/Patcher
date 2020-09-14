@@ -18,7 +18,20 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -277,29 +290,36 @@ public class EntityRendererTransformer implements PatcherTransformer {
     }
 
     private InsnList clampLightmap() {
+        // using srg name in dev crashes? Ok Forge
+        final String clamp_float = isDevelopment() ? "clamp_float" : "func_76131_a";
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.FLOAD, 12));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 12));
         list.add(new VarInsnNode(Opcodes.FLOAD, 13));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 13));
         list.add(new VarInsnNode(Opcodes.FLOAD, 14));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", "func_76131_a", "(FFF)F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 14));
         return list;
     }
 
     private InsnList getEyePosition() {
+        // using srg name in dev crashes? Ok Forge
         InsnList list = new InsnList();
         list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", "getPositionEyes", "(F)Lnet/minecraft/util/Vec3;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/entity/Entity",
+            isDevelopment() ? "getPositionEyes" : "func_174824_e",
+            "(F)Lnet/minecraft/util/Vec3;",
+            false));
         return list;
     }
 

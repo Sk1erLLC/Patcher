@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.transform;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -114,5 +115,10 @@ public interface PatcherTransformer {
      */
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
+    }
+
+    default boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return o != null && (boolean) o;
     }
 }
