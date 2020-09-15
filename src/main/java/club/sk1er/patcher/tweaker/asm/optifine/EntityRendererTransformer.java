@@ -285,8 +285,56 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_78466_h":
+                case "updateFogColor": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        int f6index = -1;
+
+                        for (LocalVariableNode variable : methodNode.localVariables) {
+                            if (variable.name.equals("f6")) {
+                                f6index = variable.index;
+                                break;
+                            }
+                        }
+
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
+
+                            if (fieldInsnName.equals("fogColorBlue") || fieldInsnName.equals("field_175081_S")) {
+                                if (next.getNext().getOpcode() == Opcodes.FDIV) {
+                                    // next.getNext() go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+                                    if (next.getNext().getNext().getNext().getNext().getNext().getNext() instanceof VarInsnNode) {
+                                        methodNode.instructions.insertBefore(next.getNext().getNext().getNext().getNext().getNext().getNext(), clampVariable(f6index));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
+    }
+
+    private InsnList clampVariable(int f6index) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Float", "isInfinite", "(F)Z", false));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
+        list.add(new InsnNode(Opcodes.DCONST_0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Math", "nextAfter", "(FD)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f6index));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList clampLightmap() {

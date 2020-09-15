@@ -74,17 +74,17 @@ public class ModClassTransformer implements IClassTransformer {
         // of OptiFine (I7 - 5.69% / L5 - 6.48%, attributing to OptiFine's biggest versions up to 1.15.2).
         switch (ClassTransformer.optifineVersion) {
             case "I7":
-                LOGGER.info("Found optifine I7");
+                LOGGER.info("Found OptiFine I7");
                 registerCommonTransformers();
                 registerI7Transformers();
                 break;
             case "L5":
-                LOGGER.info("Found optifine L5");
+                LOGGER.info("Found OptiFine L5");
                 registerCommonTransformers();
                 registerL5Transformers();
                 break;
             default:
-                LOGGER.info("User has old optifine version. Aborting reflection optimizations");
+                LOGGER.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations");
         }
     }
 
