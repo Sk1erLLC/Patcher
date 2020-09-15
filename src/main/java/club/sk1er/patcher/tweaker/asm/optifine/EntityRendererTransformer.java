@@ -159,6 +159,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+
                 case "updateLightmap":
                 case "func_78472_g": {
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
@@ -168,14 +169,51 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
+                        // todo: figure out why optifine just kills this entirely when -noverify isn't used
+                        /*int f8index = -1;
+                        int f9index = -1;
+                        int f10index = -1;
+
+                        for (LocalVariableNode variable : methodNode.localVariables) {
+                            switch (ClassTransformer.optifineVersion) {
+                                case "I7":
+                                    switch (variable.name) {
+                                        case "var12":
+                                            f8index = variable.index;
+                                            break;
+                                        case "var13":
+                                            f9index = variable.index;
+                                            break;
+                                        case "var14":
+                                            f10index = variable.index;
+                                            break;
+                                    }
+                                    break;
+                                case "L5":
+                                case "NONE":
+                                    switch (variable.name) {
+                                        case "f8":
+                                            f8index = variable.index;
+                                            break;
+                                        case "f9":
+                                            f9index = variable.index;
+                                            break;
+                                        case "f10":
+                                            f10index = variable.index;
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }*/
+
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
                             String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
-                            } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap());
-                            }
+                            }/* else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap(f8index, f9index, f10index));
+                            }*/
                         }
                     }
                     break;
@@ -337,25 +375,25 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList clampLightmap() {
+    private InsnList clampLightmap(int f8index, int f9index, int f10index) {
         // using srg name in dev crashes? Ok Forge
         final String clamp_float = isDevelopment() ? "clamp_float" : "func_76131_a";
         InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.FLOAD, 12));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f8index));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, 12));
-        list.add(new VarInsnNode(Opcodes.FLOAD, 13));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f8index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f9index));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, 13));
-        list.add(new VarInsnNode(Opcodes.FLOAD, 14));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f9index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f10index));
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, 14));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f10index));
         return list;
     }
 

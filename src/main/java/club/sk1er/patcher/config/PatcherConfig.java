@@ -801,6 +801,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean chunkLighting = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Blaze Culling",
+        description = "§c§l[EXPERIMENTAL] §rUse the Blaze Culling Algorithm to avoid rendering non visible entities",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean entitySightCulling = false;
+
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
         description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
