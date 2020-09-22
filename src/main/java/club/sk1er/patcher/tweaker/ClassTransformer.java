@@ -159,6 +159,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new C17PacketCustomPayloadTransformer());
         registerTransformer(new BlockCactusTransformer());
+        registerTransformer(new BlockBrewingStandTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

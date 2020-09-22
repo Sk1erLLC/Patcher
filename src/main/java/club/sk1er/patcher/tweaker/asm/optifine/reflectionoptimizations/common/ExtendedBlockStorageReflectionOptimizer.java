@@ -37,8 +37,7 @@ public class ExtendedBlockStorageReflectionOptimizer implements PatcherTransform
                         methodNode.instructions.insertBefore(node, new VarInsnNode(Opcodes.ALOAD, 4));
                         methodNode.instructions.insertBefore(node, new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraftforge/common/property/IExtendedBlockState"));
                         methodNode.instructions.remove(node);
-                    }
-                    else if (node.getOpcode() == Opcodes.CHECKCAST && ((TypeInsnNode) node).desc.equals("net/minecraft/block/state/IBlockState")) {
+                    } else if (node.getOpcode() == Opcodes.CHECKCAST && ((TypeInsnNode) node).desc.equals("net/minecraft/block/state/IBlockState")) {
                         methodNode.instructions.remove(node.getPrevious());
                         methodNode.instructions.remove(node.getPrevious());
                         methodNode.instructions.remove(node.getPrevious());

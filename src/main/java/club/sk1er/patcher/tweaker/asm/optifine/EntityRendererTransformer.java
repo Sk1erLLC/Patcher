@@ -247,7 +247,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 break;
                             }
 
-                            default:
+                            default: // vanilla & L6 will work for this
                             case "L5": {
                                 int cameraVar = -1;
 
