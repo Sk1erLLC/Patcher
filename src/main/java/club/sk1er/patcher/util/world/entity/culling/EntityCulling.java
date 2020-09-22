@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.world.entity.culling;
 
 import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -47,7 +48,6 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
-    private static boolean use = false;
     private boolean down = false;
 
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
@@ -125,7 +125,7 @@ public class EntityCulling {
 
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-        return use && checkEntity(stack);
+        return PatcherConfig.entityCulling && checkEntity(stack);
     }
 
     private static int getQuery() {
@@ -156,17 +156,14 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!use) return;
+        if (!PatcherConfig.entityCulling) return;
 
 
-//        GlStateManager.pushMatrix();
-//        final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-//        GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
-//        drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.2,.2,.2));
-//        GlStateManager.popMatrix();
         if (checkEntity(event.entity)) {
             event.setCanceled(true);
-            // TODO: 9/22/2020 Readd nametag
+            if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
+                event.renderer.renderName(event.entity, event.x, event.y, event.z);
+            }
         }
 
     }
@@ -179,20 +176,18 @@ public class EntityCulling {
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {
-
             return;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_P) && !down) {
             down = true;
-            use = !use;
-            MinecraftUtils.sendMessage("Toggled: " + (use ? "On" : "Off"));
+            PatcherConfig.entityCulling = !PatcherConfig.entityCulling;
+            MinecraftUtils.sendMessage("Toggled: " + (PatcherConfig.entityCulling ? "On" : "Off"));
         } else if (!Keyboard.isKeyDown(Keyboard.KEY_P)) {
             down = false;
         }
         final WorldClient theWorld = Minecraft.getMinecraft().theWorld;
         if (theWorld == null) return;
 
-        // TODO: 9/22/2020 use worldclient's more complete entity list
         List<UUID> remove = new ArrayList<>();
         outer:
         for (OcclusionQuery value : queries.values()) {
