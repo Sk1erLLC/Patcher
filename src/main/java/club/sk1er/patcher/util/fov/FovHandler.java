@@ -74,8 +74,7 @@ public class FovHandler {
             }
 
             if (effect.getPotionID() == 2) {
-                base +=
-                    (MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifier);
+                base += (MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifier);
             }
         }
 

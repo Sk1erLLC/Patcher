@@ -85,9 +85,10 @@ public class Patcher {
     public static Patcher instance;
 
     // normal versions will be "1.x"
-    // betas will be "1.x+beta-y"
+    // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
-    public static final String VERSION = "1.3.1+beta-1";
+    // extra branches will be 1.x+branch-y
+    public static final String VERSION = "1.4+moplay_beta-1.1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 

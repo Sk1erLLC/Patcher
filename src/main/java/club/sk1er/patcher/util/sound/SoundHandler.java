@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 
 public class SoundHandler implements IResourceManagerReloadListener {
 
-    private final HashMap<ResourceLocation, PropertyData> data = new HashMap<>();
+    private final Map<ResourceLocation, PropertyData> data = new HashMap<>();
 
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {

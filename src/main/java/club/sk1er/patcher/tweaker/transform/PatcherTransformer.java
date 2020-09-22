@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.transform;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -96,12 +97,12 @@ public interface PatcherTransformer {
     default void clearInstructions(MethodNode methodNode) {
         methodNode.instructions.clear();
 
-        // dont waste time clearing local variables if they're empty
+        // don't waste time clearing local variables if they're empty
         if (!methodNode.localVariables.isEmpty()) {
             methodNode.localVariables.clear();
         }
 
-        // dont waste time clearing try-catches if they're empty
+        // don't waste time clearing try-catches if they're empty
         if (!methodNode.tryCatchBlocks.isEmpty()) {
             methodNode.tryCatchBlocks.clear();
         }
@@ -114,5 +115,10 @@ public interface PatcherTransformer {
      */
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
+    }
+
+    default boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return o != null && (boolean) o;
     }
 }

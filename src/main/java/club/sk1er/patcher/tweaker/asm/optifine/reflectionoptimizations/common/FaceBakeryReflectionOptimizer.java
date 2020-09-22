@@ -15,7 +15,11 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -42,8 +46,7 @@ public class FaceBakeryReflectionOptimizer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            // todo: rotateVertex
-            if (methodNode.name.equals("makeBakedQuad")) {
+            if (methodNode.name.equals("makeBakedQuad") && methodNode.desc.contains("minecraftforge")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -60,10 +63,32 @@ public class FaceBakeryReflectionOptimizer implements PatcherTransformer {
                         break;
                     }
                 }
-
-                break;
+            } else if (methodNode.name.equals("rotateVertex") && methodNode.desc.contains("minecraftforge")) {
+                clearInstructions(methodNode);
+                methodNode.instructions.insert(rotateVertexReflectionOptimization());
             }
         }
+    }
+
+    private InsnList rotateVertexReflectionOptimization() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/client/resources/model/ModelRotation", "X0_Y0", "Lnet/minecraft/client/resources/model/ModelRotation;"));
+        LabelNode ifacmpne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ACMPNE, ifacmpne));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ifacmpne);
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraftforge/client/model/ITransformation", "getMatrix", "()Ljavax/vecmath/Matrix4f;", true));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraftforge/client/ForgeHooksClient", "transform", "(Lorg/lwjgl/util/vector/Vector3f;Ljavax/vecmath/Matrix4f;)V", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraftforge/client/model/ITransformation", "rotate", "(Lnet/minecraft/util/EnumFacing;I)I", true));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        return list;
     }
 
     private InsnList fillNormalReflectionOptimization() {

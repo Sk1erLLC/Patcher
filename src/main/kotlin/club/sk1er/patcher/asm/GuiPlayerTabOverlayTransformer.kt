@@ -29,10 +29,24 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                                     )
                                 }.first)
                             }
+                        } else if (insn is FieldInsnNode && insn.opcode == Opcodes.GETSTATIC) {
+                            if (mapFieldNameFromNode(insn) == "HAT"
+                                && insn.previous.opcode == Opcodes.ALOAD
+                                && (insn.previous as VarInsnNode).`var` == 27
+                                && insn.next?.next?.next is LabelNode
+                                && insn.next?.next?.opcode == Opcodes.IFEQ
+                            ) {
+                                it.instructions.insertBefore(
+                                    insn.previous?.previous,
+                                    addPlayerHat(
+                                        (insn.next?.next?.next as LabelNode),
+                                        (insn.next?.next as JumpInsnNode).label
+                                    )
+                                )
+                                it.instructions.remove(insn.previous?.previous)
+                            }
                         }
                     }
-
-
 
                     it.instructions.insertBefore(it.instructions.first, moveDownInstructions(it, true))
                     it.instructions.insertBefore(it.instructions.last.previous, moveDownInstructions(it, false))
@@ -43,6 +57,17 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                 }
             }
         }
+    }
+
+    private fun addPlayerHat(goto: LabelNode, ifeq: LabelNode): InsnList {
+        val list = InsnList()
+        val ifnonnull = LabelNode()
+        list.add(JumpInsnNode(Opcodes.IFNONNULL, ifnonnull))
+        list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "layersInTab", "Z"))
+        list.add(JumpInsnNode(Opcodes.IFEQ, ifeq))
+        list.add(JumpInsnNode(Opcodes.GOTO, goto))
+        list.add(ifnonnull)
+        return list
     }
 
     private fun moveDownInstructions(method: MethodNode, push: Boolean): InsnList {

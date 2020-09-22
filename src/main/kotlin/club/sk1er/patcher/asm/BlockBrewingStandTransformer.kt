@@ -1,0 +1,24 @@
+package club.sk1er.patcher.asm
+
+import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.patcher.hooks.BlockBrewingStandHook
+import club.sk1er.patcher.tweaker.transform.PatcherTransformer
+import org.objectweb.asm.tree.ClassNode
+
+class BlockBrewingStandTransformer : PatcherTransformer {
+    override fun getClassName() = arrayOf("net.minecraft.block.BlockBrewingStand")
+
+    override fun transform(classNode: ClassNode, name: String) {
+        classNode.methods.first {
+            val methodName = mapMethodName(classNode, it)
+            methodName == "randomDisplayTick" || methodName == "func_180655_c"
+        }?.apply {
+            clearInstructions(this)
+            injectInstructions {
+                of(BlockBrewingStandHook::randomDisplayTick)
+                into(this@apply)
+                params(1, 2, 4)
+            }
+        }
+    }
+}

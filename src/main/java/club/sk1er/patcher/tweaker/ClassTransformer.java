@@ -142,6 +142,26 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ServerSelectionListTransformer());
         registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
+        registerTransformer(new LayerHeldItemTransformer());
+        registerTransformer(new StatBaseTransformer());
+        registerTransformer(new ItemStackTransformer());
+        registerTransformer(new ModelPlayerTransformer());
+        registerTransformer(new ExtendedBlockStorageTransformer());
+        registerTransformer(new ServerAddressTransformer());
+        registerTransformer(new LayerSpiderEyesTransformer());
+        registerTransformer(new LayerCreeperChargeTransformer());
+        registerTransformer(new LayerWitherAuraTransformer());
+        registerTransformer(new GuiLanguageTransformer());
+        registerTransformer(new TileEntityPistonRendererTransformer());
+        registerTransformer(new RenderFireballTransformer());
+        registerTransformer(new RenderFishTransformer());
+        registerTransformer(new RenderSnowballTransformer());
+        registerTransformer(new S3FPacketCustomPayloadTransformer());
+        registerTransformer(new NetHandlerPlayServerTransformer());
+        registerTransformer(new C17PacketCustomPayloadTransformer());
+        registerTransformer(new BlockCactusTransformer());
+        registerTransformer(new BlockBrewingStandTransformer());
+        registerTransformer(new WorldRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

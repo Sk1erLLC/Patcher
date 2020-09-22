@@ -21,8 +21,10 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Arrays;
@@ -57,28 +59,91 @@ public class ChunkTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
             if (brightness.contains(methodName)) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
-            } else if (methodName.equals("setBlockState") || methodName.equals("func_177436_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            }
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+            switch (methodName) {
+                case "setBlockState":
+                case "func_177436_a":
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                        // remove the + 1 from relightBlock(x, y + 1, z);
-                        if ((methodInsnName.equals("relightBlock") || methodInsnName.equals("func_76615_h")) && next.getPrevious().getPrevious().getOpcode() == Opcodes.IADD) {
-                            methodNode.instructions.remove(next.getPrevious().getPrevious());
-                            methodNode.instructions.remove(next.getPrevious().getPrevious());
-                            break;
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            // remove the + 1 from relightBlock(x, y + 1, z);
+                            if ((methodInsnName.equals("relightBlock") || methodInsnName.equals("func_76615_h")) && next.getPrevious().getPrevious().getOpcode() == Opcodes.IADD) {
+                                methodNode.instructions.remove(next.getPrevious().getPrevious());
+                                methodNode.instructions.remove(next.getPrevious().getPrevious());
+                                break;
+                            }
                         }
                     }
-                }
-            } else if (methodName.equals("getBlockState") || methodName.equals("func_177435_g")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(getBlockStateFast());
+                    break;
+
+                case "getBlockState":
+                case "func_177435_g":
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(getBlockStateFast());
+                    break;
+
+                case "setHeightMap":
+                case "func_177420_a":
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(fixHeightmapMinimum());
+                    break;
             }
         }
+    }
+
+    // also replaces the manual array copy with a faster native array copy
+    private InsnList fixHeightmapMinimum() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76634_f", "[I"));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        LabelNode ificmpeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ, ificmpeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/world/chunk/Chunk", "field_150817_t", "Lorg/apache/logging/log4j/Logger;"));
+        list.add(new TypeInsnNode(Opcodes.NEW, "java/lang/StringBuilder"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V", false));
+        list.add(new LdcInsnNode("Could not set level chunk heightmap, array length is "));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false));
+        list.add(new LdcInsnNode(" instead of "));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76634_f", "[I"));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(I)Ljava/lang/StringBuilder;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "warn", "(Ljava/lang/String;)V", true));
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ificmpeq);
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76634_f", "[I"));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76634_f", "[I"));
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/world/chunk/Chunk", "field_76634_f", "[I"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/google/common/primitives/Ints", "min", "([I)I", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/world/chunk/Chunk", "field_82912_p", "I"));
+        list.add(gotoInsn);
+        list.add(new InsnNode(Opcodes.RETURN));
+        return list;
     }
 
     private InsnList getBlockStateFast() {

@@ -85,7 +85,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
-        description = "Remove lighting updates, increasing visibility.\n§eMay improve performance.",
+        description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.",
         category = "Quality of Life", subcategory = "World"
     )
     public static boolean fullbright = true;
@@ -246,14 +246,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Transparent Chat",
-        description = "Remove the background from chat.\n§eMay improve performance.",
+        description = "Remove the background from chat.\n§eCan positively impact performance.",
         category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean transparentChat;
 
     @Property(
         type = PropertyType.SWITCH, name = "Transparent Chat Field",
-        description = "Remove the background from chat's input field.\n§eMay improve performance.",
+        description = "Remove the background from chat's input field.\n§eCan positively impact performance.",
         category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean transparentChatInputField;
@@ -407,9 +407,9 @@ public class PatcherConfig extends Vigilant {
     public static boolean normalZoomSensitivity;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Simplify OptiFine FPS Counter",
-            description = "Remove the additions OptiFine L5 makes to the debug screen fps counter.",
-            category = "Quality of Life", subcategory = "OptiFine"
+        type = PropertyType.SWITCH, name = "Simplify OptiFine FPS Counter",
+        description = "Remove the additions OptiFine L5 and above makes to the debug screen fps counter.",
+        category = "Quality of Life", subcategory = "OptiFine"
     )
     public static boolean normalFpsCounter = true;
 
@@ -528,7 +528,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Transparent Nametags",
-        description = "Remove boxes around nametags.\n§eMay improve performance.",
+        description = "Remove boxes around nametags.\n§eCan positively impact performance.",
         category = "Quality of Life", subcategory = "Rendering"
     )
     public static boolean transparentNameTags;
@@ -715,7 +715,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Culling Fix",
-        description = "Fix false negatives in frustum culling check, fixing sometimes invisible chunks.\n§cMay affect performance.",
+        description = "Fix false negatives in frustum culling check, fixing sometimes invisible chunks.\n§cCan negatively impact performance.",
         category = "Fixes", subcategory = "General"
     )
     public static boolean cullingFix;
@@ -785,17 +785,17 @@ public class PatcherConfig extends Vigilant {
     public static boolean mobSpawningOptimization;
 
     @Property(
-            type = PropertyType.SLIDER, name = "Entity Render Distance",
-            description = "Stop rendering entities outside of the specified radius.",
-            category = "Performance", subcategory = "Rendering",
-            min = 1, max = 64
+        type = PropertyType.SLIDER, name = "Entity Render Distance",
+        description = "Stop rendering entities outside of the specified radius.",
+        category = "Performance", subcategory = "Rendering",
+        min = 1, max = 64
     )
     public static int entityRenderDistance = 64;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Entity Render Distance Toggle",
-            description = "Toggle allowing a custom entity render distance.",
-            category = "Performance", subcategory = "Rendering"
+        type = PropertyType.SWITCH, name = "Entity Render Distance Toggle",
+        description = "Toggle allowing a custom entity render distance.",
+        category = "Performance", subcategory = "Rendering"
     )
     public static boolean entityRenderDistanceToggle;
 
@@ -805,6 +805,27 @@ public class PatcherConfig extends Vigilant {
         category = "Quality of Life", subcategory = "Chat"
     )
     public static boolean safeChatClicks;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Layers In Tab",
+        description = "Fixes players sometimes not having a hat layer in Tab.",
+        category = "Fixes", subcategory = "General"
+    )
+    public static boolean layersInTab = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Chunk Lighting",
+        description = "Fixes chunks sometimes not displaying any light when empty.\n§cCan negatively impact performance.",
+        category = "Fixes", subcategory = "Lighting"
+    )
+    public static boolean chunkLighting = true;
+
+    /*@Property(
+        type = PropertyType.SWITCH, name = "Blaze Culling",
+        description = "§c§l[EXPERIMENTAL] §rUse the Blaze Culling Algorithm to avoid rendering non visible entities",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean entitySightCulling = false;*/
 
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",

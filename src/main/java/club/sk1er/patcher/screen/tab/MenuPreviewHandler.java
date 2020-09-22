@@ -16,14 +16,12 @@ import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public class MenuPreviewHandler {
@@ -45,7 +43,6 @@ public class MenuPreviewHandler {
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        WorldClient world = mc.theWorld;
         ScaledResolution resolution = new ScaledResolution(mc);
 
         int scaledWidth = resolution.getScaledWidth();
@@ -62,7 +59,7 @@ public class MenuPreviewHandler {
             GlStateManager.popMatrix();
         }
 
-        Scoreboard scoreboard = world.getScoreboard();
+        Scoreboard scoreboard = mc.theWorld.getScoreboard();
         ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);
 
         if (PatcherConfig.toggleTab && this.toggledTab && !mc.gameSettings.keyBindPlayerList.isKeyDown()) {

@@ -23,11 +23,7 @@ public class ChatUtilities {
     }
 
     public static void sendMessage(String message, boolean prefix) {
-        if (prefix) {
-            sendMessageHelper(color("&e[Patcher] &r") + color(message));
-        } else {
-            sendMessageHelper(message);
-        }
+        sendMessageHelper(prefix ? color("&e[Patcher] &r") + color(message) : color(message));
     }
 
     private static void sendMessageHelper(String message) {

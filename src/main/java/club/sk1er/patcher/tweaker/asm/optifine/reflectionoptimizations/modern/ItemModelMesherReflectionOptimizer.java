@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.L5;
+package club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;

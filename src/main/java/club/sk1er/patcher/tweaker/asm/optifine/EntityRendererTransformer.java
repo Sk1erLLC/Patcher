@@ -18,7 +18,20 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -146,6 +159,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+
                 case "updateLightmap":
                 case "func_78472_g": {
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
@@ -155,13 +169,51 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
+                        // todo: figure out why optifine just kills this entirely when -noverify isn't used
+                        /*int f8index = -1;
+                        int f9index = -1;
+                        int f10index = -1;
+
+                        for (LocalVariableNode variable : methodNode.localVariables) {
+                            switch (ClassTransformer.optifineVersion) {
+                                case "I7":
+                                    switch (variable.name) {
+                                        case "var12":
+                                            f8index = variable.index;
+                                            break;
+                                        case "var13":
+                                            f9index = variable.index;
+                                            break;
+                                        case "var14":
+                                            f10index = variable.index;
+                                            break;
+                                    }
+                                    break;
+                                case "L5":
+                                case "NONE":
+                                    switch (variable.name) {
+                                        case "f8":
+                                            f8index = variable.index;
+                                            break;
+                                        case "f9":
+                                            f9index = variable.index;
+                                            break;
+                                        case "f10":
+                                            f10index = variable.index;
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }*/
+
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
                             String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
 
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
-                                break;
-                            }
+                            }/* else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap(f8index, f9index, f10index));
+                            }*/
                         }
                     }
                     break;
@@ -195,7 +247,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 break;
                             }
 
-                            default:
+                            default: // vanilla & L6 will work for this
                             case "L5": {
                                 int cameraVar = -1;
 
@@ -225,10 +277,149 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
+                case "func_181560_a":
+                case "updateCameraAndRender": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("renderGameOverlay") || methodInsnName.equals("func_175180_a")) {
+                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
+
+                                for (int i = 0; i < 9; i++) {
+                                    next = next.getPrevious();
+                                }
+
+                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(true));
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+
+                case "func_78464_a":
+                case "updateRenderer": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+
+                            if (methodInsnName.equals("getLightBrightness")) {
+                                ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
+                                methodNode.instructions.insertBefore(next.getPrevious(), getEyePosition());
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+
+                case "func_78466_h":
+                case "updateFogColor": {
+                    // optifine already fixes this and i wasn't even aware!
+                    if (!ClassTransformer.optifineVersion.equals("NONE")) {
+                        return;
+                    }
+
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        int f6index = -1;
+
+                        for (LocalVariableNode variable : methodNode.localVariables) {
+                            if (variable.name.equals("f6")) {
+                                f6index = variable.index;
+                                break;
+                            }
+                        }
+
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
+
+                            if (fieldInsnName.equals("fogColorBlue") || fieldInsnName.equals("field_175081_S")) {
+                                if (next.getNext().getOpcode() == Opcodes.FDIV) {
+                                    // next.getNext() go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+                                    if (next.getNext().getNext().getNext().getNext().getNext().getNext() instanceof VarInsnNode) {
+                                        methodNode.instructions.insertBefore(next.getNext().getNext().getNext().getNext().getNext().getNext(), clampVariable(f6index));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
     }
 
+    private InsnList clampVariable(int f6index) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Float", "isInfinite", "(F)Z", false));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
+        list.add(new InsnNode(Opcodes.DCONST_0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Math", "nextAfter", "(FD)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f6index));
+        list.add(ifeq);
+        return list;
+    }
+
+    private InsnList clampLightmap(int f8index, int f9index, int f10index) {
+        // using srg name in dev crashes? Ok Forge
+        final String clamp_float = isDevelopment() ? "clamp_float" : "func_76131_a";
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.FLOAD, f8index));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f8index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f9index));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f9index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f10index));
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, f10index));
+        return list;
+    }
+
+    private InsnList getEyePosition() {
+        // using srg name in dev crashes? Ok Forge
+        InsnList list = new InsnList();
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+            "net/minecraft/entity/Entity",
+            isDevelopment() ? "getPositionEyes" : "func_174824_e",
+            "(F)Lnet/minecraft/util/Vec3;",
+            false));
+        return list;
+    }
+
+    private InsnList toggleCullingStatus(boolean status) {
+        InsnList list = new InsnList();
+        list.add(new InsnNode(status ? Opcodes.ICONST_1 : Opcodes.ICONST_0));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "uiRendering", "Z"));
+        return list;
+    }
 
     private InsnList getStoreCameraInsn(int var) {
         InsnList list = new InsnList();

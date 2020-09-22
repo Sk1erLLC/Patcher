@@ -2,11 +2,19 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
 public class WorldRendererTransformer implements PatcherTransformer {
+
     @Override
     public String[] getClassName() {
         return new String[]{"net.minecraft.client.renderer.WorldRenderer"};
@@ -19,12 +27,12 @@ public class WorldRendererTransformer implements PatcherTransformer {
         outer:
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
-            if (methodName.equalsIgnoreCase("finishDrawing") || methodName.equalsIgnoreCase("func_178977_d")) {
+            if (methodName.equals("finishDrawing") || methodName.equals("func_178977_d")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode) {
-                        if (((MethodInsnNode) next).name.equalsIgnoreCase("limit") && ((MethodInsnNode) next).owner.equalsIgnoreCase("java/nio/ByteBuffer")) {
+                        if (((MethodInsnNode) next).name.equals("limit") && ((MethodInsnNode) next).owner.equalsIgnoreCase("java/nio/ByteBuffer")) {
                             final InsnList insns = new InsnList();
                             insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
                             insns.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "field_178999_b", "Ljava/nio/IntBuffer;"));
@@ -35,7 +43,7 @@ public class WorldRendererTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            } else if (methodName.equalsIgnoreCase("endVertex") || methodName.equalsIgnoreCase("func_181675_d")) {
+            } else if (methodName.equals("endVertex") || methodName.equals("func_181675_d")) {
                 final InsnList insns = new InsnList();
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
                 insns.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "field_178999_b", "Ljava/nio/IntBuffer;"));
