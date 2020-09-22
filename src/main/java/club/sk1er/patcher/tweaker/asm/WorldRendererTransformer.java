@@ -32,7 +32,7 @@ public class WorldRendererTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode) {
-                        if (((MethodInsnNode) next).name.equalsIgnoreCase("limit") && ((MethodInsnNode) next).owner.equalsIgnoreCase("java/nio/ByteBuffer")) {
+                        if (((MethodInsnNode) next).name.equals("limit") && ((MethodInsnNode) next).owner.equalsIgnoreCase("java/nio/ByteBuffer")) {
                             final InsnList insns = new InsnList();
                             insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
                             insns.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "field_178999_b", "Ljava/nio/IntBuffer;"));

@@ -326,6 +326,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                 case "func_78466_h":
                 case "updateFogColor": {
+                    // optifine already fixes this and i wasn't even aware!
+                    if (!ClassTransformer.optifineVersion.equals("NONE")) {
+                        return;
+                    }
+
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
 
