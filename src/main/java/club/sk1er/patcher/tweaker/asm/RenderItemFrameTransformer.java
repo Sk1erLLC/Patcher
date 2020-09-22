@@ -13,15 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -58,8 +50,13 @@ public class RenderItemFrameTransformer implements PatcherTransformer {
 
     private InsnList cancelRendering() {
         InsnList list = new InsnList();
-        list.add(
-            new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableItemFrames", "Z"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "renderItem", "(Lnet/minecraft/entity/Entity;)Z", false));
+        final LabelNode labelNode = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(labelNode);
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableItemFrames", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));

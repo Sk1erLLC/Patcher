@@ -47,8 +47,7 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
-    boolean ent = false;
-    private boolean use = false;
+    private static boolean use = false;
     private boolean down = false;
 
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
@@ -124,16 +123,30 @@ public class EntityCulling {
         GlStateManager.colorMask(true, true, true, true);
     }
 
-    public static boolean renderItem(ItemStack stack, double x, double y, double z) {
+    public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-
-        return false;
+        return use && checkEntity(stack);
     }
 
-    private int getQuery() {
+    private static int getQuery() {
         return GL15.glGenQueries();
     }
 
+    private static boolean checkEntity(Entity entity) {
+        OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
+        if (query.refresh) {
+            query.nextQuery = getQuery();
+            query.refresh = false;
+            GlStateManager.pushMatrix();
+            final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+            GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
+            GL15.glBeginQuery(GL33.GL_ANY_SAMPLES_PASSED, query.nextQuery);
+            drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.2, .2, .2));
+            GL15.glEndQuery(GL33.GL_ANY_SAMPLES_PASSED);
+            GlStateManager.popMatrix();
+        }
+        return query.occluded;
+    }
     /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
      * If it can see an entity, continue to render the entity, otherwise save some time
@@ -144,30 +157,14 @@ public class EntityCulling {
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!use) return;
-        final EntityLivingBase entity = event.entity;
-//        if (!(entity instanceof EntityArmorStand)) {
-//            ent = false;
-//            return;
-//        }
-        OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
-        if (query.refresh) {
-            query.nextQuery = getQuery();
-            query.refresh = false;
-            GlStateManager.pushMatrix();
-            final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-            GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
-            GL15.glBeginQuery(GL33.GL_ANY_SAMPLES_PASSED, query.nextQuery);
-            drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.1, .1, .1));
-            GL15.glEndQuery(GL33.GL_ANY_SAMPLES_PASSED);
-            GlStateManager.popMatrix();
-        }
+
 
 //        GlStateManager.pushMatrix();
 //        final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 //        GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
 //        drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.2,.2,.2));
 //        GlStateManager.popMatrix();
-        if (query.occluded) {
+        if (checkEntity(event.entity)) {
             event.setCanceled(true);
             // TODO: 9/22/2020 Readd nametag
         }
@@ -195,6 +192,7 @@ public class EntityCulling {
         final WorldClient theWorld = Minecraft.getMinecraft().theWorld;
         if (theWorld == null) return;
 
+        // TODO: 9/22/2020 use worldclient's more complete entity list
         List<UUID> remove = new ArrayList<>();
         outer:
         for (OcclusionQuery value : queries.values()) {
@@ -233,15 +231,6 @@ public class EntityCulling {
         public OcclusionQuery(UUID uuid) {
             this.uuid = uuid;
         }
-
-        public int getNextQuery() {
-            return nextQuery;
-        }
-
-        public void setNextQuery(int nextQuery) {
-            this.nextQuery = nextQuery;
-        }
-
 
         public UUID getUuid() {
             return uuid;

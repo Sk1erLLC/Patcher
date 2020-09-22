@@ -75,6 +75,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
+        registerTransformer(new RenderEntityItemTransformer());
         registerTransformer(new AbstractResourcePackTransformer());
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new BlockPotatoTransformer());
