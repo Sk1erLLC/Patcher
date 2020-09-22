@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
-import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -23,14 +22,13 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
@@ -48,7 +46,6 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
-    private boolean down = false;
 
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
@@ -87,9 +84,6 @@ public class EntityCulling {
             && entity.riddenByEntity == null;
     }
 
-    public static void end() {
-
-    }
 
     public static void drawSelectionBoundingBox(AxisAlignedBB b) {
         GlStateManager.disableAlpha();
@@ -123,6 +117,10 @@ public class EntityCulling {
         GlStateManager.colorMask(true, true, true, true);
     }
 
+    /*
+        Used by  RenderEntityItemTransformer and RenderItemFrameTransformer
+     */
+    @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
         return PatcherConfig.entityCulling && checkEntity(stack);
@@ -132,6 +130,11 @@ public class EntityCulling {
         return GL15.glGenQueries();
     }
 
+    /**
+     * Used OpenGL queries in order to determine if the given is visible
+     * @param entity entity to check
+     * @return true if the entity rendering should be skipped
+     */
     private static boolean checkEntity(Entity entity) {
         OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
         if (query.refresh) {
@@ -147,6 +150,7 @@ public class EntityCulling {
         }
         return query.occluded;
     }
+
     /**
      * Fire rays from the player's eyes, detecting on if it can see an entity or not.
      * If it can see an entity, continue to render the entity, otherwise save some time
@@ -159,31 +163,25 @@ public class EntityCulling {
         if (!PatcherConfig.entityCulling) return;
 
 
-        if (checkEntity(event.entity)) {
+        final EntityLivingBase entity = event.entity;
+        if (checkEntity(entity)) {
             event.setCanceled(true);
-            if (PatcherConfig.dontCullNametags && canRenderName(event.entity)) {
-                event.renderer.renderName(event.entity, event.x, event.y, event.z);
+            if (!canRenderName(entity)) return;
+
+            if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
+                (PatcherConfig.dontCullEntityNametags && !(entity instanceof EntityArmorStand)) ||
+                (PatcherConfig.dontCullArmourStandNametags && entity instanceof EntityArmorStand)) {
+                event.renderer.renderName(entity, event.x, event.y, event.z);
             }
         }
 
     }
 
-    @SubscribeEvent
-    public void shouldRenderEntityPost(RenderLivingEvent.Post<EntityLivingBase> event) {
-
-    }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {
             return;
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_P) && !down) {
-            down = true;
-            PatcherConfig.entityCulling = !PatcherConfig.entityCulling;
-            MinecraftUtils.sendMessage("Toggled: " + (PatcherConfig.entityCulling ? "On" : "Off"));
-        } else if (!Keyboard.isKeyDown(Keyboard.KEY_P)) {
-            down = false;
         }
         final WorldClient theWorld = Minecraft.getMinecraft().theWorld;
         if (theWorld == null) return;

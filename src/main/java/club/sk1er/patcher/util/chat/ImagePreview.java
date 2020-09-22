@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -80,11 +79,15 @@ public class ImagePreview {
             }
             final ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
             final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
-            int y = 40;
+            int y = 0;
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(scaledResolution.getScaledWidth() - 5, 20, 0);
+            GlStateManager.scale(2, 2, 2);
             for (String render : renderStrings) {
-                font.drawString(render, scaledResolution.getScaledWidth() - 5 - font.getStringWidth(render), y, Color.RED.getRGB(), true);
+                font.drawString(render, -font.getStringWidth(render), y, Color.RED.getRGB(), true);
                 y += 10;
             }
+            GlStateManager.popMatrix();
         }
         if (!PatcherConfig.imagePreview) return;
         final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
