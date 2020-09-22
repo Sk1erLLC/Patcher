@@ -81,8 +81,8 @@ public class EntityCulling {
             service.submit(() -> doBlockVisibilityCheck(entity, world, render));
         }
 
-        if (PatcherConfig.entitySightCulling) //Option to not perform entity on entity calculations
-            service.submit(() -> doEntityOnEntityVisibilityCheck(render));
+        /*if (PatcherConfig.entitySightCulling) //Option to not perform entity on entity calculations
+            service.submit(() -> doEntityOnEntityVisibilityCheck(render));*/
     }
 
 
@@ -513,9 +513,10 @@ public class EntityCulling {
             && !entity.isInvisibleToPlayer(player)
             && entity.riddenByEntity == null;
     }
+
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if ((!PatcherConfig.entitySightCulling && !PatcherConfig.entityCulling) || event.phase != TickEvent.Phase.END || latch == null) {
+        if ((/*!PatcherConfig.entitySightCulling &&*/ !PatcherConfig.entityCulling) || event.phase != TickEvent.Phase.END || latch == null) {
             return;
         }
 
