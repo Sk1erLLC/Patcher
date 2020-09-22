@@ -160,6 +160,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new C17PacketCustomPayloadTransformer());
         registerTransformer(new BlockCactusTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
+        registerTransformer(new WorldRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -190,17 +191,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new KeyboardTransformer());
 
         registerTransformer(new ForcePublicTransformer());
-    }
-
-    private void registerTransformer(PatcherTransformer transformer) {
-        for (String cls : transformer.getClassName()) {
-            transformerMap.put(cls, transformer);
-        }
-    }
-
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
     }
 
     public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger) {
@@ -246,5 +236,16 @@ public class ClassTransformer implements IClassTransformer {
         }
 
         return classWriter.toByteArray();
+    }
+
+    private void registerTransformer(PatcherTransformer transformer) {
+        for (String cls : transformer.getClassName()) {
+            transformerMap.put(cls, transformer);
+        }
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
     }
 }
