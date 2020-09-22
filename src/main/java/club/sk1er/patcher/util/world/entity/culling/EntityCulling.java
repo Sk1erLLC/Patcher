@@ -46,7 +46,7 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
-
+    public static boolean uiRendering = false;
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
      * <p>
@@ -123,7 +123,7 @@ public class EntityCulling {
     @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-        return PatcherConfig.entityCulling && checkEntity(stack);
+        return !uiRendering && PatcherConfig.entityCulling && checkEntity(stack);
     }
 
     private static int getQuery() {
@@ -160,7 +160,7 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling) return;
+        if (!PatcherConfig.entityCulling || uiRendering) return;
 
 
         final EntityLivingBase entity = event.entity;
