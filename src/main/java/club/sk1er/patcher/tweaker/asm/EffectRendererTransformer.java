@@ -50,14 +50,6 @@ public class EffectRendererTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
             switch (methodName) {
-                case "updateEffects":
-                case "func_78868_a":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        "club/sk1er/patcher/util/world/entity/culling/EntityCulling",
-                        "begin",
-                        "()V",
-                        false));
-                    break;
                 case "renderParticles":
                 case "func_78874_a": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();

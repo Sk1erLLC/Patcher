@@ -227,6 +227,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             break;
                         }
                     }
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "end", "()V", false));
                     break;
                 }
             }
