@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.chat;
 
 import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -31,7 +32,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -39,13 +39,19 @@ import java.net.URL;
 
 public class ImagePreview {
 
-    private final String[] ALLOWED_HOSTS = {"sk1er.exposed", "imgur.com", "i.imgur.com", "i.badlion.net", "cdn.discordapp.com"};
+    private final String[] ALLOWED_HOSTS = {
+        "cdn.discordapp.com",
+        "i.badlion.net",
+        "i.imgur.com", "imgur.com",
+        "sk1er.exposed",
+    };
+
     private final Minecraft mc = Minecraft.getMinecraft();
+    private BufferedImage image;
     private String loaded;
     private int tex = -1;
     private int width = 100;
     private int height = 100;
-    private BufferedImage image;
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
@@ -179,7 +185,8 @@ public class ImagePreview {
             try (InputStream stream = connection.getInputStream()) {
                 image = TextureUtil.readBufferedImage(stream);
             }
-        } catch (IOException ignored) {
+        } catch (Exception e) {
+            Patcher.instance.getLogger().error("Failed to load an image preview from {}", url, e);
         } finally {
             if (connection != null) {
                 connection.disconnect();

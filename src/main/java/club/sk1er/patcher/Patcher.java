@@ -90,7 +90,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+moplay_beta-1.1";
+    public static final String VERSION = "1.4+beta-2";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 
@@ -125,12 +125,12 @@ public class Patcher {
      */
     private CloudHandler cloudHandler;
 
+    private DebugPerformanceRenderer debugPerformanceRenderer;
+
     private KeyBinding nameHistory;
     private KeyBinding dropModifier;
     private KeyBinding chatPeek;
 
-    private ImagePreview imagePreview;
-    private DebugPerformanceRenderer debugPerformanceRenderer;
 
     /**
      * Process important things that should be available by the time the game is done loading.
@@ -176,17 +176,17 @@ public class Patcher {
         registerClass(new FovHandler());
         registerClass(new ChatHandler());
         registerClass(new HotbarItemsHandler());
-        registerClass(MinecraftHook.INSTANCE);
         registerClass(new EntityCulling());
         registerClass(new ArmorStatusRenderer());
         registerClass(new EntityTrace());
         registerClass(new PatcherMenuEditor());
-        registerClass(cloudHandler = new CloudHandler());
-        registerClass(imagePreview = new ImagePreview());
-        registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
+        registerClass(new ImagePreview());
         registerClass(new WorldHandler());
-        registerClass(Viewer.getInstance());
         registerClass(new TitleFix());
+        registerClass(MinecraftHook.INSTANCE);
+        registerClass(Viewer.getInstance());
+        registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
+        registerClass(cloudHandler = new CloudHandler());
 
         checkLogs();
         loadBlacklistedServers();
@@ -431,10 +431,6 @@ public class Patcher {
     @SuppressWarnings("unused")
     public KeyBinding getDropModifier() {
         return dropModifier;
-    }
-
-    public ImagePreview getImagePreview() {
-        return imagePreview;
     }
 
     public DebugPerformanceRenderer getDebugPerformanceRenderer() {
