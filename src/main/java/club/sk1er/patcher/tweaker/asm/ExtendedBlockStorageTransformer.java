@@ -23,6 +23,7 @@ public class ExtendedBlockStorageTransformer implements PatcherTransformer {
 
             if (methodName.equals("isEmpty") || methodName.equals("func_76663_a")) {
                 method.instructions.insertBefore(method.instructions.getFirst(), fixFaultyChecks());
+                break;
             }
         }
     }
