@@ -174,6 +174,9 @@ public class EntityCulling {
 
 
         final EntityLivingBase entity = event.entity;
+        if(entity == mc.thePlayer) {
+            return;
+        }
         if (checkEntity(entity)) {
             event.setCanceled(true);
             if (!canRenderName(entity)) {
