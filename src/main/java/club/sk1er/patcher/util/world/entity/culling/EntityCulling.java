@@ -85,7 +85,7 @@ public class EntityCulling {
 
         return Minecraft.isGuiEnabled()
             && entity != mc.getRenderManager().livingPlayer
-            && !entity.isInvisibleToPlayer(player)
+            && ((entity instanceof EntityArmorStand) || !entity.isInvisibleToPlayer(player))
             && entity.riddenByEntity == null;
     }
 
