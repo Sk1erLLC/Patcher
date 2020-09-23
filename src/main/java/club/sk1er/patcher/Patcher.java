@@ -14,7 +14,11 @@ package club.sk1er.patcher;
 import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.patcher.command.*;
+import club.sk1er.mods.core.util.WebUtil;
+import club.sk1er.patcher.command.CoordsCommand;
+import club.sk1er.patcher.command.FovChangerCommand;
+import club.sk1er.patcher.command.PatcherCommand;
+import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
@@ -47,6 +51,9 @@ import club.sk1er.patcher.util.world.entity.EntityRendering;
 import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import club.sk1er.vigilance.Vigilant;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -55,8 +62,10 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -68,7 +77,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -131,6 +149,7 @@ public class Patcher {
     private KeyBinding dropModifier;
     private KeyBinding chatPeek;
 
+    private JsonObject duplicateModsJson;
 
     /**
      * Process important things that should be available by the time the game is done loading.
@@ -213,6 +232,32 @@ public class Patcher {
         }
 
         logger.info("Minecraft started in {} seconds.", time);
+
+        if (PatcherConfig.replacedModsWarning) {
+            Multithreading.runAsync(() -> {
+                try {
+                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                } catch (Exception e) {
+                    Patcher.instance.getLogger().error("Failed to fetch list of duplicate mods.", e);
+                    return;
+                }
+
+                List<String> duplicates = new ArrayList<>();
+                for (ModContainer modContainer : Loader.instance().getActiveModList()) {
+                    for (String modid : keySet(duplicateModsJson)) {
+                        if (modContainer.getModId().contains(modid) && !duplicates.contains(modid)) {
+                            duplicates.add(modContainer.getName());
+                        }
+                    }
+                }
+
+                if (!duplicates.isEmpty()) {
+                    for (String duplicate : duplicates) {
+                        Notifications.INSTANCE.pushNotification("Patcher", "Patcher has identified the mod " + duplicate + " to be a duplicate.");
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -375,6 +420,20 @@ public class Patcher {
     public static boolean isDevelopment() {
         Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
         return o != null && (boolean) o;
+    }
+
+    public Set<String> keySet(JsonObject json) throws NullPointerException {
+        try {
+            return json.keySet();
+        } catch (NoSuchMethodError e) {
+            Set<String> keySet = new HashSet<>();
+
+            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                keySet.add(entry.getKey());
+            }
+
+            return keySet;
+        }
     }
 
     /**

@@ -816,6 +816,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean chunkLighting = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Replaced Mods Warning",
+        description = "Display on startup what mods you may have that are replaced by Patcher.",
+        category = "Quality of Life", subcategory = "General"
+    )
+    public static boolean replacedModsWarning = true;
+
     /*@Property(
         type = PropertyType.SWITCH, name = "Blaze Culling",
         description = "§c§l[EXPERIMENTAL] §rUse the Blaze Culling Algorithm to avoid rendering non visible entities",

@@ -55,55 +55,53 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
         mcButtonList = event.buttonList;
+        int width = event.gui.width;
+        int height = event.gui.height;
 
-        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
-            realmsButton = ((GuiMainMenu) event.gui).realmsButton;
-
-            for (GuiButton button : mcButtonList) {
-                if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
-                    button.width = 200;
-                    break;
-                }
-            }
-        } else {
-            int width = event.gui.width;
-            int height = event.gui.height;
-
-            if (event.gui instanceof GuiScreenResourcePacks) {
-                if (!Loader.isModLoaded("ResourcePackOrganizer")) {
-                    for (GuiButton button : mcButtonList) {
+        if (event.gui instanceof GuiMainMenu) {
+            if (PatcherConfig.cleanMainMenu) {
+                realmsButton = ((GuiMainMenu) event.gui).realmsButton;
+                for (GuiButton button : mcButtonList) {
+                    if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
                         button.width = 200;
-
-                        if (button.id == 2) {
-                            button.xPosition = width / 2 - 204;
-                        }
+                        break;
                     }
                 }
-            } else if (event.gui instanceof GuiIngameMenu) {
-                if (PatcherConfig.skinRefresher) {
-                    mcButtonList.add(new GuiButton(435762,
-                        2,
-                        height - (ModCore.getInstance().getModCoreConfig().getModcoreButtonLinks() ? 62 : 22),
-                        100,
-                        20,
-                        "Refresh Skin"));
-                }
+            }
+        } else if (event.gui instanceof GuiScreenResourcePacks) {
+            if (!Loader.isModLoaded("ResourcePackOrganizer")) {
+                for (GuiButton button : mcButtonList) {
+                    button.width = 200;
 
-                if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
-                    mcButtonList.get(4).visible = false;
-                    mcButtonList.get(4).enabled = false;
-                    mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List"));
+                    if (button.id == 2) {
+                        button.xPosition = width / 2 - 204;
+                    }
                 }
-            } else if (event.gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
+            }
+        } else if (event.gui instanceof GuiIngameMenu) {
+            if (PatcherConfig.skinRefresher) {
                 mcButtonList.add(new GuiButton(435762,
-                    width / 2 - 155 + 160,
-                    height / 6 + 24 * (7 >> 1),
-                    150,
+                    2,
+                    height - (ModCore.getInstance().getModCoreConfig().getModcoreButtonLinks() ? 62 : 22),
+                    100,
                     20,
                     "Refresh Skin"));
-            } else if (event.gui instanceof GuiScreenOptionsSounds) {
-                mcButtonList.add(new GuiButton(85348, 2, height - 22, 100, 20, "All Sounds"));
             }
+
+            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
+                mcButtonList.get(4).visible = false;
+                mcButtonList.get(4).enabled = false;
+                mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List"));
+            }
+        } else if (event.gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
+            mcButtonList.add(new GuiButton(435762,
+                width / 2 - 155 + 160,
+                height / 6 + 24 * (7 >> 1),
+                150,
+                20,
+                "Refresh Skin"));
+        } else if (event.gui instanceof GuiScreenOptionsSounds) {
+            mcButtonList.add(new GuiButton(85348, 2, height - 22, 100, 20, "All Sounds"));
         }
     }
 
