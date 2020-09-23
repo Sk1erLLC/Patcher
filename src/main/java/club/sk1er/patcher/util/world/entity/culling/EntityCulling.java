@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -44,10 +45,12 @@ import java.util.UUID;
  */
 public class EntityCulling {
 
-    private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
     public static boolean uiRendering = false;
-    /*]     * Used for checking if the entities nametag can be rendered if the user still wants
+
+    /**
+     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
      * <p>
      * Mirrored from {@link RendererLivingEntity} as it's originally protected.
@@ -111,14 +114,13 @@ public class EntityCulling {
         worldrenderer.pos(b.maxX, b.minY, b.maxZ).endVertex();
         worldrenderer.pos(b.minX, b.minY, b.minZ).endVertex();
         worldrenderer.pos(b.maxX, b.minY, b.minZ).endVertex();
-
         tessellator.draw();
         GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
     }
 
-    /*
-        Used by  RenderEntityItemTransformer and RenderItemFrameTransformer
+    /**
+     * Used by  RenderEntityItemTransformer and RenderItemFrameTransformer
      */
     @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
@@ -132,11 +134,13 @@ public class EntityCulling {
 
     /**
      * Used OpenGL queries in order to determine if the given is visible
+     *
      * @param entity entity to check
      * @return true if the entity rendering should be skipped
      */
     private static boolean checkEntity(Entity entity) {
         OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
+
         if (query.refresh) {
             query.nextQuery = getQuery();
             query.refresh = false;
@@ -148,6 +152,7 @@ public class EntityCulling {
             GL15.glEndQuery(GL33.GL_ANY_SAMPLES_PASSED);
             GlStateManager.popMatrix();
         }
+
         return query.occluded;
     }
 
@@ -160,8 +165,9 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling || uiRendering) return;
-
+        if (!PatcherConfig.entityCulling || uiRendering) {
+            return;
+        }
 
         final EntityLivingBase entity = event.entity;
         if (checkEntity(entity)) {
@@ -183,10 +189,14 @@ public class EntityCulling {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
-        final WorldClient theWorld = Minecraft.getMinecraft().theWorld;
-        if (theWorld == null) return;
+
+        final WorldClient theWorld = mc.theWorld;
+        if (theWorld == null) {
+            return;
+        }
 
         List<UUID> remove = new ArrayList<>();
+
         outer:
         for (OcclusionQuery value : queries.values()) {
             for (Entity entity : theWorld.loadedEntityList) {
@@ -194,18 +204,21 @@ public class EntityCulling {
                     continue outer;
                 }
             }
+
             remove.add(value.uuid);
-            if (value.nextQuery != 0)
+            if (value.nextQuery != 0) {
                 GL15.glDeleteQueries(value.nextQuery);
+            }
         }
+
         for (UUID uuid : remove) {
             queries.remove(uuid);
         }
 
         for (OcclusionQuery query : queries.values()) {
             if (query.nextQuery != 0) {
-                final long l = GL33.glGetQueryObjectui64(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
-                if (l != 0) {
+                final long queryObject = GL33.glGetQueryObjectui64(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
+                if (queryObject != 0) {
                     query.occluded = GL33.glGetQueryObjectui64(query.nextQuery, GL15.GL_QUERY_RESULT) == 0;
                     GL15.glDeleteQueries(query.nextQuery);
                     query.nextQuery = 0;

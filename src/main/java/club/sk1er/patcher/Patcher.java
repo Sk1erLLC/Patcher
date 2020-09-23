@@ -20,6 +20,7 @@ import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
+import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
@@ -128,6 +129,7 @@ public class Patcher {
     private KeyBinding chatPeek;
 
     private ImagePreview imagePreview;
+    private DebugPerformanceRenderer debugPerformanceRenderer;
 
     /**
      * Process important things that should be available by the time the game is done loading.
@@ -158,16 +160,13 @@ public class Patcher {
 
         ClientCommandHandler.instance.registerCommand(new PatcherCommand());
         ClientCommandHandler.instance.registerCommand(new FovChangerCommand());
-        ClientCommandHandler.instance.registerCommand(new NameHistoryCommand());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.DeleteScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
         ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
-        ClientCommandHandler.instance.registerCommand(new BlacklistServerCommand());
         ClientCommandHandler.instance.registerCommand(new SkinCacheRefresh());
         ClientCommandHandler.instance.registerCommand(new CoordsCommand());
-        ClientCommandHandler.instance.registerCommand(new PatcherSoundsCommand());
 
         registerClass(this);
         registerClass(target);
@@ -183,6 +182,7 @@ public class Patcher {
         registerClass(new PatcherMenuEditor());
         registerClass(cloudHandler = new CloudHandler());
         registerClass(imagePreview = new ImagePreview());
+        registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
         registerClass(new WorldHandler());
         registerClass(Viewer.getInstance());
 
@@ -433,5 +433,9 @@ public class Patcher {
 
     public ImagePreview getImagePreview() {
         return imagePreview;
+    }
+
+    public DebugPerformanceRenderer getDebugPerformanceRenderer() {
+        return debugPerformanceRenderer;
     }
 }

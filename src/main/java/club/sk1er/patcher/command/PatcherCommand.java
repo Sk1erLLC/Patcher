@@ -57,7 +57,7 @@ public class PatcherCommand extends CommandBase {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + "[mode <vanilla|optimized>|benchmark [all, text, item]|debugfps|sounds|resetcache|name [username]|blacklist <ip>]";
+        return "/" + getCommandName() + " [&amode <vanilla|optimized> &r| &bbenchmark <all, text, item> &r| &cdebugfps &r| &dsounds &r| &eresetcache &r| &2name [username] &r| &3blacklist <ip>&e]";
     }
 
     /**
@@ -73,18 +73,18 @@ public class PatcherCommand extends CommandBase {
                 switch (args[1]) {
                     case "vanilla": {
                         toggleOptions(false);
-                        Patcher.instance.getImagePreview().setMode("Vanilla");
-                        sendNotification("Set mode: Vanilla", "&aSet mode: &cVanilla&a.");
+                        Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
+                        sendNotification("Debug Renderer", "&aSet mode: &cVanilla&a.");
                         return;
                     }
                     case "optimized": {
                         toggleOptions(true);
-                        Patcher.instance.getImagePreview().setMode("Optimized");
-                        sendNotification("Set mode: Optimized", "&aSet mode: &eOptimized&a.");
+                        Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
+                        sendNotification("Debug Renderer", "&aSet mode: &eOptimized&a.");
                         return;
                     }
                     default: {
-                        sendNotification("Unknown mode.", "&cUnknown mode.");
+                        sendNotification("Debug Renderer", "&cUnknown mode.");
                         return;
                     }
                 }
@@ -98,16 +98,14 @@ public class PatcherCommand extends CommandBase {
                     }
 
                     float seconds = totalMillis / 1000F;
-                    String message = "All of the benchmarks completed in " + seconds + "s.";
-                    sendNotification(message, "&3" + message);
+                    sendNotification("Performance Benchmark", "&3All of the benchmarks completed in " + seconds + "s.");
                     return;
                 }
 
                 AbstractBenchmark benchmark = benchmarkMap.get(args[1]);
 
                 if (benchmark == null) {
-                    String message = "Can't find a \"" + args[1] + "\" benchmark by the name of \"" + args[1] + "\".";
-                    sendNotification(message, "&c" + message);
+                    sendNotification("Performance Benchmark", "&cCan't find a \"" + args[1] + "\" benchmark by the name of \"" + args[1] + "\".");
                     return;
                 }
 
@@ -118,7 +116,7 @@ public class PatcherCommand extends CommandBase {
                 return;
             } else if (args[0].equalsIgnoreCase("blacklist")) {
                 String status = Patcher.instance.addOrRemoveBlacklist(args[1]) ? "&cnow" : "&ano longer";
-                ChatUtilities.sendMessage("Server &e\"" + args[1] + "\" &ris " + status + " &rblacklisted from chat length extension.");
+                sendNotification("Server Blacklist", "Server &e\"" + args[1] + "\" &r is " + status + " &rblacklisted from chat length extension.");
                 Patcher.instance.saveBlacklistedServers();
                 return;
             }
@@ -129,12 +127,12 @@ public class PatcherCommand extends CommandBase {
                 case "resetcache":
                     EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
                     EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
-                    sendNotification("Cleared Enhancement cache.", "&aCleared enhancement cache.");
+                    sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
                     return;
 
                 case "debugfps":
-                    Patcher.instance.getImagePreview().toggleFPS();
-                    sendNotification("Toggled debug fps preview.", "&aToggled debug fps preview.");
+                    Patcher.instance.getDebugPerformanceRenderer().toggleFPS();
+                    sendNotification("Debug Renderer", "&aToggled the debug renderer.");
                     return;
 
                 case "sounds":
@@ -147,11 +145,18 @@ public class PatcherCommand extends CommandBase {
                     return;
 
                 case "blacklist":
-                    ChatUtilities.sendMessage("&cPlease input the server ip to blacklist.");
+                    sendNotification("Server Blacklist", "&cPlease insert an IP to blacklist.");
+                    return;
+
+                case "benchmark":
+                    sendNotification("Performance Benchmark", "&cPlease insert a test benchmark.\n&cAvailable options are: &eall, text, item&c.");
+                    return;
+
+                default:
+                    ChatUtilities.sendMessage("&cUsage: &e" + getCommandUsage(sender));
                     return;
             }
         }
-
 
         ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherConfig().gui());
     }
@@ -194,13 +199,9 @@ public class PatcherCommand extends CommandBase {
         return -1;
     }
 
-    public Map<String, AbstractBenchmark> getBenchmarkMap() {
-        return benchmarkMap;
-    }
-
-    private void sendNotification(String notificationMessage, String chatMessage) {
+    private void sendNotification(String notificationCategory, String chatMessage) {
         if (!ModCoreConfig.INSTANCE.getDisableAllNotifications()) {
-            Notifications.INSTANCE.pushNotification("Patcher", notificationMessage);
+            Notifications.INSTANCE.pushNotification(notificationCategory, ChatUtilities.color(chatMessage));
         } else {
             ChatUtilities.sendMessage(chatMessage);
         }
