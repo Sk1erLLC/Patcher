@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GLContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,9 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft(); //Minecraft instance
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
+    private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean uiRendering = false;
+
     /*]     * Used for checking if the entities nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
      * <p>
@@ -83,7 +86,6 @@ public class EntityCulling {
             && !entity.isInvisibleToPlayer(player)
             && entity.riddenByEntity == null;
     }
-
 
     public static void drawSelectionBoundingBox(AxisAlignedBB b) {
         GlStateManager.disableAlpha();
@@ -132,6 +134,7 @@ public class EntityCulling {
 
     /**
      * Used OpenGL queries in order to determine if the given is visible
+     *
      * @param entity entity to check
      * @return true if the entity rendering should be skipped
      */
@@ -143,9 +146,10 @@ public class EntityCulling {
             GlStateManager.pushMatrix();
             final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
             GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
-            GL15.glBeginQuery(GL33.GL_ANY_SAMPLES_PASSED, query.nextQuery);
+            final int mode = SUPPORT_NEW_GL ? GL33.GL_ANY_SAMPLES_PASSED : GL15.GL_SAMPLES_PASSED;
+            GL15.glBeginQuery(mode, query.nextQuery);
             drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.2, .2, .2));
-            GL15.glEndQuery(GL33.GL_ANY_SAMPLES_PASSED);
+            GL15.glEndQuery(mode);
             GlStateManager.popMatrix();
         }
         return query.occluded;
@@ -204,9 +208,9 @@ public class EntityCulling {
 
         for (OcclusionQuery query : queries.values()) {
             if (query.nextQuery != 0) {
-                final long l = GL33.glGetQueryObjectui64(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
+                final long l = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
                 if (l != 0) {
-                    query.occluded = GL33.glGetQueryObjectui64(query.nextQuery, GL15.GL_QUERY_RESULT) == 0;
+                    query.occluded = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT) == 0;
                     GL15.glDeleteQueries(query.nextQuery);
                     query.nextQuery = 0;
                     query.refresh = true;
