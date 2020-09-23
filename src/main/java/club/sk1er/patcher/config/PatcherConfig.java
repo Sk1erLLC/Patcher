@@ -547,8 +547,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean entityCulling = true;
 
-
-
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Player Nametags",
         description = "Render nametags even when the player and nametag are occluded.",
@@ -556,14 +554,12 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean dontCullNametags;
 
-
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Entity Nametags",
         description = "Render nametags even when the entity and nametag are occluded.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullEntityNametags;
-
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Armor Stand Nametags",

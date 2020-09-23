@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class AssetsDatabase {
 
-    private File dir;
+    private final File dir;
 
     public AssetsDatabase() {
         File minecraftHome = Launch.minecraftHome;
@@ -37,20 +37,15 @@ public class AssetsDatabase {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }));
     }
 
-
     public List<String> getAllNegative() throws IOException {
         File file = new File(dir, "negative_cache.txt");
-        if (file.exists())
-            return FileUtils.readLines(file, Charset.defaultCharset());
-        return new ArrayList<>();
+        return file.exists() ? FileUtils.readLines(file, Charset.defaultCharset()) : new ArrayList<>();
     }
 
     public void saveNegative(Set<String> lines) throws IOException {
         FileUtils.writeLines(new File(dir, "negative_cache.txt"), lines);
     }
-
 }

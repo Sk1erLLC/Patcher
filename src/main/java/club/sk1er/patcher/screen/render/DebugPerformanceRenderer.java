@@ -25,6 +25,10 @@ public class DebugPerformanceRenderer {
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+
         if (frameRender) {
             frames.add(System.currentTimeMillis());
             frames.removeIf(aLong -> System.currentTimeMillis() - aLong > TimeUnit.MINUTES.toMillis(1));

@@ -21,6 +21,7 @@ import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
+import club.sk1er.patcher.screen.render.TitleFix;
 import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
@@ -185,6 +186,7 @@ public class Patcher {
         registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
         registerClass(new WorldHandler());
         registerClass(Viewer.getInstance());
+        registerClass(new TitleFix());
 
         checkLogs();
         loadBlacklistedServers();

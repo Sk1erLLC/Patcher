@@ -22,6 +22,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 public class MenuPreviewHandler {
@@ -32,11 +33,15 @@ public class MenuPreviewHandler {
 
     @SubscribeEvent
     public void keyPress(InputEvent.KeyInputEvent event) {
-        if (Patcher.instance.getChatPeek().isPressed()) {
-            this.toggledChat = !this.toggledChat;
-        } else if (mc.gameSettings.keyBindPlayerList.isPressed()) {
+        if (mc.gameSettings.keyBindPlayerList.isPressed()) {
             this.toggledTab = !this.toggledTab;
         }
+    }
+
+    @SubscribeEvent
+    public void tickEvent(TickEvent.ClientTickEvent event) {
+        // todo this seems expensive, maybe figure out a better way to do this?
+        this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
     }
 
     @SubscribeEvent
@@ -54,7 +59,7 @@ public class MenuPreviewHandler {
             GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GlStateManager.disableAlpha();
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, (PatcherConfig.chatPosition ? (float) (scaledHeight - 60) : (float) (scaledHeight - 48)), 0.0F);
+            GlStateManager.translate(0.0F, (float) (scaledHeight - (PatcherConfig.chatPosition ? 60 : 48)), 0.0F);
             chat.drawChat(0);
             GlStateManager.popMatrix();
         }

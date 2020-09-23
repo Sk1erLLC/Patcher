@@ -88,7 +88,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                 case "loadWorld":
                 case "func_71353_a":
                     if (methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
-
                         ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                         while (iterator.hasNext()) {
