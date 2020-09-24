@@ -1,9 +1,14 @@
 package club.sk1er.patcher.discovery
 
+import club.sk1er.patcher.coroutines.MCDispatchers
 import com.google.common.base.Predicate
 import com.google.common.collect.ImmutableSetMultimap
 import com.google.common.collect.Multimaps
 import com.google.common.collect.SetMultimap
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import net.minecraftforge.fml.common.ModContainer
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData
 
@@ -17,18 +22,26 @@ class DataTableSearch {
         globalAnnotationData: SetMultimap<String, ASMData>
     ): SetMultimap<String, ASMData>? {
         if (this.containerAnnotationData == null) {
-            this.containerAnnotationData = containers.map { cont ->
-                cont to ImmutableSetMultimap.copyOf(
-                    Multimaps.filterValues(
-                        globalAnnotationData,
-                        ModContainerPredicate(cont)
+            MCDispatchers.PATCHER_SCOPE.launch {
+                containerAnnotationData = containers.mapAsync { cont ->
+                    cont to ImmutableSetMultimap.copyOf(
+                        Multimaps.filterValues(
+                            globalAnnotationData,
+                            ModContainerPredicate(cont)
+                        )
                     )
-                )
-            }.toMap()
+                }.toMap()
+            }
         }
 
         return this.containerAnnotationData?.get(container)
     }
+
+    private suspend inline fun <T, R> Iterable<T>.mapAsync(crossinline transform: suspend (T) -> R): List<R> =
+        coroutineScope {
+            val jobs = map { entry -> async { transform(entry) } }
+            jobs.awaitAll()
+        }
 
     inner class ModContainerPredicate(private val container: ModContainer) : Predicate<ASMData> {
         override fun apply(data: ASMData?): Boolean {
@@ -37,6 +50,7 @@ class DataTableSearch {
     }
 
     companion object {
-        @JvmStatic val instance = DataTableSearch()
+        @JvmStatic
+        val instance = DataTableSearch()
     }
 }
