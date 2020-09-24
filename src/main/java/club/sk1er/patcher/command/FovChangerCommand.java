@@ -11,12 +11,11 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.EnumChatFormatting;
 
 public class FovChangerCommand extends CommandBase {
 
@@ -26,33 +25,34 @@ public class FovChangerCommand extends CommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender iCommandSender) {
-        return "/fov <number>";
+    public String getCommandUsage(ICommandSender sender) {
+        return "/fov <amount>";
     }
 
     @Override
-    public void processCommand(ICommandSender iCommandSender, String[] args) {
+    public void processCommand(ICommandSender sender, String[] args) {
         if (args.length > 1) {
-            ChatUtilities.sendMessage("Too many arguments. Usage: " + getCommandUsage(iCommandSender));
+            ChatUtilities.sendNotification("FOV Changer", "Too many arguments were provided. Usage: " + getCommandUsage(sender) + ".");
         } else if (args.length < 1) {
-            ChatUtilities.sendMessage("Too little arguments. Usage: " + getCommandUsage(iCommandSender));
+            ChatUtilities.sendNotification("FOV Changer", "Too little arguments were provided. Usage: " + getCommandUsage(sender) + ".");
         } else if (args[0].equals("0")) {
-            ChatUtilities.sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
+            ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to 0 is disabled due to game-breaking visual bugs.");
         } else {
             try {
-                float fovAmount = Float.parseFloat(args[0]);
+                final float fovAmount = Float.parseFloat(args[0]);
 
                 if (fovAmount == 0) {
-                    ChatUtilities.sendMessage("Changing your fov to 0 is disabled due to breaking the game.");
+                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to 0 is disabled due to game-breaking visual bugs.");
                     return;
                 }
 
-                ChatUtilities.sendMessage("Fov changed from " + EnumChatFormatting.YELLOW + Minecraft
-                    .getMinecraft().gameSettings.fovSetting + EnumChatFormatting.RESET + " to "
-                    + EnumChatFormatting.GREEN + fovAmount);
+                ChatUtilities.sendNotification(
+                    "FOV Changer",
+                    "FOV changed from &e" + Minecraft.getMinecraft().gameSettings.fovSetting + "&r to &a" + fovAmount + "."
+                );
                 Minecraft.getMinecraft().gameSettings.fovSetting = fovAmount;
             } catch (NumberFormatException e) {
-                ChatUtilities.sendMessage("You cannot use a letter.");
+                ChatUtilities.sendNotification("FOV Changer", "You cannot use a letter as your FOV.");
             }
         }
     }

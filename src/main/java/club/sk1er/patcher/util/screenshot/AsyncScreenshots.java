@@ -91,7 +91,7 @@ public class AsyncScreenshots implements Runnable {
             }
 
             if (PatcherConfig.screenshotPreview) {
-                Viewer.getInstance().newCapture(image);
+                Viewer.INSTANCE.newCapture(image);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -95,8 +95,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        nameField = new GuiTextField(0, fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115,
-            20);
+        nameField = new GuiTextField(0, fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115, 20);
         nameField.setText(name);
         nameField.setFocused(focus);
         nameField.setMaxStringLength(16);

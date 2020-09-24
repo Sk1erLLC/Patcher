@@ -108,7 +108,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+beta-2";
+    public static final String VERSION = "1.4+beta-4";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 
@@ -203,7 +203,7 @@ public class Patcher {
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
         registerClass(MinecraftHook.INSTANCE);
-        registerClass(Viewer.getInstance());
+        registerClass(Viewer.INSTANCE);
         registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
         registerClass(cloudHandler = new CloudHandler());
 
@@ -227,8 +227,7 @@ public class Patcher {
         long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
 
         if (PatcherConfig.startupNotification) {
-            Notifications.INSTANCE.pushNotification(
-                "Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            Notifications.INSTANCE.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
@@ -253,7 +252,9 @@ public class Patcher {
 
                 if (!duplicates.isEmpty()) {
                     for (String duplicate : duplicates) {
-                        Notifications.INSTANCE.pushNotification("Patcher", "Patcher has identified the mod " + duplicate + " to be a duplicate.");
+                        Notifications.INSTANCE.pushNotification("Patcher",
+                            "Patcher has identified the mod " + duplicate + " to be a duplicate." +
+                            "\nThis message can be disabled in the Patcher settings.");
                     }
                 }
             });

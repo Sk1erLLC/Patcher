@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.command;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -45,7 +46,7 @@ public class CoordsCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length != 0) {
-            ChatUtilities.sendMessage("Too many arguments. Usage: " + getCommandUsage(sender));
+            ChatUtilities.sendNotification("Coordinates Printer", "Too many arguments were provided. Usage: " + getCommandUsage(sender) + ".");
         } else {
             EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
             player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ);

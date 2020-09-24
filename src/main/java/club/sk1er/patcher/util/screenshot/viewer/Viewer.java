@@ -36,7 +36,7 @@ public class Viewer {
     /**
      * Create an instance of the class for outside usage.
      */
-    private static final Viewer instance = new Viewer();
+    public static final Viewer INSTANCE = new Viewer();
 
     /**
      * Create a {@link Window} instance.
@@ -109,14 +109,5 @@ public class Viewer {
             ).onCompleteRunnable(() -> currentWindow = null);
 
         container.animateTo(newAnim);
-    }
-
-    /**
-     * Create a getter for the {@link Viewer} instance for outside usage.
-     *
-     * @return The Viewer instance.
-     */
-    public static Viewer getInstance() {
-        return instance;
     }
 }

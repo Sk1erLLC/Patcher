@@ -13,8 +13,7 @@ public class ForcePublicTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
         return new String[]{
-            "club.sk1er.patcher.hooks.ModelLoaderHook",
-            "club.sk1er.patcher.hooks.ASMDataTableHook"
+            "club.sk1er.patcher.hooks.ModelLoaderHook"
         };
     }
 
