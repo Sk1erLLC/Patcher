@@ -40,7 +40,7 @@ public class GuiLanguageTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiLanguage", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71456_v", "Lnet/minecraft/client/gui/GuiIngame;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiIngame", "func_146158_b", "()Lnet/minecraft/client/gui/GuiNewChat;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiNewChat", "func_146245_b", "()V;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiNewChat", "func_146245_b", "()V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }
