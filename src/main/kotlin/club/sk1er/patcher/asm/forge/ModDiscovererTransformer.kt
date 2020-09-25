@@ -10,7 +10,7 @@
  */
 package club.sk1er.patcher.asm.forge
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.ModDiscovererHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.insns.jvm.aload_0
@@ -53,6 +53,7 @@ class ModDiscovererTransformer : PatcherTransformer {
                     aload_0
                     getfield("net/minecraftforge/fml/common/discovery/ModDiscoverer", "nonModLibs", List::class)
                 }
+                keepReturns
             }
         }
     }

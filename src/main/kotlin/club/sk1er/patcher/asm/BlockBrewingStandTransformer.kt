@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.BlockBrewingStandHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.tree.ClassNode
@@ -18,6 +29,7 @@ class BlockBrewingStandTransformer : PatcherTransformer {
                 of(BlockBrewingStandHook::randomDisplayTick)
                 into(this@apply)
                 params(1, 2, 4)
+                keepReturns
             }
         }
     }

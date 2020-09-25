@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm.forge
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.ForgeChunkManagerHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
@@ -54,6 +65,7 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
                         param {
                             getstatic("net/minecraftforge/common/ForgeChunkManager", "forcedChunks", Map::class)
                         }
+                        keepReturns
                     }
                 }
             }

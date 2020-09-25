@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.getInstructions
+import club.sk1er.hookinjection.getInstructions
 import club.sk1er.patcher.hooks.GuiPlayerTabOverlayHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
@@ -86,8 +97,6 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
             } else {
                 before(method.instructions.last.previous)
             }
-
-            remapReturns
         })
         return list
     }
@@ -102,6 +111,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
             target(method)
             before(method.instructions.first)
             params(1, 2, 3, 4)
+            keepReturns
         })
         list.add(ifeq)
         return list

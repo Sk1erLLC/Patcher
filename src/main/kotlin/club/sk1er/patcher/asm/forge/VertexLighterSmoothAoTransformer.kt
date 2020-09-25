@@ -10,7 +10,7 @@
  */
 package club.sk1er.patcher.asm.forge
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.VertexLighterSmoothAoHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
@@ -39,6 +39,7 @@ class VertexLighterSmoothAoTransformer : PatcherTransformer {
                     of(VertexLighterSmoothAoHook::fastCalcLightmap)
                     into(methodNode)
                     params(0, 1, 2, 3, 4)
+                    keepReturns
                 }
             } else if (methodNode.name == "updateLightmap") {
                 clearInstructions(methodNode)

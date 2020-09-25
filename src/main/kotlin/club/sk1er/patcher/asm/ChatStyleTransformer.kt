@@ -10,7 +10,7 @@
  */
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.ChatStyleHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.tree.ClassNode
@@ -23,11 +23,12 @@ class ChatStyleTransformer : PatcherTransformer {
             val methodName = mapMethodName(classNode, it)
             methodName == "getChatHoverEvent" || methodName == "func_150210_i"
         }?.apply {
-            clearInstructions(this) // The one you're overwriting
+            clearInstructions(this)
             injectInstructions {
                 of(ChatStyleHook::getChatHoverEvent)
-                into(this@apply) // Same one as earlier
+                into(this@apply)
                 param(0)
+                keepReturns
             }
         }
     }

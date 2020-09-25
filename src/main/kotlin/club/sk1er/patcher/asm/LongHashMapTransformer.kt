@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import club.sk1er.patcher.util.hash.FastHashedKey
@@ -23,9 +34,10 @@ class LongHashMapTransformer : PatcherTransformer {
         }?.apply {
             clearInstructions(this)
             injectInstructions {
-                of(FastHashedKey::getFasterHashedKey)
+                of(FastHashedKey::mix64)
                 into(this@apply)
                 param(0)
+                keepReturns
             }
         }
     }

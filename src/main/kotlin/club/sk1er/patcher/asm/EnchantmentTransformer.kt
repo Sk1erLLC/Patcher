@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.getInstructions
+import club.sk1er.hookinjection.getInstructions
 import club.sk1er.patcher.hooks.EnchantmentHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.Opcodes
@@ -28,6 +39,7 @@ class EnchantmentTransformer : PatcherTransformer {
             target(methodNode) // targeting the method we're injecting (getTranslatedName)
             before(methodNode.instructions.first) // place here
             params(0, 1) // insert "this" and "level" into parameters
+            keepReturns
         }) // add the instructions from "getNumericalName" directly instead of using a hook
         list.add(labelNode)
         return list

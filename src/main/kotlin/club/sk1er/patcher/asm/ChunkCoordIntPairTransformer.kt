@@ -1,6 +1,17 @@
+/*
+ * Copyright © 2020 by Sk1er LLC
+ *
+ * All rights reserved.
+ *
+ * Sk1er LLC
+ * 444 S Fulton Ave
+ * Mount Vernon, NY
+ * sk1er.club
+ */
+
 package club.sk1er.patcher.asm
 
-import club.sk1er.patcher.asm.utils.injectInstructions
+import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import club.sk1er.patcher.util.hash.FastHashedKey
@@ -25,7 +36,7 @@ class ChunkCoordIntPairTransformer : PatcherTransformer {
         }?.apply {
             clearInstructions(this)
             injectInstructions {
-                of(FastHashedKey::getFasterHashedKey)
+                of(FastHashedKey::mix64)
                 into(this@apply)
                 param {
                     aload_0
@@ -34,6 +45,7 @@ class ChunkCoordIntPairTransformer : PatcherTransformer {
                     getfield("net/minecraft/world/ChunkCoordIntPair", "field_77275_b", int)
                     invokestatic("net/minecraft/world/ChunkCoordIntPair", "func_77272_a", long, int, int)
                 }
+                keepReturns
             }
         }
     }

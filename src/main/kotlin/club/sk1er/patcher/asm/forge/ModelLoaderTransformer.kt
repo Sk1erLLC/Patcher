@@ -10,7 +10,7 @@
  */
 package club.sk1er.patcher.asm.forge
 
-import club.sk1er.patcher.asm.utils.getInstructionsWithTryCatchNodes
+import club.sk1er.hookinjection.getInstructionsWithTryCatchNodes
 import club.sk1er.patcher.hooks.ModelLoaderHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
@@ -86,6 +86,7 @@ class ModelLoaderTransformer : PatcherTransformer {
                 aload_0
                 getfield("net/minecraftforge/client/model/ModelLoader", "textures", Set::class)
             }
+            keepReturns
         }
         list.add(hook.first)
         methodNode.tryCatchBlocks.addAll(hook.second)
