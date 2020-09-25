@@ -47,6 +47,7 @@ import java.util.UUID;
 public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final RenderManager renderManager = mc.getRenderManager();
     private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean uiRendering = false;
@@ -115,10 +116,10 @@ public class EntityCulling {
         worldrenderer.pos(b.maxX, b.minY, b.maxZ).endVertex();
         worldrenderer.pos(b.minX, b.minY, b.minZ).endVertex();
         worldrenderer.pos(b.maxX, b.minY, b.minZ).endVertex();
-
         tessellator.draw();
         GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.enableAlpha();
     }
 
     /*
@@ -147,7 +148,6 @@ public class EntityCulling {
             query.nextQuery = getQuery();
             query.refresh = false;
             GlStateManager.pushMatrix();
-            final RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
             GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
             final int mode = SUPPORT_NEW_GL ? GL33.GL_ANY_SAMPLES_PASSED : GL15.GL_SAMPLES_PASSED;
             GL15.glBeginQuery(mode, query.nextQuery);
@@ -171,7 +171,6 @@ public class EntityCulling {
         if (!PatcherConfig.entityCulling || uiRendering) {
             return;
         }
-
 
         final EntityLivingBase entity = event.entity;
         if(entity == mc.thePlayer) {

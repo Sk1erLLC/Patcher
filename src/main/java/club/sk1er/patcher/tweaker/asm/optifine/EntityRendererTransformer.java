@@ -36,40 +36,12 @@ import org.objectweb.asm.tree.VarInsnNode;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-// By LlamaLad7
 @SuppressWarnings("unused")
 public class EntityRendererTransformer implements PatcherTransformer {
+
     private static final float normalModifier = 4f;
-    public static boolean zoomed = false;
     private static float currentModifier = 4f;
-
-    public static float getModifier() {
-        if (!PatcherConfig.scrollToZoom) {
-            return normalModifier;
-        }
-
-        int moved = Mouse.getDWheel();
-
-        if (moved > 0) {
-            currentModifier += 0.25f * currentModifier;
-        } else if (moved < 0) {
-            currentModifier -= 0.25f * currentModifier;
-        }
-
-        if (currentModifier < 0.8) {
-            currentModifier = 0.8f;
-        }
-
-        if (currentModifier > 600) {
-            currentModifier = 600f;
-        }
-
-        return currentModifier;
-    }
-
-    public static void resetCurrent() {
-        currentModifier = normalModifier;
-    }
+    public static boolean zoomed = false;
 
     /**
      * The class name that's being transformed
@@ -551,5 +523,33 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, zoomActiveIndex));
         list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "zoomed", "Z"));
         return list;
+    }
+
+    public static float getModifier() {
+        if (!PatcherConfig.scrollToZoom) {
+            return normalModifier;
+        }
+
+        int moved = Mouse.getDWheel();
+
+        if (moved > 0) {
+            currentModifier += 0.25f * currentModifier;
+        } else if (moved < 0) {
+            currentModifier -= 0.25f * currentModifier;
+        }
+
+        if (currentModifier < 0.8) {
+            currentModifier = 0.8f;
+        }
+
+        if (currentModifier > 600) {
+            currentModifier = 600f;
+        }
+
+        return currentModifier;
+    }
+
+    public static void resetCurrent() {
+        currentModifier = normalModifier;
     }
 }
