@@ -174,7 +174,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ForgeChunkManagerTransformer());
         registerTransformer(new FluidRegistryTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
-        registerTransformer(new ASMDataTableTransformer());
+        //registerTransformer(new ASMDataTableTransformer());
         registerTransformer(new MinecraftForgeClientTransformer());
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
