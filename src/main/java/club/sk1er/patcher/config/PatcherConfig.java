@@ -91,6 +91,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean fullbright = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Smart Fullbright",
+        description = "Automatically disable the Fullbright effect when using OptiFine shaders.",
+        category = "Quality of Life", subcategory = "World"
+    )
+    public static boolean smartFullbright = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Sky Height",
         description = "Set the sky height to 0, removing void flickering.",
         category = "Quality of Life", subcategory = "World"
