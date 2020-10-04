@@ -92,7 +92,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Smart Fullbright",
-        description = "Automatically disable the Fullbright effect when using OptiFine shaders.",
+        description = "Automatically disable the Fullbright effect when using OptiFine shaders.\n§eRequires Fullbright.",
         category = "Quality of Life", subcategory = "World"
     )
     public static boolean smartFullbright = true;
