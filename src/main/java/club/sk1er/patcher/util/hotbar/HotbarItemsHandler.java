@@ -12,11 +12,14 @@
 package club.sk1er.patcher.util.hotbar;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
@@ -27,8 +30,10 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +50,8 @@ public class HotbarItemsHandler {
      * Create a Minecraft instance.
      */
     private final Minecraft mc = Minecraft.getMinecraft();
+    private final Map<String, ItemStack> cachedDamageMap = new HashMap<>();
+    private final DecimalFormat format = new DecimalFormat("#.###");
 
     /**
      * Create a map for short enchantment name identification.
@@ -191,6 +198,13 @@ public class HotbarItemsHandler {
         }
     }
 
+    @SubscribeEvent
+    public void clearDamageMap(WorldEvent.Unload event) {
+        if (!this.cachedDamageMap.isEmpty()) {
+            this.cachedDamageMap.clear();
+        }
+    }
+
     /**
      * Get the currently held items attack damage by searching through the items lore.
      *
@@ -198,13 +212,41 @@ public class HotbarItemsHandler {
      * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.
      */
     private String getAttackDamageString(ItemStack stack) {
-        if (stack != null) {
-            List<String> tooltip = stack.getTooltip(mc.thePlayer, true);
+        if (!this.cachedDamageMap.isEmpty() && this.cachedDamageMap.containsValue(stack)) {
+            for (Map.Entry<String, ItemStack> entry : this.cachedDamageMap.entrySet()) {
+                if (entry.getValue() == stack) {
+                    return entry.getKey();
+                }
+            }
+        }
 
-            if (!tooltip.isEmpty()) {
-                for (String entry : tooltip) {
-                    if (entry.endsWith("Attack Damage")) {
-                        return entry.split(" ", 2)[0].substring(2);
+        if (stack != null) {
+            Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers();
+
+            if (!modifiers.isEmpty()) {
+                for (Map.Entry<String, AttributeModifier> entry : modifiers.entries()) {
+                    AttributeModifier modifier = entry.getValue();
+                    double damage = modifier.getAmount();
+
+                    if (modifier.getID() == Item.itemModifierUUID) {
+                        damage += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
+                    }
+
+                    double damageBonus = modifier.getOperation() != 1 && modifier.getOperation() != 2 ? damage : damage * 100.0D;
+
+                    if (damage > 0.0D) {
+                        String target = StatCollector.translateToLocal("attribute.name." + entry.getKey());
+                        String damageString = StatCollector.translateToLocalFormatted(
+                            "attribute.modifier.plus." + modifier.getOperation(),
+                            this.format.format(damageBonus),
+                            target
+                        ).replace(target, "");
+
+                        if (!this.cachedDamageMap.containsKey(damageString) && !this.cachedDamageMap.containsValue(stack)) {
+                            this.cachedDamageMap.put(damageString, stack);
+                        }
+
+                        return damageString;
                     }
                 }
             }
