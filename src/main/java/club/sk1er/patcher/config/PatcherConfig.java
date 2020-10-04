@@ -823,12 +823,12 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean replacedModsWarning = true;
 
-    /*@Property(
-        type = PropertyType.SWITCH, name = "Blaze Culling",
-        description = "§c§l[EXPERIMENTAL] §rUse the Blaze Culling Algorithm to avoid rendering non visible entities",
-        category = "Performance", subcategory = "Culling"
+    @Property(
+        type = PropertyType.SWITCH, name = "Clean Text Shadow",
+        description = "Change the text shadow to only move down rather than moving to the side.",
+        category = "Quality of Life", subcategory = "Rendering"
     )
-    public static boolean entitySightCulling = false;*/
+    public static boolean cleanTextShadow;
 
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",

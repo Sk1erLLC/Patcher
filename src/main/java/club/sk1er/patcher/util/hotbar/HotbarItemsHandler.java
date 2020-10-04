@@ -106,18 +106,19 @@ public class HotbarItemsHandler {
             return;
         }
 
-        ItemStack heldItemStack = player.inventory.getCurrentItem();
+        final ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            ScaledResolution res = event.resolution;
+            final ScaledResolution res = event.resolution;
 
-            String attackDamage = getAttackDamageString(heldItemStack);
+            final String attackDamage = getAttackDamageString(heldItemStack);
             int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
             int y = res.getScaledHeight() - 59;
 
+            // what the fuck is this
             y += (mc.playerController.shouldDrawHUD() ? -1 : 14);
-            y = y + mc.fontRendererObj.FONT_HEIGHT;
+            y += mc.fontRendererObj.FONT_HEIGHT;
             y <<= 1;
             y += mc.fontRendererObj.FONT_HEIGHT;
 
@@ -150,7 +151,7 @@ public class HotbarItemsHandler {
 
             if (count > 1 || (holdingBow && count > 0)) {
                 int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? 10 : 0;
-                ScaledResolution resolution = event.resolution;
+                final ScaledResolution resolution = event.resolution;
                 mc.fontRendererObj.drawString(String.valueOf(count),
                     resolution.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
                     resolution.getScaledHeight() - 46 - offset,
@@ -167,7 +168,7 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderEnchantments(final RenderGameOverlayEvent.Post event) {
-        EntityPlayerSP player = mc.thePlayer;
+        final EntityPlayerSP player = mc.thePlayer;
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null) {
             return;
         }
@@ -176,13 +177,13 @@ public class HotbarItemsHandler {
             return;
         }
 
-        ItemStack heldItemStack = player.inventory.getCurrentItem();
+        final ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
-            String toDraw = heldItemStack.getItem() instanceof ItemPotion ? getPotionEffectString(heldItemStack) : getEnchantmentString(heldItemStack);
+            final String toDraw = heldItemStack.getItem() instanceof ItemPotion ? getPotionEffectString(heldItemStack) : getEnchantmentString(heldItemStack);
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            ScaledResolution res = event.resolution;
+            final ScaledResolution res = event.resolution;
 
             int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
             int y = res.getScaledHeight() - 59;
@@ -221,22 +222,21 @@ public class HotbarItemsHandler {
         }
 
         if (stack != null) {
-            Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers();
-
+            final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers();
             if (!modifiers.isEmpty()) {
                 for (Map.Entry<String, AttributeModifier> entry : modifiers.entries()) {
-                    AttributeModifier modifier = entry.getValue();
+                    final AttributeModifier modifier = entry.getValue();
                     double damage = modifier.getAmount();
 
                     if (modifier.getID() == Item.itemModifierUUID) {
                         damage += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
                     }
 
-                    double damageBonus = modifier.getOperation() != 1 && modifier.getOperation() != 2 ? damage : damage * 100.0D;
+                    final double damageBonus = modifier.getOperation() != 1 && modifier.getOperation() != 2 ? damage : damage * 100.0D;
 
                     if (damage > 0.0D) {
-                        String target = StatCollector.translateToLocal("attribute.name." + entry.getKey());
-                        String damageString = StatCollector.translateToLocalFormatted(
+                        final String target = StatCollector.translateToLocal("attribute.name." + entry.getKey());
+                        final String damageString = StatCollector.translateToLocalFormatted(
                             "attribute.modifier.plus." + modifier.getOperation(),
                             this.format.format(damageBonus),
                             target
