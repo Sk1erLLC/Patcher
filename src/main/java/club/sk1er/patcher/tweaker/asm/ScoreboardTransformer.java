@@ -27,9 +27,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-
 public class ScoreboardTransformer implements PatcherTransformer {
     /**
      * The class name that's being transformed
@@ -53,17 +50,18 @@ public class ScoreboardTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("removeTeam") || methodName.equals("func_147194_f")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkNullTeam());
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof FieldInsnNode && next.getOpcode() == GETFIELD) {
+                    if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
                         String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
 
                         if (fieldInsnName.equals("teams") || fieldInsnName.equals("field_96542_e")) {
                             LabelNode ifnull = new LabelNode();
-                            methodNode.instructions.insertBefore(next.getPrevious(), checkNull(ifnull));
+                            methodNode.instructions.insertBefore(next.getPrevious(), checkNullRegisteredName(ifnull));
 
                             for (int i = 0; i < 4; i++) {
                                 next = next.getNext();
@@ -97,10 +95,20 @@ public class ScoreboardTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList checkNull(LabelNode ifnull) {
+    private InsnList checkNullTeam() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96661_b", "()Ljava/lang/String;", false));
+        LabelNode ifnonnull = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNONNULL, ifnonnull));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifnonnull);
+        return list;
+    }
+
+    private InsnList checkNullRegisteredName(LabelNode ifnull) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96661_b", "()Ljava/lang/String;", false));
         list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
         return list;
     }
