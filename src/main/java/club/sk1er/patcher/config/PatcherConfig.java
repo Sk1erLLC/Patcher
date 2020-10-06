@@ -14,7 +14,6 @@ package club.sk1er.patcher.config;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.io.File;
 
@@ -553,6 +552,14 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Culling"
     )
     public static boolean entityCulling = true;
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Entity Culling Interval",
+        description = "The amount of time in ms between occlusion checks for entities. Shorter periods are more costly toward performance but provide the most accurate information. \nLower values recommended in competitive environments.",
+        category = "Performance", subcategory = "Culling",
+        options = {"50", "25", "10"}
+    )
+    public static int cullingInterval = 0;
 
     @Property(
         type = PropertyType.SWITCH, name = "Smart Entity Culling",

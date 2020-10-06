@@ -30,15 +30,17 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GLContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Used for stopping entities from rendering if they are not visible to the player
@@ -48,7 +50,7 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final RenderManager renderManager = mc.getRenderManager();
-    private static final HashMap<UUID, OcclusionQuery> queries = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, OcclusionQuery> queries = new ConcurrentHashMap<>();
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean uiRendering = false;
 
@@ -173,9 +175,10 @@ public class EntityCulling {
         }
 
         final EntityLivingBase entity = event.entity;
-        if(entity == mc.thePlayer) {
+        if (entity == mc.thePlayer) {
             return;
         }
+
         if (checkEntity(entity)) {
             event.setCanceled(true);
             if (!canRenderName(entity)) {
@@ -191,9 +194,54 @@ public class EntityCulling {
 
     }
 
+    @SubscribeEvent
+    public void renderTickEvent(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
+            Minecraft.getMinecraft().addScheduledTask(this::check);
+    }
+
+    private void check() {
+        long delay = 0;
+        switch (PatcherConfig.cullingInterval) {
+            case 0: {
+                delay = 50;
+                break;
+            }
+            case 1: {
+                delay = 25;
+                break;
+            }
+            case 2: {
+                delay = 10;
+                break;
+            }
+            default:
+                break;
+
+        }
+        long nanoTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
+        for (OcclusionQuery query : queries.values()) {
+            if (query.nextQuery != 0) {
+                final long queryObject = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
+                if (queryObject != 0) {
+                    query.occluded = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT) == 0;
+                    GL15.glDeleteQueries(query.nextQuery);
+                    query.nextQuery = 0;
+
+                }
+            }
+            if (query.nextQuery == 0 && nanoTime - query.executionTime > delay) {
+                query.executionTime = nanoTime;
+                query.refresh = true;
+            }
+        }
+    }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
+
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
@@ -223,17 +271,7 @@ public class EntityCulling {
             queries.remove(uuid);
         }
 
-        for (OcclusionQuery query : queries.values()) {
-            if (query.nextQuery != 0) {
-                final long queryObject = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT_AVAILABLE);
-                if (queryObject != 0) {
-                    query.occluded = GL15.glGetQueryObjecti(query.nextQuery, GL15.GL_QUERY_RESULT) == 0;
-                    GL15.glDeleteQueries(query.nextQuery);
-                    query.nextQuery = 0;
-                    query.refresh = true;
-                }
-            }
-        }
+
     }
 
     static class OcclusionQuery {
@@ -241,6 +279,7 @@ public class EntityCulling {
         private int nextQuery;
         private boolean refresh = true;
         private boolean occluded;
+        private long executionTime = 0;
 
         public OcclusionQuery(UUID uuid) {
             this.uuid = uuid;
