@@ -163,7 +163,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new WorldRendererTransformer());
         registerTransformer(new LazyLoadBaseTransformer());
-        registerTransformer(new EntityPlayerTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
