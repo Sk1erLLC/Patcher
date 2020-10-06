@@ -555,6 +555,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean entityCulling = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Smart Entity Culling",
+        description = "Stop the entity culling effect when using OptiFine shaders.\n§cDue to the way OptiFine shaders work, we are unable to make Entity Culling compatible at this time.",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean smartEntityCulling = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Player Nametags",
         description = "Render nametags even when the player and nametag are occluded.",
         category = "Performance", subcategory = "Culling"

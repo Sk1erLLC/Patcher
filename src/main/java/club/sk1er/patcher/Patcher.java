@@ -108,7 +108,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+beta-5";
+    public static final String VERSION = "1.4+beta-6";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 

@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.EntityCullingTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.FullbrightTickerTransformer;
@@ -107,6 +108,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new OptifineFontRendererTransformer());
         registerTransformer(new FontRendererHookTransformer());
         registerTransformer(new FullbrightTickerTransformer());
+        registerTransformer(new EntityCullingTransformer());
     }
 
     private void registerI7Transformers() {
