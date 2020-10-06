@@ -118,13 +118,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean nauseaEffect = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Scoreboard Patch",
-        description = "Fix scoreboard spamming logs with errors.",
-        category = "Fixes", subcategory = "General"
-    )
-    public static boolean patchInternalErrors = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",
         description = "Remove achievement notifications.",
         category = "Quality of Life", subcategory = "Rendering"
