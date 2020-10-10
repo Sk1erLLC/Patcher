@@ -34,11 +34,6 @@ import java.util.concurrent.CompletableFuture;
 public class Viewer {
 
     /**
-     * Create an instance of the class for outside usage.
-     */
-    public static final Viewer INSTANCE = new Viewer();
-
-    /**
      * Create a {@link Window} instance.
      */
     private Window currentWindow;

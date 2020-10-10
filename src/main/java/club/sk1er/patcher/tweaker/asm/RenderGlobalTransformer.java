@@ -77,6 +77,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+
                 case "getVisibleFacings":
                 case "func_174978_c": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -91,8 +92,33 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+
+                case "renderSky":
+                case "func_174976_a": {
+                    boolean shouldLook = false;
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode node = iterator.next();
+                        if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String invokeName = mapMethodNameFromNode((MethodInsnNode) node);
+                            if (invokeName.equals("getPositionEyes") || invokeName.equals("func_174824_e")) {
+                                shouldLook = true;
+                            }
+                        } else if (shouldLook && node.getOpcode() == Opcodes.DCONST_0 && node.getNext().getOpcode() == Opcodes.DCMPG && node.getNext().getNext().getOpcode() == Opcodes.IFGE) {
+                            JumpInsnNode jumpInsnNode = (JumpInsnNode) node.getNext().getNext();
+                            methodNode.instructions.insert(jumpInsnNode, fixVoidRendering(jumpInsnNode.label));
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList fixVoidRendering(LabelNode labelNode) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "playerVoidRendering", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
+        return list;
     }
 
     private void addCloudTransparency(ListIterator<AbstractInsnNode> iterator, MethodNode methodNode) {

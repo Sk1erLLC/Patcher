@@ -25,11 +25,12 @@ class EnchantmentTransformer : PatcherTransformer {
             val methodName = mapMethodName(classNode, it)
             methodName == "getTranslatedName" || methodName == "func_77316_c"
         }?.apply {
-            instructions.insertBefore(instructions.first, getNumericalName(this))
+            instructions.insertBefore(instructions.first, `get Numerical Name`(this))
         }
     }
 
-    private fun getNumericalName(methodNode: MethodNode): InsnList {
+    // oooooh spooky space in function name ooooh
+    private fun `get Numerical Name`(methodNode: MethodNode): InsnList {
         val list = InsnList()
         list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "romanNumerals", "Z"))
         val labelNode = LabelNode()

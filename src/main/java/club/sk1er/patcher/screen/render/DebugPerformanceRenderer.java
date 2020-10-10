@@ -72,16 +72,8 @@ public class DebugPerformanceRenderer {
         }
     }
 
-    public List<Long> getFrames() {
-        return frames;
-    }
-
     public void toggleFPS() {
         this.frameRender = !this.frameRender;
-    }
-
-    public String getMode() {
-        return mode;
     }
 
     public void setMode(String mode) {

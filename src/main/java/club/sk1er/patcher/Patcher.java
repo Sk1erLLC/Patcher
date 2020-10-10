@@ -141,13 +141,15 @@ public class Patcher {
      * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
      * through ASM, modified through {@link RenderGlobalTransformer}.
      */
-    private CloudHandler cloudHandler;
+    private final CloudHandler cloudHandler = new CloudHandler();
 
-    private DebugPerformanceRenderer debugPerformanceRenderer;
+    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
 
-    private KeyBinding nameHistory;
-    private KeyBinding dropModifier;
-    private KeyBinding chatPeek;
+    private final KeyBinding nameHistory = new KeybindNameHistory();
+    private final KeyBinding dropModifier = new KeybindNameHistory();
+    private final KeyBinding chatPeek = new KeybindChatPeek();
+
+    private final Viewer viewer = new Viewer();
 
     private JsonObject duplicateModsJson;
 
@@ -163,9 +165,9 @@ public class Patcher {
     public void init(FMLInitializationEvent event) {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
-        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
-        ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
-        ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
+        ClientRegistry.registerKeyBinding(nameHistory);
+        ClientRegistry.registerKeyBinding(dropModifier);
+        ClientRegistry.registerKeyBinding(chatPeek);
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
@@ -190,6 +192,9 @@ public class Patcher {
 
         registerClass(this);
         registerClass(target);
+        registerClass(viewer);
+        registerClass(debugPerformanceRenderer);
+        registerClass(cloudHandler);
         registerClass(new MenuPreviewHandler());
         registerClass(new EntityRendering());
         registerClass(new FovHandler());
@@ -203,9 +208,6 @@ public class Patcher {
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
         registerClass(MinecraftHook.INSTANCE);
-        registerClass(Viewer.INSTANCE);
-        registerClass(debugPerformanceRenderer = new DebugPerformanceRenderer());
-        registerClass(cloudHandler = new CloudHandler());
 
         checkLogs();
         loadBlacklistedServers();
@@ -326,7 +328,7 @@ public class Patcher {
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
-                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000)) {
+                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000L)) {
                     logger.info("Deleted log {}", file.getName());
                     file.delete();
                 }
@@ -495,5 +497,9 @@ public class Patcher {
 
     public DebugPerformanceRenderer getDebugPerformanceRenderer() {
         return debugPerformanceRenderer;
+    }
+
+    public Viewer getViewer() {
+        return viewer;
     }
 }

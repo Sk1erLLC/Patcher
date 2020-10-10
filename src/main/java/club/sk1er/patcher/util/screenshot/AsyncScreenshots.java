@@ -13,10 +13,10 @@ package club.sk1er.patcher.util.screenshot;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.ModCoreDesktop;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.screenshot.viewer.Viewer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
@@ -91,7 +91,7 @@ public class AsyncScreenshots implements Runnable {
             }
 
             if (PatcherConfig.screenshotPreview) {
-                Viewer.INSTANCE.newCapture(image);
+                Patcher.instance.getViewer().newCapture(image);
             }
         } catch (Exception e) {
             e.printStackTrace();

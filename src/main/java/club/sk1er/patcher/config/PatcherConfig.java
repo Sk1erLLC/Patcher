@@ -844,6 +844,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cleanTextShadow;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Player Void Rendering",
+        description = "Remove the black box around the player while in the void.",
+        category = "Fixes", subcategory = "Rendering"
+    )
+    public static boolean playerVoidRendering = true;
+
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
         description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
