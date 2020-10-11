@@ -92,7 +92,7 @@ public class TagRendererTransformer implements PatcherTransformer {
                     methodNode.instructions.insertBefore(
                         prevNode,
                         new FieldInsnNode(
-                            Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentNameTags", "Z"));
+                            Opcodes.GETSTATIC, getPatcherConfigClass(), "disableNametagBoxes", "Z"));
                     methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, afterDraw));
                 } else if (nodeName.equals("draw") || nodeName.equals("func_78381_a")) {
                     methodNode.instructions.insert(node, afterDraw);

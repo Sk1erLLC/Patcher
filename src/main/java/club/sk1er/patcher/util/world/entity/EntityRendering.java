@@ -135,7 +135,7 @@ public class EntityRendering {
         GlStateManager.disableTexture2D();
 
         int stringWidth = fontRenderer.getStringWidth(name) / 2;
-        if (!PatcherConfig.transparentNameTags) {
+        if (!PatcherConfig.disableNametagBoxes) {
             GlStateManager.color(0, 0, 0, .25F);
             GL11.glBegin(GL11.GL_QUADS);
             GL11.glVertex2d(-stringWidth - 1, -1);

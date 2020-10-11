@@ -37,7 +37,7 @@ public class TexturedQuadHook {
         }
 
         boolean drawOnSelf = !renderer.isDrawing;
-        if (drawOnSelf || !PatcherConfig.singleModelCall) {
+        if (drawOnSelf || !PatcherConfig.batchModelRendering) {
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         }
 
@@ -50,7 +50,7 @@ public class TexturedQuadHook {
                 .endVertex();
         }
 
-        if (drawOnSelf || !PatcherConfig.singleModelCall) {
+        if (drawOnSelf || !PatcherConfig.batchModelRendering) {
             Tessellator.getInstance().draw();
         }
     }

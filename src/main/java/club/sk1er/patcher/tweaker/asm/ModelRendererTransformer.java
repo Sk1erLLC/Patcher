@@ -72,7 +72,7 @@ public class ModelRendererTransformer implements PatcherTransformer {
 
     public InsnList getWorldRendererEnd() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "singleModelCall", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "batchModelRendering", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
@@ -92,9 +92,9 @@ public class ModelRendererTransformer implements PatcherTransformer {
     private InsnList getWorldRendererBegin() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "singleModelCall", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "batchModelRendering", "Z"));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelRenderer", "patcherCompiledState", "Z"));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "singleModelCall", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "batchModelRendering", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
@@ -116,7 +116,7 @@ public class ModelRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/model/ModelRenderer", "patcherCompiledState", "Z"));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "singleModelCall", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "batchModelRendering", "Z"));
         LabelNode ificmpeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ, ificmpeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));

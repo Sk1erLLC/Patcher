@@ -11,11 +11,11 @@
 
 package club.sk1er.patcher.util.chat;
 
+import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -65,7 +65,7 @@ public class ChatHandler {
                     if (entry.text.equals(message) || (entry.noSpace.length() == 0 && message.replace(" ", "").length() == 0)) {
                         chat.deleteChatLine(entry.id);
                         entry.amount++;
-                        event.message.appendText(EnumChatFormatting.GRAY + " (" + entry.amount + ")");
+                        event.message.appendText(ChatColor.GRAY + " (" + entry.amount + ")");
                         print = entry;
                         break;
                     }
@@ -85,7 +85,7 @@ public class ChatHandler {
 
 
                 if (PatcherConfig.timestamps) {
-                    ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
+                    ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
                     newThing.appendSibling(event.message);
                     event.message = newThing;
                 }
@@ -106,7 +106,7 @@ public class ChatHandler {
                 // Cancel the message
                 event.setCanceled(true);
             } else if (PatcherConfig.timestamps) {
-                ChatComponentText newThing = new ChatComponentText(EnumChatFormatting.GRAY + "[" + timeFormat + "] ");
+                ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
                 newThing.appendSibling(event.message);
                 event.message = newThing;
             }

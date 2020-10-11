@@ -54,14 +54,14 @@ public class BlockRendererDispatcherTransformer implements PatcherTransformer {
 
     private InsnList dontRender() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "grassContainer", "Ljava/util/List;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "groundFoliageCounter", "Ljava/util/List;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/block/state/IBlockState", "func_177230_c", // getBlock
             "()Lnet/minecraft/block/Block;", true));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "contains", "(Ljava/lang/Object;)Z", true));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeTallGrass", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeGroundFoliage", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new InsnNode(Opcodes.IRETURN));

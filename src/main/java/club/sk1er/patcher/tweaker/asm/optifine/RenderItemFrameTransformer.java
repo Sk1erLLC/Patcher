@@ -62,7 +62,7 @@ public class RenderItemFrameTransformer implements PatcherTransformer {
                 String nodeName = mapMethodNameFromNode((MethodInsnNode) node);
                 if (nodeName.equals("begin") || nodeName.equals("func_181668_a")) {
                     AbstractInsnNode prevNode = node.getPrevious().getPrevious().getPrevious();
-                    methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentNameTags", "Z"));
+                    methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableNametagBoxes", "Z"));
                     methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, afterDraw));
                 } else if (nodeName.equals("draw") || nodeName.equals("func_78381_a")) {
                     methodNode.instructions.insert(node, afterDraw);
