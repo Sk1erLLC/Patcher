@@ -41,7 +41,7 @@ public class TileEntityPistonRendererTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if (methodInsnName.equals("setTranslation") || methodInsnName.equals("func_178969_c")) {
                             AbstractInsnNode previous = next.getPrevious().getPrevious();

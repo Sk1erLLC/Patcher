@@ -55,7 +55,7 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(180.0f)) {
                         methodNode.instructions.insertBefore(next, fixRenderHeight());
                     } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldName = mapFieldNameFromNode((FieldInsnNode) next);
+                        String fieldName = mapFieldNameFromNode(next);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                                 "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer", "checkPerspective",

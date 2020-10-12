@@ -40,7 +40,7 @@ public class BlockUtil {
     /**
      * Used in {@link BlockRendererDispatcherTransformer#transform(ClassNode, String)}
      */
-    public static List<Block> groundFoliageCounter = Arrays.asList(
+    public static List<Block> groundFoliageContainer = Arrays.asList(
         Blocks.tallgrass,
         Blocks.double_plant,
         Blocks.red_flower,

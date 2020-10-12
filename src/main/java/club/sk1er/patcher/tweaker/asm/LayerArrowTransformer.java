@@ -55,7 +55,7 @@ public class LayerArrowTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("disableStandardItemLighting") || methodInsnName.equals("func_74518_a")) {
                             methodNode.instructions.insertBefore(next, fixArrowLighting(true));
                             methodNode.instructions.remove(next);

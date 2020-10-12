@@ -58,7 +58,7 @@ public class TileEntitySkullRendererTransformer implements PatcherTransformer {
 
                     if (next instanceof MethodInsnNode) {
                         if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("enableAlpha") || methodInsnName.equals("func_179141_d")) {
                                 methodNode.instructions.insertBefore(next.getNext(), RenderPlayerTransformer.enableBlend());

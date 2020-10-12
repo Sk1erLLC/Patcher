@@ -69,7 +69,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String mappedMethodName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String mappedMethodName = mapMethodNameFromNode(next);
 
                             if (mappedMethodName.equals("scheduleResourcesRefresh") || mappedMethodName.equals("func_175603_A")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(

@@ -67,7 +67,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("handleKeyboardInput") || methodInsnName.equals("func_146282_l")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), bailScreen());

@@ -39,7 +39,6 @@ import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
-import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.screenshot.viewer.Viewer;
@@ -108,7 +107,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+beta-7";
+    public static final String VERSION = "1.4+beta-8";
 
     private final Logger logger = LogManager.getLogger("Patcher");
 
@@ -256,7 +255,7 @@ public class Patcher {
                     for (String duplicate : duplicates) {
                         Notifications.INSTANCE.pushNotification("Patcher",
                             "Patcher has identified the mod " + duplicate + " to be a duplicate." +
-                            "\nThis message can be disabled in the Patcher settings.");
+                                "\nThis message can be disabled in the Patcher settings.");
                     }
                 }
             });

@@ -59,13 +59,13 @@ public class GuiChatTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.PUTFIELD) {
-                        String fieldName = mapFieldNameFromNode((FieldInsnNode) next);
+                        String fieldName = mapFieldNameFromNode(next);
 
                         if (fieldName.equals("sentHistoryCursor") || fieldName.equals("field_146416_h")) {
                             methodNode.instructions.insertBefore(next.getNext(), createWasInitBefore());
                         }
                     } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if (methodInsnName.equals("setText") || methodInsnName.equals("func_175274_a")) {
                             for (int i = 0; i < 4; ++i) {
@@ -91,7 +91,7 @@ public class GuiChatTransformer implements PatcherTransformer {
 
                     if (next instanceof MethodInsnNode) {
                         if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("drawRect") || methodInsnName.equals("func_73734_a")) {
                                 methodNode.instructions.insertBefore(next.getNext(), ifne);

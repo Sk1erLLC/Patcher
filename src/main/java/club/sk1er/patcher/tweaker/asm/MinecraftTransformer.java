@@ -96,7 +96,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) node).owner.equals("java/lang/System")) {
                                 methodNode.instructions.insertBefore(node, setSystemTime());
                             } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
-                                String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) node);
+                                String fieldInsnName = mapFieldNameFromNode(node);
 
                                 if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
                                     methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
@@ -118,7 +118,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         AbstractInsnNode node = iterator.next();
 
                         if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                            String methodInsnName = mapMethodNameFromNode(node);
                             if (methodInsnName.equals("clearChatMessages") || methodInsnName.equals("func_146231_a")) {
                                 LabelNode ifne = new LabelNode();
                                 methodNode.instructions.insertBefore(node.getPrevious().getPrevious().getPrevious().getPrevious(), addConfigOption(ifne));
@@ -249,7 +249,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && next.getPrevious().getOpcode() == Opcodes.CHECKCAST) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("displayGuiScreen") || methodInsnName.equals("func_147108_a")) {
                                 methodNode.instructions.remove(next.getPrevious());

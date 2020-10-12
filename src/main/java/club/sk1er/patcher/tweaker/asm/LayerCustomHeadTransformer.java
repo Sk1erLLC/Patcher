@@ -52,7 +52,7 @@ public class LayerCustomHeadTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
                     if (node.getOpcode() == Opcodes.INVOKESTATIC) {
-                        String methodCallName = mapMethodNameFromNode((MethodInsnNode) node);
+                        String methodCallName = mapMethodNameFromNode(node);
                         if (methodCallName.equals("readGameProfileFromNBT") || methodCallName.equals("func_152459_a")) {
                             AbstractInsnNode next = node.getNext().getNext();
                             if (next instanceof JumpInsnNode) {

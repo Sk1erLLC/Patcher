@@ -38,6 +38,6 @@ class AsyncBlockAndItems(private val modelLoader: ModelLoader) {
             items.await()
         }
 
-        logger.info("Finished async block & item loading in ${(System.currentTimeMillis() - start) / 1000f} seconds.")
+        logger.info("Finished async block & item loading in ${(System.currentTimeMillis() - start) / 1000L} seconds.")
     }
 }

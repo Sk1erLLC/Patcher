@@ -48,7 +48,7 @@ public class AnvilChunkLoaderTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
                     if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("read") || methodInsnName.equals("func_74794_a")) {
                             methodNode.instructions.insertBefore(next.getNext().getNext(), closeInputStream());
                             break;

@@ -61,7 +61,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
 
                         if (node instanceof MethodInsnNode) {
                             if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
-                                String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                                String methodInsnName = mapMethodNameFromNode(node);
                                 if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
                                     methodNode.instructions.insertBefore(node.getNext(), enableBlend());
                                 }
@@ -83,7 +83,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("doRender") || methodInsnName.equals("func_76986_a")) {
                                 methodNode.instructions.insertBefore(next.getNext(), disableBlend());
                             } else if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
@@ -102,7 +102,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            String fieldName = mapFieldNameFromNode((FieldInsnNode) next);
+                            String fieldName = mapFieldNameFromNode(next);
 
                             if ((fieldName.equals("bipedHeadwear") || fieldName.equals("field_178720_f")) && next.getNext().getOpcode() == Opcodes.ICONST_1) {
                                 methodNode.instructions.remove(next.getNext());

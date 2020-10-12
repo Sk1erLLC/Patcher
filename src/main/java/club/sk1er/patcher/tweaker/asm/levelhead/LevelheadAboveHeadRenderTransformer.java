@@ -85,7 +85,7 @@ public class LevelheadAboveHeadRenderTransformer implements PatcherTransformer {
         while (iterator.hasNext()) {
             AbstractInsnNode node = iterator.next();
             if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                String nodeName = mapMethodNameFromNode((MethodInsnNode) node);
+                String nodeName = mapMethodNameFromNode(node);
                 if (nodeName.equals("begin") || nodeName.equals("func_181668_a")) {
                     AbstractInsnNode prevNode = node.getPrevious().getPrevious().getPrevious();
                     methodNode.instructions.insertBefore(prevNode,

@@ -70,7 +70,7 @@ public class ChunkTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             // remove the + 1 from relightBlock(x, y + 1, z);
                             if ((methodInsnName.equals("relightBlock") || methodInsnName.equals("func_76615_h")) && next.getPrevious().getPrevious().getOpcode() == Opcodes.IADD) {

@@ -54,7 +54,7 @@ public class EntityFXTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if (methodInsnName.equals("getBrightnessForRender") || methodInsnName.equals("func_70070_b")) {
                             InsnList list = new InsnList();

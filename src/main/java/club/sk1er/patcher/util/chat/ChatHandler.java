@@ -45,7 +45,11 @@ public class ChatHandler {
                 event.setCanceled(true);
             }
 
-            String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("[hh:mm a]"));
+            final String timeFormat = LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern(
+                    PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"
+                )
+            );
             if (PatcherConfig.compactChat) {
                 String message = event.message.getUnformattedText();
                 if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {

@@ -62,7 +62,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
                     if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) node);
+                        String methodInsnName = mapMethodNameFromNode(node);
                         if (methodInsnName.equals("scheduleResourcesRefresh") || methodInsnName.equals("func_175603_A")) {
                             methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), insertBoolean());
                             break;

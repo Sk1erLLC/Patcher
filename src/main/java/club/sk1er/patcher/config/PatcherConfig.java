@@ -169,14 +169,14 @@ public class PatcherConfig extends Vigilant {
         description = "Remove the nether portal appearing when clearing nausea.",
         category = "Miscellaneous", subcategory = "Overlays"
     )
-    public static boolean nauseaEffect = true;
+    public static boolean nauseaEffect;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",
         description = "Remove achievement notifications.",
         category = "Miscellaneous", subcategory = "Overlays"
     )
-    public static boolean disableAchievements = true;
+    public static boolean disableAchievements;
 
     @Property(
         type = PropertyType.SLIDER, name = "Fire Overlay Height",
@@ -710,7 +710,7 @@ public class PatcherConfig extends Vigilant {
         description = "Remove blank messages from chat.",
         category = "Screens", subcategory = "Chat"
     )
-    public static boolean antiClearChat = true;
+    public static boolean antiClearChat;
 
     @Property(
         type = PropertyType.SWITCH, name = "Startup Notification",
@@ -767,6 +767,15 @@ public class PatcherConfig extends Vigilant {
         category = "Screens", subcategory = "Chat"
     )
     public static boolean timestamps;
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Chat Timestamps Format",
+        description = "Change the time format of Chat Timestamps.\nExamples:\n" +
+            "§7[3:24 PM] Steve: Hey!\n§7[15:24] Steve: Hey!",
+        category = "Screens", subcategory = "Chat",
+        options = {"12 Hour", "24 Hour"}
+    )
+    public static int timestampsFormat = 0;
 
     @Property(
         type = PropertyType.SWITCH, name = "Cross Chat",

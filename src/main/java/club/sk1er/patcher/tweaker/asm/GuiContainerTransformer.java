@@ -60,7 +60,7 @@ public class GuiContainerTransformer implements PatcherTransformer {
 
                     if (next instanceof MethodInsnNode) {
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("copy") || methodInsnName.equals("func_77946_l")) {
                                 method.instructions.insertBefore(next.getPrevious(), fixSplitRemnants(gotoInsn));

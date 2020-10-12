@@ -52,7 +52,7 @@ public class EntityXPOrbTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if (methodInsnName.equals("getEyeHeight") || methodInsnName.equals("func_70047_e")) {
                             methodNode.instructions.insertBefore(next.getNext().getNext(), lowerRenderHeight());

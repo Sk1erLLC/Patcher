@@ -65,7 +65,7 @@ public class EntityTransformer implements PatcherTransformer {
                     if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFNE) {
                         methodNode.instructions.insert(next.getNext(), checkOnGround(ifeq));
                     } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if (methodInsnName.equals("createRunningParticles") || methodInsnName.equals("func_174808_Z")) {
                             methodNode.instructions.insert(next.getNext(), ifeq);

@@ -40,7 +40,7 @@ public class RenderSnowballTransformer implements PatcherTransformer {
                     AbstractInsnNode node = iterator.next();
 
                     if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldName = mapFieldNameFromNode((FieldInsnNode) node);
+                        String fieldName = mapFieldNameFromNode(node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             method.instructions.insertBefore(node.getPrevious().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                                 "club/sk1er/patcher/tweaker/asm/optifine/RenderTransformer", "checkPerspective",

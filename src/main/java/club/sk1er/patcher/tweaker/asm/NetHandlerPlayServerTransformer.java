@@ -39,7 +39,7 @@ public class NetHandlerPlayServerTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("release")) {
                             LabelNode ifeq = new LabelNode();
                             method.instructions.insertBefore(next.getPrevious(), NetHandlerPlayClientTransformer.createList(ifeq));

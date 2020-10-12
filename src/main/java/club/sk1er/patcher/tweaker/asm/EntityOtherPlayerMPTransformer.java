@@ -50,7 +50,7 @@ public class EntityOtherPlayerMPTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("updateArmSwingProgress") || methodInsnName.equals("func_82168_bl")) {
                             methodNode.instructions.insert(next, new InsnNode(Opcodes.RETURN));
                             break;

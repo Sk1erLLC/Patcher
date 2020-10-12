@@ -85,7 +85,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("tickParticle") || methodInsnName.equals("func_178923_d")) {
                                 methodNode.instructions.insertBefore(next.getNext(), checkIfCull(entityfxIndex));

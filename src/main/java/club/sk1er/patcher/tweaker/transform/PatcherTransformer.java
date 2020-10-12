@@ -14,6 +14,7 @@ package club.sk1er.patcher.tweaker.transform;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -72,20 +73,22 @@ public interface PatcherTransformer {
     /**
      * Map the method name from notch names
      *
-     * @param methodInsnNode the transformed method insn node
+     * @param node the transformed method insn node
      * @return a mapped insn method
      */
-    default String mapMethodNameFromNode(MethodInsnNode methodInsnNode) {
+    default String mapMethodNameFromNode(AbstractInsnNode node) {
+        MethodInsnNode methodInsnNode = (MethodInsnNode) node;
         return FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(methodInsnNode.owner, methodInsnNode.name, methodInsnNode.desc);
     }
 
     /**
      * Map the field name from notch names
      *
-     * @param fieldInsnNode the transformed field insn node
+     * @param node the transformed field insn node
      * @return a mapped insn field
      */
-    default String mapFieldNameFromNode(FieldInsnNode fieldInsnNode) {
+    default String mapFieldNameFromNode(AbstractInsnNode node) {
+        FieldInsnNode fieldInsnNode = (FieldInsnNode) node;
         return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
     }
 

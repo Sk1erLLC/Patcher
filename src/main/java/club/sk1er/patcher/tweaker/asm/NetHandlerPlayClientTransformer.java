@@ -65,7 +65,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("displayGuiScreen") || methodInsnName.equals("func_147108_a")) {
                                 for (int i = 0; i < 4; ++i) {
                                     methodNode.instructions.remove(next.getPrevious());
@@ -116,7 +116,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("release")) {
                                 LabelNode ifeq = new LabelNode();
                                 methodNode.instructions.insertBefore(next.getPrevious(), createList(ifeq));

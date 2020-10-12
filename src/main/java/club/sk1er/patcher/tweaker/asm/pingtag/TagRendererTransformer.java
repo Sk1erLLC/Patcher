@@ -53,7 +53,7 @@ public class TagRendererTransformer implements PatcherTransformer {
                     AbstractInsnNode node = iterator.next();
 
                     if (node.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldName = mapFieldNameFromNode((FieldInsnNode) node);
+                        String fieldName = mapFieldNameFromNode(node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             methodNode.instructions.insert(node, timesByModifier());
                             break;
@@ -86,7 +86,7 @@ public class TagRendererTransformer implements PatcherTransformer {
         while (iterator.hasNext()) {
             AbstractInsnNode node = iterator.next();
             if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                String nodeName = mapMethodNameFromNode((MethodInsnNode) node);
+                String nodeName = mapMethodNameFromNode(node);
                 if (nodeName.equals("begin") || nodeName.equals("func_181668_a")) {
                     AbstractInsnNode prevNode = node.getPrevious().getPrevious().getPrevious();
                     methodNode.instructions.insertBefore(

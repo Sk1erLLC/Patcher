@@ -94,7 +94,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         } else if (checkZoomActiveNode(thing, zoomActiveIndex)) {
                             methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
                         } else if (thing instanceof MethodInsnNode && thing.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) thing);
+                            String methodInsnName = mapMethodNameFromNode(thing);
 
                             if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
                                 methodNode.instructions.insertBefore(thing.getPrevious(), createLabel(ifne));
@@ -117,7 +117,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             methodNode.instructions.insertBefore(next, fixParallax());
                             methodNode.instructions.remove(next);
                         } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
                                 ((MethodInsnNode) next).name = Patcher.isDevelopment() ? "rayTraceBlocks" : "func_147447_a";
@@ -142,44 +142,9 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         // todo: figure out why optifine just kills this entirely when -noverify isn't used
-                        /*int f8index = -1;
-                        int f9index = -1;
-                        int f10index = -1;
-
-                        for (LocalVariableNode variable : methodNode.localVariables) {
-                            switch (ClassTransformer.optifineVersion) {
-                                case "I7":
-                                    switch (variable.name) {
-                                        case "var12":
-                                            f8index = variable.index;
-                                            break;
-                                        case "var13":
-                                            f9index = variable.index;
-                                            break;
-                                        case "var14":
-                                            f10index = variable.index;
-                                            break;
-                                    }
-                                    break;
-                                case "L5":
-                                case "NONE":
-                                    switch (variable.name) {
-                                        case "f8":
-                                            f8index = variable.index;
-                                            break;
-                                        case "f9":
-                                            f9index = variable.index;
-                                            break;
-                                        case "f10":
-                                            f10index = variable.index;
-                                            break;
-                                    }
-                                    break;
-                            }
-                        }*/
 
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
@@ -231,7 +196,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 }
 
                                 if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                                    String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                                    String methodInsnName = mapMethodNameFromNode(next);
 
                                     if (methodInsnName.equals("getRenderViewEntity") || methodInsnName.equals("func_175606_aa")) {
                                         next = next.getPrevious().getPrevious();
@@ -257,7 +222,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("renderGameOverlay") || methodInsnName.equals("func_175180_a")) {
                                 methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
@@ -283,7 +248,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                            String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("getLightBrightness")) {
                                 ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
@@ -319,7 +284,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         }
 
                         if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
+                            String fieldInsnName = mapFieldNameFromNode(next);
 
                             if (fieldInsnName.equals("fogColorBlue") || fieldInsnName.equals("field_175081_S")) {
                                 if (next.getNext().getOpcode() == Opcodes.FDIV) {

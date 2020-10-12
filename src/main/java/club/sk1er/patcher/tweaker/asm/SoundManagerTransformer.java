@@ -97,7 +97,7 @@ public class SoundManagerTransformer implements PatcherTransformer {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
+                            String fieldInsnName = mapFieldNameFromNode(next);
 
                             if (fieldInsnName.equals("playingSounds") || fieldInsnName.equals("field_148629_h")) {
                                 methodNode.instructions.remove(next.getNext());

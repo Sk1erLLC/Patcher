@@ -39,7 +39,7 @@ public class LayerCreeperChargeTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
 
                         if ((methodInsnName.equals("depthMask") || methodInsnName.equals("func_179132_a")) && next.getPrevious().getOpcode() == Opcodes.ILOAD) {
                             method.instructions.remove(next.getPrevious());

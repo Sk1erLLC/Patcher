@@ -57,7 +57,7 @@ public class ScoreboardTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldInsnName = mapFieldNameFromNode((FieldInsnNode) next);
+                        String fieldInsnName = mapFieldNameFromNode(next);
 
                         if (fieldInsnName.equals("teams") || fieldInsnName.equals("field_96542_e")) {
                             LabelNode ifnull = new LabelNode();

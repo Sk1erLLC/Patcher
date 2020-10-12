@@ -62,7 +62,7 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                        String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("saveOptions") || methodInsnName.equals("func_74303_b")) {
                             methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                                 "club/sk1er/patcher/hooks/FallbackResourceManagerHook",

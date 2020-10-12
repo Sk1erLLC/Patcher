@@ -33,7 +33,7 @@ class AsyncModDiscoverer(
 
     private val logger: Logger = LogManager.getLogger("Patcher - AsyncModDiscoverer")
 
-    fun discover(): Pair<List<ModContainer>?, List<File>?> {
+    fun discover(): Pair<List<ModContainer>, List<File>> {
         val start = System.currentTimeMillis()
         val modList = mutableListOf<ModContainer>()
         logger.info("Searching for mods in async...")
@@ -59,7 +59,7 @@ class AsyncModDiscoverer(
             }.awaitAll()
         }
 
-        logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000f}s.")
+        logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000L}s.")
         return Pair(modList, nonModLibs)
     }
 }

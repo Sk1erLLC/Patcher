@@ -100,7 +100,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
                         if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String invokeName = mapMethodNameFromNode((MethodInsnNode) node);
+                            String invokeName = mapMethodNameFromNode(node);
                             if (invokeName.equals("getPositionEyes") || invokeName.equals("func_174824_e")) {
                                 shouldLook = true;
                             }
@@ -127,7 +127,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
             AbstractInsnNode next = iterator.next();
 
             if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                String methodInsnName = mapMethodNameFromNode((MethodInsnNode) next);
+                String methodInsnName = mapMethodNameFromNode(next);
 
                 switch (methodInsnName) {
                     case "func_179147_l":
