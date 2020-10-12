@@ -42,7 +42,9 @@ public class BlockUtil {
      */
     public static List<Block> groundFoliageCounter = Arrays.asList(
         Blocks.tallgrass,
-        Blocks.double_plant
+        Blocks.double_plant,
+        Blocks.red_flower,
+        Blocks.yellow_flower
     );
 
     /**

@@ -179,7 +179,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new ForgeBlockModelRendererTransformer());
-        registerTransformer(new ModDiscovererTransformer());
+        //registerTransformer(new ModDiscovererTransformer());
         registerTransformer(new VertexLighterSmoothAoTransformer());
         registerTransformer(new MinecraftForgeTransformer());
         //registerTransformer(new ItemLayerModelTransformer());
