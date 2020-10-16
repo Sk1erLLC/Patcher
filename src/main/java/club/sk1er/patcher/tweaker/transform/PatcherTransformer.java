@@ -61,6 +61,16 @@ public interface PatcherTransformer {
     }
 
     /**
+     * Map the class name from notch names
+     *
+     * @param className the notch name of the class
+     * @return a deobfuscated name of the class
+     */
+    default String mapClassName(String className) {
+        return FMLDeobfuscatingRemapper.INSTANCE.map(className);
+    }
+
+    /**
      * Map the method desc from notch names
      *
      * @param methodNode the transformed method node

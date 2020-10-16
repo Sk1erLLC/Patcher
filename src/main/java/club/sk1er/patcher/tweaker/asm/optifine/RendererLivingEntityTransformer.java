@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker.asm.optifine;
 
+import club.sk1er.patcher.tweaker.transform.CommonTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -28,7 +29,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
-public class RendererLivingEntityTransformer implements PatcherTransformer {
+public class RendererLivingEntityTransformer implements CommonTransformer {
 
     /**
      * The class name that's being transformed
@@ -131,25 +132,7 @@ public class RendererLivingEntityTransformer implements PatcherTransformer {
                 }
             } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
-            }
-        }
-    }
-
-    public void makeNametagTransparent(MethodNode methodNode) {
-        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-        LabelNode afterDraw = new LabelNode();
-        while (iterator.hasNext()) {
-            AbstractInsnNode node = iterator.next();
-            if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                String nodeName = mapMethodNameFromNode(node);
-                if (nodeName.equals("begin") || nodeName.equals("func_181668_a")) {
-                    AbstractInsnNode prevNode = node.getPrevious().getPrevious().getPrevious();
-                    methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableNametagBoxes", "Z"));
-                    methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, afterDraw));
-                } else if (nodeName.equals("draw") || nodeName.equals("func_78381_a")) {
-                    methodNode.instructions.insert(node, afterDraw);
-                    break;
-                }
+                makeNametagShadowed(methodNode);
             }
         }
     }

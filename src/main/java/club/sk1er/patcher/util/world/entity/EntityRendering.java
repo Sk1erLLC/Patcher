@@ -149,7 +149,11 @@ public class EntityRendering {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
 
-        fontRenderer.drawString(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
+        if (PatcherConfig.shadowedNametagText) {
+            fontRenderer.drawStringWithShadow(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
+        } else {
+            fontRenderer.drawString(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
+        }
 
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();

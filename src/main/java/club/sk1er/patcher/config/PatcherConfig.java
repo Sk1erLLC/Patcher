@@ -509,6 +509,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableNametagBoxes;
 
     @Property(
+            type = PropertyType.SWITCH, name = "Add Text Shadow to Nametags",
+            description = "Render nametags with shadowed text to improve visibility when nametag boxes are disabled.",
+            category = "Performance", subcategory = "Entity Rendering"
+    )
+    public static boolean shadowedNametagText;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",
         description = "Stop entities that aren't visible to the player from rendering.",
         category = "Performance", subcategory = "Culling"
