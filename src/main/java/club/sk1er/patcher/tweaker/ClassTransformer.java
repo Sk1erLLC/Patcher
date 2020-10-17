@@ -88,7 +88,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new FallbackResourceManagerTransformer());
         registerTransformer(new RenderArrowTransformer());
-        registerTransformer(new RendererLivingEntityTransformer());
         registerTransformer(new RenderItemFrameTransformer());
         registerTransformer(new TileEntitySkullRendererTransformer());
         registerTransformer(new TileEntityEndPortalRendererTransformer());
