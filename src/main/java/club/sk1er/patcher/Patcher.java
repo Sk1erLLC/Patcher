@@ -39,6 +39,7 @@ import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
+import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.screenshot.viewer.Viewer;
@@ -145,7 +146,7 @@ public class Patcher {
     private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
 
     private final KeyBinding nameHistory = new KeybindNameHistory();
-    private final KeyBinding dropModifier = new KeybindNameHistory();
+    private final KeyBinding dropModifier = new KeybindDropModifier();
     private final KeyBinding chatPeek = new KeybindChatPeek();
 
     private final Viewer viewer = new Viewer();

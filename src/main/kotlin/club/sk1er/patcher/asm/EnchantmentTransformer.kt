@@ -11,11 +11,10 @@
 
 package club.sk1er.patcher.asm
 
-import club.sk1er.hookinjection.getInstructions
-import club.sk1er.patcher.hooks.EnchantmentHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import codes.som.anthony.koffee.assembleBlock
+import codes.som.anthony.koffee.insns.jvm.*
+import org.objectweb.asm.tree.ClassNode
 
 class EnchantmentTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf("net.minecraft.enchantment.Enchantment")
@@ -25,24 +24,27 @@ class EnchantmentTransformer : PatcherTransformer {
             val methodName = mapMethodName(classNode, it)
             methodName == "getTranslatedName" || methodName == "func_77316_c"
         }?.apply {
-            instructions.insertBefore(instructions.first, `get Numerical Name`(this))
+            instructions.insertBefore(instructions.first, `get Numerical Name`())
         }
     }
 
     // oooooh spooky space in function name ooooh
-    private fun `get Numerical Name`(methodNode: MethodNode): InsnList {
-        val list = InsnList()
-        list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "romanNumerals", "Z"))
-        val labelNode = LabelNode()
-        list.add(JumpInsnNode(Opcodes.IFEQ, labelNode))
-        list.add(getInstructions { // get the instructions
-            of(EnchantmentHook::getNumericalName) // of the method "getNumericalName"
-            target(methodNode) // targeting the method we're injecting (getTranslatedName)
-            before(methodNode.instructions.first) // place here
-            params(0, 1) // insert "this" and "level" into parameters
-            keepReturns
-        }) // add the instructions from "getNumericalName" directly instead of using a hook
-        list.add(labelNode)
-        return list
-    }
+    private fun `get Numerical Name`() = assembleBlock {
+        getstatic(patcherConfigClass, "romanNumerals", boolean)
+        ifeq(L["1"])
+        new(StringBuilder::class)
+        dup
+        invokespecial(StringBuilder::class, "<init>", void)
+        aload_0
+        invokevirtual("net/minecraft/enchantment/Enchantment", "getName", String::class)
+        invokestatic("net/minecraft/util/StatCollector", "translateToLocal", String::class, String::class)
+        invokevirtual(StringBuilder::class, "append", StringBuilder::class, String::class)
+        ldc(" ")
+        invokevirtual(StringBuilder::class, "append", StringBuilder::class, String::class)
+        iload_1
+        invokevirtual(StringBuilder::class, "append", StringBuilder::class, int)
+        invokevirtual(StringBuilder::class, "toString", String::class)
+        areturn
+        +L["1"]
+    }.first
 }

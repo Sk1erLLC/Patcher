@@ -366,6 +366,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cleanTextShadow;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Text Shadow",
+        description = "Remove shadows from text.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean disableShadowedText;
+
     // PERFORMANCE
 
     @Property(
@@ -495,13 +502,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableEndPortals;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Disable Shadowed Text",
-        description = "Remove shadows from text.",
-        category = "Performance", subcategory = "Text Rendering"
-    )
-    public static boolean disableShadowedText;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Disable Nametag Boxes",
         description = "Remove the transparent box around the nametag.\n§eCan positively impact performance.",
         category = "Performance", subcategory = "Entity Rendering"
@@ -608,19 +608,19 @@ public class PatcherConfig extends Vigilant {
     public static boolean mobSpawningOptimization;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Entity Render Distance Toggle",
+        description = "Toggle allowing a custom entity render distance.",
+        category = "Performance", subcategory = "Entity Rendering"
+    )
+    public static boolean entityRenderDistanceToggle;
+
+    @Property(
         type = PropertyType.SLIDER, name = "Entity Render Distance",
         description = "Stop rendering entities outside of the specified radius.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
     )
     public static int entityRenderDistance = 64;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Entity Render Distance Toggle",
-        description = "Toggle allowing a custom entity render distance.",
-        category = "Performance", subcategory = "Entity Rendering"
-    )
-    public static boolean entityRenderDistanceToggle;
 
     // SCREENS
 

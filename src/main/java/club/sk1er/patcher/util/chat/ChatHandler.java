@@ -61,7 +61,7 @@ public class ChatHandler {
                     entries.clear();
                 }
                 // Get the chat instance
-                GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
+                final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 
                 // If the last message sent is the same as the newly posted message
                 ChatEntry print = null;
@@ -76,7 +76,7 @@ public class ChatHandler {
                 }
 
                 if (print == null) {
-                    ChatEntry e = new ChatEntry(message.replace(" ", "").length() == 0 ? "" : message, 1, line);
+                    final ChatEntry e = new ChatEntry(message.replace(" ", "").length() == 0 ? "" : message, 1, line);
                     entries.add(e);
                     print = e;
                     if (entries.size() > PatcherConfig.superCompactChatAmount) {
@@ -89,7 +89,7 @@ public class ChatHandler {
 
 
                 if (PatcherConfig.timestamps) {
-                    ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
+                    final ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
                     newThing.appendSibling(event.message);
                     event.message = newThing;
                 }
@@ -110,7 +110,7 @@ public class ChatHandler {
                 // Cancel the message
                 event.setCanceled(true);
             } else if (PatcherConfig.timestamps) {
-                ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
+                final ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
                 newThing.appendSibling(event.message);
                 event.message = newThing;
             }
