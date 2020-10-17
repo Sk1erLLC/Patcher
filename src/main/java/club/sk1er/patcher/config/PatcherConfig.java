@@ -367,8 +367,15 @@ public class PatcherConfig extends Vigilant {
     public static boolean cleanTextShadow;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Add Text Shadow to Nametags",
+        description = "Render nametags with shadowed text.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean shadowedNametagText;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Text Shadow",
-        description = "Remove shadows from text.",
+        description = "Remove shadows from text.\n§eCan positively impact performance.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean disableShadowedText;
@@ -503,17 +510,10 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Nametag Boxes",
-        description = "Remove the transparent box around the nametag.\n§eCan positively impact performance.",
+        description = "Remove the transparent box around the nametag.",
         category = "Performance", subcategory = "Entity Rendering"
     )
     public static boolean disableNametagBoxes;
-
-    @Property(
-            type = PropertyType.SWITCH, name = "Add Text Shadow to Nametags",
-            description = "Render nametags with shadowed text to improve visibility when nametag boxes are disabled.",
-            category = "Performance", subcategory = "Entity Rendering"
-    )
-    public static boolean shadowedNametagText;
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",
@@ -770,7 +770,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Chat Timestamps",
-        description = "Add timestamps before a message.\nExample: §7[10:23 AM] Steve: Hey!",
+        description = "Add timestamps before a message.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean timestamps;
@@ -778,7 +778,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SELECTOR, name = "Chat Timestamps Format",
         description = "Change the time format of Chat Timestamps.\nExamples:\n" +
-            "§7[3:24 PM] Steve: Hey!\n§7[15:24] Steve: Hey!",
+            "§7[03:24 PM] Steve: Hey!\n§7[15:24] Steve: Hey!",
         category = "Screens", subcategory = "Chat",
         options = {"12 Hour", "24 Hour"}
     )

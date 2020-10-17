@@ -3,6 +3,7 @@ package club.sk1er.patcher.hooks;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.gui.FontRenderer;
 
+@SuppressWarnings("unused")
 public class NameTagRenderingHooks {
     public static int drawNametagText(FontRenderer fontRenderer, String text, int x, int y, int color) {
         if (PatcherConfig.shadowedNametagText) {

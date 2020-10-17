@@ -59,8 +59,8 @@ public class S14PacketEntityTransformer implements PatcherTransformer {
     public static InsnList getFixedEntity(String owner, String entityId) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
+        LabelNode ifnull = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
@@ -72,11 +72,11 @@ public class S14PacketEntityTransformer implements PatcherTransformer {
             "func_73045_a", // getEntityByID
             "(I)Lnet/minecraft/entity/Entity;",
             false));
-        LabelNode labelNode1 = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.GOTO, labelNode1));
-        list.add(labelNode);
+        LabelNode gotoInsn = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifnull);
         list.add(new InsnNode(Opcodes.ACONST_NULL));
-        list.add(labelNode1);
+        list.add(gotoInsn);
         list.add(new InsnNode(Opcodes.ARETURN));
         return list;
     }
