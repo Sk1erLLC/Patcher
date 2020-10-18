@@ -68,9 +68,7 @@ public class MinecraftServerTransformer implements PatcherTransformer {
     private InsnList releaseIcon() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 5));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL, "io/netty/buffer/ByteBuf", "release", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "io/netty/buffer/ByteBuf", "release", "()Z", false));
         list.add(new InsnNode(Opcodes.POP));
         return list;
     }

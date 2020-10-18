@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker.asm.optifine;
 
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
@@ -100,6 +99,63 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 case "func_78467_g": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
+                    int movingobjectpositionIndex = -1,
+                        d0Index = -1,
+                        f3Index = -1,
+                        d1Index = -1,
+                        f4Index = -1,
+                        d2Index = -1,
+                        f5Index = -1,
+                        d6Index = -1,
+                        d4Index = -1,
+                        d5Index = -1;
+
+                    boolean useNormalIndex = ClassTransformer.optifineVersion.equals("I7");
+
+                    for (LocalVariableNode variable : methodNode.localVariables) {
+                        switch (variable.name) {
+                            case "movingobjectposition":
+                                movingobjectpositionIndex = variable.index;
+                                break;
+
+                            case "d0":
+                                d0Index = variable.index;
+                                break;
+
+                            case "f3":
+                                f3Index = variable.index;
+                                break;
+
+                            case "d1":
+                                d1Index = variable.index;
+                                break;
+
+                            case "f4":
+                                f4Index = variable.index;
+                                break;
+
+                            case "d2":
+                                d2Index = variable.index;
+                                break;
+
+                            case "f5":
+                                f5Index = variable.index;
+                                break;
+
+                            case "d4":
+                                d4Index = variable.index;
+                                break;
+
+                            case "d6":
+                                d6Index = variable.index;
+                                break;
+
+                            case "d5":
+                                d5Index = variable.index;
+                                break;
+                        }
+                    }
+
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
@@ -110,12 +166,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
-                                ((MethodInsnNode) next).name = Patcher.isDevelopment() ? "rayTraceBlocks" : "func_147447_a";
-                                ((MethodInsnNode) next).desc = FMLDeobfuscatingRemapper.INSTANCE.mapDesc(
-                                    "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;"
-                                );
-
-                                methodNode.instructions.insertBefore(next, changeMethodRedirect());
+                                methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), changeCameraType(movingobjectpositionIndex, d0Index, d1Index, d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, useNormalIndex));
+                                break;
                             }
                         }
                     }
@@ -293,6 +345,75 @@ public class EntityRendererTransformer implements PatcherTransformer {
         }
     }
 
+    private InsnList changeCameraType(int movingobjectpositionIndex, int d0Index, int d1Index, int d2Index, int d4Index, int d5Index, int d6Index, int f3Index, int f4Index, int f5Index, boolean useNormalIndex) {
+        if (useNormalIndex) {
+            movingobjectpositionIndex = 24;
+            d0Index = 4;
+            d1Index = 6;
+            d2Index = 8;
+            d4Index = 14;
+            d5Index = 16;
+            d6Index = 18;
+            f3Index = 21;
+            f4Index = 22;
+            f5Index = 23;
+        }
+
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "betterCamera", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", isDevelopment() ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "theWorld" : "field_71441_e", "Lnet/minecraft/client/multiplayer/WorldClient;"));
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f3Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d1Index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f4Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d2Index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/Vec3", "<init>", "(DDD)V", false));
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d4Index));
+        list.add(new InsnNode(Opcodes.DSUB));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f3Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d1Index));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d6Index));
+        list.add(new InsnNode(Opcodes.DSUB));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f4Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d2Index));
+        list.add(new VarInsnNode(Opcodes.DLOAD, d5Index));
+        list.add(new InsnNode(Opcodes.DSUB));
+        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/Vec3", "<init>", "(DDD)V", false));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/multiplayer/WorldClient", isDevelopment() ? "rayTraceBlocks" : "func_147447_a", "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, movingobjectpositionIndex));
+        list.add(ifeq);
+        return list;
+    }
+
     private InsnList clampVariable(int f6index) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
@@ -399,14 +520,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
-        return list;
-    }
-
-    private InsnList changeMethodRedirect() {
-        InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new InsnNode(Opcodes.ICONST_1));
         return list;
     }
 

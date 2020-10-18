@@ -387,6 +387,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean disableShadowedText;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Better Camera",
+        description = "Stop blocks such as grass and tall plants from affecting your FOV as done in 1.14+.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean betterCamera = true;
+
     // PERFORMANCE
 
     @Property(
