@@ -18,20 +18,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -40,8 +27,11 @@ import java.util.ListIterator;
 public class EntityRendererTransformer implements PatcherTransformer {
 
     private static final float normalModifier = 4f;
-    private static float currentModifier = 4f;
+    private static float currentModifier = normalModifier;
     public static boolean zoomed = false;
+    private static boolean hasScrolledYet = false;
+    private static long lastMillis = System.currentTimeMillis();
+    private static float smoothZoomProgress = 0f;
 
     /**
      * The class name that's being transformed
@@ -100,7 +90,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(thing.getPrevious(), createLabel(ifne));
                             }
                         } else if (thing instanceof LdcInsnNode && ((LdcInsnNode) thing).cst.equals(70.0f) && thing.getPrevious().getOpcode() == Opcodes.FMUL) {
-                            methodNode.instructions.insert(thing.getNext().getNext().getNext(), setLabel(ifne));
+                            methodNode.instructions.insert(thing.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
                         }
                     }
 
@@ -368,9 +358,19 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList setLabel(LabelNode ifne) {
+    private InsnList setFOVLabelAndUpdateSmoothZoom(LabelNode ifne) {
         InsnList list = new InsnList();
         list.add(ifne);
+        if (!ClassTransformer.optifineVersion.equals("NONE")) {
+            list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "smoothZoomAnimation", "Z"));
+            LabelNode ifeq = new LabelNode();
+            list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+            list.add(new VarInsnNode(Opcodes.FLOAD, 4));
+            list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "getSmoothModifier", "()F", false));
+            list.add(new InsnNode(Opcodes.FMUL));
+            list.add(new VarInsnNode(Opcodes.FSTORE, 4));
+            list.add(ifeq);
+        }
         return list;
     }
 
@@ -498,8 +498,10 @@ public class EntityRendererTransformer implements PatcherTransformer {
         int moved = Mouse.getDWheel();
 
         if (moved > 0) {
+            hasScrolledYet = true;
             currentModifier += 0.25f * currentModifier;
         } else if (moved < 0) {
+            hasScrolledYet = true;
             currentModifier -= 0.25f * currentModifier;
         }
 
@@ -514,7 +516,32 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return currentModifier;
     }
 
+    public static float getSmoothModifier() {
+        long time = System.currentTimeMillis();
+        long timeSinceLastChange = time - lastMillis;
+        lastMillis = time;
+        if (zoomed) {
+            if (hasScrolledYet) return 1f;
+            if (smoothZoomProgress < 1) {
+                smoothZoomProgress += 0.005F*timeSinceLastChange;
+                smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
+            }
+            return 4f - 3f*(smoothZoomProgress *(2- smoothZoomProgress));
+        }
+        else {
+            if (smoothZoomProgress > 0) {
+                smoothZoomProgress -= 0.005F*timeSinceLastChange;
+                smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
+            }
+            float progress = 1 - smoothZoomProgress;
+            float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
+            return diff + (1-diff)*(progress*progress);
+        }
+    }
+
     public static void resetCurrent() {
+        hasScrolledYet = false;
         currentModifier = normalModifier;
+        smoothZoomProgress = 0f;
     }
 }
