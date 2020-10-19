@@ -636,19 +636,18 @@ public class EntityRendererTransformer implements PatcherTransformer {
         if (zoomed) {
             if (hasScrolledYet) return 1f;
             if (smoothZoomProgress < 1) {
-                smoothZoomProgress += 0.005F*timeSinceLastChange;
+                smoothZoomProgress += 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
             }
-            return 4f - 3f*(smoothZoomProgress *(2- smoothZoomProgress));
-        }
-        else {
+            return 4f - 3f * (smoothZoomProgress * (2 - smoothZoomProgress));
+        } else {
             if (smoothZoomProgress > 0) {
-                smoothZoomProgress -= 0.005F*timeSinceLastChange;
+                smoothZoomProgress -= 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
             }
             float progress = 1 - smoothZoomProgress;
             float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
-            return diff + (1-diff)*(progress*progress);
+            return diff + (1 - diff) * (progress * progress);
         }
     }
 

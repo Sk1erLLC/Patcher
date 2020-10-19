@@ -23,6 +23,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
@@ -145,12 +146,21 @@ public class GuiScreenTransformer implements PatcherTransformer {
             "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71441_e", // theWorld
             "Lnet/minecraft/client/multiplayer/WorldClient;"));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
+        LabelNode ifnull = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableTransparentBackgrounds", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraftforge/client/event/GuiScreenEvent$BackgroundDrawnEvent"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/client/event/GuiScreenEvent$BackgroundDrawnEvent", "<init>", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+        list.add(new InsnNode(Opcodes.POP));
         list.add(new InsnNode(Opcodes.RETURN));
-        list.add(labelNode);
+        list.add(ifnull);
+        list.add(ifeq);
         return list;
     }
 }
