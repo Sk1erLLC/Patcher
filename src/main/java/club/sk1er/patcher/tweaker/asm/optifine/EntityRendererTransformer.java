@@ -347,16 +347,16 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
     private InsnList changeCameraType(int movingobjectpositionIndex, int d0Index, int d1Index, int d2Index, int d4Index, int d5Index, int d6Index, int f3Index, int f4Index, int f5Index, boolean useNormalIndex) {
         if (useNormalIndex) {
-            movingobjectpositionIndex = 24;
+            movingobjectpositionIndex = 26;
             d0Index = 4;
             d1Index = 6;
             d2Index = 8;
-            d4Index = 14;
-            d5Index = 16;
-            d6Index = 18;
-            f3Index = 21;
-            f4Index = 22;
-            f5Index = 23;
+            d4Index = 16;
+            d5Index = 18;
+            d6Index = 20;
+            f3Index = 23;
+            f4Index = 24;
+            f5Index = 25;
         }
 
         InsnList list = new InsnList();
@@ -638,17 +638,18 @@ public class EntityRendererTransformer implements PatcherTransformer {
             if (smoothZoomProgress < 1) {
                 smoothZoomProgress += 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
+                return 4f - 3f * (smoothZoomProgress * (2 - smoothZoomProgress));
             }
-            return 4f - 3f * (smoothZoomProgress * (2 - smoothZoomProgress));
         } else {
             if (smoothZoomProgress > 0) {
                 smoothZoomProgress -= 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
+                float progress = 1 - smoothZoomProgress;
+                float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
+                return diff + (1 - diff) * (progress * progress);
             }
-            float progress = 1 - smoothZoomProgress;
-            float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
-            return diff + (1 - diff) * (progress * progress);
         }
+        return 1f;
     }
 
     public static void resetCurrent() {
