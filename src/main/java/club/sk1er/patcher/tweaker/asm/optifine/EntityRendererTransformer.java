@@ -652,7 +652,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
             if (smoothZoomProgress < 1) {
                 smoothZoomProgress += 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
-                return 4f - 3f * (smoothZoomProgress * (2 - smoothZoomProgress));
+                return 4f - 3f * calculateEasing(smoothZoomProgress);
             }
         } else {
             if (smoothZoomProgress > 0) {
@@ -661,10 +661,15 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 EntityRendererHook.fixMissingChunks();
                 float progress = 1 - smoothZoomProgress;
                 float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
-                return diff + (1 - diff) * (progress * progress);
+                return diff + (1 - diff) * calculateEasing(progress);
             }
         }
         return 1f;
+    }
+
+    private static float calculateEasing(float x) {
+        float f = -2 * x + 2;
+        return x < 0.5 ? 2 * x * x : 1 - (f*f) / 2;
     }
 
     public static void resetCurrent() {
