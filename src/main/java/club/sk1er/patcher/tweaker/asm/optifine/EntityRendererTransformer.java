@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.asm.optifine;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
@@ -616,6 +617,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         } else if (moved < 0) {
             hasScrolledYet = true;
             currentModifier -= 0.25f * currentModifier;
+            EntityRendererHook.fixMissingChunks();
         }
 
         if (currentModifier < 0.8) {
@@ -644,6 +646,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
             if (smoothZoomProgress > 0) {
                 smoothZoomProgress -= 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
+                EntityRendererHook.fixMissingChunks();
                 float progress = 1 - smoothZoomProgress;
                 float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
                 return diff + (1 - diff) * (progress * progress);
