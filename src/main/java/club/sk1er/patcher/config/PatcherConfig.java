@@ -282,6 +282,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean smoothZoomAnimation;
 
     @Property(
+            type = PropertyType.SWITCH, name = "Toggle to Zoom",
+            description = "Make OptiFine's zoom key a toggle instead of requiring you to hold it.",
+            category = "Miscellaneous", subcategory = "OptiFine"
+    )
+    public static boolean toggleToZoom;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Simplify OptiFine FPS Counter",
         description = "Remove the additions OptiFine L5 and above makes to the debug screen fps counter.",
         category = "Miscellaneous", subcategory = "OptiFine"

@@ -91,6 +91,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             }
                         } else if (thing instanceof LdcInsnNode && ((LdcInsnNode) thing).cst.equals(70.0f) && thing.getPrevious().getOpcode() == Opcodes.FMUL) {
                             methodNode.instructions.insert(thing.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
+                        } else if (thing.getOpcode() == Opcodes.INVOKESTATIC && (((MethodInsnNode) thing).name.equals("isKeyDown") || ((MethodInsnNode) thing).name.equals("func_100015_a"))) {
+                            methodNode.instructions.insert(thing, modifyKeyDownIfToggleToZoom());
                         }
                     }
 
@@ -493,6 +495,16 @@ public class EntityRendererTransformer implements PatcherTransformer {
             list.add(new VarInsnNode(Opcodes.FSTORE, 4));
             list.add(ifeq);
         }
+        return list;
+    }
+
+    private InsnList modifyKeyDownIfToggleToZoom() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "toggleToZoom", "Z"));
+        LabelNode ifDisabled = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifDisabled));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/EntityRendererHook", "getZoomState", "(Z)Z", false));
+        list.add(ifDisabled);
         return list;
     }
 
