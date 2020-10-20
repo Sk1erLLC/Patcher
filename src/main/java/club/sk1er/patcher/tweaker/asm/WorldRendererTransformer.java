@@ -35,7 +35,6 @@ public class WorldRendererTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         final String owner = "net/minecraft/client/renderer/WorldRenderer";
 
-        outer:
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("finishDrawing") || methodName.equals("func_178977_d")) {
@@ -50,7 +49,7 @@ public class WorldRendererTransformer implements PatcherTransformer {
                             insns.add(new InsnNode(Opcodes.ICONST_0));
                             insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/nio/IntBuffer", "position", "(I)Ljava/nio/Buffer;", false));
                             method.instructions.insert(next.getNext(), insns);
-                            continue outer;
+                            break;
                         }
                     }
                 }
