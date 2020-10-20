@@ -160,7 +160,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new C17PacketCustomPayloadTransformer());
         registerTransformer(new BlockCactusTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
-        registerTransformer(new WorldRendererTransformer());
         registerTransformer(new LazyLoadBaseTransformer());
 
         // forge classes

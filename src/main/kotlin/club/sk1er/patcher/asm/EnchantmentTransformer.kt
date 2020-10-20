@@ -36,8 +36,8 @@ class EnchantmentTransformer : PatcherTransformer {
         dup
         invokespecial(StringBuilder::class, "<init>", void)
         aload_0
-        invokevirtual("net/minecraft/enchantment/Enchantment", "getName", String::class)
-        invokestatic("net/minecraft/util/StatCollector", "translateToLocal", String::class, String::class)
+        invokevirtual("net/minecraft/enchantment/Enchantment", "func_77320_a", String::class)
+        invokestatic("net/minecraft/util/StatCollector", "func_74838_a", String::class, String::class)
         invokevirtual(StringBuilder::class, "append", StringBuilder::class, String::class)
         ldc(" ")
         invokevirtual(StringBuilder::class, "append", StringBuilder::class, String::class)
