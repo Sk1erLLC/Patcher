@@ -49,9 +49,10 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        boolean transformedDoRender = false;
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-            if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
+            if (!transformedDoRender && (methodName.equals("doRender") || methodName.equals("func_76986_a"))) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 int fIndex = -1;
@@ -95,7 +96,8 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                             }
 
                             if (next == null) {
-                                return;
+                                transformedDoRender = true;
+                                break;
                             }
 
                             LabelNode labelNode = new LabelNode(); //Override final if statement to jump to our new end of block
@@ -108,7 +110,8 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                             }
 
                             if (next == null) {
-                                return;
+                                transformedDoRender = true;
+                                break;
                             }
 
                             while ((next = next.getNext()) != null) {
@@ -124,7 +127,8 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                                     insnList.add(new VarInsnNode(Opcodes.FSTORE, f2Index));
                                     insnList.add(ifeq);
                                     methodNode.instructions.insertBefore(next, insnList);
-                                    return;
+                                    transformedDoRender = true;
+                                    break;
                                 }
                             }
                         }
