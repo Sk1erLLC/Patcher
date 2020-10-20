@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker.asm.optifine;
 
+import club.sk1er.elementa.constraints.animation.Animations;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.tweaker.ClassTransformer;
@@ -668,8 +669,19 @@ public class EntityRendererTransformer implements PatcherTransformer {
     }
 
     private static float calculateEasing(float x) {
-        float f = -2 * x + 2;
-        return x < 0.5 ? 2 * x * x : 1 - (f*f) / 2;
+        switch (PatcherConfig.smoothZoomAlgorithm) {
+            case 0:
+                return Animations.IN_OUT_QUAD.getValue(x);
+
+            case 1:
+                return Animations.IN_OUT_CIRCULAR.getValue(x);
+
+            case 2:
+                return Animations.OUT_QUINT.getValue(x);
+        }
+
+        // fallback
+        return Animations.IN_OUT_QUAD.getValue(x);
     }
 
     public static void resetCurrent() {

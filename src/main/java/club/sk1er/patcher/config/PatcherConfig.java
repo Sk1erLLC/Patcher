@@ -282,9 +282,17 @@ public class PatcherConfig extends Vigilant {
     public static boolean smoothZoomAnimation;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Toggle to Zoom",
-            description = "Make OptiFine's zoom key a toggle instead of requiring you to hold it.",
-            category = "Miscellaneous", subcategory = "OptiFine"
+        type = PropertyType.SELECTOR, name = "Smooth OptiFine Zoom Function",
+        description = "Change the smoothing function\nused in the smooth zooming animation.",
+        category = "Miscellaneous", subcategory = "OptiFine",
+        options = {"In Out Quad", "In Out Circular", "Out Quint"}
+    )
+    public static int smoothZoomAlgorithm = 0;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Toggle to Zoom",
+        description = "Make OptiFine's zoom key a toggle instead of requiring you to hold it.",
+        category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean toggleToZoom;
 
