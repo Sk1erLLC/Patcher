@@ -189,16 +189,16 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        // todo: figure out why optifine just kills this entirely when -noverify isn't used
-
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
                             String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
-                            }/* else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap(f8index, f9index, f10index));
-                            }*/
+                            } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
+                                AbstractInsnNode suspect = next.getNext().getNext();
+                                if (suspect.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) suspect).owner.endsWith("CustomColors")) continue;
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap(12, 13, 14));
+                            }
                         }
                     }
                     break;
