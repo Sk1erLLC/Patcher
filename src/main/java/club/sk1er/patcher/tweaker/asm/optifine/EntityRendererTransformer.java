@@ -77,7 +77,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             methodNode.instructions.insertBefore(thing, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "normalZoomSensitivity", "Z")); // False instead of true
                             methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.ICONST_1));
                             methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.IXOR));
-                            methodNode.instructions.insert(thing, callReset());
+                            methodNode.instructions.insert(thing, callResetAndSensChange());
                             methodNode.instructions.remove(thing);
                         } else if (checkDivNode(thing)) {
                             methodNode.instructions.remove(thing.getPrevious());
@@ -94,6 +94,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             methodNode.instructions.insert(thing.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
                         } else if (thing.getOpcode() == Opcodes.INVOKESTATIC && (((MethodInsnNode) thing).name.equals("isKeyDown") || ((MethodInsnNode) thing).name.equals("func_100015_a"))) {
                             methodNode.instructions.insert(thing, modifyKeyDownIfToggleToZoom());
+                        } else if (thing.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) thing).owner.equals("Config") && ((FieldInsnNode) thing).name.equals("zoomMode") && thing.getPrevious().getOpcode() == Opcodes.ICONST_0) {
+                            methodNode.instructions.insert(thing, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/EntityRendererHook", "resetSensitivity", "()V", false));
                         }
                     }
 
@@ -598,7 +600,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList callReset() {
+    private InsnList callResetAndSensChange() {
         InsnList list = new InsnList();
         list.add(
             new MethodInsnNode(
@@ -606,7 +608,13 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer",
                 "resetCurrent",
                 "()V",
-                false)); // Call my method
+                false));
+        list.add(new MethodInsnNode(
+                Opcodes.INVOKESTATIC,
+                "club/sk1er/patcher/hooks/EntityRendererHook",
+                "reduceSensitivity",
+                "()V",
+                false));
         return list;
     }
 

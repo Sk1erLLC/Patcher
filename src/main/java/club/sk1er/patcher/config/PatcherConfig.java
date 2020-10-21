@@ -268,11 +268,19 @@ public class PatcherConfig extends Vigilant {
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "OptiFine Zoom Sensitivity",
+        type = PropertyType.SWITCH, name = "OptiFine Zoom Smooth Camera",
         description = "Remove the smooth camera effect when using OptiFine zoom.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean normalZoomSensitivity;
+
+    @Property(
+            type = PropertyType.SLIDER, name = "OptiFine Zoom Custom Mouse Sensitivity",
+            description = "Use a custom mouse sensitivity when zoomed in with OptiFine. This is a percentage of your normal sensitivity.",
+            category = "Miscellaneous", subcategory = "OptiFine",
+            max = 100
+    )
+    public static int customZoomSensitivity = 100;
 
     @Property(
         type = PropertyType.SWITCH, name = "Smooth OptiFine Zoom Animation",
