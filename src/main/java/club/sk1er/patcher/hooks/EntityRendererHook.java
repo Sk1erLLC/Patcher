@@ -4,7 +4,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 
 public class EntityRendererHook {
-    private static Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private static boolean zoomToggled = false;
     private static boolean isBeingHeld = false;
     private static float oldSensitivity;

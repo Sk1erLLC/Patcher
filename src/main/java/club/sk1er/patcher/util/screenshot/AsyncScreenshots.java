@@ -13,6 +13,7 @@ package club.sk1er.patcher.util.screenshot;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.util.ModCoreDesktop;
+import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -94,8 +95,8 @@ public class AsyncScreenshots implements Runnable {
                 Patcher.instance.getViewer().newCapture(image);
             }
         } catch (Exception e) {
+            ChatUtilities.sendMessage("Failed to capture screenshot. " + e.getMessage());
             e.printStackTrace();
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(prefix + "Couldn't capture screenshot."));
         }
     }
 
@@ -109,7 +110,7 @@ public class AsyncScreenshots implements Runnable {
         }
 
         chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$openfolder"));
-        chatComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(this.colorMessage("&7Open screenshot"))));
+        chatComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(this.colorMessage("&7Open this screenshot."))));
 
         IChatComponent favoriteComponent = new ChatComponentText(ChatColor.YELLOW.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "FAV" : "FAVORITE"));
@@ -132,14 +133,16 @@ public class AsyncScreenshots implements Runnable {
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             this.colorMessage("&7Upload the screenshot to Imgur, an image hosting website.\n" +
-                "&cThis cannot be uploaded once a new screenshot is taken, made favorite, or deleted."))));
+                "&cThis cannot be uploaded once a new screenshot\n" +
+                "&cis taken, made favorite, or deleted."))));
 
         IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "CPY" : "COPY"));
         copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$copyss"));
         copyComponent.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
             this.colorMessage("&7Copy this image to your system clipboard.\n" +
-                "&cThis cannot be copied once a new screenshot is taken, made favorite, or deleted."))));
+                "&cThis cannot be copied once a new screenshot\n" +
+                "&cis taken, made favorite, or deleted."))));
 
         IChatComponent folderComponent = new ChatComponentText(ChatColor.BLUE.toString() + ChatColor.BOLD +
             (PatcherConfig.compactScreenshotResponse ? "DIR" : "FOLDER"));
@@ -329,12 +332,17 @@ public class AsyncScreenshots implements Runnable {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             try {
-                ImageSelection sel = new ImageSelection(image);
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
-                IChatComponent uploadedComponent = new ChatComponentText(ChatColor.GREEN + "Screenshot has been copied to your clipboard");
-                Minecraft.getMinecraft().thePlayer.addChatComponentMessage(uploadedComponent);
+                final ImageSelection sel = new ImageSelection(image);
+                Multithreading.runAsync(() -> {
+                    try {
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
+                        ChatUtilities.sendMessage("&aScreenshot has been copied to your clipboard.", false);
+                    } catch (Exception e) {
+                        ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
+                    }
+                });
             } catch (Exception e) {
-                ChatUtilities.sendMessage("&cFailed to copy the screenshot: " + e.getCause());
+                ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
                 e.printStackTrace();
             }
         }
