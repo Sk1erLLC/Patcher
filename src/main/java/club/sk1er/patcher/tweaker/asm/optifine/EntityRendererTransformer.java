@@ -33,6 +33,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private static boolean hasScrolledYet = false;
     private static long lastMillis = System.currentTimeMillis();
     private static float smoothZoomProgress = 0f;
+    private static float desiredModifier = currentModifier;
 
     /**
      * The class name that's being transformed
@@ -629,27 +630,40 @@ public class EntityRendererTransformer implements PatcherTransformer {
         if (!PatcherConfig.scrollToZoom) {
             return normalModifier;
         }
+        long time = System.currentTimeMillis();
+        long timeSinceLastChange = time - lastMillis;
+        if (!zoomed) lastMillis = time;
 
         int moved = Mouse.getDWheel();
 
         if (moved > 0) {
+            smoothZoomProgress = 0f;
             hasScrolledYet = true;
-            currentModifier += 0.25f * currentModifier;
+            desiredModifier += 0.25f * desiredModifier;
         } else if (moved < 0) {
+            smoothZoomProgress = 0f;
             hasScrolledYet = true;
-            currentModifier -= 0.25f * currentModifier;
+            desiredModifier -= 0.25f * desiredModifier;
             EntityRendererHook.fixMissingChunks();
         }
 
-        if (currentModifier < 0.8) {
-            currentModifier = 0.8f;
+        if (desiredModifier < 0.8) {
+            desiredModifier = 0.8f;
         }
 
-        if (currentModifier > 600) {
-            currentModifier = 600f;
+        if (desiredModifier > 600) {
+            desiredModifier = 600f;
         }
-
-        return currentModifier;
+        if (PatcherConfig.smoothZoomAnimationWhenScrolling) {
+            if (hasScrolledYet && smoothZoomProgress < 1) {
+                EntityRendererHook.fixMissingChunks();
+                smoothZoomProgress += 0.004F * timeSinceLastChange;
+                smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
+                return currentModifier += (desiredModifier - currentModifier)*calculateEasing(smoothZoomProgress);
+            }
+        }
+        else currentModifier = desiredModifier;
+        return desiredModifier;
     }
 
     public static float getSmoothModifier() {
@@ -664,6 +678,10 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 return 4f - 3f * calculateEasing(smoothZoomProgress);
             }
         } else {
+            if (hasScrolledYet) {
+                hasScrolledYet = false;
+                smoothZoomProgress = 1f;
+            }
             if (smoothZoomProgress > 0) {
                 smoothZoomProgress -= 0.005F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
@@ -695,6 +713,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     public static void resetCurrent() {
         hasScrolledYet = false;
         currentModifier = normalModifier;
+        desiredModifier = normalModifier;
         smoothZoomProgress = 0f;
     }
 }

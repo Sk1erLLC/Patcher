@@ -290,6 +290,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean smoothZoomAnimation;
 
     @Property(
+            type = PropertyType.SWITCH, name = "Smooth Scroll-to-Zoom Animation",
+            description = "Add a smooth animation when you scroll in and out while zoomed with OptiFine.",
+            category = "Miscellaneous", subcategory = "OptiFine"
+    )
+    public static boolean smoothZoomAnimationWhenScrolling;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Smooth OptiFine Zoom Function",
         description = "Change the smoothing function\nused in the smooth zooming animation.",
         category = "Miscellaneous", subcategory = "OptiFine",
