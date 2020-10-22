@@ -261,43 +261,43 @@ public class PatcherConfig extends Vigilant {
     public static boolean showOwnNametag;
 
     @Property(
-        type = PropertyType.SWITCH, name = "OptiFine Zoom Adjustment",
+        type = PropertyType.SWITCH, name = "Zoom Adjustment",
         description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "OptiFine Zoom Smooth Camera",
-        description = "Remove the smooth camera effect when using OptiFine zoom.",
+        type = PropertyType.SWITCH, name = "Zoom Smooth Camera",
+        description = "Remove the smooth camera effect when using zoom.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean normalZoomSensitivity;
 
     @Property(
-            type = PropertyType.SLIDER, name = "OptiFine Zoom Custom Mouse Sensitivity",
-            description = "Use a custom mouse sensitivity when zoomed in with OptiFine. This is a percentage of your normal sensitivity.",
-            category = "Miscellaneous", subcategory = "OptiFine",
-            max = 100
+        type = PropertyType.SLIDER, name = "Zoom Sensitivity",
+        description = "Use a custom mouse sensitivity when zoomed. This is a percentage of your normal sensitivity.",
+        category = "Miscellaneous", subcategory = "OptiFine",
+        max = 100
     )
     public static int customZoomSensitivity = 100;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Smooth OptiFine Zoom Animation",
-        description = "Add a smooth animation when you zoom in and out with OptiFine.",
+        type = PropertyType.SWITCH, name = "Smooth Zoom Animation",
+        description = "Add a smooth animation when you zoom in and out.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean smoothZoomAnimation;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Smooth Scroll-to-Zoom Animation",
-            description = "Add a smooth animation when you scroll in and out while zoomed with OptiFine.",
-            category = "Miscellaneous", subcategory = "OptiFine"
+        type = PropertyType.SWITCH, name = "Smooth Scroll-to-Zoom Animation",
+        description = "Add a smooth animation when you scroll in and out while zoomed.",
+        category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean smoothZoomAnimationWhenScrolling;
 
     @Property(
-        type = PropertyType.SELECTOR, name = "Smooth OptiFine Zoom Function",
+        type = PropertyType.SELECTOR, name = "Smooth Zoom Function",
         description = "Change the smoothing function\nused in the smooth zooming animation.",
         category = "Miscellaneous", subcategory = "OptiFine",
         options = {"In Out Quad", "In Out Circular", "Out Quint"}
@@ -312,7 +312,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean toggleToZoom;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Simplify OptiFine FPS Counter",
+        type = PropertyType.SWITCH, name = "Simplify FPS Counter",
         description = "Remove the additions OptiFine L5 and above makes to the debug screen fps counter.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
