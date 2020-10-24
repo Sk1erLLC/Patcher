@@ -424,6 +424,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean betterCamera = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Better F1",
+        description = "Hide nametags when in F1 mode.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean betterHideGui;
+
     // PERFORMANCE
 
     @Property(

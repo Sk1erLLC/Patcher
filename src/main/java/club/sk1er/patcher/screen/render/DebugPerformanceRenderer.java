@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 public class DebugPerformanceRenderer {
 
-    private boolean frameRender = false;
-    private long updated = 0;
+    private boolean frameRender;
+    private long updated;
     private String mode = "???";
     private final DecimalFormat format = new DecimalFormat("#.00");
     private final List<Long> frames = new ArrayList<>();

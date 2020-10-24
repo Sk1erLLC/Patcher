@@ -42,7 +42,6 @@ public class EntityRendering {
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fontRenderer = mc.fontRendererObj;
     private final RenderManager renderManager = mc.getRenderManager();
-    private final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
     private WeakReference<EntityLivingBase> reference;
 
     @SubscribeEvent
@@ -65,6 +64,10 @@ public class EntityRendering {
      */
     @SubscribeEvent
     public void renderNametag(RenderLivingEvent.Specials.Pre<EntityPlayerSP> event) {
+        if (PatcherConfig.betterHideGui && mc.gameSettings.hideGUI) {
+            return;
+        }
+
         if (event.entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
             renderTag(event.entity);
         }
@@ -81,11 +84,12 @@ public class EntityRendering {
         if (!PatcherConfig.cleanView) return;
 
         if (event.phase == Phase.START) {
-            EntityLivingBase entity = (EntityLivingBase) mc.getRenderViewEntity();
-            EntityLivingBase previousEntity = (reference != null) ? reference.get() : null;
+            final EntityLivingBase entity = (EntityLivingBase) mc.getRenderViewEntity();
+            final EntityLivingBase previousEntity = (reference != null) ? reference.get() : null;
+            final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
             if (previousEntity != entity) {
                 if (previousEntity != null && previousEntity.getEntityData().getBoolean(key)) {
-                    Collection<PotionEffect> effects = previousEntity.getActivePotionEffects();
+                    final Collection<PotionEffect> effects = previousEntity.getActivePotionEffects();
                     if (!effects.isEmpty()) {
                         previousEntity.getDataWatcher().updateObject(7, PotionHelper.calcPotionLiquidColor(effects));
                     }
