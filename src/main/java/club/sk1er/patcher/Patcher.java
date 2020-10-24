@@ -209,6 +209,11 @@ public class Patcher {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        if (!loadedGalacticFontRenderer) {
+            loadedGalacticFontRenderer = true;
+            Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
+
+        }
         // Close threads as it is no longer needed after startup.
         MCDispatchers.INSTANCE.getIO().close();
     }
@@ -309,27 +314,6 @@ public class Patcher {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
-        if (!loadedGalacticFontRenderer) {
-            loadedGalacticFontRenderer = true;
-            final SharedDrawable sharedDrawable;
-            try {
-                sharedDrawable = new SharedDrawable(Display.getDrawable());
-                Multithreading.runAsync(
-                    () -> {
-                        try {
-                            sharedDrawable.makeCurrent();
-                            Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
-                            sharedDrawable.releaseContext();
-                        } catch (LWJGLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                );
-            } catch (LWJGLException e) {
-                e.printStackTrace();
-            }
-
-        }
         EnhancementManager.getInstance().tick();
     }
 
