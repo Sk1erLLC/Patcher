@@ -75,6 +75,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.SharedDrawable;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.BufferedReader;
@@ -312,9 +315,30 @@ public class Patcher {
             }
         });
     }
-
+    private boolean loadedGalacticFontRenderer;
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
+        if (!loadedGalacticFontRenderer) {
+            loadedGalacticFontRenderer = true;
+            final SharedDrawable sharedDrawable;
+            try {
+                sharedDrawable = new SharedDrawable(Display.getDrawable());
+                Multithreading.runAsync(
+                    () -> {
+                        try {
+                            sharedDrawable.makeCurrent();
+                            Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
+                            sharedDrawable.releaseContext();
+                        } catch (LWJGLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                );
+            } catch (LWJGLException e) {
+                e.printStackTrace();
+            }
+
+        }
         EnhancementManager.getInstance().tick();
     }
 
