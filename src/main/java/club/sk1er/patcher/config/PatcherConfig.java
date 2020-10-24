@@ -923,7 +923,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Preview Time",
-        description = "Adjust how long the preview should stay on screen before sliding out.\nTime is measured in seconds",
+        description = "Adjust how long the preview should stay on screen before sliding out.\nTime is measured in seconds.",
         category = "Screenshots", subcategory = "General",
         min = 1, max = 5
     )

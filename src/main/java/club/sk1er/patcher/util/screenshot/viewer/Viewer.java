@@ -26,14 +26,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Used for rendering the current screenshot on the screen when "Screenshot Preview" is enabled.
- */
 public class Viewer {
 
-    /**
-     * Create a {@link Window} instance.
-     */
     private Window currentWindow;
 
     //private File screenshotFile;
@@ -95,13 +89,8 @@ public class Viewer {
         imageComponent.animateTo(appearAnimation);
     }
 
-    /**
-     * Create a fading out animation, removing the screenshot from the screen, and closing the current window.
-     *
-     * @param container The current UI Component being animated, which in this case is the screenshot.
-     */
     private void slideOutAnimation(UIComponent container) {
-        AnimatingConstraints slideAnimation = container.makeAnimation()
+        final AnimatingConstraints slideAnimation = container.makeAnimation()
             .setXAnimation(Animations.IN_OUT_CIRCULAR, 1f,
                 new RelativeConstraint(2),
                 PatcherConfig.previewTime
