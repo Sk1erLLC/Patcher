@@ -75,9 +75,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.SharedDrawable;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.*;
@@ -91,7 +88,8 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+beta-11";
+    public static final String VERSION = "1.4+rc-1";
+
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
      * This is never null, as {@link Mod.Instance} creates the instance.
@@ -100,6 +98,7 @@ public class Patcher {
      */
     @Mod.Instance("patcher")
     public static Patcher instance;
+
     private final Logger logger = LogManager.getLogger("Patcher");
 
     /**
@@ -114,6 +113,7 @@ public class Patcher {
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
+
     /**
      * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
      * through ASM, modified through {@link RenderGlobalTransformer}.
@@ -124,10 +124,12 @@ public class Patcher {
     private final KeyBinding dropModifier = new KeybindDropModifier();
     private final KeyBinding chatPeek = new KeybindChatPeek();
     private final Viewer viewer = new Viewer();
+
     /**
      * Create an instance of our config using {@link Vigilant}.
      */
     private PatcherConfig patcherConfig;
+
     /**
      * Create an instance of our sound config using {@link Vigilant}. The difference between this and the normal
      * config {@link Patcher#getPatcherConfig()} is that this is a much larger file, containing any sound possible,
@@ -212,8 +214,8 @@ public class Patcher {
         if (!loadedGalacticFontRenderer) {
             loadedGalacticFontRenderer = true;
             Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
-
         }
+
         // Close threads as it is no longer needed after startup.
         MCDispatchers.INSTANCE.getIO().close();
     }
