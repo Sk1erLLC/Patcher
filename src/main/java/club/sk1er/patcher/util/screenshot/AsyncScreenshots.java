@@ -92,7 +92,7 @@ public class AsyncScreenshots implements Runnable {
             }
 
             if (PatcherConfig.screenshotPreview) {
-                Patcher.instance.getViewer().newCapture(image);
+                Patcher.instance.getViewer().newCapture(image/*, screenshot*/);
             }
         } catch (Exception e) {
             ChatUtilities.sendMessage("Failed to capture screenshot. " + e.getMessage());

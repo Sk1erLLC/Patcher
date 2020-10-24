@@ -922,6 +922,14 @@ public class PatcherConfig extends Vigilant {
     public static boolean screenshotPreview;
 
     @Property(
+        type = PropertyType.SLIDER, name = "Preview Time",
+        description = "Adjust how long the preview should stay on screen before sliding out.\nTime is measured in seconds",
+        category = "Screenshots", subcategory = "General",
+        min = 1, max = 5
+    )
+    public static int previewTime = 3;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Compact Response",
         description = "Compact the message given when screenshotting.",
         category = "Screenshots", subcategory = "Feedback"
