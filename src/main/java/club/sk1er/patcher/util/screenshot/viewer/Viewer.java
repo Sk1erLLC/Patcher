@@ -15,6 +15,7 @@ import club.sk1er.elementa.UIComponent;
 import club.sk1er.elementa.components.UIImage;
 import club.sk1er.elementa.components.Window;
 import club.sk1er.elementa.components.image.DefaultLoadingImage;
+import club.sk1er.elementa.constraints.ConstantColorConstraint;
 import club.sk1er.elementa.constraints.PixelConstraint;
 import club.sk1er.elementa.constraints.RelativeConstraint;
 import club.sk1er.elementa.constraints.animation.AnimatingConstraints;
@@ -23,6 +24,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 
@@ -79,20 +81,61 @@ public class Viewer {
             }
         });*/
 
-        final AnimatingConstraints appearAnimation = imageComponent.makeAnimation()
-            .setWidthAnimation(Animations.OUT_QUINT, 1.5f, new RelativeConstraint(1 / 3f))
-            .setHeightAnimation(Animations.OUT_QUINT, 1.5f, new RelativeConstraint(1 / 3f))
-            .setXAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
-            .setYAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
-            .onCompleteRunnable(() -> slideOutAnimation(imageComponent));
+        final int style = PatcherConfig.previewAnimationStyle;
+        final float previewScale = (float) 1 / PatcherConfig.previewScale;
+        AnimatingConstraints animation = null;
+        if (style == 0) {
+            // ios style
+            animation = imageComponent.makeAnimation()
+                .setWidthAnimation(Animations.OUT_QUINT, 1.5f, new RelativeConstraint(previewScale))
+                .setHeightAnimation(Animations.OUT_QUINT, 1.5f, new RelativeConstraint(previewScale))
+                .setXAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
+                .setYAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
+                .onCompleteRunnable(() -> slideOutAnimation(imageComponent));
+        } else if (style == 1) {
+            // slide out
+            imageComponent
+                .setWidth(new RelativeConstraint(previewScale))
+                .setHeight(new RelativeConstraint(previewScale))
+                .setX(new RelativeConstraint(1))
+                .setY(new PixelConstraint(10, true));
+            animation = imageComponent.makeAnimation()
+                .setXAnimation(Animations.OUT_QUINT, 1.5f, new PixelConstraint(10, true))
+                .onCompleteRunnable(() -> slideOutAnimation(imageComponent));
+        } else if (style == 2) {
+            // none
+            imageComponent
+                .setWidth(new RelativeConstraint(previewScale))
+                .setHeight(new RelativeConstraint(previewScale))
+                .setX(new PixelConstraint(10, true))
+                .setY(new PixelConstraint(10, true));
 
-        imageComponent.animateTo(appearAnimation);
+            animation = imageComponent.makeAnimation()
+                .onCompleteRunnable(() -> fakeAnimation(imageComponent));
+        }
+
+        if (animation != null) {
+            imageComponent.animateTo(animation);
+        }
     }
 
     private void slideOutAnimation(UIComponent container) {
         final AnimatingConstraints slideAnimation = container.makeAnimation()
             .setXAnimation(Animations.IN_OUT_CIRCULAR, 1f,
                 new RelativeConstraint(2),
+                PatcherConfig.previewTime
+            ).onCompleteRunnable(() -> {
+                this.currentWindow = null;
+                /*this.screenshotFile = null;*/
+            });
+
+        container.animateTo(slideAnimation);
+    }
+
+    private void fakeAnimation(UIComponent container) {
+        final AnimatingConstraints slideAnimation = container.makeAnimation()
+            .setColorAnimation(Animations.IN_OUT_CIRCULAR, 1f,
+                new ConstantColorConstraint(new Color(255, 255, 255, 255)),
                 PatcherConfig.previewTime
             ).onCompleteRunnable(() -> {
                 this.currentWindow = null;

@@ -13,6 +13,7 @@ package club.sk1er.patcher.util.fov;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -61,13 +62,14 @@ public class FovHandler {
             base += (float) (0.15000000596046448 * PatcherConfig.sprintingFovModifier);
         }
 
-        if (event.entity.getItemInUse() != null && event.entity.getItemInUse().getItem() == Items.bow) {
+        final ItemStack item = event.entity.getItemInUse();
+        if (item != null && item.getItem() == Items.bow) {
             int duration = (int) Math.min(event.entity.getItemInUseDuration(), MAX_BOW_TICKS);
             float modifier = MODIFIER_BY_TICK.get(duration);
             base -= modifier * PatcherConfig.bowFovModifier;
         }
 
-        Collection<PotionEffect> effects = event.entity.getActivePotionEffects();
+        final Collection<PotionEffect> effects = event.entity.getActivePotionEffects();
         for (PotionEffect effect : effects) {
             if (effect.getPotionID() == 1) {
                 base += (MODIFIER_SPEED * (effect.getAmplifier() + 1) * PatcherConfig.speedFovModifier);

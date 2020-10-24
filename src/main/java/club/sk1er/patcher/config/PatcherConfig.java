@@ -930,6 +930,22 @@ public class PatcherConfig extends Vigilant {
     public static int previewTime = 3;
 
     @Property(
+        type = PropertyType.SELECTOR, name = "Preview Animation",
+        description = "Select an animation style for the screenshot preview.",
+        category = "Screenshots", subcategory = "General",
+        options = {"iOS Style", "Slide Out", "None"}
+    )
+    public static int previewAnimationStyle = 0;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Preview Scale",
+        description = "Change the scale of the preview.\nSmaller number is bigger.",
+        category = "Screenshots", subcategory = "General",
+        min = 3, max = 6
+    )
+    public static int previewScale = 3;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Compact Response",
         description = "Compact the message given when screenshotting.",
         category = "Screenshots", subcategory = "Feedback"
