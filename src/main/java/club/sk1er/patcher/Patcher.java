@@ -80,24 +80,18 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.SharedDrawable;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
 public class Patcher {
 
+    // normal versions will be "1.x"
+    // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
+    // rcs will be 1.x+rc-y
+    // extra branches will be 1.x+branch-y
+    public static final String VERSION = "1.4+beta-11";
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
      * This is never null, as {@link Mod.Instance} creates the instance.
@@ -106,13 +100,6 @@ public class Patcher {
      */
     @Mod.Instance("patcher")
     public static Patcher instance;
-
-    // normal versions will be "1.x"
-    // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
-    // rcs will be 1.x+rc-y
-    // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+beta-11";
-
     private final Logger logger = LogManager.getLogger("Patcher");
 
     /**
@@ -127,34 +114,38 @@ public class Patcher {
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
-
+    /**
+     * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
+     * through ASM, modified through {@link RenderGlobalTransformer}.
+     */
+    private final CloudHandler cloudHandler = new CloudHandler();
+    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
+    private final KeyBinding nameHistory = new KeybindNameHistory();
+    private final KeyBinding dropModifier = new KeybindDropModifier();
+    private final KeyBinding chatPeek = new KeybindChatPeek();
+    private final Viewer viewer = new Viewer();
     /**
      * Create an instance of our config using {@link Vigilant}.
      */
     private PatcherConfig patcherConfig;
-
     /**
      * Create an instance of our sound config using {@link Vigilant}. The difference between this and the normal
      * config {@link Patcher#getPatcherConfig()} is that this is a much larger file, containing any sound possible,
      * and allowing for players to modify how loud a sound is (0 (mute)-2x).
      */
     private PatcherSoundConfig patcherSoundConfig;
+    private JsonObject duplicateModsJson;
+    private boolean loadedGalacticFontRenderer;
 
     /**
-     * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
-     * through ASM, modified through {@link RenderGlobalTransformer}.
+     * Check if the current environment is development, or production.
+     *
+     * @return If the client is being ran in a development environment, return true, otherwise return false.
      */
-    private final CloudHandler cloudHandler = new CloudHandler();
-
-    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
-
-    private final KeyBinding nameHistory = new KeybindNameHistory();
-    private final KeyBinding dropModifier = new KeybindDropModifier();
-    private final KeyBinding chatPeek = new KeybindChatPeek();
-
-    private final Viewer viewer = new Viewer();
-
-    private JsonObject duplicateModsJson;
+    public static boolean isDevelopment() {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return o != null && (boolean) o;
+    }
 
     /**
      * Process important things that should be available by the time the game is done loading.
@@ -315,7 +306,7 @@ public class Patcher {
             }
         });
     }
-    private boolean loadedGalacticFontRenderer;
+
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
         if (!loadedGalacticFontRenderer) {
@@ -437,16 +428,6 @@ public class Patcher {
         } catch (IOException e) {
             logger.error("Failed to load blacklisted servers.", e);
         }
-    }
-
-    /**
-     * Check if the current environment is development, or production.
-     *
-     * @return If the client is being ran in a development environment, return true, otherwise return false.
-     */
-    public static boolean isDevelopment() {
-        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        return o != null && (boolean) o;
     }
 
     public Set<String> keySet(JsonObject json) throws NullPointerException {
