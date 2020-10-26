@@ -88,7 +88,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.4+rc-1";
+    public static final String VERSION = "1.4";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -240,7 +240,7 @@ public class Patcher {
                 try {
                     duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
-                    Patcher.instance.getLogger().error("Failed to fetch list of duplicate mods.", e);
+                    logger.error("Failed to fetch list of duplicate mods.", e);
                     return;
                 }
 
