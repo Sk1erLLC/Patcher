@@ -148,11 +148,18 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean playerVoidRendering = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Fluid Stitching",
+        description = "Fix missing edges in fluids.\n§eRequires Chunk reload (F3+A).\n§cMay cause Z-Fighting against blocks that aren't full size.",
+        category = "Bug Fixes", subcategory = "Rendering"
+    )
+    public static boolean fluidStitching = true;
+
     // MISCELLANEOUS
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
-        description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.",
+        description = "Remove lighting updates, increasing visibility.\n§eRequires Chunk reload (F3+A).\n§eCan positively impact performance.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean fullbright = true;
@@ -248,7 +255,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Ground Foliage",
-        description = "Stop plants/flowers from rendering.",
+        description = "Stop plants/flowers from rendering.\n§eRequires Chunk reload (F3+A).",
         category = "Miscellaneous", subcategory = "Blocks"
     )
     public static boolean removeGroundFoliage;
@@ -771,6 +778,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean antiClearChat;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Shift Chat",
+        description = "Holding shift while pressing enter will keep chat open.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean shiftChat;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Startup Notification",
         description = "Notify how long the game took to startup with a notification.",
         category = "Screens", subcategory = "General"
@@ -861,7 +875,7 @@ public class PatcherConfig extends Vigilant {
         description = "Add a button to the escape menu to refresh your current skin without needing to leave the server.\n§eAlso accessible with the command \"/refreshskin\".",
         category = "Screens", subcategory = "General"
     )
-    public static boolean skinRefresher = true;
+    public static boolean skinRefresher;
 
     @Property(
         type = PropertyType.SWITCH, name = "Replace Open to Lan",
@@ -873,7 +887,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",
         description = "Preview image links when hovering over a supported URL.\nPress Shift to use fullscreen and Control to render in native image resolution.\n" +
-            "Currently supported: Imgur, Discord, Badlion Screenshots.",
+            "§eCurrently supported: Imgur, Discord, Badlion Screenshots.",
         category = "Screens", subcategory = "Image Preview"
     )
     public static boolean imagePreview = true;

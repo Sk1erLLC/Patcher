@@ -16,6 +16,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -49,59 +50,130 @@ public class GuiChatTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "holdingShift", "Z", null, null));
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "initGui":
+                case "func_73866_w_": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.PUTFIELD) {
-                        String fieldName = mapFieldNameFromNode(next);
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.PUTFIELD) {
+                            String fieldName = mapFieldNameFromNode(next);
 
-                        if (fieldName.equals("sentHistoryCursor") || fieldName.equals("field_146416_h")) {
-                            methodNode.instructions.insertBefore(next.getNext(), createWasInitBefore());
-                        }
-                    } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode(next);
-
-                        if (methodInsnName.equals("setText") || methodInsnName.equals("func_175274_a")) {
-                            for (int i = 0; i < 4; ++i) {
-                                methodNode.instructions.remove(next.getPrevious());
+                            if (fieldName.equals("sentHistoryCursor") || fieldName.equals("field_146416_h")) {
+                                methodNode.instructions.insertBefore(next.getNext(), createWasInitBefore());
                             }
-
-                            methodNode.instructions.remove(next);
-                            break;
-                        }
-                    }
-                }
-
-                C01PacketChatMessageTransformer.extendChatLength(methodNode);
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setText());
-            } else if (methodName.equals("drawScreen") || methodName.equals("func_73863_a")) {
-                LabelNode ifne = new LabelNode();
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getOption(ifne));
-
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof MethodInsnNode) {
-                        if (next.getOpcode() == Opcodes.INVOKESTATIC) {
+                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                             String methodInsnName = mapMethodNameFromNode(next);
 
-                            if (methodInsnName.equals("drawRect") || methodInsnName.equals("func_73734_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), ifne);
+                            if (methodInsnName.equals("setText") || methodInsnName.equals("func_175274_a")) {
+                                for (int i = 0; i < 4; ++i) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                }
+
+                                methodNode.instructions.remove(next);
                                 break;
                             }
                         }
                     }
+
+                    C01PacketChatMessageTransformer.extendChatLength(methodNode);
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setText());
+                    break;
+                }
+                case "drawScreen":
+                case "func_73863_a": {
+                    LabelNode ifne = new LabelNode();
+                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getOption(ifne));
+
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode) {
+                            if (next.getOpcode() == Opcodes.INVOKESTATIC) {
+                                String methodInsnName = mapMethodNameFromNode(next);
+
+                                if (methodInsnName.equals("drawRect") || methodInsnName.equals("func_73734_a")) {
+                                    methodNode.instructions.insertBefore(next.getNext(), ifne);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                case "keyTyped":
+                case "func_73869_a": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodNameInsn = mapMethodNameFromNode(next);
+
+                            if (methodNameInsn.equals("displayGuiScreen") || methodNameInsn.equals("func_147108_a")) {
+                                AbstractInsnNode unused = next;
+                                for (int i = 0; i < 8; i++) {
+                                    unused = unused.getPrevious();
+                                }
+
+                                boolean insert = unused instanceof MethodInsnNode && unused.getOpcode() == Opcodes.INVOKEVIRTUAL;
+
+                                if (insert) {
+                                    for (int i = 0; i < 4; i++) {
+                                        next = next.getPrevious();
+                                    }
+
+                                    LabelNode gotoInsn = new LabelNode();
+                                    methodNode.instructions.insertBefore(next, checkChat(gotoInsn));
+
+                                    for (int i = 0; i < 4; i++) {
+                                        next = next.getNext();
+                                    }
+
+                                    methodNode.instructions.insertBefore(next.getNext(), gotoInsn);
+                                }
+                            }
+                        }
+                    }
+
+                    break;
                 }
             }
         }
+    }
+
+    private InsnList checkChat(LabelNode gotoInsn) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "shiftChat", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "holdingShift", "Z"));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new InsnNode(Opcodes.ACONST_NULL));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "func_147108_a", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifne);
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "field_146415_a", "Lnet/minecraft/client/gui/GuiTextField;"));
+        list.add(new LdcInsnNode(""));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiTextField", "func_146180_a", "(Ljava/lang/String;)V", false));
+        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList setText() {
@@ -184,6 +256,9 @@ public class GuiChatTransformer implements PatcherTransformer {
 
     private InsnList getOption(LabelNode ifne) {
         InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/gui/GuiChat", "func_146272_n", "()Z", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/GuiChat", "holdingShift", "Z"));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChatInputField", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         return list;

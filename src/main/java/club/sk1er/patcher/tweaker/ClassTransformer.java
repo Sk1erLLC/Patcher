@@ -162,6 +162,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new LazyLoadBaseTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
+        registerTransformer(new BlockFluidRendererTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

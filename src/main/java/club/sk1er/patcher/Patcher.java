@@ -235,6 +235,25 @@ public class Patcher {
 
         logger.info("Minecraft started in {} seconds.", time);
 
+        if (PatcherConfig.entityCulling) {
+            for (ModContainer container : Loader.instance().getActiveModList()) {
+                if (container.getModId().equals("enhancements") || container.getModId().equals("labymod")) {
+                    // todo: phrase this better, should probably explain why it's been disabled
+                    // and why the mod is being blamed for this
+                    Notifications.INSTANCE.pushNotification(
+                        "Patcher",
+                        container.getName() + " has been detected. Entity Culling is now disabled.\n" +
+                            "This is an issue on their end, and cannot be fixed by us.");
+                    PatcherConfig.entityCulling = false;
+
+                    // force save config
+                    patcherConfig.markDirty();
+                    patcherConfig.writeData();
+                    break;
+                }
+            }
+        }
+
         if (PatcherConfig.replacedModsWarning) {
             Multithreading.runAsync(() -> {
                 try {
