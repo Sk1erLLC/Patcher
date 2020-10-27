@@ -15,6 +15,7 @@ import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiCustomizeSkin;
@@ -105,6 +106,16 @@ public class PatcherMenuEditor {
         }
     }
 
+    @SubscribeEvent
+    public void preActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
+        if (event.gui instanceof GuiIngameMenu && event.button.id == 1 && !mc.isIntegratedServerRunning()) {
+            if (PatcherConfig.smartDisconnect) {
+                event.setCanceled(true);
+                mc.displayGuiScreen(new SmartDisconnectScreen());
+            }
+        }
+    }
+
     /**
      * Used to modify or create new actions for buttons.
      *
@@ -112,14 +123,17 @@ public class PatcherMenuEditor {
      */
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
-        if (event.button.id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
+        final int id = event.button.id;
+        if (id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
             SkinCacheRefresh.refreshSkin();
-        } else if (event.gui instanceof GuiIngameMenu && event.button.id == 231423) {
-            MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
-            mc.theWorld.sendQuittingDisconnectingPacket();
-            mc.loadWorld(null);
-            mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
-        } else if (event.gui instanceof GuiScreenOptionsSounds && event.button.id == 85348) {
+        } else if (event.gui instanceof GuiIngameMenu) {
+            if (id == 231423) {
+                MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
+                mc.theWorld.sendQuittingDisconnectingPacket();
+                mc.loadWorld(null);
+                mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+            }
+        } else if (event.gui instanceof GuiScreenOptionsSounds && id == 85348) {
             mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
         }
     }

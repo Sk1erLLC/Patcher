@@ -915,6 +915,15 @@ public class PatcherConfig extends Vigilant {
     public static boolean replacedModsWarning = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Smart Disconnect",
+        description = "Choose between disconnecting or relogging when clicking the disconnect button.\n§eOnly works on Multiplayer servers.",
+        category = "Screens", subcategory = "General"
+    )
+    public static boolean smartDisconnect;
+
+    // SCREENSHOTS
+
+    @Property(
         type = PropertyType.SWITCH, name = "Screenshot Manager",
         description = "Change the way screenshotting works as a whole, creating a whole new process to screenshotting such as uploading to Imgur, copying to clipboard, etc.",
         category = "Screenshots", subcategory = "General"
