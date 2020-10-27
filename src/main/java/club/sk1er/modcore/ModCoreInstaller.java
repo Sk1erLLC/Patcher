@@ -1,14 +1,3 @@
-/*
- * Copyright © 2020 by Sk1er LLC
- *
- * All rights reserved.
- *
- * Sk1er LLC
- * 444 S Fulton Ave
- * Mount Vernon, NY
- * sk1er.club
- */
-
 package club.sk1er.modcore;
 
 import com.google.gson.JsonArray;
@@ -44,9 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
-    Created by Sk1er for use in all mods. Install under exact package name each time.
- */
 public class ModCoreInstaller {
 
 
