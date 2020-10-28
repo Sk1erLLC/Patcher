@@ -130,7 +130,7 @@ public class EntityCulling {
     @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-        return !uiRendering && PatcherConfig.entityCulling && checkEntity(stack);
+        return !uiRendering && PatcherConfig.entityCulling && stack.worldObj != mc.thePlayer.worldObj || checkEntity(stack);
     }
 
     private static int getQuery() {
@@ -175,7 +175,7 @@ public class EntityCulling {
         }
 
         final EntityLivingBase entity = event.entity;
-        if (entity == mc.thePlayer) {
+        if (entity == mc.thePlayer || entity.worldObj != mc.thePlayer.worldObj) {
             return;
         }
 
