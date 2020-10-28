@@ -243,7 +243,7 @@ public class Patcher {
                     Notifications.INSTANCE.pushNotification(
                         "Patcher",
                         container.getName() + " has been detected. Entity Culling is now disabled.\n" +
-                            "This is an issue on their end, and cannot be fixed by us.");
+                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
                     PatcherConfig.entityCulling = false;
 
                     // force save config
