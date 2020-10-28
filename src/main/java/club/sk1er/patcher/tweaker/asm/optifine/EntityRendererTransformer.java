@@ -219,7 +219,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                             String methodInsnName = mapMethodNameFromNode(next);
 
-                            if (methodInsnName.equals("renderEntities")) {
+                            if (methodInsnName.equals("renderEntities") || methodInsnName.equals("func_180446_a")) {
                                 methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
 
                                 for (int i = 0; i < 4; i++) {
