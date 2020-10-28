@@ -12,7 +12,6 @@
 package club.sk1er.patcher.util.enhancement.text;
 
 import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.hash.StringHash;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -20,12 +19,13 @@ import com.github.benmanes.caffeine.cache.CacheWriter;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import net.minecraft.client.renderer.GLAllocation;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.SharedDrawable;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class EnhancedFontRenderer implements Enhancement {
@@ -59,7 +59,7 @@ public final class EnhancedFontRenderer implements Enhancement {
     }
 
     public int getGlList() {
-        Integer poll = glRemoval.poll();
+        final Integer poll = glRemoval.poll();
         return poll == null ? GLAllocation.generateDisplayLists(1) : poll;
     }
 

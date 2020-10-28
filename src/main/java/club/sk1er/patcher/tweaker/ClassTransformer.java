@@ -186,7 +186,7 @@ public class ClassTransformer implements IClassTransformer {
 
             final List<String> unsupportedOptiFineVersions = Arrays.asList("I3", "H8", "H7", "H6", "H5");
             if (unsupportedOptiFineVersions.contains(optifineVersion)) {
-                LOGGER.info("User has outdated OptiFine.");
+                LOGGER.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
                 this.halt("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
                     "Please update to a newer version of OptiFine (i7 and above are supported) before trying to launch.");
                 return;
