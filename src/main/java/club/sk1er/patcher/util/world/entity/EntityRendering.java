@@ -52,7 +52,7 @@ public class EntityRendering {
             event.setCanceled(true);
         }
 
-        if ((entity.getDistanceToEntity(mc.thePlayer) > PatcherConfig.entityRenderDistance) && PatcherConfig.entityRenderDistanceToggle) {
+        if (entity.getDistanceToEntity(mc.thePlayer) > PatcherConfig.entityRenderDistance && PatcherConfig.entityRenderDistanceToggle && EntityCulling.shouldPerformCulling) {
             event.setCanceled(true);
         }
     }

@@ -30,7 +30,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
@@ -52,7 +51,7 @@ public class EntityCulling {
     private static final RenderManager renderManager = mc.getRenderManager();
     private static final ConcurrentHashMap<UUID, OcclusionQuery> queries = new ConcurrentHashMap<>();
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
-    public static boolean uiRendering = false;
+    public static boolean shouldPerformCulling = false;
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -130,7 +129,7 @@ public class EntityCulling {
     @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-        return !uiRendering && PatcherConfig.entityCulling && stack.worldObj != mc.thePlayer.worldObj || checkEntity(stack);
+        return shouldPerformCulling && PatcherConfig.entityCulling && stack.worldObj != mc.thePlayer.worldObj || checkEntity(stack);
     }
 
     private static int getQuery() {
@@ -144,8 +143,7 @@ public class EntityCulling {
      * @return true if the entity rendering should be skipped
      */
     private static boolean checkEntity(Entity entity) {
-        OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
-
+        final OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
         if (query.refresh) {
             query.nextQuery = getQuery();
             query.refresh = false;
@@ -170,7 +168,7 @@ public class EntityCulling {
      */
     @SubscribeEvent
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
-        if (!PatcherConfig.entityCulling || uiRendering) {
+        if (!PatcherConfig.entityCulling || !shouldPerformCulling) {
             return;
         }
 

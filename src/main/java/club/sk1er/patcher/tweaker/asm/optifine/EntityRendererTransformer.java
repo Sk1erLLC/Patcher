@@ -216,6 +216,20 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            String methodInsnName = mapMethodNameFromNode(next);
+
+                            if (methodInsnName.equals("renderEntities")) {
+                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
+
+                                for (int i = 0; i < 4; i++) {
+                                    next = next.getPrevious();
+                                }
+
+                                methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
+                            }
+                        }
+
                         switch (ClassTransformer.optifineVersion) {
                             case "I7": {
                                 if (next instanceof TypeInsnNode) {
@@ -254,34 +268,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                         break;
                                     }
                                 }
-                            }
-
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-
-                case "func_181560_a":
-                case "updateCameraAndRender": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
-                            if (methodInsnName.equals("renderGameOverlay") || methodInsnName.equals("func_175180_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
-
-                                for (int i = 0; i < 9; i++) {
-                                    next = next.getPrevious();
-                                }
-
-                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(true));
-                                break;
                             }
                         }
                     }
@@ -472,7 +458,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList toggleCullingStatus(boolean status) {
         InsnList list = new InsnList();
         list.add(new InsnNode(status ? Opcodes.ICONST_1 : Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "uiRendering", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "shouldPerformCulling", "Z"));
         return list;
     }
 
