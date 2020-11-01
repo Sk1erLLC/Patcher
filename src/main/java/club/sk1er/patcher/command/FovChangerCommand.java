@@ -53,6 +53,7 @@ public class FovChangerCommand extends CommandBase {
                     "FOV changed from &e" + Minecraft.getMinecraft().gameSettings.fovSetting + "&r to &a" + fovAmount + "."
                 );
                 Minecraft.getMinecraft().gameSettings.fovSetting = fovAmount;
+                Minecraft.getMinecraft().gameSettings.saveOptions();
             } catch (NumberFormatException e) {
                 ChatUtilities.sendNotification("FOV Changer", "You cannot use a letter as your FOV.");
             }
