@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -43,6 +42,9 @@ public class FovChangerCommand extends CommandBase {
 
                 if (fovAmount == 0) {
                     ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to 0 is disabled due to game-breaking visual bugs.");
+                    return;
+                } else if (fovAmount > 130) {
+                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 130 is disabled due to game-breaking visual bugs.");
                     return;
                 }
 
