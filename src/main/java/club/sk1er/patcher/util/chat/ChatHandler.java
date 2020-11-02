@@ -45,7 +45,7 @@ public class ChatHandler {
             chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
         }
 
-        if (!event.isCanceled() && event.type == 0) {
+        if (!event.isCanceled() && (event.type == 0 || event.type == 1)) {
             final String message = event.message.getUnformattedText().trim();
             if (message.isEmpty() && PatcherConfig.antiClearChat) {
                 event.setCanceled(true);
