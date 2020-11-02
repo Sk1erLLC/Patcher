@@ -697,14 +697,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableTransparentBackgrounds = false;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Chat History Length",
-        description = "Change how many messages you can scroll back past.",
-        category = "Screens", subcategory = "Chat",
-        min = 100, max = 10000
-    )
-    public static int chatHistoryLength = 100;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Custom Tab Opacity",
         description = "Allow for customizing tab opacity.",
         category = "Screens", subcategory = "Tab"

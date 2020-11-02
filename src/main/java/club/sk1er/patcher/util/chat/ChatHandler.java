@@ -28,6 +28,7 @@ import java.util.LinkedList;
 public class ChatHandler {
 
     private final LinkedList<ChatEntry> entries = new LinkedList<>();
+    private GuiNewChat chat;
     private int line;
     private int lastAmount = 0;
 
@@ -40,9 +41,15 @@ public class ChatHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
+        if (chat == null) {
+            chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
+        }
+
         if (!event.isCanceled() && event.type == 0) {
-            if (event.message.getUnformattedText().trim().isEmpty() && PatcherConfig.antiClearChat) {
+            final String message = event.message.getUnformattedText().trim();
+            if (message.isEmpty() && PatcherConfig.antiClearChat) {
                 event.setCanceled(true);
+                return;
             }
 
             final String timeFormat = LocalDateTime.now().format(
@@ -50,9 +57,9 @@ public class ChatHandler {
                     PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"
                 )
             );
+
             if (PatcherConfig.compactChat) {
-                String message = event.message.getUnformattedText();
-                if (message.trim().isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
+                if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
                     return;
                 }
 
@@ -60,8 +67,6 @@ public class ChatHandler {
                     lastAmount = PatcherConfig.superCompactChatAmount;
                     entries.clear();
                 }
-                // Get the chat instance
-                final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 
                 // If the last message sent is the same as the newly posted message
                 ChatEntry print = null;
@@ -76,9 +81,9 @@ public class ChatHandler {
                 }
 
                 if (print == null) {
-                    final ChatEntry e = new ChatEntry(message.replace(" ", "").length() == 0 ? "" : message, 1, line);
-                    entries.add(e);
-                    print = e;
+                    final ChatEntry entry = new ChatEntry(message.replace(" ", "").length() == 0 ? "" : message, 1, line);
+                    entries.add(entry);
+                    print = entry;
                     if (entries.size() > PatcherConfig.superCompactChatAmount) {
                         entries.removeFirst();
                     }
@@ -87,11 +92,10 @@ public class ChatHandler {
                     entries.add(print);
                 }
 
-
                 if (PatcherConfig.timestamps) {
-                    final ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
-                    newThing.appendSibling(event.message);
-                    event.message = newThing;
+                    final ChatComponentText time = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
+                    time.appendSibling(event.message);
+                    event.message = time;
                 }
                 // Increase the line the message was on
                 ++line;
@@ -110,9 +114,9 @@ public class ChatHandler {
                 // Cancel the message
                 event.setCanceled(true);
             } else if (PatcherConfig.timestamps) {
-                final ChatComponentText newThing = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
-                newThing.appendSibling(event.message);
-                event.message = newThing;
+                final ChatComponentText time = new ChatComponentText(ChatColor.GRAY + "[" + timeFormat + "] ");
+                time.appendSibling(event.message);
+                event.message = time;
             }
         }
     }

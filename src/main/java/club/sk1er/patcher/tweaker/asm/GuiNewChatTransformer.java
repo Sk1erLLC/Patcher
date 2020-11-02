@@ -58,7 +58,7 @@ public class GuiNewChatTransformer implements PatcherTransformer {
                         AbstractInsnNode node = iterator.next();
 
                         if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
-                            methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatHistoryLength", "I"));
+                            methodNode.instructions.insertBefore(node, new IntInsnNode(Opcodes.SIPUSH, 10000));
                             methodNode.instructions.remove(node);
                         }
                     }
