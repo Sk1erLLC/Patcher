@@ -60,6 +60,7 @@ import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiLanguageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiMultiplayerTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
+import club.sk1er.patcher.tweaker.asm.GuiOptionsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiOverlayDebugTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenResourcePacksTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
@@ -300,6 +301,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LazyLoadBaseTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new BlockFluidRendererTransformer());
+        registerTransformer(new GuiOptionsTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());

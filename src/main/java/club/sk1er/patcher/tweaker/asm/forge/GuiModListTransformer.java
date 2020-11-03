@@ -44,10 +44,10 @@ public class GuiModListTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             final String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("updateCache")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     // auto-closing stream
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("read")) {
