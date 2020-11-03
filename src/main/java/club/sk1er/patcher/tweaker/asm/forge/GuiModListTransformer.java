@@ -12,8 +12,11 @@
 package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -39,6 +42,7 @@ public class GuiModListTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("updateCache")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -53,9 +57,30 @@ public class GuiModListTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("drawScreen") || methodName.equals("func_73863_a")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                break;
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
+                        final String methodInsnName = mapMethodNameFromNode(next);
+
+                        if (methodInsnName.equals("format") || methodInsnName.equals("func_135052_a")) {
+                            methodNode.instructions.insertBefore(next.getNext(), replaceSlash());
+                            break;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList replaceSlash() {
+        InsnList list = new InsnList();
+        list.add(new LdcInsnNode("/"));
+        list.add(new LdcInsnNode(""));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "replace", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;", false));
+        return list;
     }
 }
