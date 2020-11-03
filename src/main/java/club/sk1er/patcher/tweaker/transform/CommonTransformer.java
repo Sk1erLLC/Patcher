@@ -3,6 +3,7 @@ package club.sk1er.patcher.tweaker.transform;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
+import java.util.Iterator;
 import java.util.ListIterator;
 
 /**
@@ -48,6 +49,35 @@ public interface CommonTransformer extends PatcherTransformer {
                 }
             }
         }
+    }
+
+    default void changeChatComponentHeight(MethodNode methodNode) {
+        Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+        while (iterator.hasNext()) {
+            AbstractInsnNode node = iterator.next();
+            if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC) {
+                String methodInsnName = mapMethodNameFromNode(node);
+
+                if (methodInsnName.equals("floor_float") || methodInsnName.equals("func_76141_d")) {
+                    for (int i = 0; i < 4; ++i) {
+                        node = node.getPrevious();
+                    }
+
+                    methodNode.instructions.insertBefore(node, minus12());
+                    break;
+                }
+            }
+        }
+    }
+
+    default InsnList minus12() {
+        InsnList list = new InsnList();
+        LabelNode afterSub = new LabelNode();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
+        list.add(new IincInsnNode(7, -12));
+        list.add(afterSub);
+        return list;
     }
 
     default InsnList modifyNametagRenderState() {

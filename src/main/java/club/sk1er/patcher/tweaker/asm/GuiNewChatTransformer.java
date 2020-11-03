@@ -11,23 +11,20 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import club.sk1er.patcher.tweaker.transform.CommonTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.IincInsnNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public class GuiNewChatTransformer implements PatcherTransformer {
+public class GuiNewChatTransformer implements CommonTransformer {
     /**
      * The class name that's being transformed
      *
@@ -89,35 +86,10 @@ public class GuiNewChatTransformer implements PatcherTransformer {
 
                 case "getChatComponent":
                 case "func_146236_a": {
-                    Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode node = iterator.next();
-                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESTATIC) {
-                            String methodInsnName = mapMethodNameFromNode(node);
-
-                            if (methodInsnName.equals("floor_float") || methodInsnName.equals("func_76141_d")) {
-                                for (int i = 0; i < 4; ++i) {
-                                    node = node.getPrevious();
-                                }
-
-                                methodNode.instructions.insertBefore(node, minus12());
-                                break;
-                            }
-                        }
-                    }
+                    this.changeChatComponentHeight(methodNode);
                     break;
                 }
             }
         }
-    }
-
-    private InsnList minus12() {
-        InsnList list = new InsnList();
-        LabelNode afterSub = new LabelNode();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
-        list.add(new IincInsnNode(7, -12));
-        list.add(afterSub);
-        return list;
     }
 }

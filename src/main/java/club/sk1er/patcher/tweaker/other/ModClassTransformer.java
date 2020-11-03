@@ -32,6 +32,7 @@ import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
 import club.sk1er.patcher.tweaker.asm.tnttime.TNTTimeTransformer;
+import club.sk1er.patcher.tweaker.asm.ve.BetterChatTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -67,6 +68,9 @@ public class ModClassTransformer implements IClassTransformer {
 
         // ResourcePackOrganizer by chylex & ResourcePackManager by aycy (shares similar method)
         registerTransformer(new GuiCustomResourcePacks());
+
+        // Vanilla Enhancements by OrangeMarshall
+        registerTransformer(new BetterChatTransformer());
 
         // OptiFine uses Reflection for compatibility between Forge & itself,
         // and since we know they're using Forge, we're able to change methods back
