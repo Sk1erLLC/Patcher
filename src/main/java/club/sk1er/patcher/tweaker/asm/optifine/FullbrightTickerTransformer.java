@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.MethodNode;
 public class FullbrightTickerTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"club.sk1er.patcher.util.FullbrightTicker"};
+        return new String[]{"club.sk1er.patcher.util.world.FullbrightTicker"};
     }
 
     @Override

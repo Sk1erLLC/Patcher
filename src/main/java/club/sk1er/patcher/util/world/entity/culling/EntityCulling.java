@@ -176,7 +176,7 @@ public class EntityCulling {
         final boolean armorstand = entity instanceof EntityArmorStand;
         if (entity == mc.thePlayer || entity.worldObj != mc.thePlayer.worldObj ||
             (PatcherConfig.checkArmorstandRules && armorstand && ((EntityArmorStand) entity).hasMarker()) ||
-            entity.isInvisibleToPlayer(mc.thePlayer)) {
+            (entity.isInvisibleToPlayer(mc.thePlayer) && !armorstand)) {
             return;
         }
 
@@ -187,7 +187,7 @@ public class EntityCulling {
             }
 
             if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
-                (PatcherConfig.dontCullEntityNametags && !armorstand) ||
+                (PatcherConfig.dontCullEntityNametags && !(armorstand)) ||
                 (PatcherConfig.dontCullArmourStandNametags && armorstand)) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }

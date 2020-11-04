@@ -203,7 +203,7 @@ public class ChunkTransformer implements PatcherTransformer {
 
     private InsnList setLightLevel() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/FullbrightTicker", "isFullbright", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/FullbrightTicker", "isFullbright", "()Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new IntInsnNode(Opcodes.BIPUSH, 15));

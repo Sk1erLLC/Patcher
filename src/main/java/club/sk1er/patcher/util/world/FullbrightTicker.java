@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.util;
+package club.sk1er.patcher.util.world;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.server.MinecraftServer;
