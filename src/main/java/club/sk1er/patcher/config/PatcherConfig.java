@@ -617,6 +617,15 @@ public class PatcherConfig extends Vigilant {
     public static boolean dontCullArmourStandNametags;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Check Armorstand Rules",
+        description = "Don't cull armorstands that have a marker set in their entity rules." +
+            "\nThis will result in a lot of unculled armorstands in places like Hypixel Skyblock," +
+            "but will provide better entity visibility, while losing out on some performance improvements.",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean checkArmorstandRules;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Enchantment Glint",
         description = "Disable the enchantment glint on enchanted items/potions.",
         category = "Performance", subcategory = "General"

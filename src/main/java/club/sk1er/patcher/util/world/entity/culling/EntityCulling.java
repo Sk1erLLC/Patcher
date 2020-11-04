@@ -173,7 +173,10 @@ public class EntityCulling {
         }
 
         final EntityLivingBase entity = event.entity;
-        if (entity == mc.thePlayer || entity.worldObj != mc.thePlayer.worldObj) {
+        final boolean armorstand = entity instanceof EntityArmorStand;
+        if (entity == mc.thePlayer || entity.worldObj != mc.thePlayer.worldObj ||
+            (PatcherConfig.checkArmorstandRules && armorstand && ((EntityArmorStand) entity).hasMarker()) ||
+            entity.isInvisibleToPlayer(mc.thePlayer)) {
             return;
         }
 
@@ -184,8 +187,8 @@ public class EntityCulling {
             }
 
             if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
-                (PatcherConfig.dontCullEntityNametags && !(entity instanceof EntityArmorStand)) ||
-                (PatcherConfig.dontCullArmourStandNametags && entity instanceof EntityArmorStand)) {
+                (PatcherConfig.dontCullEntityNametags && !armorstand) ||
+                (PatcherConfig.dontCullArmourStandNametags && armorstand)) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
         }
@@ -197,7 +200,7 @@ public class EntityCulling {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
-            Minecraft.getMinecraft().addScheduledTask(this::check);
+        Minecraft.getMinecraft().addScheduledTask(this::check);
     }
 
     private void check() {

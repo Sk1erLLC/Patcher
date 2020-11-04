@@ -78,7 +78,7 @@ public class GuiModListTransformer implements PatcherTransformer {
 
     private InsnList replaceSlash() {
         InsnList list = new InsnList();
-        list.add(new LdcInsnNode("/"));
+        list.add(new LdcInsnNode("\\"));
         list.add(new LdcInsnNode(""));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "replace", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;", false));
         return list;
