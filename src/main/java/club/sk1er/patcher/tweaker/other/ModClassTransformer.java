@@ -18,16 +18,16 @@ import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.FullbrightTickerTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.OptifineFontRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.RandomEntitiesTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.RenderItemFrameTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.RenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.RendererLivingEntityTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.older.MapGenStructureReflectionOptimizer;
-import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
@@ -120,6 +120,7 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerLSeriesTransformers() {
+        registerTransformer(new RandomEntitiesTransformer());
         registerTransformer(new ItemModelMesherReflectionOptimizer());
     }
 }
