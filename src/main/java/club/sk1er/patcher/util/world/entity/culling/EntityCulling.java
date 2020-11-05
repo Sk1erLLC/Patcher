@@ -123,13 +123,10 @@ public class EntityCulling {
         GlStateManager.enableAlpha();
     }
 
-    /*
-        Used by  RenderEntityItemTransformer and RenderItemFrameTransformer
-     */
     @SuppressWarnings("unused")
     public static boolean renderItem(Entity stack) {
         //needs to be called from RenderEntityItem#doRender and RenderItemFrame#doRender. Returning true means it should cancel the render event
-        return shouldPerformCulling && PatcherConfig.entityCulling && stack.worldObj != mc.thePlayer.worldObj || checkEntity(stack);
+        return shouldPerformCulling && PatcherConfig.entityCulling && stack.worldObj == mc.thePlayer.worldObj && checkEntity(stack);
     }
 
     private static int getQuery() {
@@ -187,7 +184,7 @@ public class EntityCulling {
             }
 
             if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
-                (PatcherConfig.dontCullEntityNametags && !(armorstand)) ||
+                (PatcherConfig.dontCullEntityNametags && !armorstand) ||
                 (PatcherConfig.dontCullArmourStandNametags && armorstand)) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
@@ -200,6 +197,7 @@ public class EntityCulling {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
+
         Minecraft.getMinecraft().addScheduledTask(this::check);
     }
 

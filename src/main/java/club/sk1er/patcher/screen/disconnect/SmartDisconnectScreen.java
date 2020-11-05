@@ -2,10 +2,12 @@ package club.sk1er.patcher.screen.disconnect;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.ServerData;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
@@ -55,11 +57,20 @@ public class SmartDisconnectScreen extends GuiScreen {
                 break;
 
             case 2:
-                mc.displayGuiScreen(null);
+                this.mc.displayGuiScreen(new GuiIngameMenu());
                 break;
         }
 
         super.actionPerformed(button);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_ESCAPE) {
+            this.mc.displayGuiScreen(new GuiIngameMenu());
+        }
+
+        super.keyTyped(typedChar, keyCode);
     }
 
     @Override
