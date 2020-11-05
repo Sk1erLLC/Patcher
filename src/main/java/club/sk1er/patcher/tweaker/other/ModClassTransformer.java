@@ -28,6 +28,8 @@ import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.Ex
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
+import club.sk1er.patcher.tweaker.asm.optifine.signfix.GuiEditSignTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.signfix.TileEntitySignRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
@@ -120,6 +122,8 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerLSeriesTransformers() {
+        registerTransformer(new GuiEditSignTransformer());
+        registerTransformer(new TileEntitySignRendererTransformer());
         registerTransformer(new RandomEntitiesTransformer());
         registerTransformer(new ItemModelMesherReflectionOptimizer());
     }
