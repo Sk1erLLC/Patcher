@@ -31,35 +31,39 @@ class VertexLighterSmoothAoTransformer : PatcherTransformer {
      * @param name      the transformed class name
      */
     override fun transform(classNode: ClassNode, name: String) {
-        for (methodNode in classNode.methods) {
-            if (methodNode.name == "calcLightmap") {
-                clearInstructions(methodNode)
-                methodNode.desc = "([FFFF)V"
-                injectInstructions {
-                    of(VertexLighterSmoothAoHook::fastCalcLightmap)
-                    into(methodNode)
-                    params(0, 1, 2, 3, 4)
-                    keepReturns
+        classNode.methods.forEach {
+            when (it.name) {
+                "calcLightMap" -> {
+                    clearInstructions(it)
+                    it.desc = "([FFFF)V"
+                    injectInstructions {
+                        of(VertexLighterSmoothAoHook::fastCalcLightmap)
+                        into(it)
+                        params(0, 1, 2, 3, 4)
+                        keepReturns
+                    }
                 }
-            } else if (methodNode.name == "updateLightmap") {
-                clearInstructions(methodNode)
-                methodNode.instructions.insert(assembleBlock {
-                    aload_0
-                    aload_2
-                    fload_3
-                    fload(4)
-                    fload(5)
-                    invokevirtual(
-                        "net/minecraftforge/client/model/pipeline/VertexLighterSmoothAo",
-                        "calcLightmap",
-                        void,
-                        FloatArray::class,
-                        float,
-                        float,
-                        float
-                    )
-                    _return
-                }.first)
+
+                "updateLightmap" -> {
+                    clearInstructions(it)
+                    it.instructions.insert(assembleBlock {
+                        aload_0
+                        aload_2
+                        fload_3
+                        fload(4)
+                        fload(5)
+                        invokevirtual(
+                            "net/minecraftforge/client/model/pipeline/VertexLighterSmoothAo",
+                            "calcLightmap",
+                            void,
+                            FloatArray::class,
+                            float,
+                            float,
+                            float
+                        )
+                        _return
+                    }.first)
+                }
             }
         }
     }

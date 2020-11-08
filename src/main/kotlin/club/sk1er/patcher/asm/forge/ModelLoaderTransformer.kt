@@ -43,20 +43,21 @@ class ModelLoaderTransformer : PatcherTransformer {
         val callLoadItems = MethodNode(Opcodes.ACC_PUBLIC, "callLoadItems", "()V", null, null)
         callLoadItems.instructions.add(createCallLoadItems())
         classNode.methods.add(callLoadItems)
-        for (methodNode in classNode.methods) {
-            val methodName = mapMethodName(classNode, methodNode)
-            if (methodNode.name == "onPostBakeEvent") {
-                val iterator = methodNode.instructions.iterator()
-                while (iterator.hasNext()) {
-                    val next = iterator.next()
-                    if (next is FieldInsnNode && next.name == "isLoading") {
-                        methodNode.instructions.insertBefore(next.getPrevious(), clearMemory())
-                        break
+        classNode.methods.forEach {
+            when (mapMethodName(classNode, it)) {
+                "onPostBakeEvent" -> {
+                    for (insn in it.instructions) {
+                        if (insn is FieldInsnNode && insn.name == "isLoading") {
+                            it.instructions.insertBefore(insn.previous, clearMemory())
+                            break
+                        }
                     }
                 }
-            } else if (methodName == "setupModelRegistry" || methodName == "func_177570_a") {
-                clearInstructions(methodNode)
-                methodNode.instructions.insert(getAsyncLoader(methodNode))
+
+                "setupModelRegistry", "func_177570_a" -> {
+                    clearInstructions(it)
+                    it.instructions.insert(getAsyncLoader(it))
+                }
             }
         }
     }

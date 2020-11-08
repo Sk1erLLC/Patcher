@@ -33,7 +33,7 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
                                 method.instructions.remove(insn.getPrevious())
                             }
 
-                            val (assignForcedChunks) = assembleBlock {
+                            val (assignForcedChunks, _) = assembleBlock {
                                 new(WeakHashMap::class)
                                 dup
                                 invokespecial(WeakHashMap::class, "<init>", void)
@@ -47,7 +47,7 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
                 }
 
                 "unloadWorld" -> {
-                    val (removeWorld) = assembleBlock {
+                    val (removeWorld, _) = assembleBlock {
                         getstatic("net/minecraftforge/common/ForgeChunkManager", "forcedChunks", Map::class)
                         aload_0
                         invokeinterface(Map::class, "remove", Object::class, Object::class)

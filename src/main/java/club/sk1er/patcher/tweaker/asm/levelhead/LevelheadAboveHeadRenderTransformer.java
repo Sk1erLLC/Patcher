@@ -12,7 +12,6 @@
 package club.sk1er.patcher.tweaker.asm.levelhead;
 
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -22,9 +21,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -61,7 +58,7 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
                     if (next instanceof InsnNode && next.getOpcode() == Opcodes.DCONST_0) {
                         LabelNode gotoInsn = new LabelNode();
                         methodNode.instructions.insertBefore(next, moveNametag(gotoInsn));
-                        methodNode.instructions.insertBefore(next.getNext().getNext(), gotoInsn);
+                        methodNode.instructions.insertBefore(next.getNext(), gotoInsn);
                         break;
                     }
                 }
@@ -75,9 +72,8 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new LdcInsnNode(0.3D));
-        list.add(new VarInsnNode(Opcodes.DSTORE, 9));
-        list.add(ifeq);
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
+        list.add(ifeq);
         return list;
     }
 }
