@@ -37,6 +37,8 @@ public class RandomEntitiesTransformer implements PatcherTransformer {
                         }
                     }
                 }
+
+                break;
             }
         }
     }

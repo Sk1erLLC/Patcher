@@ -28,9 +28,8 @@ import java.util.LinkedList;
 public class ChatHandler {
 
     private final LinkedList<ChatEntry> entries = new LinkedList<>();
-    private GuiNewChat chat;
-    private int line;
     private int lastAmount = 0;
+    private int line;
 
     @SubscribeEvent
     public void renderChat(RenderGameOverlayEvent.Chat event) {
@@ -41,11 +40,8 @@ public class ChatHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChat(ClientChatReceivedEvent event) {
-        if (chat == null) {
-            chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
-        }
-
-        if (!event.isCanceled() && (event.type == 0 || event.type == 1)) {
+        if (!event.isCanceled() && event.type != 2) {
+            final GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
             final String message = event.message.getUnformattedText().trim();
             if (message.isEmpty() && PatcherConfig.antiClearChat) {
                 event.setCanceled(true);

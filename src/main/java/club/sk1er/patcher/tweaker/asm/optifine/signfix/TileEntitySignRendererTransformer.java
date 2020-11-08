@@ -39,6 +39,7 @@ public class TileEntitySignRendererTransformer implements PatcherTransformer {
                 }
 
                 method.instructions.insertBefore(method.instructions.getLast().getPrevious().getPrevious(), ifacmpeq);
+                break;
             }
         }
     }
