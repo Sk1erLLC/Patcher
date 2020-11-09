@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -83,7 +82,7 @@ public class FontRendererTransformer implements PatcherTransformer {
 
     private InsnList insertCleanShadowLabel() {
         final InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cleanTextShadow", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "alternateTextShadow", "Z"));
         final LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.FLOAD, 2));

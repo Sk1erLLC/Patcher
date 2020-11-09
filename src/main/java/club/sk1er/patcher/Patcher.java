@@ -306,27 +306,21 @@ public class Patcher {
             return;
         }
 
-        String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+        final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
         if (blacklistedServers.contains(serverIP)) {
             logger.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;
             return;
         }
 
-        CompletableFuture<Boolean> future = ProtocolDetector.instance.isCompatibleWithVersion(
+        final CompletableFuture<Boolean> future = ProtocolDetector.instance.isCompatibleWithVersion(
             serverIP,
             315 // 1.11
         );
 
         Multithreading.runAsync(() -> {
             try {
-                if (future.get()) {
-                    logger.info("Server supports 1.11+, setting string length to 256.");
-                    GuiChatTransformer.maxChatLength = 256;
-                } else {
-                    logger.info("Server doesn't support 1.11+, setting string length to 100.");
-                    GuiChatTransformer.maxChatLength = 100;
-                }
+                GuiChatTransformer.maxChatLength = future.get() ? 256 : 100;
             } catch (Exception e) {
                 e.printStackTrace();
             }

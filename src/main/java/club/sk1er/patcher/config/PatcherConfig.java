@@ -404,11 +404,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean futureHitBoxes = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Clean Text Shadow",
+        type = PropertyType.SWITCH, name = "Alternate Text Shadow",
         description = "Change the text shadow to only move down rather than moving to the side.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
-    public static boolean cleanTextShadow;
+    public static boolean alternateTextShadow;
 
     @Property(
         type = PropertyType.SWITCH, name = "Add Text Shadow to Nametags",

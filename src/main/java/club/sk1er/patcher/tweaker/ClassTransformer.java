@@ -137,6 +137,7 @@ import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.InventoryPlayerTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.tweaker.asm.util.ForcePublicTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -302,6 +303,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new BlockFluidRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
+        registerTransformer(new EntityWitherTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
