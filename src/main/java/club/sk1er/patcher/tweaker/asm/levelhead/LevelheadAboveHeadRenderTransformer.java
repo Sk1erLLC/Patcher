@@ -47,6 +47,7 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("renderName")) {
+                methodNode.instructions.insert(modifyNametagRenderState(true));
                 makeNametagTransparent(methodNode);
             } else if (methodNode.name.equals("render")) {
                 makeNametagShadowed(methodNode);

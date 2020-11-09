@@ -136,7 +136,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                 makeNametagTransparent(methodNode);
                 makeNametagShadowed(methodNode);
             } else if (methodName.equals("canRenderName") || methodName.equals("func_177070_b")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), modifyNametagRenderState());
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), modifyNametagRenderState(false));
             }
         }
     }

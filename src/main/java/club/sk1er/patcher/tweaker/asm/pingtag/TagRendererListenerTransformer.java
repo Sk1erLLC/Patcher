@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.tweaker.asm.pingtag;
 
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import club.sk1er.patcher.tweaker.transform.CommonTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
-public class TagRendererListenerTransformer implements PatcherTransformer {
+public class TagRendererListenerTransformer implements CommonTransformer {
 
     /**
      * The class name that's being transformed
@@ -47,10 +47,10 @@ public class TagRendererListenerTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("render")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.DSTORE) {
                         methodNode.instructions.insertBefore(next.getNext(), changeHeight());
@@ -58,6 +58,7 @@ public class TagRendererListenerTransformer implements PatcherTransformer {
                     }
                 }
 
+                methodNode.instructions.insert(modifyNametagRenderState(true));
                 break;
             }
         }

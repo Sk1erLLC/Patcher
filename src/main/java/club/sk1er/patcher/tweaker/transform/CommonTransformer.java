@@ -80,7 +80,7 @@ public interface CommonTransformer extends PatcherTransformer {
         return list;
     }
 
-    default InsnList modifyNametagRenderState() {
+    default InsnList modifyNametagRenderState(boolean voidReturnType) {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "betterHideGui", "Z"));
         LabelNode ifeq = new LabelNode();
@@ -89,8 +89,10 @@ public interface CommonTransformer extends PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "gameSettings" : "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", isDevelopment() ? "hideGUI" : "field_74319_N", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.IRETURN));
+        if (!voidReturnType) {
+            list.add(new InsnNode(Opcodes.ICONST_0));
+        }
+        list.add(new InsnNode(voidReturnType ? Opcodes.RETURN : Opcodes.IRETURN));
         list.add(ifeq);
         return list;
     }

@@ -12,15 +12,11 @@
 package club.sk1er.patcher.tweaker.asm.pingtag;
 
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -47,11 +43,12 @@ public class TagRendererTransformer implements CommonTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            if (methodNode.name.equals("renderTag")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            final String methodName = methodNode.name;
+            if (methodName.equals("renderTag")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    final AbstractInsnNode node = iterator.next();
 
                     if (node.getOpcode() == Opcodes.GETFIELD) {
                         String fieldName = mapFieldNameFromNode(node);
@@ -62,9 +59,9 @@ public class TagRendererTransformer implements CommonTransformer {
                     }
                 }
 
-                makeNametagTransparent(methodNode);
-                makeNametagShadowed(methodNode);
-                break;
+                this.makeNametagTransparent(methodNode);
+            } else if (methodName.equals("renderTextPrefix") || methodName.equals("renderPingText")) {
+                this.makeNametagShadowed(methodNode);
             }
         }
     }
