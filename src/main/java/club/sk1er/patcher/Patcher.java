@@ -77,8 +77,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
@@ -235,11 +246,10 @@ public class Patcher {
 
         logger.info("Minecraft started in {} seconds.", time);
 
+        final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         if (PatcherConfig.entityCulling) {
-            for (ModContainer container : Loader.instance().getActiveModList()) {
+            for (ModContainer container : activeModList) {
                 if (container.getModId().equals("enhancements") || container.getModId().equals("labymod")) {
-                    // todo: phrase this better, should probably explain why it's been disabled
-                    // and why the mod is being blamed for this
                     Notifications.INSTANCE.pushNotification(
                         "Patcher",
                         container.getName() + " has been detected. Entity Culling is now disabled.\n" +
@@ -247,6 +257,21 @@ public class Patcher {
                     PatcherConfig.entityCulling = false;
 
                     // force save config
+                    patcherConfig.markDirty();
+                    patcherConfig.writeData();
+                    break;
+                }
+            }
+        }
+
+        if (PatcherConfig.optimizedFontRenderer) {
+            for (ModContainer container : activeModList) {
+                if (container.getModId().equals("smoothfont")) {
+                    Notifications.INSTANCE.pushNotification(
+                        "Patcher",
+                        "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
+                            "has been automatically disabled.\nRestart your game for Smooth Font to work again."
+                    );
                     patcherConfig.markDirty();
                     patcherConfig.writeData();
                     break;
@@ -264,7 +289,7 @@ public class Patcher {
                 }
 
                 final List<String> duplicates = new ArrayList<>();
-                for (ModContainer modContainer : Loader.instance().getActiveModList()) {
+                for (ModContainer modContainer : activeModList) {
                     for (String modid : keySet(duplicateModsJson)) {
                         if (modContainer.getModId().contains(modid) && !duplicates.contains(modid)) {
                             duplicates.add(modContainer.getName());
