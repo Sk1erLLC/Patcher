@@ -25,7 +25,6 @@ import club.sk1er.patcher.asm.LongHashMapTransformer;
 import club.sk1er.patcher.asm.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
-import club.sk1er.patcher.asm.forge.VertexLighterSmoothAoTransformer;
 import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
 import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.tweaker.asm.ArmorStandRendererTransformer;
@@ -110,6 +109,7 @@ import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
 import club.sk1er.patcher.tweaker.asm.ServerSelectionListTransformer;
 import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
 import club.sk1er.patcher.tweaker.asm.StatBaseTransformer;
+import club.sk1er.patcher.tweaker.asm.ThreadDownloadImageDataTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.TileEntityPistonRendererTransformer;
@@ -304,6 +304,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockFluidRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
+        registerTransformer(new ThreadDownloadImageDataTransformer());
 
         // forge classes
         registerTransformer(new ClientCommandHandlerTransformer());
@@ -321,7 +322,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new ForgeBlockModelRendererTransformer());
         //registerTransformer(new ModDiscovererTransformer());
-        registerTransformer(new VertexLighterSmoothAoTransformer());
+        //registerTransformer(new VertexLighterSmoothAoTransformer()); todo: spontaneously combusted, fix?
         registerTransformer(new MinecraftForgeTransformer());
         //registerTransformer(new ItemLayerModelTransformer());
 
