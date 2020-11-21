@@ -238,14 +238,6 @@ public class Patcher {
      */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
-
-        if (PatcherConfig.startupNotification) {
-            Notifications.INSTANCE.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
-        }
-
-        logger.info("Minecraft started in {} seconds.", time);
-
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         if (PatcherConfig.entityCulling) {
             for (ModContainer container : activeModList) {
@@ -306,6 +298,13 @@ public class Patcher {
                 }
             });
         }
+
+        final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
+        if (PatcherConfig.startupNotification) {
+            Notifications.INSTANCE.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+        }
+
+        logger.info("Minecraft started in {} seconds.", time);
     }
 
     /**
@@ -434,7 +433,8 @@ public class Patcher {
             for (String server : blacklistedServers) {
                 writer.write(server + System.lineSeparator());
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            logger.error("Failed to save blacklisted servers.", e);
         }
     }
 
