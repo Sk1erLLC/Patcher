@@ -135,13 +135,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean layersInTab = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Chunk Lighting",
-        description = "Fixes chunks sometimes not displaying any light when empty.\n§cCan negatively impact performance.",
-        category = "Bug Fixes", subcategory = "Lighting"
-    )
-    public static boolean chunkLighting = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Player Void Rendering",
         description = "Remove the black box around the player while in the void.",
         category = "Bug Fixes", subcategory = "Rendering"
