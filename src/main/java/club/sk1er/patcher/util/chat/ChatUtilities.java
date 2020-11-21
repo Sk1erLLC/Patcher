@@ -15,6 +15,7 @@ import club.sk1er.mods.core.config.ModCoreConfig;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
 
 public class ChatUtilities {
@@ -28,7 +29,11 @@ public class ChatUtilities {
     }
 
     private static void sendMessageHelper(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(color(message)));
+        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+
+        if (player != null) {
+            player.addChatComponentMessage(new ChatComponentText(color(message)));
+        }
     }
 
     public static void sendNotification(String notificationCategory, String chatMessage) {

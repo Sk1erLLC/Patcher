@@ -940,6 +940,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean screenshotNoFeedback;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Auto Copy Screenshot",
+        description = "Automatically copy screenshots to the clipboard when taken.",
+        category = "Screenshots", subcategory = "General"
+    )
+    public static boolean autoCopyScreenshot;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Screenshot Preview",
         description = "Preview the look of your screenshot when taken in the bottom right corner.",
         category = "Screenshots", subcategory = "General"
