@@ -62,7 +62,6 @@ import club.sk1er.patcher.tweaker.asm.GuiOptionsTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiOverlayDebugTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenResourcePacksTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
@@ -269,7 +268,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BakedQuadTransformer());
         registerTransformer(new TexturedQuadTransformer());
         registerTransformer(new ModelRendererTransformer());
-        registerTransformer(new GuiTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new BlockPosTransformer());
         registerTransformer(new WorldServerTransformer());
