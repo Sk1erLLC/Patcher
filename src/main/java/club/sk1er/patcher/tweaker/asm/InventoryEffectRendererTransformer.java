@@ -13,14 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 public class InventoryEffectRendererTransformer implements PatcherTransformer {
     /**
@@ -46,11 +39,29 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
 
             if (methodName.equals("updateActivePotionEffects") || methodName.equals("func_175378_g")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), newEffectLogic());
-                break;
+//                break;
+            } else if(methodName.equals("drawActivePotionEffects")) {
+                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getMoveForward());
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), getReset());
             }
         }
     }
+    private AbstractInsnNode getReset() {
+        return new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "endR", "()V", false);
+    }
 
+    private InsnList getMoveForward() {
+        InsnList insnList = new InsnList();
+//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "enableDepth", "()V", false)); //Push matrix
+//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false)); //Push matrix
+//        insnList.add(new LdcInsnNode(-250F));
+//        insnList.add(new LdcInsnNode(0F));
+//        insnList.add(new LdcInsnNode(-500F));
+//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
+//                "(FFF)V", false));
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "startR", "()V", false));
+        return insnList;
+    }
     private InsnList newEffectLogic() {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "inventoryPosition", "Z"));
