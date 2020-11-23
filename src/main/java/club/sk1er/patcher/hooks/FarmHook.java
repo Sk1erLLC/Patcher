@@ -14,14 +14,20 @@ package club.sk1er.patcher.hooks;
 import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCarrot;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockNetherWart;
+import net.minecraft.block.BlockPotato;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class FarmHook {
-    public static final AxisAlignedBB[] AABB = {
+    public static final Minecraft mc = Minecraft.getMinecraft();
+
+    public static final AxisAlignedBB[] CARROT_POTATO_BOX = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.1875D, 1.0D),
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D),
@@ -32,9 +38,41 @@ public class FarmHook {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5625D, 1.0D)
     };
 
-    public static void getBox(World world, BlockPos pos, Block block) {
-        block.maxY = PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || Minecraft.getMinecraft().isIntegratedServerRunning())
-            ? AABB[world.getBlockState(pos).getValue(BlockCrops.AGE)].maxY
+    public static final AxisAlignedBB[] WHEAT_BOX = {
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.375D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.625D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.75D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D)
+    };
+
+    public static final AxisAlignedBB[] NETHER_WART_BOX = {
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.3125D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.6875D, 1.0D),
+        new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D)
+    };
+
+    public static void getCropBox(World world, BlockPos pos, Block block) {
+        final IBlockState blockState = world.getBlockState(pos);
+        final Integer ageValue = blockState.getValue(BlockCrops.AGE);
+
+        if (PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || mc.isIntegratedServerRunning())) {
+            block.maxY = blockState.getBlock() instanceof BlockPotato || blockState.getBlock() instanceof BlockCarrot
+                ? CARROT_POTATO_BOX[ageValue].maxY
+                : WHEAT_BOX[ageValue].maxY;
+            return;
+        }
+
+        block.maxY = 0.25F;
+    }
+
+    public static void getNetherWartBox(World world, BlockPos pos, Block block) {
+        block.maxY = PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
+            ? NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
             : .25F;
     }
 }

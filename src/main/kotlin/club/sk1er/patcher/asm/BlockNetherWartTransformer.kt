@@ -16,18 +16,16 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
-class BlockPotatoTransformer : PatcherTransformer {
-    // todo: since this is specific to hypixel, move to hytilities
+class BlockNetherWartTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf(
-        "net.minecraft.block.BlockPotato",
-        "net.minecraft.block.BlockCarrot"
+        "net.minecraft.block.BlockNetherWart"
     )
 
     override fun transform(classNode: ClassNode, name: String) {
         val getSelectionBoundingBox = MethodNode(Opcodes.ACC_PUBLIC, "func_180646_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/util/AxisAlignedBB;", null, null)
         val list = InsnList()
         list.add(getInstructions {
-            of(FarmHook::getBox)
+            of(FarmHook::getNetherWartBox)
             target(getSelectionBoundingBox)
             params(1, 2, 0)
         })
