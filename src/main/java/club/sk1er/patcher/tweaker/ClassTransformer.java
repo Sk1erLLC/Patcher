@@ -194,6 +194,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new WorldTransformer());
         registerTransformer(new ChunkTransformer());
         registerTransformer(new EntityPlayerSPTransformer());
+        registerTransformer(new GuiUtilsTransformer());
         registerTransformer(new ChatStyleTransformer());
         registerTransformer(new ScoreboardTransformer());
         registerTransformer(new GuiAchievementTransformer());

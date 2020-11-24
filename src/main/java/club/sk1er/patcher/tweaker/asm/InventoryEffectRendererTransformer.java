@@ -39,29 +39,12 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
 
             if (methodName.equals("updateActivePotionEffects") || methodName.equals("func_175378_g")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), newEffectLogic());
-//                break;
-            } else if(methodName.equals("drawActivePotionEffects")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getMoveForward());
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), getReset());
+                break;
             }
         }
     }
-    private AbstractInsnNode getReset() {
-        return new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "endR", "()V", false);
-    }
 
-    private InsnList getMoveForward() {
-        InsnList insnList = new InsnList();
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "enableDepth", "()V", false)); //Push matrix
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false)); //Push matrix
-//        insnList.add(new LdcInsnNode(-250F));
-//        insnList.add(new LdcInsnNode(0F));
-//        insnList.add(new LdcInsnNode(-500F));
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
-//                "(FFF)V", false));
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "startR", "()V", false));
-        return insnList;
-    }
+
     private InsnList newEffectLogic() {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "inventoryPosition", "Z"));

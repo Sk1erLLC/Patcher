@@ -40,11 +40,6 @@ public class GuiScreenTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             switch (methodName) {
-                case "drawHoveringText": {
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getMoveForward());
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), getReset());
-                    break;
-                }
                 case "drawDefaultBackground":
                 case "func_146276_q_":
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
@@ -75,22 +70,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
         }
     }
 
-    private AbstractInsnNode getReset() {
-        return new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "end", "()V", false);
-    }
 
-    private InsnList getMoveForward() {
-        InsnList insnList = new InsnList();
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "enableDepth", "()V", false)); //Push matrix
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false)); //Push matrix
-//        insnList.add(new LdcInsnNode(-250F));
-//        insnList.add(new LdcInsnNode(0F));
-//        insnList.add(new LdcInsnNode(-500F));
-//        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
-//                "(FFF)V", false));
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenHook", "start", "()V", false));
-        return insnList;
-    }
 
     private InsnList bailScreen() {
         InsnList list = new InsnList();
