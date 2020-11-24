@@ -164,17 +164,17 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
 
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
+                        final AbstractInsnNode next = iterator.next();
 
                         if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
                             methodNode.instructions.insertBefore(next, fixParallax());
                             methodNode.instructions.remove(next);
                         } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
-                            if (methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) {
-                                methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), changeCameraType(movingobjectpositionIndex, d0Index, d1Index, d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, useNormalIndex));
-                                break;
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            final String methodDesc = mapMethodDescFromNode(next);
+                            if ((methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) && methodDesc.equals("(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;")) {
+                                methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), changeCameraType(movingobjectpositionIndex, d0Index, d1Index,
+                                    d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, useNormalIndex));
                             }
                         }
                     }

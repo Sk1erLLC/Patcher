@@ -102,6 +102,11 @@ public interface PatcherTransformer {
         return FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(fieldInsnNode.owner, fieldInsnNode.name, fieldInsnNode.desc);
     }
 
+    default String mapMethodDescFromNode(AbstractInsnNode node) {
+        MethodInsnNode methodInsnNode = (MethodInsnNode) node;
+        return FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(methodInsnNode.desc);
+    }
+
     /**
      * Remove instructions to this method
      *
