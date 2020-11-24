@@ -391,7 +391,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "1.12 Farm Selection Boxes",
-        description = "Replaces the selection box for crops with the 1.12 variant.\n§eOnly works on Hypixel & Singleplayer.\nWill be moved to Hytilities in the future.",
+        description = "Replaces the selection box for crops with the 1.12 variant.\n§eOnly works on Hypixel & Singleplayer.",
         category = "Miscellaneous", subcategory = "Blocks"
     )
     public static boolean futureHitBoxes = true;

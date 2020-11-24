@@ -40,11 +40,11 @@ public class FovChangerCommand extends CommandBase {
             try {
                 final float fovAmount = Float.parseFloat(args[0]);
 
-                if (fovAmount == 0) {
-                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to 0 is disabled due to game-breaking visual bugs.");
+                if (fovAmount <= 0) {
+                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
                     return;
-                } else if (fovAmount > 130) {
-                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 130 is disabled due to game-breaking visual bugs.");
+                } else if (fovAmount > 110) {
+                    ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 110 is disabled due to game-breaking visual bugs.");
                     return;
                 }
 
