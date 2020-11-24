@@ -45,7 +45,7 @@ public class GuiUtilsTransformer implements PatcherTransformer {
     private InsnList getMoveForward() {
         InsnList insnList = new InsnList();
         insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false)); //Push matrix
-        insnList.add(new LdcInsnNode(-250F));
+        insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(-1F));
         insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
