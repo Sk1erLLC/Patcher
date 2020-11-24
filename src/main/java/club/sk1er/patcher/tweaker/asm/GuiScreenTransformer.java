@@ -71,19 +71,18 @@ public class GuiScreenTransformer implements PatcherTransformer {
     }
 
 
-
     private InsnList bailScreen() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
-                "net/minecraft/client/gui/GuiScreen",
-                "field_146297_k", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "net/minecraft/client/gui/GuiScreen",
+            "field_146297_k", // mc
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
-                "net/minecraft/client/Minecraft",
-                "field_71462_r", // currentScreen
-                "Lnet/minecraft/client/gui/GuiScreen;"));
+            "net/minecraft/client/Minecraft",
+            "field_71462_r", // currentScreen
+            "Lnet/minecraft/client/gui/GuiScreen;"));
         LabelNode ifacmpeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, ifacmpeq));
         list.add(new InsnNode(Opcodes.RETURN));
@@ -111,21 +110,21 @@ public class GuiScreenTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/input/Keyboard", "getEventKey", "()I", false));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-                "net/minecraft/client/gui/GuiScreen",
-                "func_73869_a", // keyTyped
-                "(CI)V",
-                false));
+            "net/minecraft/client/gui/GuiScreen",
+            "func_73869_a", // keyTyped
+            "(CI)V",
+            false));
         list.add(ifeq);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
-                "net/minecraft/client/gui/GuiScreen",
-                "field_146297_k", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "net/minecraft/client/gui/GuiScreen",
+            "field_146297_k", // mc
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-                "net/minecraft/client/Minecraft",
-                "func_152348_aa", // dispatchKeypresses
-                "()V",
-                false));
+            "net/minecraft/client/Minecraft",
+            "func_152348_aa", // dispatchKeypresses
+            "()V",
+            false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }
@@ -134,9 +133,9 @@ public class GuiScreenTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiScreen", "field_146297_k", // mc
-                "Lnet/minecraft/client/Minecraft;"));
+            "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71441_e", // theWorld
-                "Lnet/minecraft/client/multiplayer/WorldClient;"));
+            "Lnet/minecraft/client/multiplayer/WorldClient;"));
         LabelNode ifnull = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableTransparentBackgrounds", "Z"));
