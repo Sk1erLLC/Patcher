@@ -23,7 +23,8 @@ public class GuiUtilsTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode) {
                         if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                            if (((MethodInsnNode) next).name.equals("disableDepth") || ((MethodInsnNode) next).name.equals("func_179097_i")) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("disableDepth") || methodInsnName.equals("func_179097_i")) {
                                 iterator.remove();
                             }
                         }
