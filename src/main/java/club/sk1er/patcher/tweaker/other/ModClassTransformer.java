@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.tweaker.ClassTransformer;
+import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.EntityCullingTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
@@ -73,6 +74,9 @@ public class ModClassTransformer implements IClassTransformer {
 
         // Vanilla Enhancements by OrangeMarshall
         registerTransformer(new BetterChatTransformer());
+
+        // SpiderFrog's oam overwrites our injection (because surely a 1.7 animations mod needs this feature)
+        registerTransformer(new InventoryEffectRendererTransformer());
 
         // OptiFine uses Reflection for compatibility between Forge & itself,
         // and since we know they're using Forge, we're able to change methods back

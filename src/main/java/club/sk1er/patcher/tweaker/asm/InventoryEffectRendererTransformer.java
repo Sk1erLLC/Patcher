@@ -13,7 +13,17 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class InventoryEffectRendererTransformer implements PatcherTransformer {
     /**
@@ -38,7 +48,20 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("updateActivePotionEffects") || methodName.equals("func_175378_g")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), newEffectLogic());
+                boolean foundOam = false;
+
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                AbstractInsnNode next = null;
+                while (iterator.hasNext()) {
+                    next = iterator.next();
+
+                    if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC && ((FieldInsnNode) next).name.equals("NOINVMOVE")) {
+                        foundOam = true;
+                        break;
+                    }
+                }
+
+                methodNode.instructions.insertBefore(next != null && foundOam ? next : methodNode.instructions.getLast().getPrevious(), newEffectLogic());
                 break;
             }
         }
