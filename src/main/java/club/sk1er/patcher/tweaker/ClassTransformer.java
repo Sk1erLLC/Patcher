@@ -64,7 +64,6 @@ import club.sk1er.patcher.tweaker.asm.GuiOverlayDebugTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenResourcePacksTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
-import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.ItemStackTransformer;
 import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;

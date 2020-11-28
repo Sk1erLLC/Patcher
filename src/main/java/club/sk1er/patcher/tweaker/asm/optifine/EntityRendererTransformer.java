@@ -364,9 +364,12 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 LabelNode ifne = new LabelNode();
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), removeViewBobbing(ifne));
                                 methodNode.instructions.insertBefore(next.getNext(), ifne);
+                                break;
                             }
                         }
                     }
+
+                    break;
                 }
             }
         }

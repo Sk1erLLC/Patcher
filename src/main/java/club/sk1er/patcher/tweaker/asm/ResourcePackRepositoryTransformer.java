@@ -62,7 +62,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                         false));
                     break;
                 case "func_148529_f":
-                case "clearResourcePack":
+                case "clearResourcePack": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     while (iterator.hasNext()) {
@@ -84,8 +84,24 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                         }
                     }
                     break;
+                }
+
+                case "func_110611_a":
+                case "updateRepositoryEntriesAll": {
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(getFasterSearching());
+                    break;
+                }
             }
         }
+    }
+
+    private InsnList getFasterSearching() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ResourcePackRepositoryHook", "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
+        list.add(new InsnNode(Opcodes.RETURN));
+        return list;
     }
 
     private InsnList createDirectory() {
