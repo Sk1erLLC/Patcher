@@ -324,6 +324,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ForcePublicTransformer());
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger) {
         if (bytes == null) return null;
 
@@ -357,12 +358,23 @@ public class ClassTransformer implements IClassTransformer {
                 transformedClassName = transformedName + ".class";
             }
 
-            File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
+            try {
+                if (!bytecodeDirectory.exists()) {
+                    bytecodeDirectory.mkdirs();
+                }
 
-            try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
-                os.write(classWriter.toByteArray());
-            } catch (IOException e) {
-                e.printStackTrace();
+                File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
+
+                if (!bytecodeOutput.exists()) {
+                    bytecodeOutput.createNewFile();
+                }
+
+                try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
+                    os.write(classWriter.toByteArray());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception ignored) {
             }
         }
 

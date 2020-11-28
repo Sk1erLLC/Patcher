@@ -19,7 +19,20 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -197,8 +210,10 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
                             } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
                                 AbstractInsnNode suspect = next.getNext().getNext();
-                                if (suspect.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) suspect).owner.endsWith("CustomColors")) continue;
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap(12, 13, 14));
+                                if (suspect.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) suspect).owner.endsWith("CustomColors")) {
+                                    continue;
+                                }
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap());
                             }
                         }
                     }
@@ -323,9 +338,9 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                             if (fieldInsnName.equals("fogColorBlue") || fieldInsnName.equals("field_175081_S")) {
                                 if (next.getNext().getOpcode() == Opcodes.FDIV) {
-                                    // next.getNext() go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                                    if (next.getNext().getNext().getNext().getNext().getNext().getNext() instanceof VarInsnNode) {
-                                        methodNode.instructions.insertBefore(next.getNext().getNext().getNext().getNext().getNext().getNext(), clampVariable(f6index));
+                                    final AbstractInsnNode newInsn = next.getNext().getNext().getNext().getNext().getNext().getNext();
+                                    if (newInsn instanceof VarInsnNode) {
+                                        methodNode.instructions.insertBefore(newInsn, clampVariable(f6index));
                                     }
                                 }
                             }
@@ -334,8 +349,34 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_78479_a":
+                case "setupCameraTransform": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+
+                            if (methodInsnName.equals("setupViewBobbing") || methodInsnName.equals("func_78475_f")) {
+                                LabelNode ifne = new LabelNode();
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), removeViewBobbing(ifne));
+                                methodNode.instructions.insertBefore(next.getNext(), ifne);
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList removeViewBobbing(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeViewBobbing", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList changeCameraType(int movingobjectpositionIndex, int d0Index, int d1Index, int d2Index, int d4Index, int d5Index, int d6Index, int f3Index, int f4Index, int f5Index, boolean useNormalIndex) {
@@ -377,26 +418,14 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d4Index));
-        list.add(new InsnNode(Opcodes.DSUB));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f3Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
+        setupChanges(d4Index, f3Index, list);
         list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
         list.add(new InsnNode(Opcodes.F2D));
         list.add(new InsnNode(Opcodes.DADD));
         list.add(new VarInsnNode(Opcodes.DLOAD, d1Index));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d6Index));
-        list.add(new InsnNode(Opcodes.DSUB));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f4Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
+        setupChanges(d6Index, f4Index, list);
         list.add(new VarInsnNode(Opcodes.DLOAD, d2Index));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d5Index));
-        list.add(new InsnNode(Opcodes.DSUB));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
+        setupChanges(d5Index, f5Index, list);
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/Vec3", "<init>", "(DDD)V", false));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new InsnNode(Opcodes.ICONST_1));
@@ -405,6 +434,14 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ASTORE, movingobjectpositionIndex));
         list.add(ifeq);
         return list;
+    }
+
+    private void setupChanges(int doubleIndex, int floatIndex, InsnList list) {
+        list.add(new VarInsnNode(Opcodes.DLOAD, doubleIndex));
+        list.add(new InsnNode(Opcodes.DSUB));
+        list.add(new VarInsnNode(Opcodes.FLOAD, floatIndex));
+        list.add(new InsnNode(Opcodes.F2D));
+        list.add(new InsnNode(Opcodes.DADD));
     }
 
     private InsnList clampVariable(int f6index) {
@@ -421,26 +458,26 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList clampLightmap(int f8index, int f9index, int f10index) {
+    private InsnList clampLightmap() {
         // using srg name in dev crashes? Ok Forge
         final String clamp_float = isDevelopment() ? "clamp_float" : "func_76131_a";
         InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.FLOAD, f8index));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 12));
+        clampFloat(12, 13, clamp_float, list);
+        clampFloat(13, 14, clamp_float, list);
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new InsnNode(Opcodes.FCONST_1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, f8index));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f9index));
-        list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, f9index));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f10index));
-        list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, f10index));
+        list.add(new VarInsnNode(Opcodes.FSTORE, 14));
         return list;
+    }
+
+    private void clampFloat(int storeIndex, int loadIndex, String clamp_float, InsnList list) {
+        list.add(new InsnNode(Opcodes.FCONST_0));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
+        list.add(new VarInsnNode(Opcodes.FSTORE, storeIndex));
+        list.add(new VarInsnNode(Opcodes.FLOAD, loadIndex));
     }
 
     private InsnList getEyePosition() {
@@ -597,11 +634,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 "()V",
                 false));
         list.add(new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/hooks/EntityRendererHook",
-                "reduceSensitivity",
-                "()V",
-                false));
+            Opcodes.INVOKESTATIC,
+            "club/sk1er/patcher/hooks/EntityRendererHook",
+            "reduceSensitivity",
+            "()V",
+            false));
         return list;
     }
 
@@ -645,10 +682,9 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 EntityRendererHook.fixMissingChunks();
                 smoothZoomProgress += 0.004F * timeSinceLastChange;
                 smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
-                return currentModifier += (desiredModifier - currentModifier)*calculateEasing(smoothZoomProgress);
+                return currentModifier += (desiredModifier - currentModifier) * calculateEasing(smoothZoomProgress);
             }
-        }
-        else currentModifier = desiredModifier;
+        } else currentModifier = desiredModifier;
         return desiredModifier;
     }
 

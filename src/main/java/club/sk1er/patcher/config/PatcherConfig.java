@@ -431,6 +431,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean betterHideGui;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Remove View Bobbing",
+        description = "While using View Bobbing, only remove the view aspect but have blocks still bounce around.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean removeViewBobbing;
+
     // PERFORMANCE
 
     @Property(
