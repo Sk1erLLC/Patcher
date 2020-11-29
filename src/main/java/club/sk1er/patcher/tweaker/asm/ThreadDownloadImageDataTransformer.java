@@ -45,7 +45,7 @@ public class ThreadDownloadImageDataTransformer implements PatcherTransformer {
     private InsnList getImprovedCacheLoading() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ThreadDownloadImageDataHook", "getImprovedCacheLoading", "(Lnet/minecraft/client/renderer/ThreadDownloadImageData;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "ThreadDownloadImageDataHook", "getImprovedCacheLoading", "(Lnet/minecraft/client/renderer/ThreadDownloadImageData;)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

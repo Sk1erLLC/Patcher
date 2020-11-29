@@ -36,7 +36,7 @@ class ModelLoaderTransformer : PatcherTransformer {
      */
     override fun transform(classNode: ClassNode, name: String) {
         classNode.version = Opcodes.V1_8
-        classNode.interfaces.add("club/sk1er/patcher/hooks/accessors/IModelLoader")
+        classNode.interfaces.add("${hooksPackage}accessors/IModelLoader")
         val callLoadBlocks = MethodNode(Opcodes.ACC_PUBLIC, "callLoadBlocks", "()V", null, null)
         callLoadBlocks.instructions.add(createCallLoadBlocks())
         classNode.methods.add(callLoadBlocks)

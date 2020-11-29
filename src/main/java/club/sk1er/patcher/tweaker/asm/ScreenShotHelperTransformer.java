@@ -64,7 +64,7 @@ public class ScreenShotHelperTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new VarInsnNode(Opcodes.ILOAD, 3));
         list.add(new VarInsnNode(Opcodes.ALOAD, 4));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ScreenshotHelperHook",
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "ScreenshotHelperHook",
             "saveScreenshot", "(Ljava/io/File;Ljava/lang/String;IILnet/minecraft/client/shader/Framebuffer;)Lnet/minecraft/util/IChatComponent;",
             false));
         list.add(new InsnNode(Opcodes.ARETURN));

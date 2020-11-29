@@ -135,6 +135,10 @@ public interface PatcherTransformer {
         return "club/sk1er/patcher/config/PatcherConfig";
     }
 
+    default String getHooksPackage() {
+        return "club/sk1er/patcher/hooks/";
+    }
+
     default boolean isDevelopment() {
         Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
         return o != null && (boolean) o;

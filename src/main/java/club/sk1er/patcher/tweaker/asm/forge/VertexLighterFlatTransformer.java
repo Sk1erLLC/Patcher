@@ -40,7 +40,7 @@ public class VertexLighterFlatTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.interfaces.add("club/sk1er/patcher/hooks/accessors/IVertexLighterFlat");
+        classNode.interfaces.add(getHooksPackage() + "accessors/IVertexLighterFlat");
 
         MethodNode getBlockInfo = new MethodNode(Opcodes.ACC_PUBLIC, "getBlockInfo", "()Lnet/minecraftforge/client/model/pipeline/BlockInfo;", null, null);
         getBlockInfo.instructions.add(getBlockInfoInstructions());

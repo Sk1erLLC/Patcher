@@ -109,7 +109,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         } else if (thing.getOpcode() == Opcodes.INVOKESTATIC && (((MethodInsnNode) thing).name.equals("isKeyDown") || ((MethodInsnNode) thing).name.equals("func_100015_a"))) {
                             methodNode.instructions.insert(thing, modifyKeyDownIfToggleToZoom());
                         } else if (thing.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) thing).owner.equals("Config") && ((FieldInsnNode) thing).name.equals("zoomMode") && thing.getPrevious().getOpcode() == Opcodes.ICONST_0) {
-                            methodNode.instructions.insert(thing, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/EntityRendererHook", "resetSensitivity", "()V", false));
+                            methodNode.instructions.insert(thing, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "EntityRendererHook", "resetSensitivity", "()V", false));
                         }
                     }
 
@@ -533,7 +533,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "toggleToZoom", "Z"));
         LabelNode ifDisabled = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifDisabled));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/EntityRendererHook", "getZoomState", "(Z)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "EntityRendererHook", "getZoomState", "(Z)Z", false));
         list.add(ifDisabled);
         return list;
     }
@@ -638,7 +638,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 false));
         list.add(new MethodInsnNode(
             Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/EntityRendererHook",
+            getHooksPackage() + "EntityRendererHook",
             "reduceSensitivity",
             "()V",
             false));

@@ -36,7 +36,7 @@ public class GuiMultiplayerTransformer implements PatcherTransformer {
     private InsnList selectServer() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/GuiMultiplayerHook", "keyTyped", "(Lnet/minecraft/client/gui/GuiMultiplayer;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "GuiMultiplayerHook", "keyTyped", "(Lnet/minecraft/client/gui/GuiMultiplayer;)V", false));
         return list;
     }
 }

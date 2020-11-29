@@ -21,6 +21,9 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class ServerListTransformer implements PatcherTransformer {
+
+    private final String hookClass = getHooksPackage() + "ServerListHook";
+
     /**
      * The class name that's being transformed
      *
@@ -77,7 +80,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/ServerListHook",
+            this.hookClass,
             "set",
             "(Lnet/minecraft/client/multiplayer/ServerList;ILnet/minecraft/client/multiplayer/ServerData;)V",
             false));
@@ -91,7 +94,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/ServerListHook",
+            this.hookClass,
             "swapServers",
             "(Lnet/minecraft/client/multiplayer/ServerList;II)V",
             false));
@@ -104,7 +107,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/ServerListHook",
+            this.hookClass,
             "addServerData",
             "(Lnet/minecraft/client/multiplayer/ServerList;Lnet/minecraft/client/multiplayer/ServerData;)V",
             false));
@@ -117,7 +120,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/ServerListHook",
+            this.hookClass,
             "removeServerData",
             "(Lnet/minecraft/client/multiplayer/ServerList;I)V",
             false));
@@ -130,7 +133,7 @@ public class ServerListTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/ServerListHook",
+            this.hookClass,
             "getServerData",
             "(Lnet/minecraft/client/multiplayer/ServerList;I)Lnet/minecraft/client/multiplayer/ServerData;",
             false));

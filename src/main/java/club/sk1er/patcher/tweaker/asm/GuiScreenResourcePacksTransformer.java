@@ -56,16 +56,14 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                     }
                 }
             } else if (methodName.equals("actionPerformed") || methodName.equals("func_146284_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode(next);
+                        final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("saveOptions") || methodInsnName.equals("func_74303_b")) {
                             methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                getHooksPackage() + "FallbackResourceManagerHook",
                                 "clearCache",
                                 "()V",
                                 false));

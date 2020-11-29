@@ -77,7 +77,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                     InsnList insnList = new InsnList();
                     LabelNode labelNode = new LabelNode();
-                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "fullscreen", "()Z", false));
+                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "MinecraftHook", "fullscreen", "()Z", false));
                     insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
                     insnList.add(new InsnNode(Opcodes.RETURN));
                     insnList.add(labelNode);
@@ -164,7 +164,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                                 case "func_110436_a":
                                     methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
                                         Opcodes.INVOKESTATIC,
-                                        "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                        getHooksPackage() + "FallbackResourceManagerHook",
                                         "clearCache",
                                         "()V",
                                         false
@@ -194,7 +194,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
                             methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
                             methodNode.instructions.insertBefore(node, new JumpInsnNode(Opcodes.IFEQ, ifeq));
-                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/MinecraftHook", "updateKeyBindState", "()V", false));
+                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "MinecraftHook", "updateKeyBindState", "()V", false));
                             methodNode.instructions.insertBefore(node, ifeq);
                             break;
                         }

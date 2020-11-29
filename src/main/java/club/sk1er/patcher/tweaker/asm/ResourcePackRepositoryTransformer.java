@@ -56,25 +56,22 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                 case "setResourcePackInstance":
                 case "func_177319_a":
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                        getHooksPackage() + "FallbackResourceManagerHook",
                         "clearCache",
                         "()V",
                         false));
                     break;
                 case "func_148529_f":
                 case "clearResourcePack": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
+                        final AbstractInsnNode next = iterator.next();
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String mappedMethodName = mapMethodNameFromNode(next);
-
+                            final String mappedMethodName = mapMethodNameFromNode(next);
                             if (mappedMethodName.equals("scheduleResourcesRefresh") || mappedMethodName.equals("func_175603_A")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(
                                     Opcodes.INVOKESTATIC,
-                                    "club/sk1er/patcher/hooks/FallbackResourceManagerHook",
+                                    getHooksPackage() + "FallbackResourceManagerHook",
                                     "clearCache",
                                     "()V",
                                     false
@@ -99,7 +96,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
     private InsnList getFasterSearching() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/hooks/ResourcePackRepositoryHook", "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "ResourcePackRepositoryHook", "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

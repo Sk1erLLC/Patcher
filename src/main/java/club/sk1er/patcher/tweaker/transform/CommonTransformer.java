@@ -42,7 +42,7 @@ public interface CommonTransformer extends PatcherTransformer {
                 String nodeName = mapMethodNameFromNode(node);
                 if (nodeName.equals("drawString") || nodeName.equals("func_78276_b")) {
                     methodNode.instructions.set(node, new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        "club/sk1er/patcher/hooks/NameTagRenderingHooks",
+                        getHooksPackage() + "NameTagRenderingHooks",
                         "drawNametagText",
                         "(Lnet/minecraft/client/gui/FontRenderer;Ljava/lang/String;III)I",
                         false));

@@ -153,7 +153,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             "net/minecraft/network/play/server/S48PacketResourcePackSend",
             "func_179783_a", "()Ljava/lang/String;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            "club/sk1er/patcher/hooks/NetHandlerPlayClientHook",
+            getHooksPackage() + "NetHandlerPlayClientHook",
             "validateResourcePackUrl",
             "(Lnet/minecraft/client/network/NetHandlerPlayClient;Ljava/lang/String;Ljava/lang/String;)Z",
             false));

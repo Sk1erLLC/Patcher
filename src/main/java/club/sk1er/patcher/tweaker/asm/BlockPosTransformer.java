@@ -147,13 +147,13 @@ public class BlockPosTransformer implements PatcherTransformer {
         if (actualMethod) {
             list.add(new VarInsnNode(Opcodes.ILOAD, 2));
             list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/hooks/BlockPosHook",
+                getHooksPackage() + "BlockPosHook",
                 "offsetFast",
                 "(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;I)Lnet/minecraft/util/BlockPos;",
                 false));
         } else {
             list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/hooks/BlockPosHook",
+                getHooksPackage() + "BlockPosHook",
                 "offsetFast",
                 "(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;)Lnet/minecraft/util/BlockPos;",
                 false));

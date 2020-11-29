@@ -12,113 +12,10 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.mods.core.util.ModCoreDesktop;
-import club.sk1er.patcher.asm.BakedQuadTransformer;
-import club.sk1er.patcher.asm.BlockBrewingStandTransformer;
-import club.sk1er.patcher.asm.BlockCropsTransformer;
-import club.sk1er.patcher.asm.BlockNetherWartTransformer;
-import club.sk1er.patcher.asm.ChatStyleTransformer;
-import club.sk1er.patcher.asm.ChunkCoordIntPairTransformer;
-import club.sk1er.patcher.asm.EnchantmentTransformer;
-import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
-import club.sk1er.patcher.asm.GuiIngameTransformer;
-import club.sk1er.patcher.asm.GuiPlayerTabOverlayTransformer;
-import club.sk1er.patcher.asm.LongHashMapTransformer;
-import club.sk1er.patcher.asm.TexturedQuadTransformer;
+import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
-import club.sk1er.patcher.tweaker.asm.AbstractResourcePackTransformer;
-import club.sk1er.patcher.tweaker.asm.AnvilChunkLoaderTransformer;
-import club.sk1er.patcher.tweaker.asm.ArmorStandRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockCactusTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockFluidRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockPistonBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockPistonStructureHelperTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockPosTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockRedstoneTorchTransformer;
-import club.sk1er.patcher.tweaker.asm.BlockRendererDispatcherTransformer;
-import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
-import club.sk1er.patcher.tweaker.asm.C17PacketCustomPayloadTransformer;
-import club.sk1er.patcher.tweaker.asm.ChunkTransformer;
-import club.sk1er.patcher.tweaker.asm.CommandHandlerTransformer;
-import club.sk1er.patcher.tweaker.asm.EffectRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityFXTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityItemTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityLivingBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityOtherPlayerMPTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityPlayerSPTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityTransformer;
-import club.sk1er.patcher.tweaker.asm.EntityXPOrbTransformer;
-import club.sk1er.patcher.tweaker.asm.FontRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.GameRulesValueTransformer;
-import club.sk1er.patcher.tweaker.asm.GameSettingsTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiAchievementTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiContainerTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiGameOverTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiLanguageListTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiLanguageTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiMultiplayerTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiNewChatTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiOptionsTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiOverlayDebugTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiScreenResourcePacksTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiScreenTransformer;
-import club.sk1er.patcher.tweaker.asm.GuiVideoSettingsTransformer;
-import club.sk1er.patcher.tweaker.asm.ItemRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.ItemStackTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerArmorBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerArrowTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerCreeperChargeTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerCustomHeadTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerHeldItemTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerSpiderEyesTransformer;
-import club.sk1er.patcher.tweaker.asm.LayerWitherAuraTransformer;
-import club.sk1er.patcher.tweaker.asm.LazyLoadBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.MinecraftServerTransformer;
-import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
-import club.sk1er.patcher.tweaker.asm.ModelPlayerTransformer;
-import club.sk1er.patcher.tweaker.asm.ModelRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.NBTTagCompoundTransformer;
-import club.sk1er.patcher.tweaker.asm.NBTTagStringTransformer;
-import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
-import club.sk1er.patcher.tweaker.asm.NetHandlerPlayServerTransformer;
-import club.sk1er.patcher.tweaker.asm.NodeProcessorTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderArrowTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderEntityItemTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderFireballTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderFishTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderItemFrameTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderItemTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderPlayerTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderSnowballTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderXPOrbTransformer;
-import club.sk1er.patcher.tweaker.asm.ResourcePackRepositoryTransformer;
-import club.sk1er.patcher.tweaker.asm.S0EPacketSpawnObjectTransformer;
-import club.sk1er.patcher.tweaker.asm.S14PacketEntityTransformer;
-import club.sk1er.patcher.tweaker.asm.S19PacketEntityHeadLookTransformer;
-import club.sk1er.patcher.tweaker.asm.S19PacketEntityStatusTransformer;
-import club.sk1er.patcher.tweaker.asm.S2EPacketCloseWindowTransformer;
-import club.sk1er.patcher.tweaker.asm.S3FPacketCustomPayloadTransformer;
-import club.sk1er.patcher.tweaker.asm.ScoreboardTransformer;
-import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
-import club.sk1er.patcher.tweaker.asm.ServerAddressTransformer;
-import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
-import club.sk1er.patcher.tweaker.asm.ServerSelectionListTransformer;
-import club.sk1er.patcher.tweaker.asm.SoundManagerTransformer;
-import club.sk1er.patcher.tweaker.asm.StatBaseTransformer;
-import club.sk1er.patcher.tweaker.asm.ThreadDownloadImageDataTransformer;
-import club.sk1er.patcher.tweaker.asm.TileEntityEnchantmentTableRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.TileEntityEndPortalRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.TileEntityPistonRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.TileEntityRendererDispatcherTransformer;
-import club.sk1er.patcher.tweaker.asm.TileEntitySkullRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.VertexFormatTransformer;
-import club.sk1er.patcher.tweaker.asm.VisGraphTransformer;
-import club.sk1er.patcher.tweaker.asm.WorldClientTransformer;
-import club.sk1er.patcher.tweaker.asm.WorldRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.WorldServerTransformer;
-import club.sk1er.patcher.tweaker.asm.WorldTransformer;
+import club.sk1er.patcher.tweaker.asm.*;
 import club.sk1er.patcher.tweaker.asm.forge.*;
 import club.sk1er.patcher.tweaker.asm.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.tweaker.asm.lwjgl.WindowsDisplayTransformer;
@@ -158,7 +55,7 @@ public class ClassTransformer implements IClassTransformer {
 
     public static final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
     public static String optifineVersion = "NONE";
-    private final Logger LOGGER = LogManager.getLogger("Patcher - Class Transformer");
+    private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
     public ClassTransformer() {
@@ -175,13 +72,13 @@ public class ClassTransformer implements IClassTransformer {
 
             final List<String> unsupportedOptiFineVersions = Arrays.asList("I3", "H8", "H7", "H6", "H5");
             if (unsupportedOptiFineVersions.contains(optifineVersion)) {
-                LOGGER.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
-                this.halt("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
+                logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
+                this.haltForOptifine("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
                     "Please update to a newer version of OptiFine (i7 and above are supported) before trying to launch.");
                 return;
             }
         } catch (IOException e) {
-            LOGGER.info("Something went wrong, or the user doesn't have optifine");
+            logger.info("Something went wrong, or the user doesn't have optifine");
         }
 
         registerTransformer(new S2EPacketCloseWindowTransformer());
@@ -308,7 +205,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new ForgeBlockModelRendererTransformer());
         //registerTransformer(new ModDiscovererTransformer());
-        //registerTransformer(new VertexLighterSmoothAoTransformer()); todo: spontaneously combusted, fix?
+        //registerTransformer(new VertexLighterSmoothAoTransformer());
         registerTransformer(new MinecraftForgeTransformer());
         //registerTransformer(new ItemLayerModelTransformer());
 
@@ -388,10 +285,10 @@ public class ClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return createTransformer(transformedName, bytes, transformerMap, LOGGER);
+        return createTransformer(transformedName, bytes, transformerMap, logger);
     }
 
-    private void halt(final String message) {
+    private void haltForOptifine(String message) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
