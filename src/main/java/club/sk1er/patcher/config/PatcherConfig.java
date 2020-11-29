@@ -984,14 +984,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean compactScreenshotResponse;
 
-    @Property(
-        type = PropertyType.SLIDER, name = "Culling Skip Interval",
-        description = "Every n ticks, skip updating culling.",
-        category = "Performance", subcategory = "Culling",
-        min = 1, max = 10
-    )
-    public static int cullingSkipInterval = 3;
-
     /*@Property(
         type = PropertyType.SWITCH, name = "Optimized Model Generation",
         description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
