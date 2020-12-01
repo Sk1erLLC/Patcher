@@ -49,8 +49,8 @@ public class MinecraftTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-            String methodDesc = mapMethodDesc(methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
+            final String methodDesc = mapMethodDesc(methodNode);
 
             switch (methodName) {
                 case "startGame":
@@ -209,10 +209,9 @@ public class MinecraftTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        if (next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
-                            MethodInsnNode method = (MethodInsnNode) next;
-                            if (method.owner.equals("org/lwjgl/input/Keyboard") && method.name.equals("getEventCharacter") && method.desc.equals("()C")) {
-                                methodNode.instructions.insert(method, keybindFixer());
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
+                            if (((MethodInsnNode) next).name.equals("getEventCharacter")) {
+                                methodNode.instructions.insert(next, keybindFixer());
                                 break;
                             }
                         }

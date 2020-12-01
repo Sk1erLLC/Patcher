@@ -57,18 +57,15 @@ public class BlockPistonStructureHelperTransformer implements PatcherTransformer
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("values")) {
-                        methodNode.instructions.insertBefore(next, useDirections());
+                        methodNode.instructions.insertBefore(next, new FieldInsnNode(Opcodes.GETSTATIC,
+                            "net/minecraft/block/state/BlockPistonStructureHelper",
+                            "directions",
+                            "[Lnet/minecraft/util/EnumFacing;"));
                         methodNode.instructions.remove(next);
                     }
                 }
             }
         }
-    }
-
-    private InsnList useDirections() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/block/state/BlockPistonStructureHelper", "directions", "[Lnet/minecraft/util/EnumFacing;"));
-        return list;
     }
 
     private InsnList createDirections() {

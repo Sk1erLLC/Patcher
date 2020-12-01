@@ -41,15 +41,13 @@ public class ForgeHooksClientTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("getSkyBlendColour")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-                    if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        MethodInsnNode methodInsnNode = (MethodInsnNode) next;
-                        String methodInsnName = mapMethodNameFromNode(methodInsnNode);
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("getY") || methodInsnName.equals("func_177956_o")) {
-                            methodInsnNode.name = "func_177952_p"; // getZ
+                            ((MethodInsnNode) next).name = "func_177952_p"; // getZ
                             break;
                         }
                     }

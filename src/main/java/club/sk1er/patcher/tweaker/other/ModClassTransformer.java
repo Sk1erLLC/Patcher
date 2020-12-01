@@ -14,15 +14,7 @@ package club.sk1er.patcher.tweaker.other;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityCullingTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.FullbrightTickerTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineFontRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RandomEntitiesTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RenderItemFrameTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.*;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
@@ -48,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ModClassTransformer implements IClassTransformer {
 
-    private final Logger LOGGER = LogManager.getLogger("Patcher - Mod Class Transformer");
+    private final Logger logger = LogManager.getLogger("Patcher - Mod Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
     public ModClassTransformer() {
@@ -83,17 +75,17 @@ public class ModClassTransformer implements IClassTransformer {
         // to how they normally were (using Forge's changes).
         //
         // Only I7, L5, and L6 are supported due to them being the biggest 1.8.9 versions of OptiFine.
-        String optifineVersion = ClassTransformer.optifineVersion;
+        final String optifineVersion = ClassTransformer.optifineVersion;
         if (optifineVersion.equals("I7")) {
-            LOGGER.info("Found OptiFine I7");
+            logger.info("Found OptiFine I7");
             registerCommonTransformers();
             registerI7Transformers();
         } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5")) {
-            LOGGER.info("Found OptiFine " + optifineVersion);
+            logger.info("Found OptiFine " + optifineVersion);
             registerCommonTransformers();
             registerLSeriesTransformers();
         } else {
-            LOGGER.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
+            logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
         }
     }
 
@@ -105,7 +97,7 @@ public class ModClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, LOGGER);
+        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, logger);
     }
 
     private void registerCommonTransformers() {

@@ -119,7 +119,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
-        registerTransformer(new GuiLanguageListTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());

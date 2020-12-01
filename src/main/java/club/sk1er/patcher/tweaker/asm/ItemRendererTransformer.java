@@ -49,7 +49,11 @@ public class ItemRendererTransformer implements PatcherTransformer {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeOverlay());
             } else if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeHeight());
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), popMatrix());
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    "net/minecraft/client/renderer/GlStateManager",
+                    "func_179121_F",
+                    "()V",
+                    false));
             }
         }
     }
@@ -76,13 +80,6 @@ public class ItemRendererTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
             "(FFF)V", false));
-        return list;
-    }
-
-    private InsnList popMatrix() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", // popMatrix
-            "()V", false));
         return list;
     }
 }

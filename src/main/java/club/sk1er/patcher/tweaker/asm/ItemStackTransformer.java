@@ -38,16 +38,10 @@ public class ItemStackTransformer implements PatcherTransformer {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
-                    if (
-                        node.getOpcode() == Opcodes.LDC &&
-                            ((LdcInsnNode) node).cst.equals("Color: #") &&
-                            node.getNext().getNext().getNext().getOpcode() == Opcodes.LDC &&
-                            ((LdcInsnNode) node.getNext().getNext().getNext()).cst.equals("color") &&
-                            node.getNext().getNext().getNext().getNext().getNext().getOpcode() == Opcodes.INVOKESTATIC &&
-                            ((MethodInsnNode) node.getNext().getNext().getNext().getNext().getNext()).name.equals("toHexString")
-                    ) {
-                        methodNode.instructions.insert(node.getNext().getNext().getNext().getNext().getNext(), fixHexColorPrintingEnd());
-                        methodNode.instructions.remove(node.getNext().getNext().getNext().getNext().getNext());
+                    if (node.getOpcode() == Opcodes.LDC && ((LdcInsnNode) node).cst.equals("Color: #")) {
+                        final AbstractInsnNode next = node.getNext().getNext().getNext().getNext().getNext();
+                        methodNode.instructions.insert(next, fixHexColorPrintingEnd());
+                        methodNode.instructions.remove(next);
                         methodNode.instructions.insert(node.getNext(), fixHexColorPrintingBeginning());
                         return;
                     }

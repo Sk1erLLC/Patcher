@@ -46,38 +46,34 @@ public class GameSettingsTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "onGuiClosed", "()V", null, null);
+        final MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "onGuiClosed", "()V", null, null);
         onGuiClosedMethod.instructions.add(onGuiClosed());
         classNode.methods.add(onGuiClosedMethod);
 
-        FieldNode needsResourceRefreshField = new FieldNode(Opcodes.ACC_PRIVATE, "needsResourceRefresh", "Z", null, null);
+        final FieldNode needsResourceRefreshField = new FieldNode(Opcodes.ACC_PUBLIC, "needsResourceRefresh", "Z", null, null);
         classNode.fields.add(needsResourceRefreshField);
 
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("setOptionFloatValue") || methodName.equals("func_74304_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final InsnList instructions = methodNode.instructions;
+                final ListIterator<AbstractInsnNode> iterator = instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-                    if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode(node);
+                    final AbstractInsnNode next = iterator.next();
+                    if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("scheduleResourcesRefresh") || methodInsnName.equals("func_175603_A")) {
-                            methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), insertBoolean());
+                            instructions.remove(next.getPrevious().getPrevious());
+                            instructions.remove(next.getPrevious());
+                            instructions.remove(next.getNext());
+                            instructions.insertBefore(next, insertBoolean());
+                            instructions.remove(next);
                             break;
                         }
                     }
                 }
-
-                methodNode.instructions.insert(
-                    new MethodInsnNode(
-                        Opcodes.INVOKEVIRTUAL,
-                        "net/minecraft/client/renderer/texture/TextureMap",
-                        "func_174937_a", // setBlurMipmapDirect
-                        "(ZZ)V",
-                        false),
-                    insertBoolean());
 
                 break;
             }
@@ -88,13 +84,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(
-            new FieldInsnNode(
-                Opcodes.PUTFIELD,
-                "net/minecraft/client/settings/GameSettings",
-                "needsResourceRefresh",
-                "Z"));
-        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/settings/GameSettings", "needsResourceRefresh", "Z"));
         return list;
     }
 

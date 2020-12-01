@@ -70,10 +70,9 @@ public class VisGraphTransformer implements PatcherTransformer {
                     AbstractInsnNode next = iterator.next();
 
                     if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 256) {
-                        InsnList list = new InsnList();
                         LabelNode gotoInsn = new LabelNode();
-                        methodNode.instructions.insertBefore(next, changeOperand(list, gotoInsn));
-                        methodNode.instructions.insertBefore(next.getNext(), addGoto(list, gotoInsn));
+                        methodNode.instructions.insertBefore(next, changeOperand(gotoInsn));
+                        methodNode.instructions.insertBefore(next.getNext(), gotoInsn);
                         break;
                     }
                 }
@@ -81,12 +80,8 @@ public class VisGraphTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList addGoto(InsnList list, LabelNode gotoInsn) {
-        list.add(gotoInsn);
-        return list;
-    }
-
-    private InsnList changeOperand(InsnList list, LabelNode gotoInsn) {
+    private InsnList changeOperand(LabelNode gotoInsn) {
+        InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cullingFix", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));

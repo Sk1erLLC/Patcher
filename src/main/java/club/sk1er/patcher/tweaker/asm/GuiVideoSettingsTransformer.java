@@ -40,7 +40,7 @@ public class GuiVideoSettingsTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "onGuiClosed", "()V", null, null);
+        MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "func_146281_b", "()V", null, null);
         onGuiClosedMethod.instructions.add(onGuiClosed());
         classNode.methods.add(onGuiClosedMethod);
     }
@@ -48,13 +48,13 @@ public class GuiVideoSettingsTransformer implements PatcherTransformer {
     private InsnList onGuiClosed() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/GuiScreen", "onGuiClosed", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/GuiScreen", "func_146281_b", "()V", false));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiVideoSettings", "field_146297_k", // mc
             "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", // gameSettings
             "Lnet/minecraft/client/settings/GameSettings;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/GameSettings", "onGuiClosed", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/GameSettings", "func_146281_b", "()V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }
