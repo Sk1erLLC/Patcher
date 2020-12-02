@@ -119,7 +119,7 @@ public class ScreenHistory extends GuiScreen {
 
             final String text = names.get(currentName);
             if (currentName == 0) {
-                drawCenteredString(fontRendererObj, exceptionName == null ? text : text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
+                drawCenteredString(fontRendererObj, exceptionName != null ? text : text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
             } else {
                 drawCenteredString(fontRendererObj, text, (int) xPos, (int) yPos, currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1);
             }
@@ -135,12 +135,13 @@ public class ScreenHistory extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_RETURN) {
-            names.clear();
-            getNameHistory(nameField.getText());
+            this.names.clear();
+            this.exceptionName = null;
+            this.getNameHistory(this.nameField.getText());
         }
 
-        nameField.textboxKeyTyped(typedChar, keyCode);
-        name = nameField.getText();
+        this.nameField.textboxKeyTyped(typedChar, keyCode);
+        this.name = this.nameField.getText();
 
         super.keyTyped(typedChar, keyCode);
     }

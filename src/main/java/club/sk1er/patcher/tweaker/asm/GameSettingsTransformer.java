@@ -46,7 +46,7 @@ public class GameSettingsTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        final MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "onGuiClosed", "()V", null, null);
+        final MethodNode onGuiClosedMethod = new MethodNode(Opcodes.ACC_PUBLIC, "func_146281_b", "()V", null, null);
         onGuiClosedMethod.instructions.add(onGuiClosed());
         classNode.methods.add(onGuiClosedMethod);
 
