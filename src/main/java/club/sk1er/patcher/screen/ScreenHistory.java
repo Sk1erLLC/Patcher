@@ -104,16 +104,8 @@ public class ScreenHistory extends GuiScreen {
         final int right = width - (width / 3);
         final int bottom = (height / 5) + 37;
 
-        //BG
         drawSmoothRect(left, top, right, bottom + (names.size() * 10) + offset, new Color(22, 22, 24).getRGB());
-
-        //TITLE BG
-        drawSmoothRect(left, top, right, bottom, new Color(22, 22, 24).getRGB());
-
-        //TITLE;
         drawCenteredString(fontRendererObj, "Name History", width / 2, height / 5, -1);
-
-        //Text Box
         nameField.drawTextBox();
 
         // Check if names have been scrolled outside of bounding box.
@@ -127,7 +119,7 @@ public class ScreenHistory extends GuiScreen {
 
             final String text = names.get(currentName);
             if (currentName == 0) {
-                drawCenteredString(fontRendererObj, text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
+                drawCenteredString(fontRendererObj, exceptionName == null ? text : text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
             } else {
                 drawCenteredString(fontRendererObj, text, (int) xPos, (int) yPos, currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1);
             }
