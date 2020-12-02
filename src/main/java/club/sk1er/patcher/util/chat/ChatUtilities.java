@@ -17,6 +17,8 @@ import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ChatUtilities {
 
@@ -32,7 +34,7 @@ public class ChatUtilities {
         final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         if (player != null) {
-            player.addChatComponentMessage(new ChatComponentText(color(message)));
+            MinecraftForge.EVENT_BUS.post(new ClientChatReceivedEvent((byte) 0, new ChatComponentText(color(message))));
         }
     }
 

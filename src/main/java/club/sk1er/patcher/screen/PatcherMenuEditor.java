@@ -22,6 +22,7 @@ import net.minecraft.client.gui.GuiCustomizeSkin;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenOptionsSounds;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.resources.I18n;
@@ -56,12 +57,13 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
         mcButtonList = event.buttonList;
-        int width = event.gui.width;
-        int height = event.gui.height;
+        final GuiScreen gui = event.gui;
+        final int width = gui.width;
+        final int height = gui.height;
 
-        if (event.gui instanceof GuiMainMenu) {
+        if (gui instanceof GuiMainMenu) {
             if (PatcherConfig.cleanMainMenu) {
-                realmsButton = ((GuiMainMenu) event.gui).realmsButton;
+                realmsButton = ((GuiMainMenu) gui).realmsButton;
                 for (GuiButton button : mcButtonList) {
                     if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
                         button.width = 200;
@@ -69,7 +71,7 @@ public class PatcherMenuEditor {
                     }
                 }
             }
-        } else if (event.gui instanceof GuiScreenResourcePacks) {
+        } else if (gui instanceof GuiScreenResourcePacks) {
             if (!Loader.isModLoaded("ResourcePackOrganizer")) {
                 for (GuiButton button : mcButtonList) {
                     button.width = 200;
@@ -79,7 +81,7 @@ public class PatcherMenuEditor {
                     }
                 }
             }
-        } else if (event.gui instanceof GuiIngameMenu) {
+        } else if (gui instanceof GuiIngameMenu) {
             if (PatcherConfig.skinRefresher) {
                 mcButtonList.add(new GuiButton(435762,
                     2,
@@ -94,14 +96,14 @@ public class PatcherMenuEditor {
                 mcButtonList.get(4).enabled = false;
                 mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List"));
             }
-        } else if (event.gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
+        } else if (gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
             mcButtonList.add(new GuiButton(435762,
                 width / 2 - 155 + 160,
                 height / 6 + 24 * (7 >> 1),
                 150,
                 20,
                 "Refresh Skin"));
-        } else if (event.gui instanceof GuiScreenOptionsSounds) {
+        } else if (gui instanceof GuiScreenOptionsSounds) {
             mcButtonList.add(new GuiButton(85348, 2, height - 22, 100, 20, "All Sounds"));
         }
     }
@@ -124,16 +126,17 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
         final int id = event.button.id;
-        if (id == 435762 && (event.gui instanceof GuiIngameMenu || event.gui instanceof GuiCustomizeSkin)) {
+        final GuiScreen gui = event.gui;
+        if (id == 435762 && (gui instanceof GuiIngameMenu || gui instanceof GuiCustomizeSkin)) {
             SkinCacheRefresh.refreshSkin();
-        } else if (event.gui instanceof GuiIngameMenu) {
+        } else if (gui instanceof GuiIngameMenu) {
             if (id == 231423) {
                 MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
                 mc.theWorld.sendQuittingDisconnectingPacket();
                 mc.loadWorld(null);
                 mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
             }
-        } else if (event.gui instanceof GuiScreenOptionsSounds && id == 85348) {
+        } else if (gui instanceof GuiScreenOptionsSounds && id == 85348) {
             mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
         }
     }

@@ -15,6 +15,7 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -40,7 +41,6 @@ public class MenuPreviewHandler {
 
     @SubscribeEvent
     public void tickEvent(TickEvent.ClientTickEvent event) {
-        // todo this seems expensive, maybe figure out a better way to do this?
         this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
     }
 
@@ -48,12 +48,11 @@ public class MenuPreviewHandler {
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        ScaledResolution resolution = new ScaledResolution(mc);
+        final ScaledResolution resolution = new ScaledResolution(mc);
+        final int scaledWidth = resolution.getScaledWidth();
+        final int scaledHeight = resolution.getScaledHeight();
 
-        int scaledWidth = resolution.getScaledWidth();
-        int scaledHeight = resolution.getScaledHeight();
-
-        GuiNewChat chat = this.mc.ingameGUI.getChatGUI();
+        final GuiNewChat chat = mc.ingameGUI.getChatGUI();
         if (this.toggledChat && !chat.getChatOpen()) {
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -64,15 +63,16 @@ public class MenuPreviewHandler {
             GlStateManager.popMatrix();
         }
 
-        Scoreboard scoreboard = mc.theWorld.getScoreboard();
-        ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);
+        final Scoreboard scoreboard = mc.theWorld.getScoreboard();
+        final ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);
 
         if (PatcherConfig.toggleTab && this.toggledTab && !mc.gameSettings.keyBindPlayerList.isKeyDown()) {
+            final GuiPlayerTabOverlay tabOverlay = mc.ingameGUI.getTabList();
             if (mc.isIntegratedServerRunning() && mc.thePlayer.sendQueue.getPlayerInfoMap().size() <= 1 && objective == null) {
-                mc.ingameGUI.getTabList().updatePlayerList(false);
+                tabOverlay.updatePlayerList(false);
             } else {
-                mc.ingameGUI.getTabList().updatePlayerList(true);
-                mc.ingameGUI.getTabList().renderPlayerlist(scaledWidth, scoreboard, objective);
+                tabOverlay.updatePlayerList(true);
+                tabOverlay.renderPlayerlist(scaledWidth, scoreboard, objective);
             }
         }
     }

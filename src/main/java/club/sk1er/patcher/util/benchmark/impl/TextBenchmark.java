@@ -44,7 +44,7 @@ public class TextBenchmark extends AbstractBenchmark {
     public void tearDown() {
         super.tearDown();
 
-        longString = "";
+        longString = null;
         fontRenderer = null;
     }
 

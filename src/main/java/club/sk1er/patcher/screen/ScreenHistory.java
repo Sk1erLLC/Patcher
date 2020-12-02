@@ -20,7 +20,7 @@ import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,23 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static club.sk1er.mods.core.handlers.OnlineIndicator.drawFilledCircle;
+
 public class ScreenHistory extends GuiScreen {
 
-    // add usernames to a list
     private final List<String> names = new ArrayList<>();
-
-    // should the input field for name searching be focused on init?
     private final boolean focus;
-
-    // input field
     private GuiTextField nameField;
-
-    // inserted name
     private String name;
-
-    // height offset
     private int offset;
-
     private String exceptionName;
 
     public ScreenHistory() {
@@ -80,7 +72,7 @@ public class ScreenHistory extends GuiScreen {
                         if (history.getChangedToAt() == 0) {
                             names.add(name);
                         } else {
-                            names.add(String.format("%s > %s", name, format.format(history.getChangedToAt())));
+                            names.add(String.format("%s » %s", name, format.format(history.getChangedToAt())));
                         }
                     }
                 } else {
@@ -105,46 +97,39 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        fontRendererObj.drawStringWithShadow("* this design is temporary.", 3, 3, new Color(125, 125, 125, 180).getRGB());
-
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        int left = width / 5 - 1;
-        int top = height / 5 - 1;
-        int right = width - width / 5;
-        int bottom = height / 5 + 33;
+        final int left = (width / 3) - 1;
+        final int top = (height / 5) - 3;
+        final int right = width - (width / 3);
+        final int bottom = (height / 5) + 37;
 
         //BG
-        drawRect(left, top, right, bottom + (names.size() * 10), new Color(0, 0, 0, 100).getRGB());
+        drawSmoothRect(left, top, right, bottom + (names.size() * 10) + offset, new Color(22, 22, 24).getRGB());
 
         //TITLE BG
-        drawRect(left, top, right, bottom, new Color(0, 0, 0, 150).getRGB());
+        drawSmoothRect(left, top, right, bottom, new Color(22, 22, 24).getRGB());
 
         //TITLE;
         drawCenteredString(fontRendererObj, "Name History", width / 2, height / 5, -1);
 
         //Text Box
         nameField.drawTextBox();
-        int defaultColour = -1;
 
         // Check if names have been scrolled outside of bounding box.
         // Highlight current and original names.
-        int bound = names.size();
-        for (int i = 0; i < bound; i++) {
-            float xPos = width >> 1;
-            float yPos = bottom + (i * 10) + offset;
-            if (yPos < (height / 5f) + 32) {
+        for (int currentName = 0; currentName < names.size(); currentName++) {
+            final float xPos = width >> 1;
+            final float yPos = bottom + (currentName * 10) + offset - 1;
+            if (yPos < (height / 5f) + 35) {
                 continue;
             }
 
-            if (i == 0) {
-                drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, Color.YELLOW.getRGB());
+            final String text = names.get(currentName);
+            if (currentName == 0) {
+                drawCenteredString(fontRendererObj, text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
             } else {
-                if (i == names.size() - 1) {
-                    drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, Color.GREEN.getRGB());
-                } else {
-                    drawCenteredString(fontRendererObj, names.get(i), (int) xPos, (int) yPos, defaultColour);
-                }
+                drawCenteredString(fontRendererObj, text, (int) xPos, (int) yPos, currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1);
             }
         }
     }
@@ -179,17 +164,33 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        int i = Mouse.getEventDWheel();
-        if (i < 0) {
+        final int scrollBounds = Mouse.getEventDWheel();
+        if (scrollBounds < 0) {
             // works out length of scrollable area
-            int length = height / 5 - (names.size() * fontRendererObj.FONT_HEIGHT);
-
-            if (offset - length + 1 > -names.size() && length <= names.size()) {
+            final int size = names.size();
+            final int length = height / 5 - (size * 9);
+            if (offset - length + 1 > -size && length <= size) {
                 // regions it cant exceed
                 offset -= 10;
             }
-        } else if (i > 0 && offset < 0) {
+        } else if (scrollBounds > 0 && offset < 0) {
             offset += 10;
         }
+    }
+
+    public void drawSmoothRect(int left, int top, int right, int bottom, int color) {
+        final int circleSize = 4;
+        final int radius = circleSize - 1;
+        left += circleSize;
+        right -= circleSize;
+        drawRect(left, top, right, bottom, color);
+        drawRect(left - circleSize, top + radius, left, bottom - radius, color);
+        drawRect(right, top + radius, right + circleSize, bottom - radius, color);
+
+        drawFilledCircle(left, top + circleSize, circleSize, color);
+        drawFilledCircle(left, bottom - circleSize, circleSize, color);
+
+        drawFilledCircle(right, top + circleSize, circleSize, color);
+        drawFilledCircle(right, bottom - circleSize, circleSize, color);
     }
 }
