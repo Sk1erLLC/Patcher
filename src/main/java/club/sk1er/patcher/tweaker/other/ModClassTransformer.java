@@ -23,6 +23,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.Mo
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.signfix.GuiEditSignTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.signfix.TileEntitySignRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.xpfix.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.rporganizer.GuiCustomResourcePacks;
@@ -109,6 +110,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
         registerTransformer(new EntityRendererReflectionOptimizer());
 
+        registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new OptifineFontRendererTransformer());
         registerTransformer(new FontRendererHookTransformer());
         registerTransformer(new FullbrightTickerTransformer());
@@ -120,10 +122,11 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerLSeriesTransformers() {
+        registerTransformer(new ItemModelMesherReflectionOptimizer());
+
         registerTransformer(new GuiEditSignTransformer());
         registerTransformer(new TileEntitySignRendererTransformer());
         registerTransformer(new RandomEntitiesTransformer());
-        registerTransformer(new ItemModelMesherReflectionOptimizer());
         registerTransformer(new GuiDetailSettingsOFTransformer());
     }
 
