@@ -14,15 +14,7 @@ package club.sk1er.patcher.tweaker.other;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityCullingTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.FontRendererHookTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.FullbrightTickerTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.OptifineFontRendererTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RandomEntitiesTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RenderItemFrameTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RenderTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.RendererLivingEntityTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.*;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
@@ -132,6 +124,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new TileEntitySignRendererTransformer());
         registerTransformer(new RandomEntitiesTransformer());
         registerTransformer(new ItemModelMesherReflectionOptimizer());
+        registerTransformer(new GuiDetailSettingsOFTransformer());
     }
 
     public static boolean isDevelopment() {

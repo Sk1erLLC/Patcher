@@ -33,6 +33,7 @@ public class SmartDisconnectScreen extends GuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         switch (button.id) {
             case 0:
+                button.enabled = false;
                 this.mc.theWorld.sendQuittingDisconnectingPacket();
                 this.mc.loadWorld(null);
                 this.mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
@@ -45,6 +46,7 @@ public class SmartDisconnectScreen extends GuiScreen {
                 final GuiMultiplayer multiplayer = new GuiMultiplayer(new GuiMainMenu());
 
                 // disconnect
+                button.enabled = false;
                 this.mc.theWorld.sendQuittingDisconnectingPacket();
                 this.mc.loadWorld(null);
                 this.mc.displayGuiScreen(multiplayer);

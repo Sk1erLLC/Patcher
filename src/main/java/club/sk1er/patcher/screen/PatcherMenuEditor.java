@@ -112,8 +112,8 @@ public class PatcherMenuEditor {
     public void preActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
         if (event.gui instanceof GuiIngameMenu && event.button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
             if (PatcherConfig.smartDisconnect) {
-                event.setCanceled(true);
                 mc.displayGuiScreen(new SmartDisconnectScreen());
+                event.setCanceled(true);
             }
         }
     }
