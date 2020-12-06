@@ -455,6 +455,21 @@ public class PatcherConfig extends Vigilant {
     public static boolean instantWorldSwapping = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Limit Chunk Updates",
+        description = "Limit the amount of chunk updates that happen a second.",
+        category = "Performance", subcategory = "World"
+    )
+    public static boolean limitChunks;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Chunk Update Limit",
+        description = "Specify the amount of updates that can happen a second.",
+        category = "Performance", subcategory = "World",
+        min = 5, max = 250
+    )
+    public static int chunkUpdateLimit = 50;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Downscale Pack Images",
         description = "Change all pack icons to 64x64 to reduce memory usage.",
         category = "Performance", subcategory = "Resources"

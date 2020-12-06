@@ -26,6 +26,7 @@ import club.sk1er.patcher.tweaker.asm.util.ForcePublicTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
@@ -51,10 +52,11 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class ClassTransformer implements IClassTransformer {
 
-    public static final boolean outputBytecode = Boolean.parseBoolean(System.getProperty("debugBytecode", "false"));
+    public static final boolean outputBytecode = "true".equals(System.getProperty("debugBytecode", "false"));
     public static String optifineVersion = "NONE";
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
@@ -71,7 +73,7 @@ public class ClassTransformer implements IClassTransformer {
                 }
             }
 
-            final List<String> unsupportedOptiFineVersions = Arrays.asList("I3", "H8", "H7", "H6", "H5");
+            final Set<String> unsupportedOptiFineVersions = Sets.newHashSet("I3", "H8", "H7", "H6", "H5");
             if (unsupportedOptiFineVersions.contains(optifineVersion)) {
                 logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
                 this.haltForOptifine("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
@@ -188,6 +190,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
         registerTransformer(new ThreadDownloadImageDataTransformer());
+        registerTransformer(new ChunkRenderDispatcherTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

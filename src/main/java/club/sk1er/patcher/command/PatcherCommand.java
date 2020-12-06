@@ -84,7 +84,7 @@ public class PatcherCommand extends CommandBase {
                         return;
                     }
                     default: {
-                        ChatUtilities.sendNotification("Debug Renderer", "&cUnknown mode.");
+                        ChatUtilities.sendNotification("Debug Renderer", "&cUnknown mode. Vanilla & Optimized are the only modes available.");
                         return;
                     }
                 }
@@ -213,6 +213,7 @@ public class PatcherCommand extends CommandBase {
         PatcherConfig.gpuCloudRenderer = status;
         PatcherConfig.glErrorChecking = status;
         PatcherConfig.optimizedItemRenderer = status;
+        PatcherConfig.limitChunks = status;
 
         // fullbright requires a chunk reload once toggled, perform automatically
         Minecraft.getMinecraft().renderGlobal.loadRenderers();
