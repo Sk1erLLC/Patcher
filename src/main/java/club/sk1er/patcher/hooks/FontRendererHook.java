@@ -480,7 +480,7 @@ public final class FontRendererHook {
             GL11.glVertex2f(this.fontRenderer.posX + italicStyle, this.fontRenderer.posY);
 
             GL11.glTexCoord2f(uv.component1(), uv.component2() + v / fontTexHeight);
-            GL11.glVertex2f(this.fontRenderer.posX + italicStyle, this.fontRenderer.posY + 7.99F);
+            GL11.glVertex2f(this.fontRenderer.posX - italicStyle, this.fontRenderer.posY + 7.99F);
 
             final float texAdj = combinedGlyphSize + .5f;
             GL11.glTexCoord2f(uv.component1() + texAdj / fontTexHeight, uv.component2() + v / fontTexHeight);
