@@ -13,8 +13,7 @@ package club.sk1er.patcher.asm
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.ClassNode
 
 class GuiIngameTransformer : PatcherTransformer {
     /**
@@ -33,10 +32,17 @@ class GuiIngameTransformer : PatcherTransformer {
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
-                "showCrosshair", "func_175183_b" -> it.instructions.insertBefore(
-                    it.instructions.first,
+                "showCrosshair", "func_175183_b" -> it.instructions.insert(
                     disableCrosshairRendering()
                 )
+
+                "renderVignette", "func_180480_a" -> it.instructions.insert(assembleBlock {
+                    getstatic("club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", boolean)
+                    ifeq(L["1"])
+                    _return
+                    +L["1"]
+                }.first)
+
                 /*"renderScoreboard", "func_180475_a" -> {
                     if (ClassTransformer.optifineVersion == "L5" || ClassTransformer.optifineVersion == "NONE") {
                         var foundOneDrawRect = false

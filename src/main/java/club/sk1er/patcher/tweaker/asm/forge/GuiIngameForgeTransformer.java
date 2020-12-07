@@ -13,15 +13,7 @@ package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -44,7 +36,17 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        classNode.interfaces.add(getHooksPackage() + "accessors/IGuiIngameForge");
+
         for (MethodNode methodNode : classNode.methods) {
+            switch(methodNode.name) {
+                case "pre":
+                case "post":
+                case "renderCrosshairs":
+                    methodNode.access = Opcodes.ACC_PUBLIC;
+                    break;
+            }
+
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderGameOverlay") || methodName.equals("func_175180_a")) {
@@ -62,6 +64,8 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     }
                 }
             } else if (methodName.equals("renderCrosshairs")) {
+                methodNode.instructions.insert(checkOverride());
+
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
@@ -80,8 +84,33 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodNode.name.equals("pre")) {
+                methodNode.instructions.insert(checkCompatibilityMode());
             }
         }
+    }
+
+    private InsnList checkCompatibilityMode() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "hudCachingCompatibilityMode", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ifeq);
+        return list;
+    }
+
+    private InsnList checkOverride() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList addIfeq(LabelNode ifne, InsnList list) {

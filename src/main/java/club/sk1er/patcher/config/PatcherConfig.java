@@ -589,6 +589,31 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableNametagBoxes;
 
     @Property(
+        type = PropertyType.SWITCH, name = "HUD Caching",
+        description = "Limit the FPS of your HUD to 20, giving the game more time to render other things.\n" +
+            "§c§lVery experimental, will not work out for everyone.",
+        category = "Performance", subcategory = "Experimental"
+    )
+    public static boolean hudCaching;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "HUD Caching - Compatibility Mode",
+        description = "If issues with mods and their HUD items are found, try enabling this.",
+        category = "Performance", subcategory = "Experimental"
+    )
+    public static boolean hudCachingCompatibilityMode;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "HUD Cache Timer",
+        description = "Change the amount of time between HUD updates.\n" +
+            "Measured in ms, higher value will give better performance but is not recommended.\n" +
+            "§c§lVery experimental, will not work out for everyone.",
+        category = "Performance", subcategory = "Experimental",
+        min = 100, max = 2500
+    )
+    public static int hudCacheTimer = 1000;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",
         description = "Stop entities that aren't visible to the player from rendering.",
         category = "Performance", subcategory = "Culling"
