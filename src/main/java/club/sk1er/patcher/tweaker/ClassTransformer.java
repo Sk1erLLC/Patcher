@@ -49,9 +49,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class ClassTransformer implements IClassTransformer {
@@ -193,6 +191,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ChunkRenderDispatcherTransformer());
         registerTransformer(new FramebufferTransformer());
         registerTransformer(new GlStateManagerTransformer());
+        registerTransformer(new ContainerTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
