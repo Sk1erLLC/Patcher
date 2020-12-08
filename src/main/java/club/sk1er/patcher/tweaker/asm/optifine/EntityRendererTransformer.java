@@ -19,20 +19,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -371,8 +358,43 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_181560_a":
+                case "updateCameraAndRender": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("renderGameOverlay") || methodInsnName.equals("func_175180_a")) {
+                                for (int i = 0; i < 4; i++) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                }
+
+                                methodNode.instructions.insert(next, renderCachedOverlay());
+                                methodNode.instructions.remove(next);
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
+    }
+
+    private InsnList renderCachedOverlay() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", isDevelopment() ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "ingameGUI" : "field_71456_v", "Lnet/minecraft/client/gui/GuiIngame;"));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/cache/HudCaching", "renderCachedHud", "(Lnet/minecraft/client/renderer/EntityRenderer;Lnet/minecraft/client/gui/GuiIngame;F)V", false));
+        return list;
     }
 
     private InsnList removeViewBobbing(LabelNode ifne) {

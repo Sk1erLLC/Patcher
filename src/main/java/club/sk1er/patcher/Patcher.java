@@ -15,6 +15,7 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.mods.core.util.WebUtil;
+import club.sk1er.patcher.cache.HudCaching;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.PatcherCommand;
@@ -99,7 +100,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.5+beta-4.1";
+    public static final String VERSION = "1.5+beta-5";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -187,15 +188,16 @@ public class Patcher {
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
-        ClientCommandHandler.instance.registerCommand(new PatcherCommand());
-        ClientCommandHandler.instance.registerCommand(new FovChangerCommand());
-        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
-        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.DeleteScreenshot());
-        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.UploadScreenshot());
-        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.CopyScreenshot());
-        ClientCommandHandler.instance.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
-        ClientCommandHandler.instance.registerCommand(new SkinCacheRefresh());
-        ClientCommandHandler.instance.registerCommand(new CoordsCommand());
+        final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
+        commandRegister.registerCommand(new PatcherCommand());
+        commandRegister.registerCommand(new FovChangerCommand());
+        commandRegister.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.DeleteScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.UploadScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.CopyScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
+        commandRegister.registerCommand(new SkinCacheRefresh());
+        commandRegister.registerCommand(new CoordsCommand());
 
         registerClass(this);
         registerClass(target);
@@ -214,6 +216,7 @@ public class Patcher {
         registerClass(new ImagePreview());
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
+        registerClass(new HudCaching());
         registerClass(MinecraftHook.INSTANCE);
 
         checkLogs();
