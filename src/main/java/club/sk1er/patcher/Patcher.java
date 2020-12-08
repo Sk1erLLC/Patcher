@@ -455,9 +455,7 @@ public class Patcher {
     }
 
     public Set<String> keySet(JsonObject json) throws NullPointerException {
-        try {
-            return json.keySet();
-        } catch (NoSuchMethodError e) {
+        //JsonObject#keySet not a thing in Minecraft 1.8's old AF GSON
             Set<String> keySet = new HashSet<>();
 
             for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
@@ -465,7 +463,6 @@ public class Patcher {
             }
 
             return keySet;
-        }
     }
 
     /**
