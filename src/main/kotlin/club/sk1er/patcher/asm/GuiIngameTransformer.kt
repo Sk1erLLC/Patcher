@@ -36,12 +36,12 @@ class GuiIngameTransformer : PatcherTransformer {
                     disableCrosshairRendering()
                 )
 
-                "renderVignette", "func_180480_a" -> it.instructions.insert(assembleBlock {
+                /*"renderVignette", "func_180480_a" -> it.instructions.insert(assembleBlock {
                     getstatic("club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", boolean)
                     ifeq(L["1"])
                     _return
                     +L["1"]
-                }.first)
+                }.first)*/
 
                 /*"renderScoreboard", "func_180475_a" -> {
                     if (ClassTransformer.optifineVersion == "L5" || ClassTransformer.optifineVersion == "NONE") {

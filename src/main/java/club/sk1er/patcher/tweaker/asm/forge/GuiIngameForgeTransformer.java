@@ -39,14 +39,14 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         classNode.interfaces.add(getHooksPackage() + "accessors/IGuiIngameForge");
 
         for (MethodNode methodNode : classNode.methods) {
-            switch(methodNode.name) {
+            /*switch(methodNode.name) {
                 case "pre":
                 case "post":
                 case "renderCrosshairs":
                     methodNode.access = Opcodes.ACC_PUBLIC;
                     break;
             }
-
+*/
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderGameOverlay") || methodName.equals("func_175180_a")) {
@@ -64,7 +64,7 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     }
                 }
             } else if (methodName.equals("renderCrosshairs")) {
-                methodNode.instructions.insert(checkOverride());
+                //methodNode.instructions.insert(checkOverride());
 
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -84,9 +84,9 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-            } else if (methodNode.name.equals("pre")) {
+            }/* else if (methodNode.name.equals("pre")) {
                 methodNode.instructions.insert(checkCompatibilityMode());
-            }
+            }*/
         }
     }
 

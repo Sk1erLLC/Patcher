@@ -359,7 +359,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "func_181560_a":
+                /*case "func_181560_a":
                 case "updateCameraAndRender": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -381,7 +381,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
 
                     break;
-                }
+                }*/
             }
         }
     }

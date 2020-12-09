@@ -588,7 +588,7 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean disableNametagBoxes;
 
-    @Property(
+    /*@Property(
         type = PropertyType.SWITCH, name = "HUD Caching",
         description = "Limit the FPS of your HUD to 20, giving the game more time to render other things.\n" +
             "§c§lVery experimental, will not work out for everyone.",
@@ -611,7 +611,7 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Experimental",
         min = 100, max = 2500
     )
-    public static int hudCacheTimer = 1000;
+    public static int hudCacheTimer = 1000;*/
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",

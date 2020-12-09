@@ -216,7 +216,7 @@ public class Patcher {
         registerClass(new ImagePreview());
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
-        registerClass(new HudCaching());
+        //registerClass(new HudCaching());
         registerClass(MinecraftHook.INSTANCE);
 
         checkLogs();

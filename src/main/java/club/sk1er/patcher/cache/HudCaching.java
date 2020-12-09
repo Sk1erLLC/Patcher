@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL14;
 import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.*;
 
 public class HudCaching {
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    /*private static final Minecraft mc = Minecraft.getMinecraft();
     private static Framebuffer framebuffer = null;
 
     private static int tickCounter = 0;
@@ -189,5 +189,5 @@ public class HudCaching {
 
     private static void post(GuiIngameForge forge, RenderGameOverlayEvent.ElementType type) {
         ((IGuiIngameForge) forge).post(type);
-    }
+    }*/
 }
