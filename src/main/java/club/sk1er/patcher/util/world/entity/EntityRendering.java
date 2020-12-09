@@ -68,8 +68,9 @@ public class EntityRendering {
             return;
         }
 
-        if (event.entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
-            renderTag(event.entity);
+        final EntityLivingBase entity = event.entity;
+        if (entity != null && !entity.isInvisible() && entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
+            renderTag(entity);
         }
     }
 
