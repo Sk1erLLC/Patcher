@@ -98,7 +98,7 @@ public class EntityRendering {
                     previousEntity.getEntityData().removeTag(key);
                 }
 
-                reference = (entity != null) ? new WeakReference<>(entity) : null;
+                reference = entity != null ? new WeakReference<>(entity) : null;
             }
 
             if (entity != null) {

@@ -15,7 +15,6 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.mods.core.util.WebUtil;
-import club.sk1er.patcher.cache.HudCaching;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.PatcherCommand;
@@ -59,7 +58,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -132,10 +130,10 @@ public class Patcher {
      */
     private final CloudHandler cloudHandler = new CloudHandler();
     private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
-    private final KeyBinding nameHistory = new KeybindNameHistory();
-    private final KeyBinding dropModifier = new KeybindDropModifier();
-    private final KeyBinding chatPeek = new KeybindChatPeek();
     private final Viewer viewer = new Viewer();
+    private KeyBinding dropModifier;
+    private KeyBinding nameHistory;
+    private KeyBinding chatPeek;
 
     /**
      * Create an instance of our config using {@link Vigilant}.
@@ -152,16 +150,6 @@ public class Patcher {
     private boolean loadedGalacticFontRenderer;
 
     /**
-     * Check if the current environment is development, or production.
-     *
-     * @return If the client is being ran in a development environment, return true, otherwise return false.
-     */
-    public static boolean isDevelopment() {
-        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
-        return o != null && (boolean) o;
-    }
-
-    /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
      * ModCore is initialized here, as well as any configuration.
@@ -173,9 +161,9 @@ public class Patcher {
     public void init(FMLInitializationEvent event) {
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
-        ClientRegistry.registerKeyBinding(nameHistory);
-        ClientRegistry.registerKeyBinding(dropModifier);
-        ClientRegistry.registerKeyBinding(chatPeek);
+        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
+        ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
+        ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
