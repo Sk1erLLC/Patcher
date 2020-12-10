@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.imgur
 
+import club.sk1er.patcher.util.chat.ChatUtilities
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,12 +39,12 @@ class Imgur(private val clientId: String) {
 
             connection.outputStream.bufferedWriter().use { it.write(encodedParams) }
             if (connection.responseCode != 200) {
+                ChatUtilities.sendMessage("&cImgur responded with ${connection.responseCode}. Perhaps you're uploading too quickly?")
                 error("Imgur responded with ${connection.responseCode}")
             }
 
-            val parser = JsonParser()
             connection.inputStream.reader().use {
-                val imgurJson = parser.parse(it).asJsonObject
+                val imgurJson = JsonParser().parse(it).asJsonObject
                 val dataJson = imgurJson.getAsJsonObject("data")
                 dataJson.get("link").asString
             }
