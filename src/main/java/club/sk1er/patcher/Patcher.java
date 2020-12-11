@@ -192,6 +192,7 @@ public class Patcher {
         registerClass(viewer);
         registerClass(debugPerformanceRenderer);
         registerClass(cloudHandler);
+        registerClass(dropModifier);
         registerClass(new MenuPreviewHandler());
         registerClass(new EntityRendering());
         registerClass(new FovHandler());

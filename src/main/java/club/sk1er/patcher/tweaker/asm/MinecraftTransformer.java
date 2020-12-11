@@ -171,10 +171,10 @@ public class MinecraftTransformer implements PatcherTransformer {
                                     ));
                                     break;
 
-                                case "dropOneItem":
+                                /*case "dropOneItem":
                                 case "func_71040_bB":
                                     methodNode.instructions.insertBefore(methodInsnNode, getCustomModifierKey());
-                                    break;
+                                    break;*/
                             }
                         }
                     }

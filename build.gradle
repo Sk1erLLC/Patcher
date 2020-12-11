@@ -477,6 +477,10 @@ compileKotlin {
 //        useIR = true
 //        jvmTarget = "1.8"
 //    }
+
+    kotlinOptions {
+        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn', '-Xno-param-assertions']
+    }
 }
 
 publishing {

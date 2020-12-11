@@ -13,7 +13,6 @@ package club.sk1er.patcher.jar
 
 import club.sk1er.patcher.coroutines.MCDispatchers
 import com.google.common.base.Throwables
-import com.google.common.collect.Lists
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -60,6 +59,6 @@ class AsyncModDiscoverer(
         }
 
         logger.info("Finished mod discovery in ${(System.currentTimeMillis() - start) / 1000L}s.")
-        return Pair(modList, nonModLibs)
+        return modList to nonModLibs
     }
 }

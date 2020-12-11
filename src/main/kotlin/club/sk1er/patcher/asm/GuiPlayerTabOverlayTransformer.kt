@@ -41,12 +41,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                                 }.first)
                             }
                         } else if (insn is FieldInsnNode && insn.opcode == Opcodes.GETSTATIC) {
-                            if (mapFieldNameFromNode(insn) == "HAT"
-                                && insn.previous.opcode == Opcodes.ALOAD
-                                && (insn.previous as VarInsnNode).`var` == 27
-                                && insn.next?.next?.next is LabelNode
-                                && insn.next?.next?.opcode == Opcodes.IFEQ
-                            ) {
+                            if (mapFieldNameFromNode(insn) == "HAT") {
                                 it.instructions.insertBefore(
                                     insn.previous?.previous,
                                     addPlayerHat(

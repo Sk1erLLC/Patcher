@@ -22,10 +22,7 @@ class LongHashMapTransformer : PatcherTransformer {
 
     override fun transform(classNode: ClassNode, name: String) {
         if (ClassTransformer.optifineVersion != "NONE") {
-            println("OptiFine detected, not optimizing LongHashMap.")
             return
-        } else {
-            println("OptiFine not detected, optimizing LongHashMap.")
         }
 
         classNode.methods.first {

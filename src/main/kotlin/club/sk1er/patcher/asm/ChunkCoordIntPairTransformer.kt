@@ -25,10 +25,7 @@ class ChunkCoordIntPairTransformer : PatcherTransformer {
 
     override fun transform(classNode: ClassNode, name: String) {
         if (ClassTransformer.optifineVersion != "NONE") {
-            println("OptiFine detected, not optimizing ChunkCoordIntPair.")
             return
-        } else {
-            println("OptiFine not detected, optimizing ChunkCoordIntPair.")
         }
 
         classNode.methods.first {
