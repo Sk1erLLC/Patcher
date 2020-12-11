@@ -170,11 +170,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                                         false
                                     ));
                                     break;
-
-                                /*case "dropOneItem":
-                                case "func_71040_bB":
-                                    methodNode.instructions.insertBefore(methodInsnNode, getCustomModifierKey());
-                                    break;*/
                             }
                         }
                     }
@@ -270,25 +265,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/client/gui/GuiScreenWorking"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/GuiScreenWorking", "<init>", "()V", false));
-        return list;
-    }
-
-    private InsnList getCustomModifierKey() {
-        InsnList list = new InsnList();
-        LabelNode ifne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", "getDropModifier", "()Lnet/minecraft/client/settings/KeyBinding;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/settings/GameSettings", "func_100015_a", "(Lnet/minecraft/client/settings/KeyBinding;)Z", false));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(ifne);
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        LabelNode gotoInsn = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-        list.add(ifeq);
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(gotoInsn);
         return list;
     }
 

@@ -97,12 +97,8 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderDamage(RenderGameOverlayEvent.Post event) {
-        EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance || player == null) {
-            return;
-        }
-
-        if (player.isSpectator()) {
+        final EntityPlayerSP player = mc.thePlayer;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance || player == null || player.isSpectator()) {
             return;
         }
 
@@ -113,16 +109,10 @@ public class HotbarItemsHandler {
             final ScaledResolution res = event.resolution;
 
             final String attackDamage = getAttackDamageString(heldItemStack);
-            int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
-            int y = res.getScaledHeight() - 59;
+            final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
+            final int y = (res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -1 : 14) + 9 << 1) + 9;
 
-            // what the fuck is this
-            y += (mc.playerController.shouldDrawHUD() ? -1 : 14);
-            y += mc.fontRendererObj.FONT_HEIGHT;
-            y <<= 1;
-            y += mc.fontRendererObj.FONT_HEIGHT;
-
-            mc.fontRendererObj.drawString(attackDamage, x, y, 13421772, true);
+            mc.fontRendererObj.drawString(attackDamage, x, y, -1, true);
 
             GlStateManager.scale(2.0f, 2.0f, 2.0f);
             GlStateManager.popMatrix();
@@ -136,21 +126,17 @@ public class HotbarItemsHandler {
      */
     @SubscribeEvent
     public void renderItemCount(final RenderGameOverlayEvent.Post event) {
-        EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance || player == null) {
-            return;
-        }
-
-        if (player.isSpectator()) {
+        final EntityPlayerSP player = mc.thePlayer;
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance || player == null || player.isSpectator()) {
             return;
         }
 
         if (player.getCurrentEquippedItem() != null) {
-            boolean holdingBow = player.getCurrentEquippedItem().getItem() instanceof ItemBow;
-            int count = getHeldItemCount(holdingBow);
+            final boolean holdingBow = player.getCurrentEquippedItem().getItem() instanceof ItemBow;
+            final int count = getHeldItemCount(holdingBow);
 
             if (count > 1 || (holdingBow && count > 0)) {
-                int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? 10 : 0;
+                final int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? -12 : 0;
                 final ScaledResolution resolution = event.resolution;
                 mc.fontRendererObj.drawString(String.valueOf(count),
                     resolution.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
@@ -169,11 +155,7 @@ public class HotbarItemsHandler {
     @SubscribeEvent
     public void renderEnchantments(final RenderGameOverlayEvent.Post event) {
         final EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null) {
-            return;
-        }
-
-        if (player.isSpectator()) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null || player.isSpectator()) {
             return;
         }
 
@@ -185,14 +167,10 @@ public class HotbarItemsHandler {
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
             final ScaledResolution res = event.resolution;
 
-            int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
-            int y = res.getScaledHeight() - 59;
+            final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
+            final int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -2 : 14) + 9 << 1;
 
-            y += (mc.playerController.shouldDrawHUD() ? -2 : 14);
-            y = y + mc.fontRendererObj.FONT_HEIGHT;
-            y <<= 1;
-
-            mc.fontRendererObj.drawString(toDraw, x, y, 13421772, true);
+            mc.fontRendererObj.drawString(toDraw, x, y, -1, true);
 
             GlStateManager.scale(2.0f, 2.0f, 2.0f);
             GlStateManager.popMatrix();
@@ -271,10 +249,10 @@ public class HotbarItemsHandler {
             data = 0;
         }
 
-        ItemStack[] inventory = mc.thePlayer.inventory.mainInventory;
+        final ItemStack[] inventory = mc.thePlayer.inventory.mainInventory;
         for (ItemStack itemStack : inventory) {
             if (itemStack != null) {
-                Item item = itemStack.getItem();
+                final Item item = itemStack.getItem();
 
                 if (Item.getIdFromItem(item) == id && itemStack.getItemDamage() == data) {
                     count += itemStack.stackSize;
@@ -292,22 +270,24 @@ public class HotbarItemsHandler {
      * @return Potion duration & name.
      */
     private String getPotionEffectString(ItemStack heldItemStack) {
-        ItemPotion potion = (ItemPotion) heldItemStack.getItem();
-        List<PotionEffect> effects = potion.getEffects(heldItemStack);
+        final ItemPotion potion = (ItemPotion) heldItemStack.getItem();
+        final List<PotionEffect> effects = potion.getEffects(heldItemStack);
         if (effects == null) return "";
 
-        StringBuilder potionBuilder = new StringBuilder();
+        final StringBuilder potionBuilder = new StringBuilder();
 
         for (PotionEffect entry : effects) {
-            int duration = entry.getDuration() / 20;
-            potionBuilder.append(EnumChatFormatting.BOLD.toString());
-            potionBuilder.append(StatCollector.translateToLocal(entry.getEffectName()));
-            potionBuilder.append(" ");
-            potionBuilder.append(entry.getAmplifier() + 1);
-            potionBuilder.append(" ");
-            potionBuilder.append("(");
-            potionBuilder.append(duration / 60).append(String.format(":%02d", duration % 60));
-            potionBuilder.append(") ");
+            final int duration = entry.getDuration() / 20;
+            potionBuilder
+                .append(EnumChatFormatting.BOLD.toString())
+                .append(StatCollector.translateToLocal(entry.getEffectName()))
+                .append(" ")
+                .append(entry.getAmplifier() + 1)
+                .append(" ")
+                .append("(")
+                .append(duration / 60)
+                .append(String.format(":%02d", duration % 60))
+                .append(") ");
         }
 
         return potionBuilder.toString().trim();
@@ -320,15 +300,17 @@ public class HotbarItemsHandler {
      * @return Currently held items enchantments.
      */
     private String getEnchantmentString(ItemStack heldItemStack) {
-        String enchantBuilder;
-        Map<Integer, Integer> en = EnchantmentHelper.getEnchantments(heldItemStack);
-        StringBuilder sb = new StringBuilder();
+        final Map<Integer, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
+        final StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<Integer, Integer> entry : en.entrySet()) {
-            sb.append(EnumChatFormatting.BOLD.toString()).append(shortEnchantmentNames.get(entry.getKey())).append(" ").append(entry.getValue()).append(" ");
+        for (Map.Entry<Integer, Integer> entry : enchantmentMap.entrySet()) {
+            sb.append(EnumChatFormatting.BOLD.toString())
+                .append(shortEnchantmentNames.get(entry.getKey()))
+                .append(" ")
+                .append(entry.getValue())
+                .append(" ");
         }
 
-        enchantBuilder = sb.toString();
-        return enchantBuilder.trim();
+        return sb.toString().trim();
     }
 }
