@@ -57,38 +57,33 @@ public class HotbarItemsHandler {
      * Create a map for short enchantment name identification.
      * Protection -> P, Fire Protection -> FP, Blast Protection -> BP, etc.
      */
-    private final Map<Integer, String> shortEnchantmentNames =
-        new HashMap<Integer, String>() {
-            {
-                put(0, "P");
-                put(1, "FP");
-                put(2, "FF");
-                put(3, "BP");
-                put(4, "PP");
-                put(5, "R");
-                put(6, "AA");
-                put(7, "T");
-                put(8, "DS");
-                put(9, "FW");
-                put(16, "SH");
-                put(17, "SM");
-                put(18, "BoA");
-                put(19, "KB");
-                put(20, "FA");
-                put(21, "L");
-                put(32, "EFF");
-                put(33, "ST");
-                put(34, "UNB");
-                put(35, "F");
-                put(48, "POW");
-                put(49, "PUN");
-                put(50, "FLA");
-                put(51, "INF");
-                put(61, "LoS");
-                put(62, "LU");
-                put(70, "MEN");
-            }
-        };
+    private final Map<Integer, String> shortEnchantmentNames = new HashMap<Integer, String>() {{
+        put(0, "P");
+        put(1, "FP");
+        put(2, "FF");
+        put(3, "BP");
+        put(4, "PP");
+        put(5, "R");
+        put(6, "AA");
+        put(7, "T");
+        put(8, "DS");
+        put(16, "SH");
+        put(17, "SM");
+        put(18, "BoA");
+        put(19, "KB");
+        put(20, "FA");
+        put(21, "L");
+        put(32, "EFF");
+        put(33, "ST");
+        put(34, "UNB");
+        put(35, "F");
+        put(48, "POW");
+        put(49, "PUN");
+        put(50, "FLA");
+        put(51, "INF");
+        put(61, "LoS");
+        put(62, "LU");
+    }};
 
     /**
      * Render the damage of the currently held item above the hotbar for easy viewing.
