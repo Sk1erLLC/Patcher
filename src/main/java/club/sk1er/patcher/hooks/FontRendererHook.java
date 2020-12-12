@@ -189,6 +189,7 @@ public final class FontRendererHook {
             colorState.blue = cachedString.getLastBlue();
             colorState.alpha = cachedString.getLastAlpha();
             GlStateManager.translate(-posX, -posY, 0.0f);
+            GlStateManager.color(1, 1, 1, 1);
 
             this.fontRenderer.posX = posX + cachedString.getWidth();
             this.fontRenderer.posY = posY + cachedString.getHeight();
@@ -343,10 +344,11 @@ public final class FontRendererHook {
 
         for (RenderPair renderPair : underline) {
             GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
-            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT - 1.0F);
-            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + (float) this.fontRenderer.FONT_HEIGHT - 1.0F);
+            final float fontHeight = this.fontRenderer.FONT_HEIGHT;
+            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + fontHeight);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + fontHeight);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + fontHeight - 1.0F);
+            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + fontHeight - 1.0F);
         }
 
         if (hasStyle) {

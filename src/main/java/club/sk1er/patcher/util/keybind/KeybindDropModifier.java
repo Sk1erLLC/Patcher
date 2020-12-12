@@ -29,8 +29,9 @@ public class KeybindDropModifier extends KeyBinding {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (player != null && GameSettings.isKeyDown(this)) {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final EntityPlayerSP player = mc.thePlayer;
+        if (player != null && GameSettings.isKeyDown(this) && GameSettings.isKeyDown(mc.gameSettings.keyBindDrop)) {
             player.dropOneItem(true);
         }
     }
