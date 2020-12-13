@@ -85,7 +85,7 @@ public class PatcherMenuEditor {
             if (PatcherConfig.skinRefresher) {
                 mcButtonList.add(new GuiButton(435762,
                     2,
-                    height - (ModCore.getInstance().getModCoreConfig().getModcoreButtonLinks() ? 62 : 22),
+                    height - 22,
                     100,
                     20,
                     "Refresh Skin"));

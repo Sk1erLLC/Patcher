@@ -5,62 +5,50 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import javax.swing.GroupLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ModCoreInstaller {
-
-
-    private static final String VERSION_URL = "https://api.sk1er.club/modcore_versions";
-    private static final String className = "club.sk1er.mods.core.ModCore";
+    private static final String VERSION_URL = "http://api.modcore.net/api/v1/versions";
+    private static final String className = "club.sk1er.mods.core.tweaker.ModCoreTweaker";
     private static boolean errored = false;
     private static String error;
     private static File dataDir = null;
-    private static boolean isRunningModCore = false;
 
-    public static boolean isIsRunningModCore() {
-        return isRunningModCore;
-    }
 
-    private static boolean isInitalized() {
+    private static boolean inClassPath() {
         try {
             LinkedHashSet<String> objects = new LinkedHashSet<>();
             objects.add(className);
             Launch.classLoader.clearNegativeEntries(objects);
-            Field invalidClasses = LaunchClassLoader.class.getDeclaredField("invalidClasses");
-            invalidClasses.setAccessible(true);
-            Object obj = invalidClasses.get(ModCoreInstaller.class.getClassLoader());
-            ((Set<String>) obj).remove(className);
-            return Class.forName("club.sk1er.mods.core.ModCore") != null;
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
-            ignored.printStackTrace();
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException ignored) {
         }
         return false;
+    }
+
+    private static boolean isInitialized() {
+        try {
+            return club.sk1er.mods.core.tweaker.ModCoreTweaker.initialized;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     public static boolean isErrored() {
@@ -85,26 +73,24 @@ public class ModCoreInstaller {
         return new JsonHolder();
     }
 
-    public static void initializeModCore(File gameDir) {
-        if (!isIsRunningModCore()) {
-            return;
-        }
+    private static boolean initializeModCore(File gameDir) {
         try {
-            Class<?> modCore = Class.forName(className);
-            Method instanceMethod = modCore.getMethod("getInstance");
-            Method initialize = modCore.getMethod("initialize", File.class);
-            Object modCoreObject = instanceMethod.invoke(null);
-            initialize.invoke(modCoreObject, gameDir);
-            System.out.println("Loaded ModCore Successfully");
-            return;
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            club.sk1er.mods.core.tweaker.ModCoreTweaker.initialize(gameDir);
+            return true;
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
-        System.out.println("Did NOT ModCore Successfully");
+        System.out.println("Did NOT initialize ModCore Successfully");
+        return false;
     }
 
+
     public static int initialize(File gameDir, String minecraftVersion) {
-        if (isInitalized()) return -1;
+        if (inClassPath()) {
+            if (isInitialized())
+                return -1;
+            else return initializeModCore(gameDir) ? 0 : 4;
+        }
         dataDir = new File(gameDir, "modcore");
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
@@ -112,7 +98,11 @@ public class ModCoreInstaller {
                 return 1;
             }
         }
-        JsonHolder jsonHolder = fetchJSON(VERSION_URL);
+        JsonHolder jsonHolder = fetchJSON(VERSION_URL).optJSONObject("versions");
+        if (!jsonHolder.has(minecraftVersion)) {
+            System.out.println("No ModCore target for " + minecraftVersion + ". Aborting install");
+            return -2;
+        }
         String latestRemote = jsonHolder.optString(minecraftVersion);
         boolean failed = jsonHolder.getKeys().size() == 0 || (jsonHolder.has("success") && !jsonHolder.optBoolean("success"));
 
@@ -135,21 +125,21 @@ public class ModCoreInstaller {
 
         addToClasspath(modcoreFile);
 
-        if (!isInitalized()) {
+        if (!inClassPath()) {
             bail("Something went wrong and it did not add the jar to the class path. Local file exists? " + modcoreFile.exists());
             return 3;
         }
-        isRunningModCore = true;
-        return 0;
+        return initializeModCore(gameDir) ? 0 : 4;
+
     }
 
 
     public static void addToClasspath(File file) {
         try {
             URL url = file.toURI().toURL();
-
+            Launch.classLoader.addURL(url);
             ClassLoader classLoader = ModCoreInstaller.class.getClassLoader();
-            Method method = classLoader.getClass().getDeclaredMethod("addURL", URL.class);
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
             method.invoke(classLoader, url);
         } catch (Exception e) {
@@ -160,112 +150,92 @@ public class ModCoreInstaller {
     private static boolean download(String url, String version, File file, String mcver, JsonHolder versionData) {
         url = url.replace(" ", "%20");
         System.out.println("Downloading ModCore " + " version " + version + " from: " + url);
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         JFrame frame = new JFrame("ModCore Initializer");
         JProgressBar bar = new JProgressBar();
-        JLabel label = new JLabel("Downloading ModCore " + version, SwingConstants.CENTER);
-        label.setSize(600, 120);
-        frame.getContentPane().add(label);
+        TextArea comp = new TextArea("", 1, 1, TextArea.SCROLLBARS_NONE);
+        frame.getContentPane().add(comp);
         frame.getContentPane().add(bar);
-        GroupLayout layout = new GroupLayout(frame.getContentPane());
-        frame.getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(label, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addComponent(bar, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap()));
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(label, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bar, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+        GridLayout manager = new GridLayout();
+        frame.setLayout(manager);
+        manager.setColumns(1);
+        manager.setRows(2);
+        comp.setText("Downloading Sk1er ModCore Library Version " + version + " for Minecraft " + mcver);
+        comp.setSize(399, 80);
+        comp.setEditable(false);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+
+        Dimension preferredSize = new Dimension(400, 225);
+        bar.setSize(preferredSize);
+        frame.setSize(preferredSize);
         frame.setResizable(false);
         bar.setBorderPainted(true);
         bar.setMinimum(0);
         bar.setStringPainted(true);
-        Font font = bar.getFont();
-        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
-        label.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+        Font font = bar.getFont();
+        bar.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 4));
+        comp.setFont(new Font(font.getName(), font.getStyle(), font.getSize() * 2));
 
-        HttpURLConnection connection = null;
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+        try {
+
             URL u = new URL(url);
-            connection = (HttpURLConnection) u.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
             connection.addRequestProperty("User-Agent", "Mozilla/4.76 (Sk1er Modcore Initializer)");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            try (InputStream is = connection.getInputStream()) {
-                int contentLength = connection.getContentLength();
-                byte[] buffer = new byte[1024];
-                System.out.println("MAX: " + contentLength);
-                bar.setMaximum(contentLength);
-                int read;
-                bar.setValue(0);
-                while ((read = is.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, read);
-                    bar.setValue(bar.getValue() + 1024);
+            InputStream is = connection.getInputStream();
+            int contentLength = connection.getContentLength();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            bar.setMaximum(100);
+            int read;
+            bar.setValue(0);
+            int lastPercent = 0;
+            int read2 = 0;
+            while ((read = is.read(buffer)) > 0) {
+                read2 += 1024;
+                if (read2 * 100 / contentLength != lastPercent) {
+                    lastPercent = read * 100 / contentLength;
+                    bar.setValue(bar.getValue() + 1);
                 }
+                outputStream.write(buffer, 0, read);
             }
+            outputStream.close();
             FileUtils.write(new File(dataDir, "metadata.json"), versionData.put(mcver, version).toString());
         } catch (Exception e) {
             e.printStackTrace();
             frame.dispose();
             return false;
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
-
         frame.dispose();
         return true;
     }
 
-    public static JsonHolder fetchJSON(String url) {
+    public static final JsonHolder fetchJSON(String url) {
         return new JsonHolder(fetchString(url));
     }
 
-    public static String fetchString(String url) {
+    public static final String fetchString(String url) {
         url = url.replace(" ", "%20");
-        System.out.println("Fetching " + url);
-
-        HttpURLConnection connection = null;
         try {
             URL u = new URL(url);
-            connection = (HttpURLConnection) u.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
             connection.addRequestProperty("User-Agent", "Mozilla/4.76 (Sk1er ModCore)");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
-            try (InputStream is = connection.getInputStream()) {
-                return IOUtils.toString(is, Charset.defaultCharset());
-            }
+            InputStream is = connection.getInputStream();
+            return IOUtils.toString(is, Charset.defaultCharset());
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
-
         return "Failed to fetch";
     }
 
@@ -444,9 +414,7 @@ public class ModCoreInstaller {
 
         public List<String> getKeys() {
             List<String> tmp = new ArrayList<>();
-            for (Map.Entry<String, JsonElement> e : object.entrySet()) {
-                tmp.add(e.getKey());
-            }
+            object.entrySet().forEach(e -> tmp.add(e.getKey()));
             return tmp;
         }
 
@@ -480,6 +448,4 @@ public class ModCoreInstaller {
             object.remove(header);
         }
     }
-
-
 }

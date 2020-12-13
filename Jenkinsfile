@@ -13,6 +13,7 @@ pipeline {
     stage('Build') {
       steps {
         sh "./gradlew publish -PBUILD_ID=${env.BUILD_ID} -Pbranch=${env.BRANCH_NAME} -PIS_CI=true --no-daemon"
+        sh "./gradlew build -PBUILD_ID=${env.BUILD_ID} -Pbranch=${env.BRANCH_NAME} -PIS_CI=true --no-daemon"
       }
     }
 

@@ -14,6 +14,7 @@ package club.sk1er.patcher.command;
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.config.ModCoreConfig;
 import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.mods.core.util.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
@@ -26,6 +27,7 @@ import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -112,7 +114,7 @@ public class PatcherCommand extends CommandBase {
                 runBenchmark(args[1], Arrays.copyOfRange(args, 2, args.length), benchmark);
                 return;
             } else if (args[0].equalsIgnoreCase("name") || args[0].equalsIgnoreCase("names")) {
-                ModCore.getInstance().getGuiHandler().open(new ScreenHistory(args[1], false));
+                GuiUtil.open(new ScreenHistory(args[1], false));
                 return;
             } else if (args[0].equalsIgnoreCase("blacklist")) {
                 final String status = Patcher.instance.addOrRemoveBlacklist(args[1]) ? "&cnow" : "&ano longer";
@@ -136,12 +138,12 @@ public class PatcherCommand extends CommandBase {
                     return;
 
                 case "sounds":
-                    ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherSoundConfig().gui());
+                    GuiUtil.open(Patcher.instance.getPatcherSoundConfig().gui());
                     return;
 
                 case "name":
                 case "names":
-                    ModCore.getInstance().getGuiHandler().open(new ScreenHistory());
+                   GuiUtil.open(new ScreenHistory());
                     return;
 
                 case "blacklist":
@@ -158,7 +160,7 @@ public class PatcherCommand extends CommandBase {
             }
         }
 
-        ModCore.getInstance().getGuiHandler().open(Patcher.instance.getPatcherConfig().gui());
+        GuiUtil.open(Patcher.instance.getPatcherConfig().gui());
     }
 
     private long runBenchmark(String benchmarkName, String[] args, AbstractBenchmark benchmark) {

@@ -51,6 +51,7 @@ import club.sk1er.patcher.util.world.entity.EntityRendering;
 import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import club.sk1er.vigilance.Vigilant;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -61,10 +62,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -82,17 +81,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
-public class Patcher {
+public class Patcher extends DummyModContainer {
 
     // normal versions will be "1.x"
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
@@ -149,6 +142,21 @@ public class Patcher {
     private JsonObject duplicateModsJson;
     private boolean loadedGalacticFontRenderer;
 
+    public Patcher() {
+        super(new ModMetadata());
+        ModMetadata meta = this.getMetadata();
+        meta.modId = "patcher";
+        meta.version = VERSION;
+        meta.name = "Patcher";
+        meta.authorList = Collections.singletonList("Sk1erLLC");
+    }
+
+    @Override
+    public boolean registerBus(com.google.common.eventbus.EventBus bus, LoadController controller) {
+        bus.register(this);
+        return true;
+    }
+
     /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
@@ -159,7 +167,6 @@ public class Patcher {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
@@ -212,6 +219,7 @@ public class Patcher {
         loadBlacklistedServers();
     }
 
+    @Subscribe
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
@@ -228,6 +236,7 @@ public class Patcher {
      *
      * @param event {@link FMLLoadCompleteEvent}
      */
+    @Subscribe
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();

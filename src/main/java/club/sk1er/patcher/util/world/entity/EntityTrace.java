@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.world.entity;
 
 import club.sk1er.mods.core.ModCore;
+import club.sk1er.mods.core.util.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
@@ -80,7 +81,7 @@ public class EntityTrace {
                 }
 
                 if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null && EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
-                    ModCore.getInstance().getGuiHandler().open(new ScreenHistory(targetEntity.getName(), false));
+                    GuiUtil.open(new ScreenHistory(targetEntity.getName(), false));
                 }
             }
         }

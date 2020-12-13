@@ -307,14 +307,15 @@ dependencies {
                 11602: '1.16.2-33.0.58'
         ][mcVersion]
     }
-    provided files("../../libs/modcore.jar")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
 
-//    implementation("club.sk1er:ModCore:554-${mcVersion}-SNAPSHOT")
+    implementation("club.sk1er:ModCore:586-${mcVersion}-SNAPSHOT") {
+        exclude module: "Vigilance"
+    }
 
     implementation("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -322,6 +323,7 @@ dependencies {
         exclude module: "kotlin-stdlib-jdk8"
         exclude module: "asm-debug-all"
     }
+    embed 'com.github.ben-manes.caffeine:caffeine:2.8.8'
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
         exclude module: 'asm-commons'
@@ -464,9 +466,9 @@ jar {
                     "ModSide": "CLIENT",
                     'FMLAT': 'patcher_at.cfg',
                     "FMLCorePluginContainsFMLMod": "Yes, yes it does",
-                    "Main-Class": "club.sk1er.container.ContainerMessage"
-                    //"TweakClass": "club.sk1er.patcher.tweaker.LaunchTweaker",
-                    //"TweakOrder": "0"
+                    "Main-Class": "club.sk1er.container.ContainerMessage",
+                    "TweakClass": "club.sk1er.patcher.tweaker2.LaunchTweaker",
+                    "TweakOrder": "0"
         }
     }
 }

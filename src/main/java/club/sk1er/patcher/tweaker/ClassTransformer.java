@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.mods.core.util.ModCoreDesktop;
+import club.sk1er.mods.core.universal.UniversalDesktop;
 import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
@@ -304,7 +304,7 @@ public class ClassTransformer implements IClassTransformer {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    ModCoreDesktop.INSTANCE.browse(new URI("https://optifine.net/downloads/"));
+                    UniversalDesktop.browse(new URI("https://optifine.net/downloads/"));
                 } catch (Exception ex) {
                     JLabel label = new JLabel();
                     label.setText("Failed to open OptiFine website.");
