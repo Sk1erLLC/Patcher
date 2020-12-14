@@ -13,13 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -49,6 +43,8 @@ public class GuiNewChatTransformer implements CommonTransformer {
             switch (methodName) {
                 case "setChatLine":
                 case "func_146237_a": {
+                    methodNode.instructions.insert(setChatLineHead());
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setChatLineReturn());
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     while (iterator.hasNext()) {
@@ -57,8 +53,39 @@ public class GuiNewChatTransformer implements CommonTransformer {
                         if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
                             methodNode.instructions.insertBefore(node, new IntInsnNode(Opcodes.SIPUSH, 10000));
                             methodNode.instructions.remove(node);
+                        } else if (node instanceof FieldInsnNode) {
+                            final String fieldName = mapFieldNameFromNode(node);
+                            if (fieldName.equals("drawnChatLines")) {
+                                for (int i = 0; i < 7; i++) {
+                                    methodNode.instructions.remove(node.getNext());
+                                }
+
+                                methodNode.instructions.insertBefore(node.getPrevious(), redirectDrawnAdding());
+
+                                InsnList list = new InsnList();
+                                list.add(new InsnNode(Opcodes.ICONST_0));
+                                list.add(new VarInsnNode(Opcodes.ALOAD, 200));
+                                methodNode.instructions.insertBefore(node.getNext(), list);
+                            }
+                        } else if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("add") && node.getPrevious() instanceof MethodInsnNode) {
+                            AbstractInsnNode previous = node;
+                            for (int i = 0; i < 9; i++) {
+                                previous = previous.getPrevious();
+                            }
+
+                            if (previous instanceof FieldInsnNode) {
+                                final String fieldName = mapFieldNameFromNode(previous);
+                                if (fieldName.equals("chatLines")) {
+                                    for (int i = 0; i < 9; i++) {
+                                        methodNode.instructions.remove(node.getPrevious());
+                                    }
+
+                                    methodNode.instructions.insert(node, redirectChatAdding());
+                                }
+                            }
                         }
                     }
+
                     break;
                 }
 
@@ -91,5 +118,55 @@ public class GuiNewChatTransformer implements CommonTransformer {
                 }
             }
         }
+    }
+
+    private InsnList redirectChatAdding() {
+        InsnList list = new InsnList();
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/client/gui/ChatLine"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/ChatLine", "<init>", "(ILnet/minecraft/util/IChatComponent;I)V", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, 201));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 201));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLine_addToList", "(Lnet/minecraft/client/gui/ChatLine;)V", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiNewChat", "chatLines", "Ljava/util/List;"));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 201));
+        return list;
+    }
+
+    private InsnList redirectDrawnAdding() {
+        InsnList list = new InsnList();
+        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/client/gui/ChatLine"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 9));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/ChatLine", "<init>", "(ILnet/minecraft/util/IChatComponent;I)V", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, 200));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 200));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLine_addToList", "(Lnet/minecraft/client/gui/ChatLine;)V", false));
+        return list;
+    }
+
+    private InsnList setChatLineReturn() {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLineReturn", "()V", false));
+        return list;
+    }
+
+    private InsnList setChatLineHead() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 4));
+        LabelNode ifne = new LabelNode();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLineHead", "(Lnet/minecraft/util/IChatComponent;Z)Z", false));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifne);
+        return list;
     }
 }

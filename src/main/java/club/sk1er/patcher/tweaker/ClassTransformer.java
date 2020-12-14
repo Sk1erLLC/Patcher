@@ -240,7 +240,7 @@ public class ClassTransformer implements IClassTransformer {
             transformer.transform(classNode, transformedName);
         }
 
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 
         try {
             classNode.accept(classWriter);
