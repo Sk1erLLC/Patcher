@@ -73,7 +73,7 @@ public class ModCoreInstaller {
         return new JsonHolder();
     }
 
-    private static boolean initializeModCore(File gameDir) {
+    public static boolean initializeModCore(File gameDir) {
         try {
             club.sk1er.mods.core.tweaker.ModCoreTweaker.initialize(gameDir);
             return true;
@@ -85,11 +85,11 @@ public class ModCoreInstaller {
     }
 
 
-    public static int initialize(File gameDir, String minecraftVersion) {
+    public static int load(File gameDir, String minecraftVersion) {
         if (inClassPath()) {
             if (isInitialized())
                 return -1;
-            else return initializeModCore(gameDir) ? 0 : 4;
+            else return 0;
         }
         dataDir = new File(gameDir, "modcore");
         if (!dataDir.exists()) {
@@ -129,7 +129,7 @@ public class ModCoreInstaller {
             bail("Something went wrong and it did not add the jar to the class path. Local file exists? " + modcoreFile.exists());
             return 3;
         }
-        return initializeModCore(gameDir) ? 0 : 4;
+        return 0;
 
     }
 

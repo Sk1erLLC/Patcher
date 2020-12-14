@@ -317,7 +317,7 @@ dependencies {
         exclude module: "Vigilance"
     }
 
-    implementation("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
+    embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
         exclude module: "kotlin-reflect"
         exclude module: "kotlin-stdlib-jdk8"
@@ -467,7 +467,7 @@ jar {
                     'FMLAT': 'patcher_at.cfg',
                     "FMLCorePluginContainsFMLMod": "Yes, yes it does",
                     "Main-Class": "club.sk1er.container.ContainerMessage",
-                    "TweakClass": "club.sk1er.patcher.tweaker2.LaunchTweaker",
+                    "TweakClass": "club.sk1er.patcher.tweaker.LaunchTweaker",
                     "TweakOrder": "0"
         }
     }
