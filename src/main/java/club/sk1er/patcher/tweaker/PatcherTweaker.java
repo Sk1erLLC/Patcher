@@ -46,11 +46,12 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         this.createSecondTweaker();
         this.unlockLwjgl();
         this.detectIncompatibleMods();
+        System.out.println("POOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOG");
     }
 
     @Override
     public String[] getASMTransformerClass() {
-        int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
+        /*int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
 
         if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {
             // Technically wouldn't happen in simulated installed but is important for actual impl
@@ -60,7 +61,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         // If true the classes are loaded
         if (ModCoreInstaller.isIsRunningModCore()) {
             return new String[]{"club.sk1er.mods.core.forge.ClassTransformer", ClassTransformer.class.getName()};
-        }
+        }*/
 
         return new String[]{ClassTransformer.class.getName()};
     }
