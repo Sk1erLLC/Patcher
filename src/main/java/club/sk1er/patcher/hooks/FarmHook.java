@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.api.core.utils.MinecraftUtils;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
@@ -23,9 +23,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import org.koin.java.KoinJavaComponent;
 
 public class FarmHook {
     public static final Minecraft mc = Minecraft.getMinecraft();
+
+    private static final MinecraftUtils minecraftUtils = KoinJavaComponent.get(MinecraftUtils.class);
 
     public static final AxisAlignedBB[] CARROT_POTATO_BOX = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
@@ -60,7 +63,7 @@ public class FarmHook {
         final IBlockState blockState = world.getBlockState(pos);
         final Integer ageValue = blockState.getValue(BlockCrops.AGE);
 
-        if (PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || mc.isIntegratedServerRunning())) {
+        if (PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())) {
             block.maxY = blockState.getBlock() instanceof BlockPotato || blockState.getBlock() instanceof BlockCarrot
                 ? CARROT_POTATO_BOX[ageValue].maxY
                 : WHEAT_BOX[ageValue].maxY;
@@ -71,7 +74,7 @@ public class FarmHook {
     }
 
     public static void getNetherWartBox(World world, BlockPos pos, Block block) {
-        block.maxY = PatcherConfig.futureHitBoxes && (MinecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
+        block.maxY = PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
             ? NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
             : .25F;
     }

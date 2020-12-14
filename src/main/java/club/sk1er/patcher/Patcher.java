@@ -11,10 +11,11 @@
 
 package club.sk1er.patcher;
 
-import club.sk1er.modcore.ModCoreInstaller;
-import club.sk1er.mods.core.gui.notification.Notifications;
-import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.mods.core.util.WebUtil;
+import club.sk1er.api.core.ModCoreAPI;
+import club.sk1er.api.core.commands.CommandManager;
+import club.sk1er.api.core.gui.Notifications;
+import club.sk1er.api.core.utils.Multithreading;
+import club.sk1er.api.core.utils.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.PatcherCommand;
@@ -73,14 +74,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -179,12 +176,15 @@ public class Patcher extends DummyModContainer {
         patcherSoundConfig.preload();
 
         SoundHandler target = new SoundHandler();
-        IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft()
+            .getResourceManager();
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
+        CommandManager commandManager = ModCoreAPI.getCommandManager();
+        commandManager.registerCommand(new PatcherCommand());
+
         final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
-        commandRegister.registerCommand(new PatcherCommand());
         commandRegister.registerCommand(new FovChangerCommand());
         commandRegister.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
         commandRegister.registerCommand(new AsyncScreenshots.DeleteScreenshot());
@@ -239,14 +239,17 @@ public class Patcher extends DummyModContainer {
     @Subscribe
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
+        Notifications notifications = KoinJavaComponent.get(Notifications.class);
+
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         if (PatcherConfig.entityCulling) {
             for (ModContainer container : activeModList) {
                 if (container.getModId().equals("enhancements")) {
-                    Notifications.INSTANCE.pushNotification(
+                    notifications.push(
                         "Patcher",
                         container.getName() + " has been detected. Entity Culling is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                            "This is an unfixable incompatibility without an update from the authors of " + container.getName()
+                    );
                     PatcherConfig.entityCulling = false;
 
                     // force save config
@@ -260,7 +263,7 @@ public class Patcher extends DummyModContainer {
         if (PatcherConfig.optimizedFontRenderer) {
             for (ModContainer container : activeModList) {
                 if (container.getModId().equals("smoothfont")) {
-                    Notifications.INSTANCE.pushNotification(
+                    notifications.push(
                         "Patcher",
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
@@ -275,7 +278,8 @@ public class Patcher extends DummyModContainer {
         if (PatcherConfig.replacedModsWarning) {
             Multithreading.runAsync(() -> {
                 try {
-                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString(
+                        "https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
                     logger.error("Failed to fetch list of duplicate mods.", e);
                     return;
@@ -292,9 +296,11 @@ public class Patcher extends DummyModContainer {
 
                 if (!duplicates.isEmpty()) {
                     for (String duplicate : duplicates) {
-                        Notifications.INSTANCE.pushNotification("Patcher",
+                        notifications.push(
+                            "Patcher",
                             "Patcher has identified the mod " + duplicate + " to be a duplicate." +
-                                "\nThis message can be disabled in the Patcher settings.");
+                                "\nThis message can be disabled in the Patcher settings."
+                        );
                     }
                 }
             });
@@ -302,7 +308,7 @@ public class Patcher extends DummyModContainer {
 
         final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            Notifications.INSTANCE.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
@@ -333,7 +339,8 @@ public class Patcher extends DummyModContainer {
 
         final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
         if (blacklistedServers.contains(serverIP)) {
-            logger.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+            logger.info(
+                "Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;
             return;
         }
@@ -457,13 +464,13 @@ public class Patcher extends DummyModContainer {
 
     public Set<String> keySet(JsonObject json) throws NullPointerException {
         //JsonObject#keySet not a thing in Minecraft 1.8's old AF GSON
-            Set<String> keySet = new HashSet<>();
+        Set<String> keySet = new HashSet<>();
 
-            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                keySet.add(entry.getKey());
-            }
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            keySet.add(entry.getKey());
+        }
 
-            return keySet;
+        return keySet;
     }
 
     /**

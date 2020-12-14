@@ -11,8 +11,7 @@
 
 package club.sk1er.patcher.util.world.entity;
 
-import club.sk1er.mods.core.ModCore;
-import club.sk1er.mods.core.util.GuiUtil;
+import club.sk1er.api.core.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
@@ -20,12 +19,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;

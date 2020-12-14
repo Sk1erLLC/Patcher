@@ -11,7 +11,9 @@
 
 package club.sk1er.patcher.screen;
 
-import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.api.core.utils.Multithreading;
+import club.sk1er.elementa.components.UICircle;
+import club.sk1er.elementa.components.UIRoundedRectangle;
 import club.sk1er.patcher.Patcher;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
@@ -20,15 +22,13 @@ import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static club.sk1er.mods.core.handlers.OnlineIndicator.drawFilledCircle;
 
 public class ScreenHistory extends GuiScreen {
 
@@ -104,7 +104,12 @@ public class ScreenHistory extends GuiScreen {
         final int right = width - (width / 3);
         final int bottom = (height / 5) + 37;
 
-        drawSmoothRect(left, top, right, bottom + (names.size() * 10) + offset, new Color(22, 22, 24).getRGB());
+        UIRoundedRectangle.Companion.drawRoundedRectangle(
+            left, top,
+            right, bottom + (names.size() * 10) + offset,
+            3, new Color(22, 22, 24)
+        );
+
         drawCenteredString(fontRendererObj, "Name History", width / 2, height / 5, -1);
         nameField.drawTextBox();
 
@@ -119,9 +124,21 @@ public class ScreenHistory extends GuiScreen {
 
             final String text = names.get(currentName);
             if (currentName == 0) {
-                drawCenteredString(fontRendererObj, exceptionName != null ? text : text + " » Original", (int) xPos, (int) yPos, new Color(0, 167, 81).getRGB());
+                drawCenteredString(
+                    fontRendererObj,
+                    exceptionName != null ? text : text + " » Original",
+                    (int) xPos,
+                    (int) yPos,
+                    new Color(0, 167, 81).getRGB()
+                );
             } else {
-                drawCenteredString(fontRendererObj, text, (int) xPos, (int) yPos, currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1);
+                drawCenteredString(
+                    fontRendererObj,
+                    text,
+                    (int) xPos,
+                    (int) yPos,
+                    currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1
+                );
             }
         }
     }
@@ -169,21 +186,5 @@ public class ScreenHistory extends GuiScreen {
         } else if (scrollBounds > 0 && offset < 0) {
             offset += 10;
         }
-    }
-
-    public void drawSmoothRect(int left, int top, int right, int bottom, int color) {
-        final int circleSize = 4;
-        final int radius = circleSize - 1;
-        left += circleSize;
-        right -= circleSize;
-        drawRect(left, top, right, bottom, color);
-        drawRect(left - circleSize, top + radius, left, bottom - radius, color);
-        drawRect(right, top + radius, right + circleSize, bottom - radius, color);
-
-        drawFilledCircle(left, top + circleSize, circleSize, color);
-        drawFilledCircle(left, bottom - circleSize, circleSize, color);
-
-        drawFilledCircle(right, top + circleSize, circleSize, color);
-        drawFilledCircle(right, bottom - circleSize, circleSize, color);
     }
 }

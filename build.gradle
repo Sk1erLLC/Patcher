@@ -78,13 +78,6 @@ repositories {
     maven { url 'https://jitpack.io' }
     maven { url "https://repo.sk1er.club/repository/maven-public" }
     maven {
-        credentials {
-            username "$nexus_user"
-            password "$nexus_password"
-        }
-        url "https://repo.sk1er.club/repository/maven-private"
-    }
-    maven {
         name = 'sponge'
         url = 'https://repo.spongepowered.org/maven'
     }
@@ -313,9 +306,7 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    implementation("club.sk1er:ModCore:586-${mcVersion}-SNAPSHOT") {
-        exclude module: "Vigilance"
-    }
+    implementation "club.sk1er:ModCore:594-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

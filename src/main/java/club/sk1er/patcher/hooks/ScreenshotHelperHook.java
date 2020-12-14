@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.mods.core.util.Multithreading;
+import club.sk1er.api.core.utils.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;

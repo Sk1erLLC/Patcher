@@ -1,5 +1,6 @@
 package club.sk1er.modcore;
 
+import club.sk1er.api.core.tweaker.ModCoreTweaker;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,7 +46,7 @@ public class ModCoreInstaller {
 
     private static boolean isInitialized() {
         try {
-            return club.sk1er.mods.core.tweaker.ModCoreTweaker.initialized;
+            return ModCoreTweaker.initialized;
         } catch (Throwable t) {
             return false;
         }
@@ -75,7 +76,7 @@ public class ModCoreInstaller {
 
     public static boolean initializeModCore(File gameDir) {
         try {
-            club.sk1er.mods.core.tweaker.ModCoreTweaker.initialize(gameDir);
+            ModCoreTweaker.initialize(gameDir);
             return true;
         } catch (Throwable t) {
             t.printStackTrace();

@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.api.core.gui.Notifications;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
@@ -20,10 +20,38 @@ import net.minecraft.client.resources.SkinManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import org.koin.java.KoinJavaComponent;
 
 public class SkinCacheRefresh extends CommandBase {
 
     private static boolean failedInMenu;
+
+    private static final Notifications notifications = KoinJavaComponent.get(Notifications.class);
+
+    public static void refreshSkin() {
+        try {
+            Minecraft mc = Minecraft.getMinecraft();
+            SkinManager skinManager = mc.getSkinManager();
+
+            GameProfile gameProfile = mc.getSession().getProfile();
+            skinManager.loadProfileTextures(gameProfile, (type, location, profile) -> {
+                if (type == MinecraftProfileTexture.Type.SKIN) {
+                    NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(EntityPlayer.getUUID(gameProfile));
+                    info.locationSkin = location;
+                    info.skinType = profile.getMetadata("model");
+
+                    if (info.skinType == null) {
+                        info.skinType = "default";
+                    }
+                }
+            }, true);
+
+            notifications.push("Skin Cache", "Successfully refreshed skin cache.");
+        } catch (Exception e) {
+            notifications.push("Skin Cache", "Failed to refresh skin cache.");
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Gets the name of the command
@@ -57,30 +85,5 @@ public class SkinCacheRefresh extends CommandBase {
     @Override
     public int getRequiredPermissionLevel() {
         return -1;
-    }
-
-    public static void refreshSkin() {
-        try {
-            Minecraft mc = Minecraft.getMinecraft();
-            SkinManager skinManager = mc.getSkinManager();
-
-            GameProfile gameProfile = mc.getSession().getProfile();
-            skinManager.loadProfileTextures(gameProfile, (type, location, profile) -> {
-                if (type == MinecraftProfileTexture.Type.SKIN) {
-                    NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(EntityPlayer.getUUID(gameProfile));
-                    info.locationSkin = location;
-                    info.skinType = profile.getMetadata("model");
-
-                    if (info.skinType == null) {
-                        info.skinType = "default";
-                    }
-                }
-            }, true);
-
-            Notifications.INSTANCE.pushNotification("Skin Cache", "Successfully refreshed skin cache.");
-        } catch (Exception e) {
-            Notifications.INSTANCE.pushNotification("Skin Cache", "Failed to refresh skin cache.");
-            e.printStackTrace();
-        }
     }
 }

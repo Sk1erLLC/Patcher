@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.screen;
 
-import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;

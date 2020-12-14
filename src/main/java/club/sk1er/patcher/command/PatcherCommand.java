@@ -11,10 +11,8 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.mods.core.ModCore;
-import club.sk1er.mods.core.config.ModCoreConfig;
-import club.sk1er.mods.core.gui.notification.Notifications;
-import club.sk1er.mods.core.util.GuiUtil;
+import club.sk1er.api.core.commands.*;
+import club.sk1er.api.core.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
@@ -26,141 +24,99 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
+import jline.internal.Nullable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PatcherCommand extends CommandBase {
+public class PatcherCommand extends Command {
 
     private final Map<String, AbstractBenchmark> benchmarkMap = new HashMap<>();
 
     public PatcherCommand() {
+        super("patcher");
         benchmarkMap.put("text", new TextBenchmark());
         benchmarkMap.put("item", new ItemBenchmark());
+
+        // [&amode <vanilla|optimized> &r| &bbenchmark <all, text, item> &r| &cdebugfps &r| &dsounds &r| &eresetcache &r| &2name [username] &r| &3blacklist <ip>&e]";
     }
 
-    /**
-     * Gets the name of the command
-     */
-    @Override
-    public String getCommandName() {
-        return "patcher";
+    @DefaultHandler
+    public void handle() {
+        GuiUtil.open(Patcher.instance.getPatcherConfig().gui());
     }
 
-    /**
-     * Gets the usage string for the command.
-     *
-     * @param sender user
-     */
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " [&amode <vanilla|optimized> &r| &bbenchmark <all, text, item> &r| &cdebugfps &r| &dsounds &r| &eresetcache &r| &2name [username] &r| &3blacklist <ip>&e]";
+    @SubCommand("resetcache")
+    public void resetCache() {
+        EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
+        EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
+        ChatUtilities.sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
     }
 
-    /**
-     * Callback when the command is invoked
-     *
-     * @param sender user
-     * @param args   arguments
-     */
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) {
-        if (args.length >= 2) {
-            if (args[0].equalsIgnoreCase("mode")) {
-                switch (args[1]) {
-                    case "vanilla": {
-                        toggleOptions(false);
-                        Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
-                        ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &cVanilla&a.");
-                        return;
-                    }
-                    case "optimized": {
-                        toggleOptions(true);
-                        Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
-                        ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &eOptimized&a.");
-                        return;
-                    }
-                    default: {
-                        ChatUtilities.sendNotification("Debug Renderer", "&cUnknown mode. Vanilla & Optimized are the only modes available.");
-                        return;
-                    }
-                }
-            } else if (args[0].equalsIgnoreCase("benchmark") || args[0].equalsIgnoreCase("bench")) {
-                if (args[1].equals("all")) {
-                    long totalMillis = 0;
+    @SubCommand("debugfps")
+    public void debugFPS() {
+        Patcher.instance.getDebugPerformanceRenderer().toggleFPS();
+        ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
+    }
 
-                    for (Map.Entry<String, AbstractBenchmark> benchmarkEntry : benchmarkMap.entrySet()) {
-                        long millis = runBenchmark(benchmarkEntry.getKey(), new String[0], benchmarkEntry.getValue());
-                        totalMillis += millis;
-                    }
+    @SubCommand(value = "names", aliases = { "name" })
+    public void names(@Nullable @DisplayName("name") String name) {
+        GuiUtil.open(name != null ? new ScreenHistory(name, false) : new ScreenHistory());
+    }
 
-                    float seconds = totalMillis / 1000F;
-                    ChatUtilities.sendNotification("Performance Benchmark", "&3All of the benchmarks completed in " + seconds + "s.");
-                    return;
-                }
+    @SubCommand("blacklist")
+    public void blacklist(@DisplayName("ip") String ip) {
+        final String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
+        ChatUtilities.sendNotification(
+            "Server Blacklist",
+            "Server &e\"" + ip + "\" &r is " + status + " &rblacklisted from chat length extension."
+        );
+        Patcher.instance.saveBlacklistedServers();
+    }
 
-                final AbstractBenchmark benchmark = benchmarkMap.get(args[1]);
+    @SubCommand("benchmark")
+    public void benchmark(@Options({ "all", "text", "item" }) String type, @Nullable @Greedy @DisplayName("extra") String extra) {
+        if (type.equals("all")) {
+            long totalMillis = 0;
 
-                if (benchmark == null) {
-                    ChatUtilities.sendNotification("Performance Benchmark", "&cCan't find a \"" + args[1] + "\" benchmark by the name of \"" + args[1] + "\".");
-                    return;
-                }
-
-                runBenchmark(args[1], Arrays.copyOfRange(args, 2, args.length), benchmark);
-                return;
-            } else if (args[0].equalsIgnoreCase("name") || args[0].equalsIgnoreCase("names")) {
-                GuiUtil.open(new ScreenHistory(args[1], false));
-                return;
-            } else if (args[0].equalsIgnoreCase("blacklist")) {
-                final String status = Patcher.instance.addOrRemoveBlacklist(args[1]) ? "&cnow" : "&ano longer";
-                ChatUtilities.sendNotification("Server Blacklist", "Server &e\"" + args[1] + "\" &r is " + status + " &rblacklisted from chat length extension.");
-                Patcher.instance.saveBlacklistedServers();
-                return;
+            for (Map.Entry<String, AbstractBenchmark> benchmarkEntry : benchmarkMap.entrySet()) {
+                long millis = runBenchmark(benchmarkEntry.getKey(), new String[0], benchmarkEntry.getValue());
+                totalMillis += millis;
             }
 
+            float seconds = totalMillis / 1000F;
+            ChatUtilities.sendNotification(
+                "Performance Benchmark",
+                "&3All of the benchmarks completed in " + seconds + "s."
+            );
             return;
-        } else if (args.length == 1) {
-            switch (args[0]) {
-                case "resetcache":
-                    EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-                    EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
-                    ChatUtilities.sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
-                    return;
-
-                case "debugfps":
-                    Patcher.instance.getDebugPerformanceRenderer().toggleFPS();
-                    ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
-                    return;
-
-                case "sounds":
-                    GuiUtil.open(Patcher.instance.getPatcherSoundConfig().gui());
-                    return;
-
-                case "name":
-                case "names":
-                   GuiUtil.open(new ScreenHistory());
-                    return;
-
-                case "blacklist":
-                    ChatUtilities.sendNotification("Server Blacklist", "&cPlease insert an IP to blacklist.");
-                    return;
-
-                case "benchmark":
-                    ChatUtilities.sendNotification("Performance Benchmark", "&cPlease insert a test benchmark.\n&cAvailable options are: &eall, text, item&c.");
-                    return;
-
-                default:
-                    ChatUtilities.sendNotification("Patcher", "&cInvalid command. Usage: &e" + getCommandUsage(sender) + "&c.");
-                    return;
-            }
         }
 
-        GuiUtil.open(Patcher.instance.getPatcherConfig().gui());
+        final AbstractBenchmark benchmark = benchmarkMap.get(type);
+
+        if (benchmark == null) {
+            ChatUtilities.sendNotification(
+                "Performance Benchmark",
+                "&cCan't find a benchmark by the name of \"" + type + "\"."
+            );
+            return;
+        }
+
+        runBenchmark(type, extra.split(" "), benchmark);
+    }
+
+    @SubCommand("mode")
+    public void mode(@Options({ "vanilla", "optimized" }) String mode) {
+        if (mode.equals("vanilla")) {
+            toggleOptions(false);
+            Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
+            ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &cVanilla&a.");
+        } else {
+            toggleOptions(true);
+            Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
+            ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &eOptimized&a.");
+        }
     }
 
     private long runBenchmark(String benchmarkName, String[] args, AbstractBenchmark benchmark) {
@@ -194,11 +150,6 @@ public class PatcherCommand extends CommandBase {
 
     private void sendMessage(String message) {
         ChatUtilities.sendMessage(message, false);
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return -1;
     }
 
     private void toggleOptions(boolean status) {
