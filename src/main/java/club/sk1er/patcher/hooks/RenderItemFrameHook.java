@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 
 @SuppressWarnings("unused")
@@ -19,6 +20,10 @@ public class RenderItemFrameHook {
             final ItemStack displayedItem = ((EntityItemFrame) entity).getDisplayedItem();
             if (displayedItem != null) {
                 final Item item = displayedItem.getItem();
+                if (item instanceof ItemMap && ((ItemMap) item).getMapData(displayedItem, entity.worldObj) == null) {
+                    return false;
+                }
+
                 if (PatcherConfig.disableMappedItemFrames && item != null) {
                     return item != Items.filled_map;
                 }
