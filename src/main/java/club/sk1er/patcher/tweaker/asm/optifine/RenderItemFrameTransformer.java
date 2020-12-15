@@ -12,17 +12,15 @@
 package club.sk1er.patcher.tweaker.asm.optifine;
 
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.util.ListIterator;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class RenderItemFrameTransformer implements CommonTransformer {
 
@@ -47,11 +45,23 @@ public class RenderItemFrameTransformer implements CommonTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
+            if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
+                methodNode.instructions.insert(cancelRendering());
+            } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
                 makeNametagShadowed(methodNode);
-                break;
             }
         }
+    }
+
+    private InsnList cancelRendering() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "RenderItemFrameHook", "shouldRenderItemFrame", "(Lnet/minecraft/entity/Entity;)Z", false));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifne);
+        return list;
     }
 }

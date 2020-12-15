@@ -547,6 +547,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableItemFrames;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Disable Mapped Item Frames",
+        description = "Stop item frames only with maps as their item from rendering.",
+        category = "Performance", subcategory = "Entity Rendering"
+    )
+    public static boolean disableMappedItemFrames;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Grounded Arrows",
         description = "Stop arrows that are in the ground from rendering.",
         category = "Performance", subcategory = "Entity Rendering"
