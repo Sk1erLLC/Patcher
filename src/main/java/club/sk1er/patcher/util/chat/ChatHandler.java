@@ -19,12 +19,16 @@ import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentStyle;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class ChatHandler {
 
     private static final Map<Integer, ChatEntry> chatMessageMap = new HashMap<>();
@@ -41,6 +46,8 @@ public class ChatHandler {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static int currentMessageHash = -1;
+    private int ticks;
+
     @SubscribeEvent
     public void renderChat(RenderGameOverlayEvent.Chat event) {
         if (event.type == RenderGameOverlayEvent.ElementType.CHAT && PatcherConfig.chatPosition) {
@@ -48,13 +55,21 @@ public class ChatHandler {
         }
     }
 
-    private int ticks;
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onChatMessage(ClientChatReceivedEvent event) {
+        if (PatcherConfig.timestamps) {
+            final String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
+            final ChatComponentIgnored time = new ChatComponentIgnored(ChatColor.GRAY + "[" + timeFormat + "] ");
+            time.appendSibling(event.message);
+            event.message = time;
+        }
+    }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (ticks++ >= 1200) {
             chatMessageMap.entrySet().removeIf(next -> {
-                boolean oldEnough = next.getValue().lastSeenMessageMillis > 60000;
+                boolean oldEnough = next.getValue().lastSeenMessageMillis > (PatcherConfig.compactChatTime * 1000L);
                 if (oldEnough) messagesForHash.remove(next.getKey());
                 return oldEnough;
             });
@@ -89,7 +104,7 @@ public class ChatHandler {
                     chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                 } else {
                     final ChatEntry entry = chatMessageMap.get(currentMessageHash);
-                    if (currentTime - entry.lastSeenMessageMillis > 60000) {
+                    if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
                         chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                     } else {
                         final boolean deleted = deleteMessageByHash(currentMessageHash);
@@ -191,9 +206,11 @@ public class ChatHandler {
             }
         }
 
-        return Objects.hash(chatComponent.getUnformattedTextForChat(),
-            siblingHashes,
-            getChatStyleHash(chatComponent.getChatStyle()));
+        if (chatComponent instanceof ChatComponentIgnored) {
+            return chatComponent.getSiblings().isEmpty() ? 0 : Objects.hash(siblingHashes);
+        }
+
+        return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 
     public static String cleanColour(String in) {

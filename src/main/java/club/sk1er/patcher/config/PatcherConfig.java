@@ -804,12 +804,12 @@ public class PatcherConfig extends Vigilant {
     public static boolean compactChat = true;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Super Compact Chat",
-        description = "Clean up chat by stacking duplicate messages found within the select range.",
+        type = PropertyType.SLIDER, name = "Compact Chat Time",
+        description = "Change how long before old messages are no longer compacted.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",
-        min = 1, max = 25
+        min = 5, max = 120
     )
-    public static int superCompactChatAmount = 5;
+    public static int compactChatTime = 60;
 
     @Property(
         type = PropertyType.SWITCH, name = "Anti Clear Chat",
