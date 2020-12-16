@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentStyle;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -93,7 +94,7 @@ public class ChatHandler {
             }
 
             if (PatcherConfig.compactChat) {
-                if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
+                if (message.isEmpty() || isDivider((ChatComponentText) chatComponent)) {
                     return true;
                 }
 
@@ -211,6 +212,22 @@ public class ChatHandler {
         }
 
         return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
+    }
+
+    private static boolean isDivider(ChatComponentText chatComponent) {
+        String clean = cleanColour(chatComponent.getUnformattedText());
+        if (clean.length() < 5) {
+            return false;
+        } else {
+            for (int i = 0; i < clean.length(); i++) {
+                char c = clean.charAt(i);
+                if (c != '-' && c != '=' && c != '\u25AC') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public static String cleanColour(String in) {

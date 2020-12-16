@@ -83,10 +83,15 @@ public class ModClassTransformer implements IClassTransformer {
             logger.info("Found OptiFine I7");
             registerCommonTransformers();
             registerI7Transformers();
-        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5") || optifineVersion.startsWith("M5")) {
+        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5")) {
             logger.info("Found OptiFine " + optifineVersion);
             registerCommonTransformers();
-            registerModernTransformers();
+            registerLSeriesTransformers();
+            registerLSeriesFixesTransformers();
+        } else if (optifineVersion.startsWith("M5")) {
+            logger.info("Found OptiFine M5");
+            registerCommonTransformers();
+            registerLSeriesTransformers();
         } else {
             logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
         }
@@ -121,13 +126,16 @@ public class ModClassTransformer implements IClassTransformer {
         //registerTransformer(new MapGenStructureReflectionOptimizer());
     }
 
-    private void registerModernTransformers() {
+    private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
 
+        registerTransformer(new GuiDetailSettingsOFTransformer());
+    }
+
+    private void registerLSeriesFixesTransformers() {
         registerTransformer(new GuiEditSignTransformer());
         registerTransformer(new TileEntitySignRendererTransformer());
         registerTransformer(new RandomEntitiesTransformer());
-        registerTransformer(new GuiDetailSettingsOFTransformer());
     }
 
     public static boolean isDevelopment() {
