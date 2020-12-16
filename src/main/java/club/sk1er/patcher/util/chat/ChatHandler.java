@@ -57,7 +57,7 @@ public class ChatHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
-        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty()) {
+        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
             final String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
             final ChatComponentIgnored time = new ChatComponentIgnored(ChatColor.GRAY + "[" + timeFormat + "] " + ChatColor.RESET);
             time.appendSibling(event.message);
