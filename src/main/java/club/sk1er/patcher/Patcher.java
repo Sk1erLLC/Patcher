@@ -98,7 +98,7 @@ public class Patcher {
     // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
     // rcs will be 1.x+rc-y
     // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.5+beta-5";
+    public static final String VERSION = "1.5+beta-6";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -233,7 +233,7 @@ public class Patcher {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         if (PatcherConfig.entityCulling) {
             for (ModContainer container : activeModList) {
-                if (container.getModId().equals("enhancements") || container.getModId().equals("labymod")) {
+                if (container.getModId().equals("enhancements")) {
                     Notifications.INSTANCE.pushNotification(
                         "Patcher",
                         container.getName() + " has been detected. Entity Culling is now disabled.\n" +

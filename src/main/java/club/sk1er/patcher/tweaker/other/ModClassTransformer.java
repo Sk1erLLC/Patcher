@@ -70,7 +70,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new BetterChatTransformer());
 
         // SpiderFrog's oam overwrites our injection (because surely a 1.7 animations mod needs this feature)
-        // only ran in this transformer if it's loaded in prod
+        // only run in this transformer if it's loaded in prod
         if (!isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // OptiFine uses Reflection for compatibility between Forge & itself,
@@ -83,10 +83,10 @@ public class ModClassTransformer implements IClassTransformer {
             logger.info("Found OptiFine I7");
             registerCommonTransformers();
             registerI7Transformers();
-        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5")) {
+        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5") || optifineVersion.startsWith("M5")) {
             logger.info("Found OptiFine " + optifineVersion);
             registerCommonTransformers();
-            registerLSeriesTransformers();
+            registerModernTransformers();
         } else {
             logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
         }
@@ -121,7 +121,7 @@ public class ModClassTransformer implements IClassTransformer {
         //registerTransformer(new MapGenStructureReflectionOptimizer());
     }
 
-    private void registerLSeriesTransformers() {
+    private void registerModernTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
 
         registerTransformer(new GuiEditSignTransformer());

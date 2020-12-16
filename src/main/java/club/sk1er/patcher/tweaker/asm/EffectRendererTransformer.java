@@ -53,15 +53,23 @@ public class EffectRendererTransformer implements PatcherTransformer {
                 case "renderParticles":
                 case "func_78874_a": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
                     LabelNode ifeq = new LabelNode();
+                    int entityfxIndex = -1;
+
+                    for (LocalVariableNode variable : methodNode.localVariables) {
+                        if (variable.name.equals("entityfx") || variable.name.equals("var13")) {
+                            entityfxIndex = variable.index;
+                            break;
+                        }
+                    }
+
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("get")) {
                             next = next.getNext().getNext();
 
-                            methodNode.instructions.insertBefore(next.getNext(), determineRender(ifeq));
+                            methodNode.instructions.insertBefore(next.getNext(), determineRender(entityfxIndex, ifeq));
                         } else if (next instanceof InsnNode && next.getOpcode() == Opcodes.ATHROW) {
                             methodNode.instructions.insertBefore(next.getNext(), ifeq);
                         }
@@ -181,9 +189,9 @@ public class EffectRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList determineRender(LabelNode ifeq) {
+    private InsnList determineRender(int entityfxIndex, LabelNode ifeq) {
         InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 14));
+        list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "shouldRender", "(Lnet/minecraft/client/particle/EntityFX;)Z", false));
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         return list;
