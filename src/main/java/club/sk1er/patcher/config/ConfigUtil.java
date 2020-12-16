@@ -105,6 +105,11 @@ public class ConfigUtil {
             public String category() {
                 return category;
             }
+
+            @Override
+            public boolean triggerActionOnInitialization() {
+                return true;
+            }
         };
     }
 }

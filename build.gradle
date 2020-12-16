@@ -306,7 +306,7 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    implementation "club.sk1er:ModCore:594-${mcVersion}-SNAPSHOT"
+    implementation "club.sk1er:ModCore:611-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

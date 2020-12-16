@@ -12,7 +12,7 @@
 package club.sk1er.patcher;
 
 import club.sk1er.api.core.ModCoreAPI;
-import club.sk1er.api.core.commands.CommandManager;
+import club.sk1er.api.core.commands.CommandRegistry;
 import club.sk1er.api.core.gui.Notifications;
 import club.sk1er.api.core.utils.Multithreading;
 import club.sk1er.api.core.utils.WebUtil;
@@ -181,8 +181,8 @@ public class Patcher extends DummyModContainer {
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
-        CommandManager commandManager = ModCoreAPI.getCommandManager();
-        commandManager.registerCommand(new PatcherCommand());
+        CommandRegistry commandRegistry = ModCoreAPI.getCommandRegistry();
+        commandRegistry.registerCommand(new PatcherCommand());
 
         final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
         commandRegister.registerCommand(new FovChangerCommand());
