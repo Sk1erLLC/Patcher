@@ -305,9 +305,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
-    compile ("net.modcore:Loader:1.2") {
-        exclude module: "ModCore"
-    }
+    compile ("net.modcore:Loader:1.3")
 
     implementation "club.sk1er:ModCore:611-${mcVersion}-SNAPSHOT"
 
