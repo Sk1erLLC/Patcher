@@ -68,7 +68,7 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (ticks++ >= 1200) {
+        if (ticks++ >= 12000) {
             chatMessageMap.entrySet().removeIf(next -> {
                 boolean oldEnough = next.getValue().lastSeenMessageMillis > (PatcherConfig.compactChatTime * 1000L);
                 if (oldEnough) messagesForHash.remove(next.getKey());
