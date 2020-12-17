@@ -33,7 +33,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,7 +93,7 @@ public class ChatHandler {
                 return false;
             }
 
-            if (message.isEmpty() || isDivider((ChatComponentText) chatComponent)) {
+            if (message.isEmpty() || isDivider(message)) {
                 return true;
             }
 
@@ -140,41 +139,73 @@ public class ChatHandler {
             return false;
         }
 
+        final Set<ChatLine> toRemove = messagesForHash.get(hashCode);
+        messagesForHash.remove(hashCode);
+
         final int normalSearchLength = 100;
         final int wrappedSearchLength = 300;
 
         boolean removedMessage = false;
-        final Set<ChatLine> toRemove = messagesForHash.get(hashCode);
         {
             final List<ChatLine> chatLines = mc.ingameGUI.getChatGUI().chatLines;
-            int searched = 0;
-            final Iterator<ChatLine> iterator = chatLines.iterator();
-            while (iterator.hasNext() && searched < normalSearchLength) {
-                final ChatLine next = iterator.next();
-                if (toRemove.contains(next)) {
+            for (int index = 0; index < chatLines.size() && index < normalSearchLength; index++) {
+                final ChatLine chatLine = chatLines.get(index);
+
+                if (toRemove.contains(chatLine)) {
                     removedMessage = true;
-                    iterator.remove();
+                    chatLines.remove(index);
+                    index--;
+
+                    if (index < 0 || index >= chatLines.size()) {
+                        continue;
+                    }
+
+                    index = getMessageIndex(chatLines, index, chatLine);
+                }
+            }
+        }
+
+        if (!removedMessage) {
+            return false;
+        }
+
+        final List<ChatLine> chatLinesWrapped = mc.ingameGUI.getChatGUI().drawnChatLines;
+        for (int index = 0; index < chatLinesWrapped.size() && index < wrappedSearchLength; index++) {
+            final ChatLine chatLine = chatLinesWrapped.get(index);
+            if (toRemove.contains(chatLine)) {
+                chatLinesWrapped.remove(index);
+                index--;
+
+                if (index <= 0 || index >= chatLinesWrapped.size()) {
+                    continue;
                 }
 
-                searched++;
+                index = getMessageIndex(chatLinesWrapped, index, chatLine);
             }
         }
 
-        final List<ChatLine> drawnChatLines = mc.ingameGUI.getChatGUI().drawnChatLines;
-        int searched = 0;
-        final Iterator<ChatLine> iterator = drawnChatLines.iterator();
-        while (iterator.hasNext() && searched < wrappedSearchLength) {
-            final ChatLine next = iterator.next();
-            if (toRemove.contains(next)) {
-                removedMessage = true;
-                iterator.remove();
-            }
+        return true;
+    }
 
-            searched++;
+    private static int getMessageIndex(List<ChatLine> chatMessageList, int index, ChatLine chatLine) {
+        final ChatLine prevLine = chatMessageList.get(index);
+        if (isDivider(cleanColour(prevLine.getChatComponent().getUnformattedText())) &&
+            Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
+            chatMessageList.remove(index);
         }
 
-        messagesForHash.remove(hashCode);
-        return removedMessage;
+        if (index >= chatMessageList.size()) {
+            return index;
+        }
+
+        final ChatLine nextLine = chatMessageList.get(index);
+        if (isDivider(cleanColour(nextLine.getChatComponent().getUnformattedText())) &&
+            Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
+            chatMessageList.remove(index);
+            index--;
+        }
+
+        return index;
     }
 
     private static int getChatStyleHash(ChatStyle style) {
@@ -213,20 +244,21 @@ public class ChatHandler {
         return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 
-    private static boolean isDivider(ChatComponentText chatComponent) {
-        String clean = cleanColour(chatComponent.getUnformattedText()).trim();
+    private static boolean isDivider(String clean) {
+        boolean divider = true;
         if (clean.length() < 5) {
-            return false;
+            divider = false;
         } else {
             for (int i = 0; i < clean.length(); i++) {
-                char c = clean.charAt(i);
+                final char c = clean.charAt(i);
                 if (c != '-' && c != '=' && c != '\u25AC') {
-                    return false;
+                    divider = false;
+                    break;
                 }
             }
         }
 
-        return true;
+        return divider;
     }
 
     public static String cleanColour(String in) {
