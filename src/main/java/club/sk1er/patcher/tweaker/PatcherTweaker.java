@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
