@@ -17,6 +17,7 @@ import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.mods.core.util.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
+import club.sk1er.patcher.command.InventoryScaleCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -186,6 +187,7 @@ public class Patcher {
         commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
         commandRegister.registerCommand(new SkinCacheRefresh());
         commandRegister.registerCommand(new CoordsCommand());
+        commandRegister.registerCommand(new InventoryScaleCommand());
 
         registerClass(this);
         registerClass(target);

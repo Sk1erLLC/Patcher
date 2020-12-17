@@ -153,7 +153,7 @@ public class PatcherCommand extends CommandBase {
                     return;
 
                 default:
-                    ChatUtilities.sendNotification("Patcher", "&cInvalid command. Usage: &e" + getCommandUsage(sender) + "&c.");
+                    ChatUtilities.sendMessage("&cInvalid command. Usage: &e" + getCommandUsage(sender) + "&c.");
                     return;
             }
         }

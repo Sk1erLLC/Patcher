@@ -1038,6 +1038,29 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean optimizedModelGeneration;*/
 
+    // HIDDEN
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Current Scale Override",
+        description = "the current scale override - hidden",
+        category = "Hidden", subcategory = "Hidden", hidden = true
+    )
+    public static int currentScaleOverride = -1;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Desired Scale Override",
+        description = "the desired scale override - hidden",
+        category = "Hidden", subcategory = "Hidden", hidden = true
+    )
+    public static int desiredScaleOverride = -1;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Scale Override",
+        description = "the scale override - hidden",
+        category = "Hidden", subcategory = "Hidden", hidden = true
+    )
+    public static int scaleOverride = -1;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

@@ -191,6 +191,7 @@ public class ClassTransformer implements IClassTransformer {
         //registerTransformer(new FramebufferTransformer());
         //registerTransformer(new GlStateManagerTransformer());
         registerTransformer(new ContainerTransformer());
+        registerTransformer(new ScaledResolutionTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

@@ -49,16 +49,29 @@ public class GuiScreenTransformer implements PatcherTransformer {
                     clearInstructions(methodNode);
                     methodNode.instructions.insert(handleForeignKeyboards());
                     break;
+                case "setWorldAndResolution":
+                    methodNode.instructions.insert(
+                        redirectWidthAndHeight()
+                    );
+                    break;
                 case "handleInput":
                 case "func_146269_k":
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    methodNode.instructions.insert(new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        getHooksPackage() + "GuiScreenHook", "handleInputHead", "()V", false
+                    ));
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(
+                        Opcodes.INVOKESTATIC,
+                        getHooksPackage() + "GuiScreenHook", "handleInputReturn", "()V", false
+                    ));
+
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
+                        final AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
+                            final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("handleKeyboardInput") || methodInsnName.equals("func_146282_l")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), bailScreen());
                                 break;
@@ -68,6 +81,17 @@ public class GuiScreenTransformer implements PatcherTransformer {
                     break;
             }
         }
+    }
+
+    private InsnList redirectWidthAndHeight() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "GuiScreenHook", "setWorldAndResolutionWidth", "(I)I", false));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 2));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "GuiScreenHook", "setWorldAndResolutionHeight", "(I)I", false));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 3));
+        return list;
     }
 
 
