@@ -44,16 +44,20 @@ public class GuiScreenTransformer implements PatcherTransformer {
                 case "func_146276_q_":
                     methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
                     break;
+
                 case "handleKeyboardInput":
                 case "func_146282_l":
                     clearInstructions(methodNode);
                     methodNode.instructions.insert(handleForeignKeyboards());
                     break;
+
+                case "func_146280_a":
                 case "setWorldAndResolution":
                     methodNode.instructions.insert(
                         redirectWidthAndHeight()
                     );
                     break;
+
                 case "handleInput":
                 case "func_146269_k":
                     methodNode.instructions.insert(new MethodInsnNode(

@@ -30,7 +30,7 @@ public class ScaledResolutionTransformer implements PatcherTransformer {
                     if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
                         final String fieldName = mapFieldNameFromNode(next);
 
-                        if (fieldName.equals("guiScale")) {
+                        if (fieldName.equals("guiScale") || fieldName.equalsIgnoreCase("field_74335_Z")) {
                             instructions.remove(next.getPrevious().getPrevious());
                             instructions.remove(next.getPrevious());
                             instructions.insertBefore(next.getNext(), new MethodInsnNode(
