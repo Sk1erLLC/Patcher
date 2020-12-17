@@ -814,7 +814,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.SLIDER, name = "Compact Chat Time",
         description = "Change how long before old messages are no longer compacted.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",
-        min = 5, max = 120
+        min = 1, max = 120
     )
     public static int compactChatTime = 60;
 

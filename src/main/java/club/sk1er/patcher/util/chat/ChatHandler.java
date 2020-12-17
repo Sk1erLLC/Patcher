@@ -74,6 +74,7 @@ public class ChatHandler {
                 if (oldEnough) messagesForHash.remove(next.getKey());
                 return oldEnough;
             });
+            ticks = 0;
         }
     }
 
@@ -83,7 +84,7 @@ public class ChatHandler {
     }
 
     public static boolean setChatLineHead(IChatComponent chatComponent, boolean refresh) {
-        if (Loader.isModLoaded("hychat")) {
+        if (Loader.isModLoaded("hychat") || !PatcherConfig.compactChat) {
             return true;
         }
 
@@ -93,34 +94,32 @@ public class ChatHandler {
                 return false;
             }
 
-            if (PatcherConfig.compactChat) {
-                if (message.isEmpty() || isDivider((ChatComponentText) chatComponent)) {
-                    return true;
-                }
-
-                currentMessageHash = getChatComponentHash(chatComponent);
-                final long currentTime = System.currentTimeMillis();
-
-                if (!chatMessageMap.containsKey(currentMessageHash)) {
-                    chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                } else {
-                    final ChatEntry entry = chatMessageMap.get(currentMessageHash);
-                    if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
-                        chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                    } else {
-                        final boolean deleted = deleteMessageByHash(currentMessageHash);
-                        if (!deleted) {
-                            chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                        } else {
-                            entry.messageCount++;
-                            entry.lastSeenMessageMillis = currentTime;
-                            chatComponent.appendText(ChatColor.GRAY + " (" + entry.messageCount + ")");
-                        }
-                    }
-                }
-
+            if (message.isEmpty() || isDivider((ChatComponentText) chatComponent)) {
                 return true;
             }
+
+            currentMessageHash = getChatComponentHash(chatComponent);
+            final long currentTime = System.currentTimeMillis();
+
+            if (!chatMessageMap.containsKey(currentMessageHash)) {
+                chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+            } else {
+                final ChatEntry entry = chatMessageMap.get(currentMessageHash);
+                if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
+                    chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+                } else {
+                    final boolean deleted = deleteMessageByHash(currentMessageHash);
+                    if (!deleted) {
+                        chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+                    } else {
+                        entry.messageCount++;
+                        entry.lastSeenMessageMillis = currentTime;
+                        chatComponent.appendSibling(new ChatComponentIgnored(ChatColor.GRAY + " (" + entry.messageCount + ")"));
+                    }
+                }
+            }
+
+            return true;
         }
 
         return true;
@@ -208,14 +207,14 @@ public class ChatHandler {
         }
 
         if (chatComponent instanceof ChatComponentIgnored) {
-            return chatComponent.getSiblings().isEmpty() ? 0 : Objects.hash(siblingHashes);
+            return Objects.hash(siblingHashes);
         }
 
         return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 
     private static boolean isDivider(ChatComponentText chatComponent) {
-        String clean = cleanColour(chatComponent.getUnformattedText());
+        String clean = cleanColour(chatComponent.getUnformattedText()).trim();
         if (clean.length() < 5) {
             return false;
         } else {
