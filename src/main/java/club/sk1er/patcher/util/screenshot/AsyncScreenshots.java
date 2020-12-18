@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.screenshot;
 
-import club.sk1er.api.core.utils.Multithreading;
+import net.modcore.api.utils.Multithreading;
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.universal.UniversalDesktop;
 import club.sk1er.patcher.Patcher;

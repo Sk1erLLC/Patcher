@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.world.entity;
 
-import club.sk1er.api.core.utils.GuiUtil;
+import net.modcore.api.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;

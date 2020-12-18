@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.enhancement.text;
 
-import club.sk1er.api.core.utils.Multithreading;
+import net.modcore.api.utils.Multithreading;
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.hash.StringHash;
 import com.github.benmanes.caffeine.cache.Cache;

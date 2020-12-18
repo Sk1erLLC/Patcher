@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.chat;
 
-import club.sk1er.api.core.ModCoreAPI;
+import net.modcore.api.ModCoreAPI;
 import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

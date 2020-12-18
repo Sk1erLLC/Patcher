@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.screen;
 
-import club.sk1er.api.core.utils.Multithreading;
+import net.modcore.api.utils.Multithreading;
 import club.sk1er.elementa.components.UICircle;
 import club.sk1er.elementa.components.UIRoundedRectangle;
 import club.sk1er.patcher.Patcher;

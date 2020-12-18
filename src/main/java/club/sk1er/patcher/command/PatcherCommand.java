@@ -11,8 +11,8 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.api.core.commands.*;
-import club.sk1er.api.core.utils.GuiUtil;
+import net.modcore.api.commands.*;
+import net.modcore.api.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;

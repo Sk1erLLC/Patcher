@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.command;
 
-import club.sk1er.api.core.gui.Notifications;
+import net.modcore.api.gui.Notifications;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;

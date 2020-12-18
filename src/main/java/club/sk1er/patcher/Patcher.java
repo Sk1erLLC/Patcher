@@ -11,11 +11,11 @@
 
 package club.sk1er.patcher;
 
-import club.sk1er.api.core.ModCoreAPI;
-import club.sk1er.api.core.commands.CommandRegistry;
-import club.sk1er.api.core.gui.Notifications;
-import club.sk1er.api.core.utils.Multithreading;
-import club.sk1er.api.core.utils.WebUtil;
+import net.modcore.api.ModCoreAPI;
+import net.modcore.api.commands.CommandRegistry;
+import net.modcore.api.gui.Notifications;
+import net.modcore.api.utils.Multithreading;
+import net.modcore.api.utils.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.PatcherCommand;
