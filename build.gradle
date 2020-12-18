@@ -460,7 +460,7 @@ jar {
                     'FMLAT': 'patcher_at.cfg',
                     "FMLCorePluginContainsFMLMod": "Yes, yes it does",
                     "Main-Class": "club.sk1er.container.ContainerMessage",
-                    "TweakClass": "club.sk1er.patcher.tweaker.PatcherTweak",
+                    "TweakClass": "club.sk1er.patcher.tweaker.launch.PatcherTweak",
                     "TweakOrder": "0"
         }
     }

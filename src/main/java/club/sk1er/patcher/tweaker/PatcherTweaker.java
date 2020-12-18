@@ -42,10 +42,10 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public PatcherTweaker() {
         clientLoadTime = System.currentTimeMillis();
-        this.createSecondTweaker();
+        // Unnecessary as we can now get ModCore to create both tweakers.
+//        this.createSecondTweaker();
         this.unlockLwjgl();
         this.detectIncompatibleMods();
-        System.out.println("POOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOGPOOOOOOOOOG");
     }
 
     @Override
