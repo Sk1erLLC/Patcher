@@ -305,9 +305,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
-    compile ("net.modcore:Loader:1.4")
+    compile ("net.modcore:Loader:1.5")
 
-    implementation "club.sk1er:ModCore:618-${mcVersion}-SNAPSHOT"
+    implementation "club.sk1er:ModCore:627-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -337,7 +337,7 @@ dependencies {
     if (mcVersion == 11502) {
         minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
     }
-    if (!FABRIC) {
+    if (!FABRIC && useMixin) {
         annotationProcessor 'org.spongepowered:mixin:0.8'
         implementation('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
             exclude module: 'launchwrapper'
