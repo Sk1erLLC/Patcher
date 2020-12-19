@@ -316,7 +316,6 @@ dependencies {
         exclude module: "asm-debug-all"
     }
     embed 'com.github.ben-manes.caffeine:caffeine:2.8.8'
-    embed "net.modcore:Loader:1.1"
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
         exclude module: 'asm-commons'
