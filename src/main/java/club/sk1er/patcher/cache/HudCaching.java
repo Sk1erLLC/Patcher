@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL14;
 
 import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.*;
 
+@SuppressWarnings("unused")
 public class HudCaching {
     /*private static final Minecraft mc = Minecraft.getMinecraft();
     private static Framebuffer framebuffer = null;
@@ -69,7 +70,7 @@ public class HudCaching {
                 framebuffer.bindFramebuffer(false);
 
                 GlStateManager.disableBlend();
-                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GlStateManager.disableLighting();
                 GlStateManager.disableFog();
 
@@ -122,7 +123,10 @@ public class HudCaching {
             }
 
             framebuffer.bindFramebufferTexture();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
             drawTexturedRect(0, 0, (float) widthD, (float) heightD, 0, 1, 1, 0, GL11.GL_NEAREST);
+            GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         }
     }
 
@@ -139,8 +143,6 @@ public class HudCaching {
 
     public static void drawTexturedRect(float x, float y, float width, float height, float uMin, float uMax, float vMin, float vMax, int filter) {
         GlStateManager.enableTexture2D();
-        GlStateManager.enableBlend();
-        GL14.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter);
@@ -164,14 +166,15 @@ public class HudCaching {
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-
-        GlStateManager.disableBlend();
     }
 
     private static Framebuffer checkFramebufferSizes(Framebuffer framebuffer, int width, int height) {
         if (framebuffer == null || framebuffer.framebufferWidth != width || framebuffer.framebufferHeight != height) {
             if (framebuffer == null) {
                 framebuffer = new Framebuffer(width, height, true);
+                framebuffer.framebufferColor[0] = 0;
+                framebuffer.framebufferColor[1] = 0;
+                framebuffer.framebufferColor[2] = 0;
             } else {
                 framebuffer.createBindFramebuffer(width, height);
             }

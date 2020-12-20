@@ -15,6 +15,7 @@ import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import club.sk1er.mods.core.util.WebUtil;
+import club.sk1er.patcher.cache.HudCaching;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.InventoryScaleCommand;
@@ -207,7 +208,7 @@ public class Patcher {
         registerClass(new ImagePreview());
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
-        //registerClass(new HudCaching());
+//        registerClass(new HudCaching());
         registerClass(MinecraftHook.INSTANCE);
 
         checkLogs();

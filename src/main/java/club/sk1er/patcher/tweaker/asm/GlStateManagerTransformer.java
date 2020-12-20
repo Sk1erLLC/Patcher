@@ -15,72 +15,53 @@ public class GlStateManagerTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
             switch (methodName) {
-                case "enableBlend":
-                case "func_179147_l":
-                    method.instructions.insert(checkSrcAndDst());
-                    break;
-                case "disableBlend":
-                case "func_179084_k":
-                    method.instructions.insert(disableWantBlend());
-                    break;
                 case "blendFunc":
                 case "func_179112_b":
+                    method.instructions.insert(blendFunc());
+                    break;
                 case "tryBlendFuncSeparate":
                 case "func_179120_a":
-                    method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkBlendState());
+                    method.instructions.insert(tryBlendFuncSeparate());
                     break;
             }
         }
     }
 
-    private InsnList checkBlendState() {
+    private InsnList blendFunc() {
         InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ILOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("GlStateManagerHook"), "srcFactor", "I"));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 1));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("GlStateManagerHook"), "dstFactor", "I"));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 0));
         list.add(new IntInsnNode(Opcodes.SIPUSH, 770));
-        LabelNode ificmpne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, ificmpne));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
-        LabelNode label = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ, label));
-        list.add(ificmpne);
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("GlStateManagerHook"), "wantBlend", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179147_l", "()V", false));
-        list.add(new JumpInsnNode(Opcodes.GOTO, label));
-        list.add(ifeq);
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", false));
-        list.add(label);
-        return list;
-    }
-
-    private InsnList disableWantBlend() {
-        InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("GlStateManagerHook"), "wantBlend", "Z"));
-        return list;
-    }
-
-    private InsnList checkSrcAndDst() {
-        InsnList list = new InsnList();
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("GlStateManagerHook"), "wantBlend", "Z"));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", "Z"));
-        LabelNode label = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("GlStateManagerHook"), "srcFactor", "I"));
-        list.add(new IntInsnNode(Opcodes.SIPUSH, 770));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, label));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("GlStateManagerHook"), "dstFactor", "I"));
         list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, label));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179120_a", "(IIII)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
-        list.add(label);
+        return list;
+    }
+
+    private InsnList tryBlendFuncSeparate() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ILOAD, 0));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 770));
+        LabelNode ificmpeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ,  ificmpeq));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ,  ificmpeq));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 1));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPEQ,  ificmpeq));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
+        LabelNode ificmpne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE,  ificmpne));
+        list.add(ificmpeq);
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 770));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179120_a", "(IIII)V", false));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ificmpne);
         return list;
     }
 }
