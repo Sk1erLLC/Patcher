@@ -11,6 +11,8 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -130,7 +132,24 @@ public class EntityCulling {
     }
 
     private static int getQuery() {
-        return GL15.glGenQueries();
+        try {
+            return GL15.glGenQueries();
+        } catch (Exception exception) {
+            Patcher.instance.getLogger().error(
+                "Failed to run GL15.glGenQueries(). User's computer is likely too old to support OpenGL 1.5, Entity Culling has been force disabled.",
+                exception
+            );
+            
+            PatcherConfig.entityCulling = false;
+            Patcher.instance.getPatcherConfig().markDirty();
+            Patcher.instance.getPatcherConfig().writeData();
+
+            Notifications.INSTANCE.pushNotification("Patcher",
+                "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
+                    "If you believe this is a mistake, please contact us at discord.gg/sk1er");
+
+            return 0;
+        }
     }
 
     /**
