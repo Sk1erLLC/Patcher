@@ -322,6 +322,11 @@ public class Patcher {
         }
 
         final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+        if (serverIP == null) {
+            logger.info("Server IP is somehow null, returning.");
+            return;
+        }
+
         if (blacklistedServers.contains(serverIP)) {
             logger.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
             GuiChatTransformer.maxChatLength = 100;

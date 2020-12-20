@@ -17,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentStyle;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -45,6 +44,8 @@ public class ChatHandler {
     private static final Map<Integer, Set<ChatLine>> messagesForHash = new HashMap<>();
     private static final Minecraft mc = Minecraft.getMinecraft();
 
+    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
+
     public static int currentMessageHash = -1;
     private int ticks;
 
@@ -68,8 +69,9 @@ public class ChatHandler {
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (ticks++ >= 12000) {
+            final long time = System.currentTimeMillis();
             chatMessageMap.entrySet().removeIf(next -> {
-                boolean oldEnough = next.getValue().lastSeenMessageMillis > (PatcherConfig.compactChatTime * 1000L);
+                boolean oldEnough = (time - next.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L);
                 if (oldEnough) messagesForHash.remove(next.getKey());
                 return oldEnough;
             });
@@ -232,7 +234,7 @@ public class ChatHandler {
     private static int getChatComponentHash(IChatComponent chatComponent) {
         final List<Integer> siblingHashes = new ArrayList<>();
         for (IChatComponent sibling : chatComponent.getSiblings()) {
-            if (sibling instanceof ChatComponentStyle) {
+            if (!(sibling instanceof ChatComponentIgnored) && sibling instanceof ChatComponentStyle) {
                 siblingHashes.add(getChatComponentHash(sibling));
             }
         }
@@ -241,10 +243,13 @@ public class ChatHandler {
             return Objects.hash(siblingHashes);
         }
 
-        return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
+        final String unformattedText = chatComponent.getUnformattedText();
+        final String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
+        return Objects.hash(cleanedMessage, siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 
     private static boolean isDivider(String clean) {
+        clean = clean.replaceAll(chatTimestampRegex, "").trim();
         boolean divider = true;
         if (clean.length() < 5) {
             divider = false;
