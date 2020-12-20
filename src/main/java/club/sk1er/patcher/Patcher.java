@@ -96,10 +96,10 @@ import java.util.concurrent.CompletableFuture;
 public class Patcher {
 
     // normal versions will be "1.x"
-    // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
-    // rcs will be 1.x+rc-y
-    // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.5+beta-8";
+    // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
+    // rcs will be 1.x-rc-y
+    // extra branches will be 1.x-branch-y
+    public static final String VERSION = "1.5-beta-8";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -242,9 +242,7 @@ public class Patcher {
                             "This is an unfixable incompatibility without an update from the authors of " + container.getName());
                     PatcherConfig.entityCulling = false;
 
-                    // force save config
-                    patcherConfig.markDirty();
-                    patcherConfig.writeData();
+                    this.forceSaveConfig();
                     break;
                 }
             }
@@ -258,8 +256,7 @@ public class Patcher {
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
                     );
-                    patcherConfig.markDirty();
-                    patcherConfig.writeData();
+                    this.forceSaveConfig();
                     break;
                 }
             }
@@ -521,5 +518,10 @@ public class Patcher {
 
     public Viewer getViewer() {
         return viewer;
+    }
+
+    public void forceSaveConfig() {
+        this.patcherConfig.markDirty();
+        this.patcherConfig.writeData();
     }
 }

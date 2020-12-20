@@ -139,10 +139,9 @@ public class EntityCulling {
                 "Failed to run GL15.glGenQueries(). User's computer is likely too old to support OpenGL 1.5, Entity Culling has been force disabled.",
                 exception
             );
-            
+
             PatcherConfig.entityCulling = false;
-            Patcher.instance.getPatcherConfig().markDirty();
-            Patcher.instance.getPatcherConfig().writeData();
+            Patcher.instance.forceSaveConfig();
 
             Notifications.INSTANCE.pushNotification("Patcher",
                 "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
