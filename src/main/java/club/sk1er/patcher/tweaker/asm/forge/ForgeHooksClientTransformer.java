@@ -28,7 +28,7 @@ import java.util.ListIterator;
 
 public class ForgeHooksClientTransformer implements PatcherTransformer {
 
-    private final String hooksClass = getHooksPackage() + "ForgeHooksClientHook";
+    private final String hooksClass = getHooksPackage("ForgeHooksClientHook");
 
     /**
      * The class name that's being transformed

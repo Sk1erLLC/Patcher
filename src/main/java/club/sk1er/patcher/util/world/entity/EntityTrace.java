@@ -31,34 +31,15 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.List;
 
-/**
- * Used to fetch the current user the player is pointing at.
- */
 public class EntityTrace {
 
-    /**
-     * Create a Minecraft instance.
-     */
     private final Minecraft mc = Minecraft.getMinecraft();
-
-    /**
-     * The currently targeted user.
-     */
     private Entity targetEntity;
-
-    /**
-     * The current world ticks.
-     */
     private float partialTicks;
 
-    /**
-     * Set the current world ticks.
-     *
-     * @param event {@link RenderWorldLastEvent}
-     */
     @SubscribeEvent
     public void worldRender(RenderWorldLastEvent event) {
-        partialTicks = event.partialTicks;
+        this.partialTicks = event.partialTicks;
     }
 
     /**
@@ -72,7 +53,7 @@ public class EntityTrace {
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (Patcher.instance.getNameHistory().isPressed()) {
-            getMouseOver(partialTicks);
+            this.getMouseOver(this.partialTicks);
 
             if (targetEntity != null && targetEntity instanceof EntityPlayer) {
                 if (targetEntity.getDisplayName().getFormattedText().contains(EnumChatFormatting.OBFUSCATED.toString())) {

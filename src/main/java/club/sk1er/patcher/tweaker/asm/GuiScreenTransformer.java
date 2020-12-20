@@ -62,11 +62,11 @@ public class GuiScreenTransformer implements PatcherTransformer {
                 case "func_146269_k":
                     methodNode.instructions.insert(new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
-                        getHooksPackage() + "GuiScreenHook", "handleInputHead", "()V", false
+                        getHooksPackage("GuiScreenHook"), "handleInputHead", "()V", false
                     ));
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
-                        getHooksPackage() + "GuiScreenHook", "handleInputReturn", "()V", false
+                        getHooksPackage("GuiScreenHook"), "handleInputReturn", "()V", false
                     ));
 
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -90,10 +90,10 @@ public class GuiScreenTransformer implements PatcherTransformer {
     private InsnList redirectWidthAndHeight() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "GuiScreenHook", "setWorldAndResolutionWidth", "(I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionWidth", "(I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 2));
         list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage() + "GuiScreenHook", "setWorldAndResolutionHeight", "(I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionHeight", "(I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 3));
         return list;
     }

@@ -49,7 +49,7 @@ public class FontRendererTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "patcherFontRenderer", "L" + getHooksPackage() + "FontRendererHook;", null, null));
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "patcherFontRenderer", "L" + getHooksPackage("FontRendererHook;"), null, null));
         for (MethodNode methodNode : classNode.methods) {
             final String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("<init>")) {
@@ -99,21 +99,21 @@ public class FontRendererTransformer implements PatcherTransformer {
     private InsnList fontRendererHookInit() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new TypeInsnNode(Opcodes.NEW, getHooksPackage() + "FontRendererHook"));
+        list.add(new TypeInsnNode(Opcodes.NEW, getHooksPackage("FontRendererHook")));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, getHooksPackage() + "FontRendererHook", "<init>", "(Lnet/minecraft/client/gui/FontRenderer;)V", false));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage() + "FontRendererHook;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, getHooksPackage("FontRendererHook"), "<init>", "(Lnet/minecraft/client/gui/FontRenderer;)V", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage("FontRendererHook;")));
         return list;
     }
 
     private InsnList renderStringAtPosHook() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage() + "FontRendererHook;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage("FontRendererHook;")));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage() + "FontRendererHook", "renderStringAtPos", "(Ljava/lang/String;Z)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("FontRendererHook"), "renderStringAtPos", "(Ljava/lang/String;Z)Z", false));
         final LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));
@@ -124,10 +124,10 @@ public class FontRendererTransformer implements PatcherTransformer {
     private InsnList getStringWidthHook() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage() + "FontRendererHook;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage("FontRendererHook;")));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage() + "FontRendererHook", "getStringWidth", "(Lnet/minecraft/client/gui/FontRenderer;Ljava/lang/String;)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("FontRendererHook"), "getStringWidth", "(Lnet/minecraft/client/gui/FontRenderer;Ljava/lang/String;)I", false));
         list.add(new InsnNode(Opcodes.IRETURN));
         return list;
     }

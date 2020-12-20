@@ -36,7 +36,7 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.interfaces.add(getHooksPackage() + "accessors/IGuiIngameForge");
+        //classNode.interfaces.add(getHooksPackage("accessors/IGuiIngameForge"));
 
         for (MethodNode methodNode : classNode.methods) {
             /*switch(methodNode.name) {

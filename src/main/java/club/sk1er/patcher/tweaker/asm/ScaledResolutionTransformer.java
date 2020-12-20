@@ -35,7 +35,7 @@ public class ScaledResolutionTransformer implements PatcherTransformer {
                             instructions.remove(next.getPrevious());
                             instructions.insertBefore(next.getNext(), new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                getHooksPackage() + "ScaledResolutionHook", "modifyGuiScale", "()I", false
+                                getHooksPackage("ScaledResolutionHook"), "modifyGuiScale", "()I", false
                             ));
                             instructions.remove(next);
                         }
