@@ -51,11 +51,11 @@ class BlockCropsTransformer : PatcherTransformer {
         aload_2
         invokevirtual(
             "net/minecraft/world/World",
-            "getBlockState",
+            "func_180495_p",
             "net/minecraft/block/state/IBlockState",
             "net/minecraft/util/BlockPos"
         )
-        invokeinterface("net/minecraft/block/state/IBlockState", "getBlock", "net/minecraft/block/Block")
+        invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
             getHooksPackage("FarmHook"),
             "updateCropsMaxY",
@@ -71,7 +71,7 @@ class BlockCropsTransformer : PatcherTransformer {
         aload(4)
         invokespecial(
             "net/minecraft/block/BlockBush",
-            "collisionRayTrace",
+            "func_180636_a",
             "net/minecraft/util/MovingObjectPosition",
             "net/minecraft/world/World",
             "net/minecraft/util/BlockPos",
@@ -88,11 +88,11 @@ class BlockCropsTransformer : PatcherTransformer {
         aload_2
         invokevirtual(
             "net/minecraft/world/World",
-            "getBlockState",
+            "func_180495_p",
             "net/minecraft/block/state/IBlockState",
             "net/minecraft/util/BlockPos"
         )
-        invokeinterface("net/minecraft/block/state/IBlockState", "getBlock", "net/minecraft/block/Block")
+        invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
             getHooksPackage("FarmHook"),
             "updateCropsMaxY",
@@ -106,7 +106,7 @@ class BlockCropsTransformer : PatcherTransformer {
         aload_2
         invokespecial(
             "net/minecraft/block/BlockBush",
-            "getSelectedBoundingBox",
+            "func_180646_a",
             "net/minecraft/util/AxisAlignedBB",
             "net/minecraft/world/World",
             "net/minecraft/util/BlockPos"
