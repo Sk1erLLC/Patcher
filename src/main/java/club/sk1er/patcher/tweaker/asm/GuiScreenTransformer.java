@@ -60,10 +60,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
 
                 case "handleInput":
                 case "func_146269_k":
-                    methodNode.instructions.insert(new MethodInsnNode(
-                        Opcodes.INVOKESTATIC,
-                        getHooksPackage("GuiScreenHook"), "handleInputHead", "()V", false
-                    ));
+                    methodNode.instructions.insert(handleInputHead());
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
                         getHooksPackage("GuiScreenHook"), "handleInputReturn", "()V", false
@@ -87,13 +84,22 @@ public class GuiScreenTransformer implements PatcherTransformer {
         }
     }
 
+    private InsnList handleInputHead() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "handleInputHead", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
+        return list;
+    }
+
     private InsnList redirectWidthAndHeight() {
         InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionWidth", "(I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionWidth", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionHeight", "(I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionHeight", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 3));
         return list;
     }

@@ -67,9 +67,7 @@ public class InventoryScaleCommand extends CommandBase {
                 ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
                 Patcher.instance.forceSaveConfig();
                 return;
-            }
-
-            if (scaling > 5) {
+            } else if (scaling > 5) {
                 ChatUtilities.sendNotification("Inventory Scale", "Invalid scaling. Must be between 1-5.");
                 return;
             }
