@@ -10,7 +10,7 @@ public class NameTagRenderingHooks {
         int render;
         if (PatcherConfig.shadowedNametagText) {
             GL11.glDepthMask(false);
-            render = fontRenderer.renderString(text, x + 1.0F, y + 1.0F, color, true);
+            render = fontRenderer.renderString(text, PatcherConfig.alternateTextShadow ? x : x + 1.0F, y + 1.0F, color, true);
             GL11.glDepthMask(true);
 
             render = Math.max(render, fontRenderer.renderString(text, x, y, color, false));
