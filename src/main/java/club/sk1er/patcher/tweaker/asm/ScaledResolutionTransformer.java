@@ -31,13 +31,10 @@ public class ScaledResolutionTransformer implements PatcherTransformer {
                         final String fieldName = mapFieldNameFromNode(next);
 
                         if (fieldName.equals("guiScale") || fieldName.equalsIgnoreCase("field_74335_Z")) {
-                            instructions.remove(next.getPrevious().getPrevious());
-                            instructions.remove(next.getPrevious());
                             instructions.insertBefore(next.getNext(), new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                getHooksPackage("ScaledResolutionHook"), "modifyGuiScale", "()I", false
+                                getHooksPackage("ScaledResolutionHook"), "modifyGuiScale", "(I)I", false
                             ));
-                            instructions.remove(next);
                         }
                     }
                 }

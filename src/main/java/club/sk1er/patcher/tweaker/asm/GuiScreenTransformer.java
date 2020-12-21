@@ -119,6 +119,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
             "Lnet/minecraft/client/gui/GuiScreen;"));
         LabelNode ifacmpeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, ifacmpeq));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "handleInputReturn", "()V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifacmpeq);
         return list;

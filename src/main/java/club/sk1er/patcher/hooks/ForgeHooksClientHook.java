@@ -1,6 +1,6 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.util.ResolutionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -23,7 +23,7 @@ public class ForgeHooksClientHook {
         if (mc.thePlayer != null && screen instanceof GuiContainer) {
             GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projectionMatrixOld);
             GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelViewMatrixOld);
-            PatcherConfig.scaleOverride = PatcherConfig.currentScaleOverride;
+            ResolutionHelper.setScaleOverride(ResolutionHelper.getCurrentScaleOverride());
             final ScaledResolution resolution = new ScaledResolution(mc);
             GlStateManager.viewport(0, 0, mc.displayWidth, mc.displayHeight);
             GlStateManager.matrixMode(GL11.GL_PROJECTION);
@@ -37,7 +37,7 @@ public class ForgeHooksClientHook {
 
     public static void drawScreenReturn(GuiScreen screen) {
         if (mc.thePlayer != null && screen instanceof GuiContainer) {
-            PatcherConfig.scaleOverride = -1;
+            ResolutionHelper.setScaleOverride(-1);
             GlStateManager.matrixMode(GL11.GL_PROJECTION);
             GL11.glLoadMatrix(projectionMatrixOld);
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
@@ -47,7 +47,7 @@ public class ForgeHooksClientHook {
 
     public static int drawScreenMouseX(int mouseX) {
         if (mc.thePlayer != null && mc.currentScreen instanceof GuiContainer) {
-            PatcherConfig.scaleOverride = PatcherConfig.currentScaleOverride;
+            ResolutionHelper.setScaleOverride(ResolutionHelper.getCurrentScaleOverride());
             final ScaledResolution resolution = new ScaledResolution(mc);
             final int width = resolution.getScaledWidth();
             mouseX = Mouse.getX() * width / mc.displayWidth;
@@ -58,7 +58,7 @@ public class ForgeHooksClientHook {
 
     public static int drawScreenMouseY(int mouseY) {
         if (mc.thePlayer != null && mc.currentScreen instanceof GuiContainer) {
-            PatcherConfig.scaleOverride = PatcherConfig.currentScaleOverride;
+            ResolutionHelper.setScaleOverride(ResolutionHelper.getCurrentScaleOverride());
             final ScaledResolution resolution = new ScaledResolution(mc);
             final int height = resolution.getScaledHeight();
             mouseY = height - Mouse.getY() * height / mc.displayHeight - 1;

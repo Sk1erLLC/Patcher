@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InventoryScaleCommand extends CommandBase {
+
     @Override
     public String getCommandName() {
         return "inventoryscale";
@@ -38,8 +39,8 @@ public class InventoryScaleCommand extends CommandBase {
             }
 
             if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("none")) {
-                PatcherConfig.desiredScaleOverride = -1;
                 ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
+                PatcherConfig.desiredScaleOverride = -1;
                 Patcher.instance.forceSaveConfig();
                 return;
             }
@@ -63,8 +64,8 @@ public class InventoryScaleCommand extends CommandBase {
             }
 
             if (scaling < 1) {
-                PatcherConfig.desiredScaleOverride = -1;
                 ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
+                PatcherConfig.desiredScaleOverride = -1;
                 Patcher.instance.forceSaveConfig();
                 return;
             } else if (scaling > 5) {
