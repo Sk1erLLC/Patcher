@@ -65,13 +65,13 @@ public class EntityCulling {
      * @return The status on if the nametag is liable for rendering.
      */
     public static boolean canRenderName(EntityLivingBase entity) {
-        EntityPlayerSP player = mc.thePlayer;
+        final EntityPlayerSP player = mc.thePlayer;
         if (entity instanceof EntityPlayer && entity != player) {
-            Team otherEntityTeam = entity.getTeam();
-            Team playerTeam = player.getTeam();
+            final Team otherEntityTeam = entity.getTeam();
+            final Team playerTeam = player.getTeam();
 
             if (otherEntityTeam != null) {
-                Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
+                final Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
 
                 switch (teamVisibilityRule) {
                     case NEVER:
@@ -98,8 +98,8 @@ public class EntityCulling {
         GlStateManager.disableCull();
         GlStateManager.depthMask(false);
         GlStateManager.colorMask(false, false, false, false);
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        final Tessellator tessellator = Tessellator.getInstance();
+        final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
         worldrenderer.pos(b.maxX, b.maxY, b.maxZ).endVertex();
         worldrenderer.pos(b.maxX, b.maxY, b.minZ).endVertex();
@@ -134,10 +134,10 @@ public class EntityCulling {
     private static int getQuery() {
         try {
             return GL15.glGenQueries();
-        } catch (Exception exception) {
+        } catch (Throwable throwable) {
             Patcher.instance.getLogger().error(
                 "Failed to run GL15.glGenQueries(). User's computer is likely too old to support OpenGL 1.5, Entity Culling has been force disabled.",
-                exception
+                throwable
             );
 
             PatcherConfig.entityCulling = false;
