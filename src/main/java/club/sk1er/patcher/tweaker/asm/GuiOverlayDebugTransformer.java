@@ -43,18 +43,21 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-            } else if ((ClassTransformer.optifineVersion.equals("L5") || ClassTransformer.optifineVersion.startsWith("L6")) && methodName.equals("call")) {
-                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+            } else {
+                final String optifineVersion = ClassTransformer.optifineVersion;
+                if ((optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5")) && methodName.equals("call")) {
+                    ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("/")) {
-                        AbstractInsnNode prev = next;
-                        for (int i = 0; i < 8; i++) prev = prev.getPrevious();
-                        JumpInsnNode iflt = (JumpInsnNode) prev;
-                        method.instructions.insert(iflt, jumpIfNormalFpsCounter(iflt.label));
-                        break;
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("/")) {
+                            AbstractInsnNode prev = next;
+                            for (int i = 0; i < 8; i++) prev = prev.getPrevious();
+                            JumpInsnNode iflt = (JumpInsnNode) prev;
+                            method.instructions.insert(iflt, jumpIfNormalFpsCounter(iflt.label));
+                            break;
+                        }
                     }
                 }
             }
