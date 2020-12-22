@@ -455,9 +455,7 @@ public final class FontRendererHook {
         int column = page % 16;
         int glyphWidth = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
         float charX = (float) (characterIndex % 16 * 16) + glyphWidth + (.05f * page / 39f);
-        float charY = (float) ((characterIndex & 255) / 16 * 16) + (.05f * page / 39f);
-
-
+        float charY = (float) (((characterIndex & 255) >> 4) * 16) + (.05f * page / 39f);
         return new Pair<>((row * texSheetDim + charX) / fontTexWidth, (column * texSheetDim + charY) / fontTexHeight); //16 rows each with a size of 64px
     }
 

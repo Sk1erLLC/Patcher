@@ -395,7 +395,5 @@ public class AsyncScreenshots implements Runnable {
 
             return image;
         }
-
-
     }
 }

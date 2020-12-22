@@ -99,7 +99,7 @@ public class Patcher {
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
     // rcs will be 1.x-rc-y
     // extra branches will be 1.x-branch-y
-    public static final String VERSION = "1.5-beta-9.1";
+    public static final String VERSION = "1.5-rc-1";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -352,12 +352,6 @@ public class Patcher {
         EnhancementManager.getInstance().tick();
     }
 
-    /**
-     * When the client is started, this is called.
-     * The point of this is to check if the user has an option called "Log Optimizer" enabled,
-     * and if they do, go through every file in the .minecraft/logs directory, and delete any
-     * file that is older than the amount of days specified (1-90), and log what file was deleted.
-     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
@@ -452,13 +446,13 @@ public class Patcher {
 
     public Set<String> keySet(JsonObject json) throws NullPointerException {
         //JsonObject#keySet not a thing in Minecraft 1.8's old AF GSON
-            Set<String> keySet = new HashSet<>();
+        Set<String> keySet = new HashSet<>();
 
-            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                keySet.add(entry.getKey());
-            }
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            keySet.add(entry.getKey());
+        }
 
-            return keySet;
+        return keySet;
     }
 
     /**

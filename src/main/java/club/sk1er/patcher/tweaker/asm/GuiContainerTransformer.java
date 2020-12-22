@@ -82,7 +82,6 @@ public class GuiContainerTransformer implements PatcherTransformer {
                         final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("isCtrlKeyDown") || methodInsnName.equals("func_146271_m")) {
                             for (int i = 0; i < 7; i++) {
-                                System.out.println(next.getNext().getClass());
                                 method.instructions.remove(next.getNext());
                             }
 
