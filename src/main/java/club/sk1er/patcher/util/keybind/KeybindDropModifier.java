@@ -23,15 +23,17 @@ import org.lwjgl.input.Keyboard;
  * Used for dropping entire stacks on computers that don't allow for doing so, such as macOS.
  */
 public class KeybindDropModifier extends KeyBinding {
+
+    private final Minecraft mc = Minecraft.getMinecraft();
+
     public KeybindDropModifier() {
         super("Drop Stack Modifier", Keyboard.KEY_NONE, "Patcher");
     }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        final Minecraft mc = Minecraft.getMinecraft();
         final EntityPlayerSP player = mc.thePlayer;
-        if (player != null && GameSettings.isKeyDown(this) && GameSettings.isKeyDown(mc.gameSettings.keyBindDrop)) {
+        if (player != null && !player.isSpectator() && GameSettings.isKeyDown(this) && GameSettings.isKeyDown(mc.gameSettings.keyBindDrop) && mc.currentScreen == null) {
             player.dropOneItem(true);
         }
     }
