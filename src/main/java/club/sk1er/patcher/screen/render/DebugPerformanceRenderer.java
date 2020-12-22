@@ -12,7 +12,6 @@
 package club.sk1er.patcher.screen.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -32,7 +31,6 @@ public class DebugPerformanceRenderer {
     private final List<Long> frames = new ArrayList<>();
     private final String[] renderStrings = new String[5];
     private final Minecraft mc = Minecraft.getMinecraft();
-    private final FontRenderer fontRenderer = mc.fontRendererObj;
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
@@ -42,7 +40,7 @@ public class DebugPerformanceRenderer {
 
         if (frameRender) {
             frames.add(System.currentTimeMillis());
-            frames.removeIf(aLong -> System.currentTimeMillis() - aLong > TimeUnit.MINUTES.toMillis(1));
+            frames.removeIf(time -> (System.currentTimeMillis() - time) > 60000);
 
             if (System.currentTimeMillis() - updated > TimeUnit.SECONDS.toMillis(1)) {
                 updated = System.currentTimeMillis();
@@ -66,7 +64,7 @@ public class DebugPerformanceRenderer {
             int y = 40;
 
             for (String render : renderStrings) {
-                fontRenderer.drawString(render, scaledResolution.getScaledWidth() - 5 - fontRenderer.getStringWidth(render), y, new Color(1, 162, 82).getRGB(), true);
+                mc.fontRendererObj.drawString(render, scaledResolution.getScaledWidth() - 5 - mc.fontRendererObj.getStringWidth(render), y, new Color(1, 165, 82).getRGB(), true);
                 y += 10;
             }
         }
