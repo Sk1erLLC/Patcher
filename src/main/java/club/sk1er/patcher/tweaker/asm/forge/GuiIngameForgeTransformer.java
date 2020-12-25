@@ -84,10 +84,32 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                         break;
                     }
                 }
+            } else if (methodName.equals("renderChat")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("post")) {
+                        if (((MethodInsnNode) next).owner.equals("net/minecraftforge/fml/common/eventhandler/EventBus")) {
+                            methodNode.instructions.insertBefore(next.getNext().getNext(), fixProfilerSection());
+                            break;
+                        }
+                    }
+                }
             }/* else if (methodNode.name.equals("pre")) {
                 methodNode.instructions.insert(checkCompatibilityMode());
             }*/
         }
+    }
+
+    private InsnList fixProfilerSection() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/GuiIngameForge", "field_73839_d", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71424_I", "Lnet/minecraft/profiler/Profiler;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/profiler/Profiler", "func_76319_b", "()V", false));
+        return list;
     }
 
     private InsnList checkCompatibilityMode() {
