@@ -53,7 +53,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
                         AbstractInsnNode node = iterator.next();
 
                         if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
-                            methodNode.instructions.insertBefore(node, new IntInsnNode(Opcodes.SIPUSH, 10000));
+                            methodNode.instructions.insertBefore(node, new IntInsnNode(Opcodes.SIPUSH, 32767));
                             methodNode.instructions.remove(node);
                         } else if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESPECIAL &&
                             mapClassName(((MethodInsnNode) node).owner).equals("net/minecraft/client/gui/ChatLine")) {
