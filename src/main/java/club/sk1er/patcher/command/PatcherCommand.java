@@ -12,8 +12,6 @@
 package club.sk1er.patcher.command;
 
 import club.sk1er.mods.core.ModCore;
-import club.sk1er.mods.core.config.ModCoreConfig;
-import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
@@ -214,6 +212,7 @@ public class PatcherCommand extends CommandBase {
         PatcherConfig.glErrorChecking = status;
         PatcherConfig.optimizedItemRenderer = status;
         PatcherConfig.limitChunks = status;
+        PatcherConfig.optimizedResourcePackDiscovery = status;
 
         // fullbright requires a chunk reload once toggled, perform automatically
         Minecraft.getMinecraft().renderGlobal.loadRenderers();

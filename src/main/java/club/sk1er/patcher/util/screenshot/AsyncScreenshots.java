@@ -158,15 +158,12 @@ public class AsyncScreenshots implements Runnable {
             this.colorMessage("&7Open your screenshots folder."))));
 
         final IChatComponent controlsMessage = new ChatComponentText("");
-        controlsMessage.appendSibling(favoriteComponent);
-        controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(deleteComponent);
-        controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(imgurComponent);
-        controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(copyComponent);
-        controlsMessage.appendText(" ");
-        controlsMessage.appendSibling(folderComponent);
+        controlsMessage
+            .appendSibling(favoriteComponent).appendText(" ")
+            .appendSibling(deleteComponent).appendText(" ")
+            .appendSibling(imgurComponent).appendText(" ")
+            .appendSibling(copyComponent).appendText(" ")
+            .appendSibling(folderComponent);
 
         final GuiNewChat chat = mc.ingameGUI.getChatGUI();
         chat.printChatMessage(chatComponent);

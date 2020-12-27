@@ -13,18 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 public class AbstractResourcePackTransformer implements PatcherTransformer {
 
@@ -68,12 +57,27 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/texture/TextureUtil", "func_177053_a", // readBufferedImage
             "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, 1));
+
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         LabelNode ifnonnull = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNONNULL, ifnonnull));
         list.add(new InsnNode(Opcodes.ACONST_NULL));
         list.add(new InsnNode(Opcodes.ARETURN));
         list.add(ifnonnull);
+
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getWidth", "()I", false));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
+        LabelNode ificmpge = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGE, ificmpge));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getHeight", "()I", false));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGE, ificmpge));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ificmpge);
+
         list.add(new TypeInsnNode(Opcodes.NEW, "java/awt/image/BufferedImage"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new IntInsnNode(Opcodes.BIPUSH, 64));

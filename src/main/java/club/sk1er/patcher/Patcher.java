@@ -59,6 +59,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.command.ICommand;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -83,7 +84,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -177,38 +177,22 @@ public class Patcher {
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
-        final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
-        commandRegister.registerCommand(new PatcherCommand());
-        commandRegister.registerCommand(new FovChangerCommand());
-        commandRegister.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.DeleteScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.UploadScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.CopyScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
-        commandRegister.registerCommand(new SkinCacheRefresh());
-        commandRegister.registerCommand(new CoordsCommand());
-        commandRegister.registerCommand(new InventoryScaleCommand());
+        this.registerCommands(
+            new PatcherCommand(), new FovChangerCommand(),
+            new SkinCacheRefresh(), new CoordsCommand(), new InventoryScaleCommand(),
+            new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
+            new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(), new AsyncScreenshots.ScreenshotsFolder()
+        );
 
-        registerClass(this);
-        registerClass(target);
-        registerClass(viewer);
-        registerClass(debugPerformanceRenderer);
-        registerClass(cloudHandler);
-        registerClass(dropModifier);
-        registerClass(new MenuPreviewHandler());
-        registerClass(new EntityRendering());
-        registerClass(new FovHandler());
-        registerClass(new ChatHandler());
-        registerClass(new HotbarItemsHandler());
-        registerClass(new EntityCulling());
-        registerClass(new ArmorStatusRenderer());
-        registerClass(new EntityTrace());
-        registerClass(new PatcherMenuEditor());
-        registerClass(new ImagePreview());
-        registerClass(new WorldHandler());
-        registerClass(new TitleFix());
-//        registerClass(new HudCaching());
-        registerClass(MinecraftHook.INSTANCE);
+        this.registerEvents(
+            this, target, viewer,
+            debugPerformanceRenderer, cloudHandler, dropModifier,
+            new MenuPreviewHandler(), new EntityRendering(), new FovHandler(),
+            new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),
+            new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
+            new ImagePreview(), new WorldHandler(), new TitleFix(),
+            MinecraftHook.INSTANCE
+        );
 
         checkLogs();
         loadBlacklistedServers();
@@ -234,63 +218,49 @@ public class Patcher {
     public void loadComplete(FMLLoadCompleteEvent event) {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         final Notifications notifications = Notifications.INSTANCE;
-        if (PatcherConfig.entityCulling) {
-            for (ModContainer container : activeModList) {
-                if (container.getModId().equals("enhancements")) {
+        for (ModContainer container : activeModList) {
+            final String modId = container.getModId();
+            final String modName = container.getName();
+            if (PatcherConfig.entityCulling) {
+                if (modId.equals("enhancements")) {
                     notifications.pushNotification(
                         "Patcher",
-                        container.getName() + " has been detected. Entity Culling is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                        modName + " has been detected. Entity Culling is now disabled.\n" +
+                            "This is an unfixable incompatibility without an update from the authors of " + modName);
                     PatcherConfig.entityCulling = false;
-
-                    this.forceSaveConfig();
-                    break;
                 }
             }
-        }
 
-        if (PatcherConfig.compactChat) {
-            for (ModContainer container : activeModList) {
-                if (container.getModId().equals("labymod")) {
+            if (modId.equals("labymod")) {
+                if (PatcherConfig.compactChat) {
                     notifications.pushNotification(
                         "Patcher",
                         "Labymod has been detected. Compact Chat is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                            "This is an unfixable incompatibility without an update from the authors of " + modName);
                     PatcherConfig.compactChat = false;
-
-                    this.forceSaveConfig();
-                    break;
                 }
-            }
-        }
 
-        if (PatcherConfig.optimizedResourcePackDiscovery) {
-            for (ModContainer container : activeModList) {
-                if (container.getModId().equals("labymod")) {
+                if (PatcherConfig.optimizedResourcePackDiscovery) {
                     notifications.pushNotification(
                         "Patcher",
                         "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                            "This is an unfixable incompatibility without an update from the authors of " + modName);
                     PatcherConfig.optimizedResourcePackDiscovery = false;
-
-                    this.forceSaveConfig();
-                    break;
                 }
             }
-        }
 
-        if (PatcherConfig.optimizedFontRenderer) {
-            for (ModContainer container : activeModList) {
-                if (container.getModId().equals("smoothfont")) {
+            if (PatcherConfig.optimizedFontRenderer) {
+                if (modId.equals("smoothfont")) {
                     notifications.pushNotification(
                         "Patcher",
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
                     );
-                    this.forceSaveConfig();
-                    break;
+                    PatcherConfig.optimizedFontRenderer = false;
                 }
             }
+
+            this.forceSaveConfig();
         }
 
         if (PatcherConfig.replacedModsWarning) {
@@ -302,7 +272,7 @@ public class Patcher {
                     return;
                 }
 
-                final List<String> duplicates = new ArrayList<>();
+                final Set<String> duplicates = new HashSet<>();
                 for (ModContainer modContainer : activeModList) {
                     for (String modid : keySet(duplicateModsJson)) {
                         if (modContainer.getModId().contains(modid) && !duplicates.contains(modid)) {
@@ -398,10 +368,18 @@ public class Patcher {
     /**
      * Make life easier by calling this instead of calling {@link EventBus#register(Object)} manually so frequently.
      *
-     * @param eventClass The class that should be registered.
+     * @param events The class that should be registered.
      */
-    private void registerClass(Object eventClass) {
-        MinecraftForge.EVENT_BUS.register(eventClass);
+    private void registerEvents(Object... events) {
+        for (final Object event : events) {
+            MinecraftForge.EVENT_BUS.register(event);
+        }
+    }
+
+    private void registerCommands(ICommand... commands) {
+        for (final ICommand command : commands) {
+            ClientCommandHandler.instance.registerCommand(command);
+        }
     }
 
     /**
