@@ -68,15 +68,15 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getWidth", "()I", false));
         list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        LabelNode ificmpge = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPGE, ificmpge));
+        LabelNode ificmpgt = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, ificmpgt));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getHeight", "()I", false));
         list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPGE, ificmpge));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, ificmpgt));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(ificmpge);
+        list.add(ificmpgt);
 
         list.add(new TypeInsnNode(Opcodes.NEW, "java/awt/image/BufferedImage"));
         list.add(new InsnNode(Opcodes.DUP));
