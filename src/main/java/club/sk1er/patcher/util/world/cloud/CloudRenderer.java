@@ -69,7 +69,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
     }
 
     private float ceilToScale(float value) {
-        float scale = getScale();
+        final float scale = getScale();
         return MathHelper.ceiling_float_int(value / scale) * scale;
     }
 
@@ -268,8 +268,8 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
         GlStateManager.pushMatrix();
         GlStateManager.translate((offU * scale) - x, y, (offV * scale) - z);
-        offU = offU % texW;
-        offV = offV % texH;
+        offU %= texW;
+        offV %= texH;
 
         GlStateManager.matrixMode(GL11.GL_TEXTURE);
         GlStateManager.translate(offU * PX_SIZE, offV * PX_SIZE, 0);
@@ -284,24 +284,11 @@ public class CloudRenderer implements IResourceManagerReloadListener {
 
         Vec3 color = mc.theWorld.getCloudColour(partialTicks);
 
-        float r = (float) color.xCoord;
-        float g = (float) color.yCoord;
-        float b = (float) color.zCoord;
-
-        if (mc.gameSettings.anaglyph) {
-            float tempR = r * 0.3F + g * 0.59F + b * 0.11F;
-            float tempG = r * 0.3F + g * 0.7F;
-            float tempB = r * 0.3F + b * 0.7F;
-            r = tempR;
-            g = tempG;
-            b = tempB;
-        }
-
         if (COLOR_TEX == null) {
             COLOR_TEX = new DynamicTexture(1, 1);
         }
 
-        COLOR_TEX.getTextureData()[0] = 255 << 24 | ((int) (r * 255)) << 16 | ((int) (g * 255)) << 8 | (int) (b * 255);
+        COLOR_TEX.getTextureData()[0] = 255 << 24 | ((int) ((float) color.xCoord * 255)) << 16 | ((int) ((float) color.yCoord * 255)) << 8 | (int) ((float) color.zCoord * 255);
         COLOR_TEX.updateDynamicTexture();
 
         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
@@ -339,18 +326,7 @@ public class CloudRenderer implements IResourceManagerReloadListener {
             GlStateManager.callList(displayList);
         }
 
-        if (!mc.gameSettings.anaglyph) {
-            GlStateManager.colorMask(true, true, true, true);
-        } else {
-            switch (EntityRenderer.anaglyphField) {
-                case 0:
-                    GlStateManager.colorMask(false, true, true, true);
-                    break;
-                case 1:
-                    GlStateManager.colorMask(true, false, false, true);
-                    break;
-            }
-        }
+        GlStateManager.colorMask(true, true, true, true);
 
         if (OpenGlHelper.useVbo()) {
             vbo.drawArrays(GL11.GL_QUADS);

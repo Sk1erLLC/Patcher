@@ -32,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +43,8 @@ public class ChatHandler {
     private static final Map<Integer, ChatEntry> chatMessageMap = new HashMap<>();
     private static final Map<Integer, Set<ChatLine>> messagesForHash = new HashMap<>();
     private static final Minecraft mc = Minecraft.getMinecraft();
+
+    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
 
     public static int currentMessageHash = -1;
     private int ticks;
@@ -57,7 +58,7 @@ public class ChatHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
-        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty()) {
+        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
             final String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
             final ChatComponentIgnored time = new ChatComponentIgnored(ChatColor.GRAY + "[" + timeFormat + "] " + ChatColor.RESET);
             time.appendSibling(event.message);
@@ -67,12 +68,14 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (ticks++ >= 1200) {
+        if (ticks++ >= 12000) {
+            final long time = System.currentTimeMillis();
             chatMessageMap.entrySet().removeIf(next -> {
-                boolean oldEnough = next.getValue().lastSeenMessageMillis > (PatcherConfig.compactChatTime * 1000L);
+                boolean oldEnough = (time - next.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L);
                 if (oldEnough) messagesForHash.remove(next.getKey());
                 return oldEnough;
             });
+            ticks = 0;
         }
     }
 
@@ -82,7 +85,7 @@ public class ChatHandler {
     }
 
     public static boolean setChatLineHead(IChatComponent chatComponent, boolean refresh) {
-        if (Loader.isModLoaded("hychat")) {
+        if (Loader.isModLoaded("hychat") || !PatcherConfig.compactChat) {
             return true;
         }
 
@@ -92,34 +95,32 @@ public class ChatHandler {
                 return false;
             }
 
-            if (PatcherConfig.compactChat) {
-                if (message.isEmpty() || message.startsWith("---------") || message.startsWith("=========") || message.startsWith("▬▬▬▬▬")) {
-                    return true;
-                }
-
-                currentMessageHash = getChatComponentHash(chatComponent);
-                final long currentTime = System.currentTimeMillis();
-
-                if (!chatMessageMap.containsKey(currentMessageHash)) {
-                    chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                } else {
-                    final ChatEntry entry = chatMessageMap.get(currentMessageHash);
-                    if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
-                        chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                    } else {
-                        final boolean deleted = deleteMessageByHash(currentMessageHash);
-                        if (!deleted) {
-                            chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
-                        } else {
-                            entry.messageCount++;
-                            entry.lastSeenMessageMillis = currentTime;
-                            chatComponent.appendText(ChatColor.GRAY + " (" + entry.messageCount + ")");
-                        }
-                    }
-                }
-
+            if (message.isEmpty() || isDivider(message)) {
                 return true;
             }
+
+            currentMessageHash = getChatComponentHash(chatComponent);
+            final long currentTime = System.currentTimeMillis();
+
+            if (!chatMessageMap.containsKey(currentMessageHash)) {
+                chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+            } else {
+                final ChatEntry entry = chatMessageMap.get(currentMessageHash);
+                if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
+                    chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+                } else {
+                    final boolean deleted = deleteMessageByHash(currentMessageHash);
+                    if (!deleted) {
+                        chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
+                    } else {
+                        entry.messageCount++;
+                        entry.lastSeenMessageMillis = currentTime;
+                        chatComponent.appendSibling(new ChatComponentIgnored(ChatColor.GRAY + " (" + entry.messageCount + ")"));
+                    }
+                }
+            }
+
+            return true;
         }
 
         return true;
@@ -140,41 +141,73 @@ public class ChatHandler {
             return false;
         }
 
+        final Set<ChatLine> toRemove = messagesForHash.get(hashCode);
+        messagesForHash.remove(hashCode);
+
         final int normalSearchLength = 100;
         final int wrappedSearchLength = 300;
 
         boolean removedMessage = false;
-        final Set<ChatLine> toRemove = messagesForHash.get(hashCode);
         {
             final List<ChatLine> chatLines = mc.ingameGUI.getChatGUI().chatLines;
-            int searched = 0;
-            final Iterator<ChatLine> iterator = chatLines.iterator();
-            while (iterator.hasNext() && searched < normalSearchLength) {
-                final ChatLine next = iterator.next();
-                if (toRemove.contains(next)) {
+            for (int index = 0; index < chatLines.size() && index < normalSearchLength; index++) {
+                final ChatLine chatLine = chatLines.get(index);
+
+                if (toRemove.contains(chatLine)) {
                     removedMessage = true;
-                    iterator.remove();
+                    chatLines.remove(index);
+                    index--;
+
+                    if (index < 0 || index >= chatLines.size()) {
+                        continue;
+                    }
+
+                    index = getMessageIndex(chatLines, index, chatLine);
+                }
+            }
+        }
+
+        if (!removedMessage) {
+            return false;
+        }
+
+        final List<ChatLine> chatLinesWrapped = mc.ingameGUI.getChatGUI().drawnChatLines;
+        for (int index = 0; index < chatLinesWrapped.size() && index < wrappedSearchLength; index++) {
+            final ChatLine chatLine = chatLinesWrapped.get(index);
+            if (toRemove.contains(chatLine)) {
+                chatLinesWrapped.remove(index);
+                index--;
+
+                if (index <= 0 || index >= chatLinesWrapped.size()) {
+                    continue;
                 }
 
-                searched++;
+                index = getMessageIndex(chatLinesWrapped, index, chatLine);
             }
         }
 
-        final List<ChatLine> drawnChatLines = mc.ingameGUI.getChatGUI().drawnChatLines;
-        int searched = 0;
-        final Iterator<ChatLine> iterator = drawnChatLines.iterator();
-        while (iterator.hasNext() && searched < wrappedSearchLength) {
-            final ChatLine next = iterator.next();
-            if (toRemove.contains(next)) {
-                removedMessage = true;
-                iterator.remove();
-            }
+        return true;
+    }
 
-            searched++;
+    private static int getMessageIndex(List<ChatLine> chatMessageList, int index, ChatLine chatLine) {
+        final ChatLine prevLine = chatMessageList.get(index);
+        if (isDivider(cleanColour(prevLine.getChatComponent().getUnformattedText())) &&
+            Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
+            chatMessageList.remove(index);
         }
 
-        messagesForHash.remove(hashCode);
-        return removedMessage;
+        if (index >= chatMessageList.size()) {
+            return index;
+        }
+
+        final ChatLine nextLine = chatMessageList.get(index);
+        if (isDivider(cleanColour(nextLine.getChatComponent().getUnformattedText())) &&
+            Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
+            chatMessageList.remove(index);
+            index--;
+        }
+
+        return index;
     }
 
     private static int getChatStyleHash(ChatStyle style) {
@@ -201,16 +234,36 @@ public class ChatHandler {
     private static int getChatComponentHash(IChatComponent chatComponent) {
         final List<Integer> siblingHashes = new ArrayList<>();
         for (IChatComponent sibling : chatComponent.getSiblings()) {
-            if (sibling instanceof ChatComponentStyle) {
+            if (!(sibling instanceof ChatComponentIgnored) && sibling instanceof ChatComponentStyle) {
                 siblingHashes.add(getChatComponentHash(sibling));
             }
         }
 
         if (chatComponent instanceof ChatComponentIgnored) {
-            return chatComponent.getSiblings().isEmpty() ? 0 : Objects.hash(siblingHashes);
+            return Objects.hash(siblingHashes);
         }
 
-        return Objects.hash(chatComponent.getUnformattedTextForChat(), siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
+        final String unformattedText = chatComponent.getUnformattedText();
+        final String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
+        return Objects.hash(cleanedMessage, siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
+    }
+
+    private static boolean isDivider(String clean) {
+        clean = clean.replaceAll(chatTimestampRegex, "").trim();
+        boolean divider = true;
+        if (clean.length() < 5) {
+            divider = false;
+        } else {
+            for (int i = 0; i < clean.length(); i++) {
+                final char c = clean.charAt(i);
+                if (c != '-' && c != '=' && c != '\u25AC') {
+                    divider = false;
+                    break;
+                }
+            }
+        }
+
+        return divider;
     }
 
     public static String cleanColour(String in) {

@@ -18,6 +18,7 @@ import net.modcore.api.utils.Multithreading;
 import net.modcore.api.utils.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
+import club.sk1er.patcher.command.InventoryScaleCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -85,10 +86,10 @@ import java.util.concurrent.CompletableFuture;
 public class Patcher extends DummyModContainer {
 
     // normal versions will be "1.x"
-    // betas will be "1.x+beta-y" / "1.x+branch_beta-1"
-    // rcs will be 1.x+rc-y
-    // extra branches will be 1.x+branch-y
-    public static final String VERSION = "1.5+beta-6";
+    // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
+    // rcs will be 1.x-rc-y
+    // extra branches will be 1.x-branch-y
+    public static final String VERSION = "1.5";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -193,6 +194,7 @@ public class Patcher extends DummyModContainer {
         commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
         commandRegister.registerCommand(new SkinCacheRefresh());
         commandRegister.registerCommand(new CoordsCommand());
+        commandRegister.registerCommand(new InventoryScaleCommand());
 
         registerClass(this);
         registerClass(target);
@@ -212,7 +214,7 @@ public class Patcher extends DummyModContainer {
         registerClass(new ImagePreview());
         registerClass(new WorldHandler());
         registerClass(new TitleFix());
-        //registerClass(new HudCaching());
+//        registerClass(new HudCaching());
         registerClass(MinecraftHook.INSTANCE);
 
         checkLogs();
@@ -252,9 +254,7 @@ public class Patcher extends DummyModContainer {
                     );
                     PatcherConfig.entityCulling = false;
 
-                    // force save config
-                    patcherConfig.markDirty();
-                    patcherConfig.writeData();
+                    this.forceSaveConfig();
                     break;
                 }
             }
@@ -268,8 +268,7 @@ public class Patcher extends DummyModContainer {
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
                     );
-                    patcherConfig.markDirty();
-                    patcherConfig.writeData();
+                    this.forceSaveConfig();
                     break;
                 }
             }
@@ -338,6 +337,11 @@ public class Patcher extends DummyModContainer {
         }
 
         final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+        if (serverIP == null) {
+            logger.info("Server IP is somehow null, returning.");
+            return;
+        }
+
         if (blacklistedServers.contains(serverIP)) {
             logger.info(
                 "Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
@@ -364,12 +368,6 @@ public class Patcher extends DummyModContainer {
         EnhancementManager.getInstance().tick();
     }
 
-    /**
-     * When the client is started, this is called.
-     * The point of this is to check if the user has an option called "Log Optimizer" enabled,
-     * and if they do, go through every file in the .minecraft/logs directory, and delete any
-     * file that is older than the amount of days specified (1-90), and log what file was deleted.
-     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
@@ -535,5 +533,10 @@ public class Patcher extends DummyModContainer {
 
     public Viewer getViewer() {
         return viewer;
+    }
+
+    public void forceSaveConfig() {
+        this.patcherConfig.markDirty();
+        this.patcherConfig.writeData();
     }
 }

@@ -46,7 +46,7 @@ public class RenderItemTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL,
             "patcherRenderItemHook",
-            "L" + getHooksPackage() + "RenderItemHook;",
+            "L" + getHooksPackage("RenderItemHook;"),
             null,
             null));
 
@@ -67,29 +67,29 @@ public class RenderItemTransformer implements PatcherTransformer {
     private InsnList renderItemHookInit() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new TypeInsnNode(Opcodes.NEW, getHooksPackage() + "RenderItemHook"));
+        list.add(new TypeInsnNode(Opcodes.NEW, getHooksPackage("RenderItemHook")));
         list.add(new InsnNode(Opcodes.DUP));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, getHooksPackage() + "RenderItemHook", "<init>", "()V", false));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage() + "RenderItemHook;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, getHooksPackage("RenderItemHook"), "<init>", "()V", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage("RenderItemHook;")));
         return list;
     }
 
     private InsnList renderModelEnd() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage() + "RenderItemHook;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage() + "RenderItemHook", "renderModelEnd", "()V", false));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage("RenderItemHook;")));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("RenderItemHook"), "renderModelEnd", "()V", false));
         return list;
     }
 
     private InsnList renderModelStart() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage() + "RenderItemHook;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/entity/RenderItem", "patcherRenderItemHook", "L" + getHooksPackage("RenderItemHook;")));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage() + "RenderItemHook", "renderModelStart", "(Lnet/minecraft/client/resources/model/IBakedModel;ILnet/minecraft/item/ItemStack;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("RenderItemHook"), "renderModelStart", "(Lnet/minecraft/client/resources/model/IBakedModel;ILnet/minecraft/item/ItemStack;)Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));

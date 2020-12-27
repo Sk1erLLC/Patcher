@@ -59,7 +59,7 @@ public class FarmHook {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D)
     };
 
-    public static void getCropBox(World world, BlockPos pos, Block block) {
+    public static void updateCropsMaxY(World world, BlockPos pos, Block block) {
         final IBlockState blockState = world.getBlockState(pos);
         final Integer ageValue = blockState.getValue(BlockCrops.AGE);
 
@@ -73,7 +73,7 @@ public class FarmHook {
         block.maxY = 0.25F;
     }
 
-    public static void getNetherWartBox(World world, BlockPos pos, Block block) {
+    public static void updateWartMaxY(World world, BlockPos pos, Block block) {
         block.maxY = PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
             ? NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
             : .25F;

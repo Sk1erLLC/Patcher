@@ -23,6 +23,7 @@ import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.Mo
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.signfix.GuiEditSignTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.signfix.TileEntitySignRendererTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.xpfix.GuiIngameForgeTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.tweaker.asm.pingtag.TagRendererTransformer;
@@ -83,10 +84,15 @@ public class ModClassTransformer implements IClassTransformer {
             logger.info("Found OptiFine I7");
             registerCommonTransformers();
             registerI7Transformers();
-        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5") || optifineVersion.startsWith("M5")) {
+        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5")) {
             logger.info("Found OptiFine " + optifineVersion);
             registerCommonTransformers();
-            registerModernTransformers();
+            registerLSeriesTransformers();
+            registerLSeriesFixesTransformers();
+        } else if (optifineVersion.startsWith("M5")) {
+            logger.info("Found OptiFine M5");
+            registerCommonTransformers();
+            registerLSeriesTransformers();
         } else {
             logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
         }
@@ -121,13 +127,17 @@ public class ModClassTransformer implements IClassTransformer {
         //registerTransformer(new MapGenStructureReflectionOptimizer());
     }
 
-    private void registerModernTransformers() {
+    private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
 
+        registerTransformer(new GuiDetailSettingsOFTransformer());
+    }
+
+    private void registerLSeriesFixesTransformers() {
         registerTransformer(new GuiEditSignTransformer());
         registerTransformer(new TileEntitySignRendererTransformer());
         registerTransformer(new RandomEntitiesTransformer());
-        registerTransformer(new GuiDetailSettingsOFTransformer());
+        registerTransformer(new EntityWitherTransformer());
     }
 
     public static boolean isDevelopment() {

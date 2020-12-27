@@ -72,8 +72,44 @@ public class GuiContainerTransformer implements PatcherTransformer {
                         }
                     }
                 }
+            } else if (methodName.equals("keyTyped") || methodName.equals("func_73869_a")) {
+                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
+                        final String methodInsnName = mapMethodNameFromNode(next);
+                        if (methodInsnName.equals("isCtrlKeyDown") || methodInsnName.equals("func_146271_m")) {
+                            for (int i = 0; i < 7; i++) {
+                                method.instructions.remove(next.getNext());
+                            }
+
+                            method.instructions.insertBefore(next.getNext(), checkPatcherKey());
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList checkPatcherKey() {
+        InsnList list = new InsnList();
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", "getDropModifier", "()Lnet/minecraft/client/settings/KeyBinding;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/settings/GameSettings", "func_100015_a", "(Lnet/minecraft/client/settings/KeyBinding;)Z", false));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(ifne);
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        LabelNode _goto = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.GOTO, _goto));
+        list.add(ifeq);
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(_goto);
+        return list;
     }
 
     private InsnList fixSplitRemnants(LabelNode gotoInsn) {

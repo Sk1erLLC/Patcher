@@ -11,6 +11,8 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -63,13 +65,13 @@ public class EntityCulling {
      * @return The status on if the nametag is liable for rendering.
      */
     public static boolean canRenderName(EntityLivingBase entity) {
-        EntityPlayerSP player = mc.thePlayer;
+        final EntityPlayerSP player = mc.thePlayer;
         if (entity instanceof EntityPlayer && entity != player) {
-            Team otherEntityTeam = entity.getTeam();
-            Team playerTeam = player.getTeam();
+            final Team otherEntityTeam = entity.getTeam();
+            final Team playerTeam = player.getTeam();
 
             if (otherEntityTeam != null) {
-                Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
+                final Team.EnumVisible teamVisibilityRule = otherEntityTeam.getNameTagVisibility();
 
                 switch (teamVisibilityRule) {
                     case NEVER:
@@ -96,8 +98,8 @@ public class EntityCulling {
         GlStateManager.disableCull();
         GlStateManager.depthMask(false);
         GlStateManager.colorMask(false, false, false, false);
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        final Tessellator tessellator = Tessellator.getInstance();
+        final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
         worldrenderer.pos(b.maxX, b.maxY, b.maxZ).endVertex();
         worldrenderer.pos(b.maxX, b.maxY, b.minZ).endVertex();
@@ -130,7 +132,23 @@ public class EntityCulling {
     }
 
     private static int getQuery() {
-        return GL15.glGenQueries();
+        try {
+            return GL15.glGenQueries();
+        } catch (Throwable throwable) {
+            Patcher.instance.getLogger().error(
+                "Failed to run GL15.glGenQueries(). User's computer is likely too old to support OpenGL 1.5, Entity Culling has been force disabled.",
+                throwable
+            );
+
+            PatcherConfig.entityCulling = false;
+            Patcher.instance.forceSaveConfig();
+
+            Notifications.INSTANCE.pushNotification("Patcher",
+                "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
+                    "If you believe this is a mistake, please contact us at discord.gg/sk1er");
+
+            return 0;
+        }
     }
 
     /**

@@ -814,7 +814,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.SLIDER, name = "Compact Chat Time",
         description = "Change how long before old messages are no longer compacted.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",
-        min = 5, max = 120
+        min = 1, max = 120
     )
     public static int compactChatTime = 60;
 
@@ -1037,6 +1037,15 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Models"
     )
     public static boolean optimizedModelGeneration;*/
+
+    // HIDDEN
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Desired Scale Override",
+        description = "the desired scale override - hidden",
+        category = "Hidden", subcategory = "Hidden", hidden = true
+    )
+    public static int desiredScaleOverride = -1;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

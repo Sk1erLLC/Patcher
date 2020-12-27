@@ -33,7 +33,7 @@ public class ChatUtilities {
         final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         if (player != null) {
-            MinecraftForge.EVENT_BUS.post(new ClientChatReceivedEvent((byte) 0, new ChatComponentText(color(message))));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(color(message)));
         }
     }
 

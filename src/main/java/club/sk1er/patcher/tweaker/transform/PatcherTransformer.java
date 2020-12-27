@@ -135,8 +135,8 @@ public interface PatcherTransformer {
         return "club/sk1er/patcher/config/PatcherConfig";
     }
 
-    default String getHooksPackage() {
-        return "club/sk1er/patcher/hooks/";
+    default String getHooksPackage(String hookClass) {
+        return "club/sk1er/patcher/hooks/" + hookClass;
     }
 
     default boolean isDevelopment() {
