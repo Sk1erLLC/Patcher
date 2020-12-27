@@ -85,7 +85,7 @@ public class ChatHandler {
     }
 
     public static boolean setChatLineHead(IChatComponent chatComponent, boolean refresh) {
-        if (Loader.isModLoaded("hychat") || !PatcherConfig.compactChat) {
+        if ((Loader.isModLoaded("hychat") || Loader.isModLoaded("labymod")) || !PatcherConfig.compactChat) {
             return true;
         }
 

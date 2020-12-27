@@ -736,6 +736,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static int entityRenderDistance = 64;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Optimized Resource Pack Discovery",
+        description = "Optimize the time it takes to open the resource packs GUI.\n§cDoes not work with Labymod's RP24 addon.",
+        category = "Performance", subcategory = "General"
+    )
+    public static boolean optimizedResourcePackDiscovery = true;
+
     // SCREENS
 
     @Property(
@@ -805,7 +812,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Compact Chat",
-        description = "Clean up chat by stacking duplicate messages.",
+        description = "Clean up chat by stacking duplicate messages.\n§cDoes not work with Labymod.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean compactChat = true;

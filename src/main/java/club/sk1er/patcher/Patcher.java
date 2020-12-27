@@ -99,7 +99,7 @@ public class Patcher {
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
     // rcs will be 1.x-rc-y
     // extra branches will be 1.x-branch-y
-    public static final String VERSION = "1.5";
+    public static final String VERSION = "1.5.1";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -233,10 +233,11 @@ public class Patcher {
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
+        final Notifications notifications = Notifications.INSTANCE;
         if (PatcherConfig.entityCulling) {
             for (ModContainer container : activeModList) {
                 if (container.getModId().equals("enhancements")) {
-                    Notifications.INSTANCE.pushNotification(
+                    notifications.pushNotification(
                         "Patcher",
                         container.getName() + " has been detected. Entity Culling is now disabled.\n" +
                             "This is an unfixable incompatibility without an update from the authors of " + container.getName());
@@ -248,10 +249,40 @@ public class Patcher {
             }
         }
 
+        if (PatcherConfig.compactChat) {
+            for (ModContainer container : activeModList) {
+                if (container.getModId().equals("labymod")) {
+                    notifications.pushNotification(
+                        "Patcher",
+                        "Labymod has been detected. Compact Chat is now disabled.\n" +
+                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                    PatcherConfig.compactChat = false;
+
+                    this.forceSaveConfig();
+                    break;
+                }
+            }
+        }
+
+        if (PatcherConfig.optimizedResourcePackDiscovery) {
+            for (ModContainer container : activeModList) {
+                if (container.getModId().equals("labymod")) {
+                    notifications.pushNotification(
+                        "Patcher",
+                        "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.\n" +
+                            "This is an unfixable incompatibility without an update from the authors of " + container.getName());
+                    PatcherConfig.optimizedResourcePackDiscovery = false;
+
+                    this.forceSaveConfig();
+                    break;
+                }
+            }
+        }
+
         if (PatcherConfig.optimizedFontRenderer) {
             for (ModContainer container : activeModList) {
                 if (container.getModId().equals("smoothfont")) {
-                    Notifications.INSTANCE.pushNotification(
+                    notifications.pushNotification(
                         "Patcher",
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
@@ -282,7 +313,7 @@ public class Patcher {
 
                 if (!duplicates.isEmpty()) {
                     for (String duplicate : duplicates) {
-                        Notifications.INSTANCE.pushNotification("Patcher",
+                        notifications.pushNotification("Patcher",
                             "Patcher has identified the mod " + duplicate + " to be a duplicate." +
                                 "\nThis message can be disabled in the Patcher settings.");
                     }
@@ -292,7 +323,7 @@ public class Patcher {
 
         final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            Notifications.INSTANCE.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            notifications.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);

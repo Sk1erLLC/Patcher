@@ -13,16 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -85,7 +76,6 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
 
                 case "func_110611_a":
                 case "updateRepositoryEntriesAll": {
-                    clearInstructions(methodNode);
                     methodNode.instructions.insert(getFasterSearching());
                     break;
                 }
@@ -95,9 +85,13 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
 
     private InsnList getFasterSearching() {
         InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "optimizedResourcePackDiscovery", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("ResourcePackRepositoryHook"), "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
         return list;
     }
 
