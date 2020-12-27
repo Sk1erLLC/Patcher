@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.world.entity.culling;
 
-import club.sk1er.mods.core.universal.UniversalDesktop;
+import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import kotlin.Unit;
@@ -151,7 +151,7 @@ public class EntityCulling {
                 "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
                     "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message",() -> {
                    try {
-                       UniversalDesktop.browse(new URI("https://sk1er.club/support-discord"));
+                       UDesktop.browse(new URI("https://sk1er.club/support-discord"));
                    } catch (URISyntaxException e) {
                        e.printStackTrace();
                    }

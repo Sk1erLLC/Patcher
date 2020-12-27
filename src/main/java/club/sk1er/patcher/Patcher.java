@@ -11,11 +11,6 @@
 
 package club.sk1er.patcher;
 
-import net.modcore.api.ModCoreAPI;
-import net.modcore.api.commands.CommandRegistry;
-import net.modcore.api.gui.Notifications;
-import net.modcore.api.utils.Multithreading;
-import net.modcore.api.utils.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.InventoryScaleCommand;
@@ -29,10 +24,10 @@ import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.render.TitleFix;
 import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
-import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
+import club.sk1er.patcher.tweaker.launch.PatcherTweak;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.chat.ImagePreview;
@@ -64,8 +59,13 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -73,13 +73,29 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.modcore.api.ModCoreAPI;
+import net.modcore.api.commands.CommandRegistry;
+import net.modcore.api.gui.Notifications;
+import net.modcore.api.utils.Multithreading;
+import net.modcore.api.utils.WebUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
@@ -308,7 +324,7 @@ public class Patcher extends DummyModContainer {
             });
         }
 
-        final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
+        final long time = (System.currentTimeMillis() - PatcherTweak.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
             notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }

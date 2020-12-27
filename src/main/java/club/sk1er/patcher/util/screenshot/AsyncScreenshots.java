@@ -11,9 +11,9 @@
 
 package club.sk1er.patcher.util.screenshot;
 
+import club.sk1er.mods.core.universal.UDesktop;
 import net.modcore.api.utils.Multithreading;
 import club.sk1er.mods.core.universal.ChatColor;
-import club.sk1er.mods.core.universal.UniversalDesktop;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -236,7 +236,7 @@ public class AsyncScreenshots implements Runnable {
         @Override
         public void processCommand(ICommandSender sender, String[] args) {
             try {
-                UniversalDesktop.open(new File("./screenshots"));
+                UDesktop.open(new File("./screenshots"));
             } catch (Exception e) {
                 ChatUtilities.sendMessage(
                     "Unfortunately, we were unable to open the screenshots folder. Please report this to us at https://discord.gg/sk1er.");

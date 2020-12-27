@@ -11,8 +11,6 @@
 
 package club.sk1er.patcher.command;
 
-import net.modcore.api.commands.*;
-import net.modcore.api.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
@@ -24,8 +22,15 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
-import jline.internal.Nullable;
 import net.minecraft.client.Minecraft;
+import net.modcore.api.commands.Command;
+import net.modcore.api.commands.DefaultHandler;
+import net.modcore.api.commands.DisplayName;
+import net.modcore.api.commands.Greedy;
+import net.modcore.api.commands.Options;
+import net.modcore.api.commands.SubCommand;
+import net.modcore.api.utils.GuiUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
