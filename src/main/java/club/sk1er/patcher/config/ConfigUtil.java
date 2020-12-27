@@ -42,6 +42,16 @@ public class ConfigUtil {
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {
         return new Property() {
             @Override
+            public String placeholder() {
+                return "";
+            }
+
+            @Override
+            public boolean allowAlpha() {
+                return false;
+            }
+
+            @Override
             public boolean hidden() {
                 return false;
             }
@@ -94,6 +104,11 @@ public class ConfigUtil {
             @Override
             public String category() {
                 return category;
+            }
+
+            @Override
+            public boolean triggerActionOnInitialization() {
+                return true;
             }
         };
     }

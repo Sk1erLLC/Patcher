@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.status;
 
-import club.sk1er.mods.core.util.Multithreading;
+import net.modcore.api.utils.Multithreading;
 import kotlin.Pair;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.network.EnumConnectionState;
@@ -43,9 +43,18 @@ public class ProtocolDetector {
         Multithreading.runAsync(() -> {
             try {
                 ServerAddress address = ServerAddress.fromString(ip);
-                NetworkManager nm = NetworkManager.createNetworkManagerAndConnect(InetAddress.getByName(address.getIP()), address.getPort(), false);
+                NetworkManager nm = NetworkManager.createNetworkManagerAndConnect(
+                    InetAddress.getByName(address.getIP()),
+                    address.getPort(),
+                    false
+                );
                 nm.setNetHandler(new VersionCompatibilityStatusState(future, version, nm, () -> futures.remove(tuple)));
-                nm.sendPacket(new C00Handshake(version, address.getIP(), address.getPort(), EnumConnectionState.STATUS));
+                nm.sendPacket(new C00Handshake(
+                    version,
+                    address.getIP(),
+                    address.getPort(),
+                    EnumConnectionState.STATUS
+                ));
                 nm.sendPacket(new C00PacketServerQuery());
             } catch (Exception e) {
                 future.completeExceptionally(e);

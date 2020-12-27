@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.modcore.ModCoreInstaller;
 import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,14 +42,15 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public PatcherTweaker() {
         clientLoadTime = System.currentTimeMillis();
-        this.createSecondTweaker();
+        // Unnecessary as we can now get ModCore to create both tweakers.
+//        this.createSecondTweaker();
         this.unlockLwjgl();
         this.detectIncompatibleMods();
     }
 
     @Override
     public String[] getASMTransformerClass() {
-        int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
+        /*int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
 
         if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {
             // Technically wouldn't happen in simulated installed but is important for actual impl
@@ -60,7 +60,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         // If true the classes are loaded
         if (ModCoreInstaller.isIsRunningModCore()) {
             return new String[]{"club.sk1er.mods.core.forge.ClassTransformer", ClassTransformer.class.getName()};
-        }
+        }*/
 
         return new String[]{ClassTransformer.class.getName()};
     }

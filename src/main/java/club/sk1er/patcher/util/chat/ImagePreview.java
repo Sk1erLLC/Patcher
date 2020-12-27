@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.chat;
 
-import club.sk1er.mods.core.util.Multithreading;
+import net.modcore.api.utils.Multithreading;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;

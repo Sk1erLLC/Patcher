@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.screen;
 
-import club.sk1er.mods.core.ModCore;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -85,7 +84,7 @@ public class PatcherMenuEditor {
             if (PatcherConfig.skinRefresher) {
                 mcButtonList.add(new GuiButton(435762,
                     2,
-                    height - (ModCore.getInstance().getModCoreConfig().getModcoreButtonLinks() ? 62 : 22),
+                    height - 22,
                     100,
                     20,
                     "Refresh Skin"));

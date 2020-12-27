@@ -11,10 +11,11 @@
 
 package club.sk1er.patcher;
 
-import club.sk1er.modcore.ModCoreInstaller;
-import club.sk1er.mods.core.gui.notification.Notifications;
-import club.sk1er.mods.core.util.Multithreading;
-import club.sk1er.mods.core.util.WebUtil;
+import net.modcore.api.ModCoreAPI;
+import net.modcore.api.commands.CommandRegistry;
+import net.modcore.api.gui.Notifications;
+import net.modcore.api.utils.Multithreading;
+import net.modcore.api.utils.WebUtil;
 import club.sk1er.patcher.command.CoordsCommand;
 import club.sk1er.patcher.command.FovChangerCommand;
 import club.sk1er.patcher.command.InventoryScaleCommand;
@@ -52,6 +53,7 @@ import club.sk1er.patcher.util.world.entity.EntityRendering;
 import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import club.sk1er.vigilance.Vigilant;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -59,14 +61,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.command.ICommand;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -76,24 +75,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
-public class Patcher {
+public class Patcher extends DummyModContainer {
 
     // normal versions will be "1.x"
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
@@ -150,6 +140,21 @@ public class Patcher {
     private JsonObject duplicateModsJson;
     private boolean loadedGalacticFontRenderer;
 
+    public Patcher() {
+        super(new ModMetadata());
+        ModMetadata meta = this.getMetadata();
+        meta.modId = "patcher";
+        meta.version = VERSION;
+        meta.name = "Patcher";
+        meta.authorList = Collections.singletonList("Sk1erLLC");
+    }
+
+    @Override
+    public boolean registerBus(com.google.common.eventbus.EventBus bus, LoadController controller) {
+        bus.register(this);
+        return true;
+    }
+
     /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
@@ -160,7 +165,6 @@ public class Patcher {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
@@ -177,12 +181,19 @@ public class Patcher {
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
-        this.registerCommands(
-            new PatcherCommand(), new FovChangerCommand(),
-            new SkinCacheRefresh(), new CoordsCommand(), new InventoryScaleCommand(),
-            new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
-            new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(), new AsyncScreenshots.ScreenshotsFolder()
-        );
+        CommandRegistry commandRegistry = ModCoreAPI.getCommandRegistry();
+        commandRegistry.registerCommand(new PatcherCommand());
+
+        final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
+        commandRegister.registerCommand(new FovChangerCommand());
+        commandRegister.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.DeleteScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.UploadScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.CopyScreenshot());
+        commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
+        commandRegister.registerCommand(new SkinCacheRefresh());
+        commandRegister.registerCommand(new CoordsCommand());
+        commandRegister.registerCommand(new InventoryScaleCommand());
 
         this.registerEvents(
             this, target, viewer,
@@ -198,6 +209,7 @@ public class Patcher {
         loadBlacklistedServers();
     }
 
+    @Subscribe
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
@@ -214,16 +226,18 @@ public class Patcher {
      *
      * @param event {@link FMLLoadCompleteEvent}
      */
+    @Subscribe
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
+        Notifications notifications = KoinJavaComponent.get(Notifications.class);
+
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
-        final Notifications notifications = Notifications.INSTANCE;
         for (ModContainer container : activeModList) {
             final String modId = container.getModId();
             final String modName = container.getName();
             if (PatcherConfig.entityCulling) {
                 if (modId.equals("enhancements")) {
-                    notifications.pushNotification(
+                    notifications.push(
                         "Patcher",
                         modName + " has been detected. Entity Culling is now disabled.\n" +
                             "This is an unfixable incompatibility without an update from the authors of " + modName);
@@ -233,7 +247,7 @@ public class Patcher {
 
             if (modId.equals("labymod")) {
                 if (PatcherConfig.compactChat) {
-                    notifications.pushNotification(
+                    notifications.push(
                         "Patcher",
                         "Labymod has been detected. Compact Chat is now disabled.\n" +
                             "This is an unfixable incompatibility without an update from the authors of " + modName);
@@ -241,7 +255,7 @@ public class Patcher {
                 }
 
                 if (PatcherConfig.optimizedResourcePackDiscovery) {
-                    notifications.pushNotification(
+                    notifications.push(
                         "Patcher",
                         "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.\n" +
                             "This is an unfixable incompatibility without an update from the authors of " + modName);
@@ -251,7 +265,7 @@ public class Patcher {
 
             if (PatcherConfig.optimizedFontRenderer) {
                 if (modId.equals("smoothfont")) {
-                    notifications.pushNotification(
+                    notifications.push(
                         "Patcher",
                         "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
                             "has been automatically disabled.\nRestart your game for Smooth Font to work again."
@@ -266,7 +280,8 @@ public class Patcher {
         if (PatcherConfig.replacedModsWarning) {
             Multithreading.runAsync(() -> {
                 try {
-                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString(
+                        "https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
                     logger.error("Failed to fetch list of duplicate mods.", e);
                     return;
@@ -283,9 +298,11 @@ public class Patcher {
 
                 if (!duplicates.isEmpty()) {
                     for (String duplicate : duplicates) {
-                        notifications.pushNotification("Patcher",
+                        notifications.push(
+                            "Patcher",
                             "Patcher has identified the mod " + duplicate + " to be a duplicate." +
-                                "\nThis message can be disabled in the Patcher settings.");
+                                "\nThis message can be disabled in the Patcher settings."
+                        );
                     }
                 }
             });
@@ -293,7 +310,7 @@ public class Patcher {
 
         final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            notifications.pushNotification("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
@@ -376,11 +393,6 @@ public class Patcher {
         }
     }
 
-    private void registerCommands(ICommand... commands) {
-        for (final ICommand command : commands) {
-            ClientCommandHandler.instance.registerCommand(command);
-        }
-    }
 
     /**
      * Check if the current server they're connecting to is a blacklisted server.

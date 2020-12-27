@@ -11,8 +11,7 @@
 
 package club.sk1er.patcher.util.chat;
 
-import club.sk1er.mods.core.config.ModCoreConfig;
-import club.sk1er.mods.core.gui.notification.Notifications;
+import net.modcore.api.ModCoreAPI;
 import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -39,8 +38,8 @@ public class ChatUtilities {
     }
 
     public static void sendNotification(String notificationCategory, String chatMessage) {
-        if (!ModCoreConfig.INSTANCE.getDisableAllNotifications()) {
-            Notifications.INSTANCE.pushNotification(notificationCategory, color(chatMessage));
+        if (!ModCoreAPI.getConfig().getDisableAllNotifications()) {
+            ModCoreAPI.getNotifications().push(notificationCategory, color(chatMessage));
         } else {
             sendMessage(chatMessage);
         }
