@@ -132,27 +132,21 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand("fov")
-    public void fov(@Greedy @DisplayName("amount") String amount) {
-        try {
-            final float fovAmount = Float.parseFloat(amount);
-
-            if (fovAmount <= 0) {
-                ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
-                return;
-            } else if (fovAmount > 110) {
-                ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 110 is disabled due to game-breaking visual bugs.");
-                return;
-            }
-
-            ChatUtilities.sendNotification(
-                "FOV Changer",
-                "FOV changed from &e" + mc.gameSettings.fovSetting + "&r to &a" + fovAmount + "."
-            );
-            mc.gameSettings.fovSetting = fovAmount;
-            mc.gameSettings.saveOptions();
-        } catch (NumberFormatException e) {
-            ChatUtilities.sendNotification("FOV Changer", "You cannot use a letter as your FOV.");
+    public void fov(@DisplayName("amount") double amount) {
+        if (amount <= 0) {
+            ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
+            return;
+        } else if (amount > 110) {
+            ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 110 is disabled due to game-breaking visual bugs.");
+            return;
         }
+
+        ChatUtilities.sendNotification(
+            "FOV Changer",
+            "FOV changed from &e" + mc.gameSettings.fovSetting + "&r to &a" + amount + "."
+        );
+        mc.gameSettings.fovSetting = (float) amount;
+        mc.gameSettings.saveOptions();
     }
 
     // todo: redo this and make it actually functional

@@ -14,8 +14,10 @@ package club.sk1er.patcher.config;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
+import net.minecraft.client.Minecraft;
 
 import java.io.File;
+import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class PatcherConfig extends Vigilant {
@@ -143,8 +145,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fluid Stitching",
-        description = "Fix missing edges in fluids.\n§eRequires Chunk reload (F3+A).\n§cMay cause Z-Fighting against blocks that aren't full size.",
-        category = "Bug Fixes", subcategory = "Rendering"
+        description = "Fix missing edges in fluids.\n§cMay cause Z-Fighting against blocks that aren't full size.",
+        category = "Bug Fixes", subcategory = "Rendering", triggerActionOnInitialization = false
     )
     public static boolean fluidStitching = true;
 
@@ -152,8 +154,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
-        description = "Remove lighting updates, increasing visibility.\n§eRequires Chunk reload (F3+A).\n§eCan positively impact performance.",
-        category = "Miscellaneous", subcategory = "Rendering"
+        description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.",
+        category = "Miscellaneous", subcategory = "Rendering", triggerActionOnInitialization = false
     )
     public static boolean fullbright = true;
 
@@ -248,8 +250,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Ground Foliage",
-        description = "Stop plants/flowers from rendering.\n§eRequires Chunk reload (F3+A).",
-        category = "Miscellaneous", subcategory = "Blocks"
+        description = "Stop plants/flowers from rendering.",
+        category = "Miscellaneous", subcategory = "Blocks", triggerActionOnInitialization = false
     )
     public static boolean removeGroundFoliage;
 
@@ -298,7 +300,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SELECTOR, name = "Smooth Zoom Function",
-        description = "Change the smoothing function\nused in the smooth zooming animation.",
+        description = "Change the smoothing function used in the smooth zooming animation.",
         category = "Miscellaneous", subcategory = "OptiFine",
         options = {"In Out Quad", "In Out Circular", "Out Quint"}
     )
@@ -419,7 +421,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Better Camera",
-        description = "Stop blocks such as grass and tall plants from affecting your FOV as done in 1.14+.",
+        description = "Stop tall grass, plants, reeds, etc. from affecting your FOV as done in 1.14+.",
         category = "Miscellaneous", subcategory = "General"
     )
     public static boolean betterCamera = true;
@@ -942,7 +944,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Skin Refresher",
-        description = "Add a button to the escape menu to refresh your current skin without needing to leave the server.\n§eAlso accessible with the command \"/refreshskin\".",
+        description = "Add a button to the escape menu to refresh your current skin without needing to leave the server.\n§eAlso accessible with the command \"/patcher refresh\".",
         category = "Screens", subcategory = "General"
     )
     public static boolean skinRefresher;
@@ -1053,24 +1055,20 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean compactScreenshotResponse;
 
-    /*@Property(
-        type = PropertyType.SWITCH, name = "Optimized Model Generation",
-        description = "Reduce the amount of quads generated on item models, reducing memory usage.\n§cToggling this requires a restart.",
-        category = "Performance", subcategory = "Models"
-    )
-    public static boolean optimizedModelGeneration;*/
-
     // HIDDEN
 
     @Property(
         type = PropertyType.SLIDER, name = "Desired Scale Override",
-        description = "the desired scale override - hidden",
-        category = "Hidden", subcategory = "Hidden", hidden = true
-    )
+        category = "hidden", hidden = true)
     public static int desiredScaleOverride = -1;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();
+
+        final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
+        registerListener("fullbright", reloadWorld);
+        registerListener("fluidStitching", reloadWorld);
+        registerListener("removeGroundFoliage", reloadWorld);
     }
 }
