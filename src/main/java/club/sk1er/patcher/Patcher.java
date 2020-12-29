@@ -65,7 +65,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.modcore.api.ModCoreAPI;
 import net.modcore.api.commands.Command;
-import net.modcore.api.commands.CommandRegistry;
 import net.modcore.api.gui.Notifications;
 import net.modcore.api.utils.Multithreading;
 import net.modcore.api.utils.WebUtil;
@@ -172,9 +171,6 @@ public class Patcher {
         resourceManager.registerReloadListener(target);
         resourceManager.registerReloadListener(new ReloadListener());
 
-        CommandRegistry commandRegistry = ModCoreAPI.getCommandRegistry();
-        commandRegistry.registerCommand(new PatcherCommand());
-
         registerCommands(
             new PatcherCommand(),
             new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(), new AsyncScreenshots.UploadScreenshot(),
@@ -229,11 +225,11 @@ public class Patcher {
                 }
             }
 
-            if (modId.equals("labymod")) {
+            if (modId.equals("labymod") || modId.equals("enhancements")) {
                 if (PatcherConfig.compactChat) {
                     notifications.push(
                         "Patcher",
-                        "Labymod has been detected. Compact Chat is now disabled.\n" +
+                        modName + " has been detected. Compact Chat is now disabled.\n" +
                             "This is an unfixable incompatibility without an update from the authors of " + modName);
                     PatcherConfig.compactChat = false;
                 }
@@ -264,8 +260,7 @@ public class Patcher {
         if (PatcherConfig.replacedModsWarning) {
             Multithreading.runAsync(() -> {
                 try {
-                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString(
-                        "https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
                     logger.error("Failed to fetch list of duplicate mods.", e);
                     return;
