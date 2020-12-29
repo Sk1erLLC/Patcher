@@ -818,6 +818,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean compactChat = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Consecutive Compact Chat",
+        description = "Only compact chat if they're consecutive.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean consecutiveCompactChat;
+
+    @Property(
         type = PropertyType.SLIDER, name = "Compact Chat Time",
         description = "Change how long before old messages are no longer compacted.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",

@@ -163,6 +163,8 @@ public class ChatHandler {
                     }
 
                     index = getMessageIndex(chatLines, index, chatLine);
+                } else if (PatcherConfig.consecutiveCompactChat) {
+                    break;
                 }
             }
         }
@@ -183,6 +185,8 @@ public class ChatHandler {
                 }
 
                 index = getMessageIndex(chatLinesWrapped, index, chatLine);
+            } else if (PatcherConfig.consecutiveCompactChat) {
+                break;
             }
         }
 
@@ -204,8 +208,9 @@ public class ChatHandler {
         if (isDivider(cleanColour(nextLine.getChatComponent().getUnformattedText())) &&
             Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
-            index--;
         }
+
+        index--;
 
         return index;
     }
