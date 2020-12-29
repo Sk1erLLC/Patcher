@@ -83,9 +83,16 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
                             methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChat", "Z"));
                             methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
-                            break;
+                        } else if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) node).var == 9) {
+                            AbstractInsnNode prevNode = node;
+
+                            for (int i = 0; i < 8; i++) {
+                                prevNode = prevNode.getPrevious();
+                            }
                         }
                     }
+
+
                     break;
                 }
 
