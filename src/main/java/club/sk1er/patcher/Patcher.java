@@ -11,11 +11,7 @@
 
 package club.sk1er.patcher;
 
-import club.sk1er.patcher.command.CoordsCommand;
-import club.sk1er.patcher.command.FovChangerCommand;
-import club.sk1er.patcher.command.InventoryScaleCommand;
 import club.sk1er.patcher.command.PatcherCommand;
-import club.sk1er.patcher.command.SkinCacheRefresh;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
@@ -48,7 +44,6 @@ import club.sk1er.patcher.util.world.entity.EntityRendering;
 import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import club.sk1er.vigilance.Vigilant;
-import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -56,24 +51,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.modcore.api.ModCoreAPI;
+import net.modcore.api.commands.Command;
 import net.modcore.api.commands.CommandRegistry;
 import net.modcore.api.gui.Notifications;
 import net.modcore.api.utils.Multithreading;
@@ -89,7 +80,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -99,13 +89,13 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
-public class Patcher extends DummyModContainer {
+public class Patcher {
 
     // normal versions will be "1.x"
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
     // rcs will be 1.x-rc-y
     // extra branches will be 1.x-branch-y
-    public static final String VERSION = "1.5.1";
+    public static final String VERSION = "1.6";
 
     /**
      * Create an instance of Patcher to access methods without reinstating the main class.
@@ -156,21 +146,6 @@ public class Patcher extends DummyModContainer {
     private JsonObject duplicateModsJson;
     private boolean loadedGalacticFontRenderer;
 
-    public Patcher() {
-        super(new ModMetadata());
-        ModMetadata meta = this.getMetadata();
-        meta.modId = "patcher";
-        meta.version = VERSION;
-        meta.name = "Patcher";
-        meta.authorList = Collections.singletonList("Sk1erLLC");
-    }
-
-    @Override
-    public boolean registerBus(com.google.common.eventbus.EventBus bus, LoadController controller) {
-        bus.register(this);
-        return true;
-    }
-
     /**
      * Process important things that should be available by the time the game is done loading.
      * <p>
@@ -200,16 +175,11 @@ public class Patcher extends DummyModContainer {
         CommandRegistry commandRegistry = ModCoreAPI.getCommandRegistry();
         commandRegistry.registerCommand(new PatcherCommand());
 
-        final ClientCommandHandler commandRegister = ClientCommandHandler.instance;
-        commandRegister.registerCommand(new FovChangerCommand());
-        commandRegister.registerCommand(new AsyncScreenshots.FavoriteScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.DeleteScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.UploadScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.CopyScreenshot());
-        commandRegister.registerCommand(new AsyncScreenshots.ScreenshotsFolder());
-        commandRegister.registerCommand(new SkinCacheRefresh());
-        commandRegister.registerCommand(new CoordsCommand());
-        commandRegister.registerCommand(new InventoryScaleCommand());
+        registerCommands(
+            new PatcherCommand(),
+            new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(), new AsyncScreenshots.UploadScreenshot(),
+            new AsyncScreenshots.CopyScreenshot(), new AsyncScreenshots.ScreenshotsFolder()
+        );
 
         this.registerEvents(
             this, target, viewer,
@@ -225,7 +195,6 @@ public class Patcher extends DummyModContainer {
         loadBlacklistedServers();
     }
 
-    @Subscribe
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
@@ -242,7 +211,6 @@ public class Patcher extends DummyModContainer {
      *
      * @param event {@link FMLLoadCompleteEvent}
      */
-    @Subscribe
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         Notifications notifications = KoinJavaComponent.get(Notifications.class);
@@ -398,14 +366,15 @@ public class Patcher extends DummyModContainer {
         }
     }
 
-    /**
-     * Make life easier by calling this instead of calling {@link EventBus#register(Object)} manually so frequently.
-     *
-     * @param events The class that should be registered.
-     */
     private void registerEvents(Object... events) {
         for (final Object event : events) {
             MinecraftForge.EVENT_BUS.register(event);
+        }
+    }
+
+    private void registerCommands(Command... commands) {
+        for (final Command command : commands) {
+            ModCoreAPI.getCommandRegistry().registerCommand(command);
         }
     }
 

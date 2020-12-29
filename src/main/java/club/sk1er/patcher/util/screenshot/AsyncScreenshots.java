@@ -11,9 +11,8 @@
 
 package club.sk1er.patcher.util.screenshot;
 
-import club.sk1er.mods.core.universal.UDesktop;
-import net.modcore.api.utils.Multithreading;
 import club.sk1er.mods.core.universal.ChatColor;
+import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
@@ -22,16 +21,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
+import net.modcore.api.commands.Command;
+import net.modcore.api.commands.DefaultHandler;
+import net.modcore.api.utils.Multithreading;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -41,10 +42,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Run screenshots on their own thread using this, stopping the client from freezing when taking a screenshot.
- * TODO: More Documentation.
- */
 public class AsyncScreenshots implements Runnable {
 
     public static final String prefix = ChatColor.translateAlternateColorCodes('&', "&e[Patcher] &r");
@@ -133,7 +130,7 @@ public class AsyncScreenshots implements Runnable {
         IChatComponent chatComponent;
         if (!compact) {
             chatComponent = new ChatComponentText(prefix + "Screenshot saved to " + screenshot.getName() +
-                                                      " (" + screenshot.length() / 1024 + "kb)");
+                " (" + screenshot.length() / 1024 + "kb)");
         } else {
             chatComponent = new ChatComponentText(prefix + "Screenshot saved.");
         }
@@ -146,43 +143,43 @@ public class AsyncScreenshots implements Runnable {
             ));
 
         final IChatComponent favoriteComponent = new ChatComponentText(ChatColor.YELLOW.toString() + ChatColor.BOLD +
-                                                                           (compact ? "FAV" : "FAVORITE"));
+            (compact ? "FAV" : "FAVORITE"));
         favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$favorite"));
         favoriteComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
                 this.colorMessage("&7This will save the screenshot to a new folder called\n" +
-                                      "&afavorite_screenshots &7in your Minecraft directory.\n" +
-                                      "&cThis cannot be done once a new screenshot is taken."))));
+                    "&afavorite_screenshots &7in your Minecraft directory.\n" +
+                    "&cThis cannot be done once a new screenshot is taken."))));
 
         final IChatComponent deleteComponent = new ChatComponentText(ChatColor.RED.toString() + ChatColor.BOLD +
-                                                                         (compact ? "DEL" : "DELETE"));
+            (compact ? "DEL" : "DELETE"));
         deleteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$delete"));
         deleteComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
                 this.colorMessage("&7This will delete the screenshot from your screenshots folder.\n" +
-                                      "&cThis is not recoverable and cannot be deleted once a\n" +
-                                      "&cnew screenshot is taken or made favorite."))));
+                    "&cThis is not recoverable and cannot be deleted once a\n" +
+                    "&cnew screenshot is taken or made favorite."))));
 
         final IChatComponent imgurComponent = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.BOLD +
-                                                                        (compact ? "UPL" : "UPLOAD"));
+            (compact ? "UPL" : "UPLOAD"));
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
                 this.colorMessage("&7Upload the screenshot to Imgur, an image hosting website.\n" +
-                                      "&cThis cannot be uploaded once a new screenshot\n" +
-                                      "&cis taken, made favorite, or deleted."))));
+                    "&cThis cannot be uploaded once a new screenshot\n" +
+                    "&cis taken, made favorite, or deleted."))));
 
         final IChatComponent copyComponent = new ChatComponentText(ChatColor.AQUA.toString() + ChatColor.BOLD +
-                                                                       (compact ? "CPY" : "COPY"));
+            (compact ? "CPY" : "COPY"));
         copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$copyss"));
         copyComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
                 this.colorMessage("&7Copy this image to your system clipboard.\n" +
-                                      "&cThis cannot be copied once a new screenshot\n" +
-                                      "&cis taken, made favorite, or deleted."))));
+                    "&cThis cannot be copied once a new screenshot\n" +
+                    "&cis taken, made favorite, or deleted."))));
 
         final IChatComponent folderComponent = new ChatComponentText(ChatColor.BLUE.toString() + ChatColor.BOLD +
-                                                                         (compact ? "DIR" : "FOLDER"));
+            (compact ? "DIR" : "FOLDER"));
         folderComponent.getChatStyle()
             .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, screenshotDirectory.getCanonicalPath()));
         folderComponent.getChatStyle()
@@ -221,20 +218,14 @@ public class AsyncScreenshots implements Runnable {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public static class ScreenshotsFolder extends CommandBase {
+    public static class ScreenshotsFolder extends Command {
 
-        @Override
-        public String getCommandName() {
-            return "$openfolder";
+        public ScreenshotsFolder() {
+            super("$openfolder");
         }
 
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/$openfolder";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
+        @DefaultHandler
+        public void handle() {
             try {
                 UDesktop.open(new File("./screenshots"));
             } catch (Exception e) {
@@ -242,28 +233,17 @@ public class AsyncScreenshots implements Runnable {
                     "Unfortunately, we were unable to open the screenshots folder. Please report this to us at https://discord.gg/sk1er.");
             }
         }
-
-        @Override
-        public int getRequiredPermissionLevel() {
-            return -1;
-        }
     }
 
-    public static class FavoriteScreenshot extends CommandBase {
+    public static class FavoriteScreenshot extends Command {
 
-        @Override
-        public String getCommandName() {
-            return "$favorite";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/$favorite";
+        public FavoriteScreenshot() {
+            super("$favorite");
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
+        @DefaultHandler
+        public void handle() {
             try {
                 final File favoritedScreenshots = getTimestampedPNGFileForDirectory(new File("./favorite_screenshots"));
                 screenshot.delete();
@@ -278,27 +258,15 @@ public class AsyncScreenshots implements Runnable {
                 ChatUtilities.sendMessage("&cFailed to favorite screenshot, maybe the file was moved/deleted?");
             }
         }
-
-        @Override
-        public int getRequiredPermissionLevel() {
-            return -1;
-        }
     }
 
-    public static class DeleteScreenshot extends CommandBase {
-        @Override
-        public String getCommandName() {
-            return "$delete";
+    public static class DeleteScreenshot extends Command {
+        public DeleteScreenshot() {
+            super("$delete");
         }
 
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/$delete";
-        }
-
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
+        @DefaultHandler
+        public void handle() {
             try {
                 if (screenshot.exists()) {
                     ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
@@ -313,37 +281,35 @@ public class AsyncScreenshots implements Runnable {
                 ChatUtilities.sendMessage("&cFailed to delete screenshot, maybe the file was moved/deleted?");
             }
         }
-
-        @Override
-        public int getRequiredPermissionLevel() {
-            return -1;
-        }
     }
 
-    public static class UploadScreenshot extends CommandBase {
+    public static class UploadScreenshot extends Command {
 
-        @Override
-        public String getCommandName() {
-            return "$upload";
+        public UploadScreenshot() {
+            super("$upload");
         }
 
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/$upload";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
+        @DefaultHandler
+        public void handle() {
             UploadScreenshotTask.INSTANCE.execute(screenshot);
         }
-
-        @Override
-        public int getRequiredPermissionLevel() {
-            return -1;
-        }
     }
 
-    public static class CopyScreenshot extends CommandBase {
+    public static class CopyScreenshot extends Command {
+
+        public CopyScreenshot() {
+            super("$copyss");
+        }
+
+        @DefaultHandler
+        public void handle() {
+            try {
+                copyScreenshot(true);
+            } catch (Exception e) {
+                ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
+                e.printStackTrace();
+            }
+        }
 
         public static void copyScreenshot(boolean message) {
             final ImageSelection sel = new ImageSelection(image);
@@ -360,31 +326,6 @@ public class AsyncScreenshots implements Runnable {
                     }
                 }
             });
-        }
-
-        @Override
-        public String getCommandName() {
-            return "$copyss";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender sender) {
-            return "/$copyss";
-        }
-
-        @Override
-        public void processCommand(ICommandSender sender, String[] args) {
-            try {
-                copyScreenshot(true);
-            } catch (Exception e) {
-                ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public int getRequiredPermissionLevel() {
-            return -1;
         }
     }
 

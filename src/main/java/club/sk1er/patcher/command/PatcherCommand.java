@@ -22,7 +22,13 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.resources.SkinManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.modcore.api.commands.Command;
 import net.modcore.api.commands.DefaultHandler;
 import net.modcore.api.commands.DisplayName;
@@ -38,6 +44,7 @@ import java.util.Map;
 public class PatcherCommand extends Command {
 
     private final Map<String, AbstractBenchmark> benchmarkMap = new HashMap<>();
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     public PatcherCommand() {
         super("patcher");
@@ -65,13 +72,13 @@ public class PatcherCommand extends Command {
         ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
     }
 
-    @SubCommand(value = "names", aliases = { "name" })
-    public void names(@Nullable @DisplayName("name") String name) {
+    @SubCommand(value = "names", aliases = {"name"})
+    public void names(@Greedy @Nullable @DisplayName("name") String name) {
         GuiUtil.open(name != null ? new ScreenHistory(name, false) : new ScreenHistory());
     }
 
     @SubCommand("blacklist")
-    public void blacklist(@DisplayName("ip") String ip) {
+    public void blacklist(@Greedy @DisplayName("ip") String ip) {
         final String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
         ChatUtilities.sendNotification(
             "Server Blacklist",
@@ -81,7 +88,7 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand("benchmark")
-    public void benchmark(@Options({ "all", "text", "item" }) String type, @Nullable @Greedy @DisplayName("extra") String extra) {
+    public void benchmark(@Options({"all", "text", "item"}) String type, @Nullable @Greedy @DisplayName("extra") String extra) {
         if (type.equals("all")) {
             long totalMillis = 0;
 
@@ -112,7 +119,7 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand("mode")
-    public void mode(@Options({ "vanilla", "optimized" }) String mode) {
+    public void mode(@Options({"vanilla", "optimized"}) String mode) {
         if (mode.equals("vanilla")) {
             toggleOptions(false);
             Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
@@ -121,6 +128,117 @@ public class PatcherCommand extends Command {
             toggleOptions(true);
             Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
             ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &eOptimized&a.");
+        }
+    }
+
+    @SubCommand("fov")
+    public void fov(@Greedy @DisplayName("amount") String amount) {
+        try {
+            final float fovAmount = Float.parseFloat(amount);
+
+            if (fovAmount <= 0) {
+                ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
+                return;
+            } else if (fovAmount > 110) {
+                ChatUtilities.sendNotification("FOV Changer", "Changing your FOV above 110 is disabled due to game-breaking visual bugs.");
+                return;
+            }
+
+            ChatUtilities.sendNotification(
+                "FOV Changer",
+                "FOV changed from &e" + mc.gameSettings.fovSetting + "&r to &a" + fovAmount + "."
+            );
+            mc.gameSettings.fovSetting = fovAmount;
+            mc.gameSettings.saveOptions();
+        } catch (NumberFormatException e) {
+            ChatUtilities.sendNotification("FOV Changer", "You cannot use a letter as your FOV.");
+        }
+    }
+
+    // todo: redo this and make it actually functional
+    // currently skins reset once joining a new world
+    @SubCommand(value = "refresh", aliases = "refreshskin")
+    public void refresh() {
+        refreshSkin();
+    }
+
+    @SubCommand(value = "scale", aliases = "invscale")
+    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "5"}) String argument) {
+        if (argument.equalsIgnoreCase("help")) {
+            ChatUtilities.sendMessage("             &eInventory Scale", false);
+            ChatUtilities.sendMessage("&7Usage: /inventoryscale <scaling>", false);
+            ChatUtilities.sendMessage("&7Scaling may be a number between 1-5, or", false);
+            ChatUtilities.sendMessage("&7small/normal/large/auto", false);
+            ChatUtilities.sendMessage("&7Use '/inventoryscale off' to disable scaling.", false);
+            return;
+        }
+
+        if (argument.equalsIgnoreCase("off") || argument.equalsIgnoreCase("none")) {
+            ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
+            PatcherConfig.desiredScaleOverride = -1;
+            Patcher.instance.forceSaveConfig();
+            return;
+        }
+
+        int scaling;
+        if (argument.equalsIgnoreCase("small")) {
+            scaling = 1;
+        } else if (argument.equalsIgnoreCase("normal")) {
+            scaling = 2;
+        } else if (argument.equalsIgnoreCase("large")) {
+            scaling = 3;
+        } else if (argument.equalsIgnoreCase("auto")) {
+            scaling = 5;
+        } else {
+            try {
+                scaling = Integer.parseInt(argument);
+            } catch (Exception e) {
+                ChatUtilities.sendNotification("Inventory Scale", "Invalid scaling identifier. Use '/inventoryscale help' for assistance.");
+                return;
+            }
+        }
+
+        if (scaling < 1) {
+            ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
+            PatcherConfig.desiredScaleOverride = -1;
+            Patcher.instance.forceSaveConfig();
+            return;
+        } else if (scaling > 5) {
+            ChatUtilities.sendNotification("Inventory Scale", "Invalid scaling. Must be between 1-5.");
+            return;
+        }
+
+        ChatUtilities.sendNotification("Inventory Scale", "Set inventory scaling to " + scaling);
+        PatcherConfig.desiredScaleOverride = scaling;
+        Patcher.instance.forceSaveConfig();
+    }
+
+    @SubCommand("sendcoords")
+    public void sendCoords() {
+        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ);
+    }
+
+    public static void refreshSkin() {
+        try {
+            final SkinManager skinManager = Minecraft.getMinecraft().getSkinManager();
+            final GameProfile gameProfile = Minecraft.getMinecraft().getSession().getProfile();
+            skinManager.loadProfileTextures(gameProfile, (type, location, profile) -> {
+                if (type == MinecraftProfileTexture.Type.SKIN) {
+                    final NetworkPlayerInfo info = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(EntityPlayer.getUUID(gameProfile));
+                    info.locationSkin = location;
+                    info.skinType = profile.getMetadata("model");
+
+                    if (info.skinType == null) {
+                        info.skinType = "default";
+                    }
+                }
+            }, true);
+
+            ChatUtilities.sendNotification("Skin Cache", "Successfully refreshed skin cache.");
+        } catch (Exception e) {
+            ChatUtilities.sendNotification("Skin Cache", "Failed to refresh skin cache.");
+            e.printStackTrace();
         }
     }
 

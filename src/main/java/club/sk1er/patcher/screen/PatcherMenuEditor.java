@@ -12,7 +12,7 @@
 package club.sk1er.patcher.screen;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.command.SkinCacheRefresh;
+import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import net.minecraft.client.Minecraft;
@@ -127,7 +127,7 @@ public class PatcherMenuEditor {
         final int id = event.button.id;
         final GuiScreen gui = event.gui;
         if (id == 435762 && (gui instanceof GuiIngameMenu || gui instanceof GuiCustomizeSkin)) {
-            SkinCacheRefresh.refreshSkin();
+            PatcherCommand.refreshSkin();
         } else if (gui instanceof GuiIngameMenu) {
             if (id == 231423) {
                 MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
