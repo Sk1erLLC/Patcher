@@ -72,7 +72,13 @@ public class GuiNewChatTransformer implements CommonTransformer {
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
-                        if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
+                        if (node.getOpcode() == Opcodes.INVOKEVIRTUAL && node instanceof MethodInsnNode) {
+                            final String methodInsnName = mapMethodNameFromNode(node);
+                            if (methodInsnName.equals("getLineCount") || methodInsnName.equals("func_146232_i")) {
+                                methodNode.instructions.insertBefore(node.getPrevious(),
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "processMessageQueue", "()V", false));
+                            }
+                        } else if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
                             LabelNode ifeq = new LabelNode();
                             methodNode.instructions.insert(node, ifeq);
                             AbstractInsnNode prevNode = node;
@@ -83,11 +89,16 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
                             methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "transparentChat", "Z"));
                             methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
-                        } else if (node instanceof VarInsnNode && node.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) node).var == 9) {
+                        } else if (node instanceof JumpInsnNode && node.getOpcode() == Opcodes.IFEQ) {
                             AbstractInsnNode prevNode = node;
 
-                            for (int i = 0; i < 8; i++) {
-                                prevNode = prevNode.getPrevious();
+                            for (int i = 0; i < 7; i++) {
+                                prevNode = prevNode.getNext();
+                            }
+
+                            if (prevNode.getOpcode() == Opcodes.ISTORE) {
+                                methodNode.instructions.insertBefore(node.getPrevious(),
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "drawMessageQueue", "()V", false));
                             }
                         }
                     }
@@ -101,8 +112,19 @@ public class GuiNewChatTransformer implements CommonTransformer {
                     this.changeChatComponentHeight(methodNode);
                     break;
                 }
+
+                case "func_146231_a":
+                case "clearChatMessages":
+                    methodNode.instructions.insert(clearMessageQueue());
             }
         }
+    }
+
+    private InsnList clearMessageQueue() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("GuiNewChatHook"), "messageQueue", "Ljava/util/Deque;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Deque", "clear", "()V", true));
+        return list;
     }
 
     private InsnList setChatLineReturn() {

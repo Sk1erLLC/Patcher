@@ -13,17 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -127,8 +117,37 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
 
                     break;
                 }
+
+                case "func_147251_a":
+                case "handleChat": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+
+                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("printChatMessage") || methodInsnName.equals("func_146227_a")) {
+                                for (int i = 0; i < 6; i++) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                }
+
+                                methodNode.instructions.insertBefore(next, processChatMessage());
+                                methodNode.instructions.remove(next);
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private InsnList processChatMessage() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "processChatMessage",
+            "(Lnet/minecraft/network/play/server/S02PacketChat;)V", false));
+        return list;
     }
 
     public static InsnList createList(LabelNode ifeq) {

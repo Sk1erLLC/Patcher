@@ -182,6 +182,7 @@ minecraft {
 
         runDir = "run"
         makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+        clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.ModTweaker`"]
     }
     if (FG3) {
         mappings channel: 'snapshot', version: '20200220-1.15.1'

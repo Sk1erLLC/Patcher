@@ -6,6 +6,7 @@ import com.google.common.collect.Queues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 
@@ -47,11 +48,10 @@ public class GuiNewChatHook {
         if (!messageQueue.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 50);
-            Gui.drawRect(-2, 0, chatWidth + 4, 9, 2130706432);
+            Gui.drawRect(0, 0, chatWidth + 4, 9, 2130706432);
             GlStateManager.enableBlend();
             GlStateManager.translate(0, 0, 50);
-            final String text = ChatColor.GRAY + "[+" + messageQueue.size() + " pending lines]";
-            mc.fontRendererObj.drawStringWithShadow(text, 0, 1, -1);
+            mc.fontRendererObj.drawStringWithShadow(ChatColor.GRAY + "[+" + messageQueue.size() + " pending lines]", 0, 1, -1);
             GlStateManager.popMatrix();
             GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
@@ -62,6 +62,14 @@ public class GuiNewChatHook {
         if (!messageQueue.isEmpty()) {
             mc.ingameGUI.getChatGUI().printChatMessage(messageQueue.remove());
             lastMessageAddedTime = System.currentTimeMillis();
+        }
+    }
+
+    public static void processChatMessage(S02PacketChat packet) {
+        if (packet.getType() == 0) {
+            queueMessage(packet.getChatComponent());
+        } else if (packet.getType() == 1) {
+            mc.ingameGUI.getChatGUI().printChatMessage(packet.getChatComponent());
         }
     }
 

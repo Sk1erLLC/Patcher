@@ -847,7 +847,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean shiftChat;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Chat Delay",
+        type = PropertyType.SLIDER, name = "Chat Delay",
         description = "Delay chat messages if they're sent within the selected timeframe after the previous message. Measured in seconds.",
         category = "Screens", subcategory = "Chat",
         max = 6
