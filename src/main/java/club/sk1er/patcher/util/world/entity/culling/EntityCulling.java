@@ -214,7 +214,7 @@ public class EntityCulling {
 
             if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
                 (PatcherConfig.dontCullEntityNametags && !armorstand) ||
-                (PatcherConfig.dontCullArmourStandNametags && armorstand)) {
+                (PatcherConfig.dontCullArmorStandNametags && armorstand)) {
                 event.renderer.renderName(entity, event.x, event.y, event.z);
             }
         }

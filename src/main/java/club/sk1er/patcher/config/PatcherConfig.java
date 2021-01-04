@@ -145,7 +145,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fluid Stitching",
-        description = "Fix missing edges in fluids.\n§cMay cause Z-Fighting against blocks that aren't full size.",
+        description = "Fix missing edges in fluids.",
         category = "Bug Fixes", subcategory = "Rendering", triggerActionOnInitialization = false
     )
     public static boolean fluidStitching = true;
@@ -229,7 +229,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Water FOV",
-        description = "Remove the change of FOV when underwater.\n§eDoes not require FOV Modifier to be enabled.",
+        description = "Remove the change of FOV when underwater.",
         category = "Miscellaneous", subcategory = "Field of View"
     )
     public static boolean removeWaterFov;
@@ -357,7 +357,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Instant Fullscreen (Windows Only)",
-        description = "Instant switching between full screen and non fullscreen modes.\nWindowed Fullscreen must also be enabled for this to work.",
+        description = "Instant switching between full screen and non fullscreen modes.\n§eRequires Windowed Fullscreen.",
         category = "Miscellaneous", subcategory = "Window"
     )
     public static boolean instantFullscreen;
@@ -480,7 +480,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Static Fog Color",
-        description = "Simplify fog color creation with a static fog color.",
+        description = "Reduce the amount of instructions to produce the fog color to improve performance.",
         category = "Performance", subcategory = "World"
     )
     public static boolean disableConstantFogColorChecking = true;
@@ -494,7 +494,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Batch Model Rendering",
-        description = "Render models in a single draw call, reducing the amount of OpenGL instructions performed a second.",
+        description = "Render models in a single draw call.",
         category = "Performance", subcategory = "World"
     )
     public static boolean batchModelRendering = true;
@@ -522,7 +522,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
-        description = "Stop armorstands from rendering.\nArmorstands are commonly used for NPC nametag rendering. Enabling this will stop those from rendering as well.",
+        description = "Stop armorstands from rendering.\nArmorstands are commonly used for NPC nametags. Enabling this will stop those from rendering as well.",
         category = "Performance", subcategory = "Entity Rendering"
     )
     public static boolean disableArmorstands;
@@ -639,7 +639,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Smart Entity Culling",
-        description = "Stop the entity culling effect when using OptiFine shaders.\n§cDue to the way OptiFine shaders work, we are unable to make Entity Culling compatible at this time.",
+        description = "Stop the entity culling effect when using OptiFine shaders.\n§cDue to the way OptiFine shaders work, we are unable to make Entity Culling compatible.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean smartEntityCulling = true;
@@ -660,10 +660,10 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Armor Stand Nametags",
-        description = "Render nametags even when the armour stand is occluded.",
+        description = "Render nametags even when the armor stand is occluded.",
         category = "Performance", subcategory = "Culling"
     )
-    public static boolean dontCullArmourStandNametags;
+    public static boolean dontCullArmorStandNametags;
 
     @Property(
         type = PropertyType.SWITCH, name = "Check Armorstand Rules",
@@ -821,7 +821,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Consecutive Compact Chat",
-        description = "Only compact chat if they're consecutive.",
+        description = "Only compact messages if they're consecutive.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean consecutiveCompactChat;
@@ -850,7 +850,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Chat Delay",
-        description = "Delay chat messages if they're sent within the selected timeframe after the previous message. Measured in seconds.",
+        description = "Delay chat messages if they're sent within the selected timeframe after the previous message.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",
         max = 6
     )
@@ -914,8 +914,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SELECTOR, name = "Chat Timestamps Format",
-        description = "Change the time format of Chat Timestamps.\nExamples:\n" +
-            "§7[03:24 PM] Steve: Hey!\n§7[15:24] Steve: Hey!",
+        description = "Change the time format of Chat Timestamps.",
         category = "Screens", subcategory = "Chat",
         options = {"12 Hour", "24 Hour"}
     )
@@ -937,7 +936,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Chat Keeper",
-        description = "Keep chat when toggling fullscreen.",
+        description = "Keep your currently-typed message in chat when toggling fullscreen.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean chatKeeper = true;
@@ -975,7 +974,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Safe Chat Clicks",
-        description = "Show the command or link that is ran/opened on click.",
+        description = "Show the command/link that runs/opens on click.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean safeChatClicks;
