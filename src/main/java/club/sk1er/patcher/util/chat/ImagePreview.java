@@ -138,7 +138,7 @@ public class ImagePreview {
             float scaleWidth = scaledResolution.getScaledWidth() * scaleFactor;
 
             if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                scaleWidth *= PatcherConfig.imagePreviewWidth / 100D;
+                scaleWidth *= PatcherConfig.imagePreviewWidth;
             }
 
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {

@@ -277,12 +277,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean normalZoomSensitivity;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Zoom Sensitivity",
-        description = "Use a custom mouse sensitivity when zoomed. This is a percentage of your normal sensitivity.",
-        category = "Miscellaneous", subcategory = "OptiFine",
-        max = 100
+        type = PropertyType.PERCENT_SLIDER, name = "Zoom Sensitivity",
+        description = "Use a custom mouse sensitivity when zoomed.",
+        category = "Miscellaneous", subcategory = "OptiFine"
     )
-    public static int customZoomSensitivity = 100;
+    public static float customZoomSensitivity = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "Smooth Zoom Animation",
@@ -769,12 +768,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean customTabOpacity = false;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Tab Opacity",
+        type = PropertyType.PERCENT_SLIDER, name = "Tab Opacity",
         description = "Change the tab list opacity.",
-        category = "Screens", subcategory = "Tab",
-        max = 100
+        category = "Screens", subcategory = "Tab"
     )
-    public static int tabOpacity = 100;
+    public static float tabOpacity = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "GUI Crosshair",
@@ -965,12 +963,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean imagePreview = true;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Image Preview Width",
+        type = PropertyType.PERCENT_SLIDER, name = "Image Preview Width",
         description = "The % of screen width to be used for image preview.",
-        category = "Screens", subcategory = "Image Preview",
-        min = 10, max = 100
+        category = "Screens", subcategory = "Image Preview"
     )
-    public static int imagePreviewWidth = 50;
+    public static float imagePreviewWidth = 0.50F;
 
     @Property(
         type = PropertyType.SWITCH, name = "Safe Chat Clicks",
@@ -1040,12 +1037,11 @@ public class PatcherConfig extends Vigilant {
     public static int previewAnimationStyle = 0;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Preview Scale",
-        description = "Change the scale of the preview.\nSmaller number is bigger.",
-        category = "Screenshots", subcategory = "General",
-        min = 3, max = 6
+        type = PropertyType.PERCENT_SLIDER, name = "Preview Scale",
+        description = "Change the scale of the preview.",
+        category = "Screenshots", subcategory = "General"
     )
-    public static int previewScale = 3;
+    public static float previewScale = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "Compact Response",

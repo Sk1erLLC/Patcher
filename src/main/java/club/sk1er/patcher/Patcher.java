@@ -16,6 +16,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
+import club.sk1er.patcher.render.Viewer;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.render.TitleFix;
@@ -35,7 +36,6 @@ import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
-import club.sk1er.patcher.util.screenshot.viewer.Viewer;
 import club.sk1er.patcher.util.sound.SoundHandler;
 import club.sk1er.patcher.util.status.ProtocolDetector;
 import club.sk1er.patcher.util.world.WorldHandler;
@@ -126,7 +126,6 @@ public class Patcher {
      */
     private final CloudHandler cloudHandler = new CloudHandler();
     private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
-    private final Viewer viewer = new Viewer();
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
     private KeyBinding chatPeek;
@@ -178,13 +177,12 @@ public class Patcher {
         );
 
         this.registerEvents(
-            this, target, viewer,
-            debugPerformanceRenderer, cloudHandler, dropModifier,
+            this, target, debugPerformanceRenderer, cloudHandler, dropModifier,
             new MenuPreviewHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),
             new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(),
-            MinecraftHook.INSTANCE
+            MinecraftHook.INSTANCE, Viewer.INSTANCE
         );
 
         checkLogs();
@@ -514,10 +512,6 @@ public class Patcher {
 
     public DebugPerformanceRenderer getDebugPerformanceRenderer() {
         return debugPerformanceRenderer;
-    }
-
-    public Viewer getViewer() {
-        return viewer;
     }
 
     public void forceSaveConfig() {
