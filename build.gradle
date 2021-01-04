@@ -182,7 +182,7 @@ minecraft {
 
         runDir = "run"
         makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-        clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.ModTweaker`"]
+        clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.other.ModTweaker"]
     }
     if (FG3) {
         mappings channel: 'snapshot', version: '20200220-1.15.1'
@@ -308,7 +308,7 @@ dependencies {
     }
     compile ("net.modcore:Loader:1.5")
 
-    implementation "club.sk1er:ModCore:679-${mcVersion}-SNAPSHOT"
+    implementation "club.sk1er:ModCore:680-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

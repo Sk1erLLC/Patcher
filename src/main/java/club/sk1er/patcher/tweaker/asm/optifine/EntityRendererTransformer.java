@@ -230,6 +230,20 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                                 methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
                             }
+                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
+                            final String fieldName = mapFieldNameFromNode(next);
+                            if (fieldName.equals("TRANSLUCENT")) {
+                                methodNode.instructions.insertBefore(next.getPrevious(), enablePolygonOffset());
+                            }
+
+                            AbstractInsnNode nextInsn = next;
+                            for (int i = 0; i < 7; i++) {
+                                nextInsn = nextInsn.getNext();
+                            }
+
+                            methodNode.instructions.insertBefore(nextInsn.getNext(), new MethodInsnNode(
+                                Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "disablePolygonOffset" : "func_179113_r", "()V", false
+                            ));
                         }
 
                         switch (ClassTransformer.optifineVersion) {
@@ -384,6 +398,15 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 }*/
             }
         }
+    }
+
+    private InsnList enablePolygonOffset() {
+        InsnList list = new InsnList();
+        list.add(new LdcInsnNode(-1.0F));
+        list.add(new LdcInsnNode(-1.0F));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "doPolygonOffset" : "func_179136_a", "(FF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "enablePolygonOffset" : "func_179088_q", "()V", false));
+        return list;
     }
 
     private InsnList renderCachedOverlay() {

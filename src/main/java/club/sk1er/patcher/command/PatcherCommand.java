@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PatcherCommand extends Command {
 
@@ -50,13 +51,11 @@ public class PatcherCommand extends Command {
         super("patcher");
         benchmarkMap.put("text", new TextBenchmark());
         benchmarkMap.put("item", new ItemBenchmark());
-
-        // [&amode <vanilla|optimized> &r| &bbenchmark <all, text, item> &r| &cdebugfps &r| &dsounds &r| &eresetcache &r| &2name [username] &r| &3blacklist <ip>&e]";
     }
 
     @DefaultHandler
     public void handle() {
-        GuiUtil.open(Patcher.instance.getPatcherConfig().gui());
+        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
     }
 
     @SubCommand("resetcache")
