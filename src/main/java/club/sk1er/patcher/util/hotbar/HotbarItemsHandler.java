@@ -46,12 +46,10 @@ import java.util.Map;
  */
 public class HotbarItemsHandler {
 
-    /**
-     * Create a Minecraft instance.
-     */
     private final Minecraft mc = Minecraft.getMinecraft();
     private final Map<String, ItemStack> cachedDamageMap = new HashMap<>();
     private final DecimalFormat format = new DecimalFormat("#.###");
+    private boolean renderingArrows;
 
     /**
      * Create a map for short enchantment name identification.
@@ -129,8 +127,10 @@ public class HotbarItemsHandler {
         if (player.getCurrentEquippedItem() != null) {
             final boolean holdingBow = player.getCurrentEquippedItem().getItem() instanceof ItemBow;
             final int count = getHeldItemCount(holdingBow);
+            final boolean shouldRenderArrowCount = holdingBow && count > 0;
+            this.renderingArrows = shouldRenderArrowCount;
 
-            if (count > 1 || (holdingBow && count > 0)) {
+            if (count > 1 || shouldRenderArrowCount) {
                 final int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? -12 : 0;
                 final ScaledResolution resolution = event.resolution;
                 mc.fontRendererObj.drawString(String.valueOf(count),
@@ -163,7 +163,11 @@ public class HotbarItemsHandler {
             final ScaledResolution res = event.resolution;
 
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
-            final int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -2 : 14) + 9 << 1;
+            int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -2 : 14) + 9 << 1;
+
+            if (this.renderingArrows) {
+                y -= 10;
+            }
 
             mc.fontRendererObj.drawString(toDraw, x, y, -1, true);
 
