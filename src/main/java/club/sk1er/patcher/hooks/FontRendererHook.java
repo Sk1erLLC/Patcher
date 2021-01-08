@@ -56,27 +56,18 @@ public final class FontRendererHook {
     private void establishSize() {
         int regWidth = 256;
         for (int i = 0; i < 256; i++) {
-            final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
-            try {
-                final IResource resource = mc.getResourceManager().getResource(resourceLocation);
-                try (InputStream stream = resource.getInputStream()) {
-                    final BufferedImage read = ImageIO.read(stream);
-                    regWidth = read.getWidth();
-                    break;
-                }
-            } catch (IOException ignored) {
+            try (InputStream stream = mc.getResourceManager().getResource(new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i))).getInputStream()) {
+                regWidth = ImageIO.read(stream).getWidth();
+                break;
+            } catch (Exception ignored) {
             }
         }
 
         texSheetDim = regWidth;
         int specWidth = 128;
 
-        try {
-            final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
-            try (InputStream stream = resource.getInputStream()) {
-                final BufferedImage read = ImageIO.read(stream);
-                specWidth = read.getWidth();
-            }
+        try (InputStream stream = mc.getResourceManager().getResource(fontRenderer.locationFontTexture).getInputStream()) {
+            specWidth = ImageIO.read(stream).getWidth();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,29 +88,19 @@ public final class FontRendererHook {
 
         final BufferedImage bufferedImage = new BufferedImage((int) fontTexWidth, (int) fontTexHeight, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < 256; i++) {
-            final ResourceLocation resourceLocation = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i));
-            try {
-                final IResource resource = mc.getResourceManager().getResource(resourceLocation);
-                try (InputStream stream = resource.getInputStream()) {
-                    final BufferedImage read = ImageIO.read(stream);
-                    bufferedImage.getGraphics().drawImage(read, i / 16 * texSheetDim, i % 16 * texSheetDim, null);
-                }
-            } catch (IOException ignored) {
+            try (InputStream stream = mc.getResourceManager().getResource(new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i))).getInputStream()) {
+                bufferedImage.getGraphics().drawImage(ImageIO.read(stream), i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+            } catch (Exception ignored) {
             }
         }
 
-        try {
-            final IResource resource = mc.getResourceManager().getResource(fontRenderer.locationFontTexture);
-            try (InputStream stream = resource.getInputStream()) {
-                final BufferedImage read = ImageIO.read(stream);
-                bufferedImage.getGraphics().drawImage(read, 0, 16 * texSheetDim, null);
-            }
+        try (InputStream stream = mc.getResourceManager().getResource(fontRenderer.locationFontTexture).getInputStream()) {
+            bufferedImage.getGraphics().drawImage(ImageIO.read(stream), 0, 16 * texSheetDim, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        final DynamicTexture dynamicTexture = new DynamicTexture(bufferedImage);
-        GL_TEX = dynamicTexture.getGlTextureId();
+        GL_TEX = new DynamicTexture(bufferedImage).getGlTextureId();
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -450,12 +431,12 @@ public final class FontRendererHook {
     }
 
     private Pair<Float, Float> getUV(char characterIndex) {
-        int page = characterIndex / 256;
-        int row = page / 16;
-        int column = page % 16;
-        int glyphWidth = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
-        float charX = (float) (characterIndex % 16 << 4) + glyphWidth + (.05f * page / 39f);
-        float charY = (float) (((characterIndex & 255) >> 4) * 16) + (.05f * page / 39f);
+        final int page = characterIndex / 256;
+        final int row = page / 16;
+        final int column = page % 16;
+        final int glyphWidth = this.fontRenderer.glyphWidth[characterIndex] >>> 4;
+        final float charX = (float) (characterIndex % 16 << 4) + glyphWidth + (.05f * page / 39f);
+        final float charY = (float) (((characterIndex & 255) >> 4) * 16) + (.05f * page / 39f);
         return new Pair<>((row * texSheetDim + charX) / fontTexWidth, (column * texSheetDim + charY) / fontTexHeight); //16 rows each with a size of 64px
     }
 
@@ -467,12 +448,12 @@ public final class FontRendererHook {
             return 0.0F;
         } else {
             final Pair<Float, Float> uv = getUV(ch);
-            int glyphX = this.fontRenderer.glyphWidth[ch] >>> 4;
-            int glyphY = this.fontRenderer.glyphWidth[ch] & 15;
-            float floatGlyphX = (float) glyphX;
-            float modifiedY = (float) (glyphY + 1);
-            float combinedGlyphSize = modifiedY - floatGlyphX - 0.02F;
-            float italicStyle = italic ? 1.0F : 0.0F;
+            final int glyphX = this.fontRenderer.glyphWidth[ch] >>> 4;
+            final int glyphY = this.fontRenderer.glyphWidth[ch] & 15;
+            final float floatGlyphX = (float) glyphX;
+            final float modifiedY = (float) (glyphY + 1);
+            final float combinedGlyphSize = modifiedY - floatGlyphX - 0.02F;
+            final float italicStyle = italic ? 1.0F : 0.0F;
             startDrawing();
 
             final float v = 15.98F * texSheetDim / 256;
@@ -497,13 +478,13 @@ public final class FontRendererHook {
         return hook.getCharWidth(fontRenderer, c);
     }
 
-    public int getStringWidth(FontRenderer renderer, String text) {
+    public int getStringWidth(String text) {
         Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
 
         if (!PatcherConfig.optimizedFontRenderer) {
             if (stringWidthCache.size() != 0)
                 stringWidthCache.clear();
-            return getUncachedWidth(renderer, text);
+            return getUncachedWidth(text);
         }
 
         if (text == null) {
@@ -514,10 +495,10 @@ public final class FontRendererHook {
             stringWidthCache.clear();
         }
 
-        return stringWidthCache.computeIfAbsent(text, width -> getUncachedWidth(renderer, text));
+        return stringWidthCache.computeIfAbsent(text, width -> getUncachedWidth(text));
     }
 
-    private int getUncachedWidth(FontRenderer renderer, String text) {
+    private int getUncachedWidth(String text) {
         if (text == null) {
             return 0;
         } else {

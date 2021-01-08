@@ -62,11 +62,9 @@ public class FontRendererTransformer implements PatcherTransformer {
             } else if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getShadowHook());
             } else if ((methodName.equals("drawString") || methodName.equals("func_175065_a")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.FLOAD && ((VarInsnNode) next).var == 2) {
                         methodNode.instructions.remove(next.getNext());
                         methodNode.instructions.remove(next.getNext());
@@ -125,9 +123,8 @@ public class FontRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/FontRenderer", "patcherFontRenderer", "L" + getHooksPackage("FontRendererHook;")));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("FontRendererHook"), "getStringWidth", "(Lnet/minecraft/client/gui/FontRenderer;Ljava/lang/String;)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, getHooksPackage("FontRendererHook"), "getStringWidth", "(Ljava/lang/String;)I", false));
         list.add(new InsnNode(Opcodes.IRETURN));
         return list;
     }

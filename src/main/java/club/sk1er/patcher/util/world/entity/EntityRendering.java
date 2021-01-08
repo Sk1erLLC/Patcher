@@ -33,10 +33,6 @@ import org.lwjgl.opengl.GL11;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 
-/**
- * Used for things relating to entity rendering.
- * May merge with {@link EntityCulling} for simplicity.
- */
 public class EntityRendering {
 
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -46,8 +42,7 @@ public class EntityRendering {
 
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
-        EntityLivingBase entity = event.entity;
-
+        final EntityLivingBase entity = event.entity;
         if ((PatcherConfig.disableArmorstands && entity instanceof EntityArmorStand) || (PatcherConfig.disableSemitransparentEntities && entity.isInvisible() && entity instanceof EntityPlayer)) {
             event.setCanceled(true);
         }

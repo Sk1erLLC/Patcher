@@ -154,7 +154,6 @@ public class Patcher {
      */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-
         ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
         ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
         ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
@@ -187,6 +186,7 @@ public class Patcher {
 
         checkLogs();
         loadBlacklistedServers();
+        fixSettings();
     }
 
     @EventHandler
@@ -452,6 +452,26 @@ public class Patcher {
         }
 
         return keySet;
+    }
+
+    private void fixSettings() {
+        if (PatcherConfig.customZoomSensitivity > 1.0F) {
+            PatcherConfig.customZoomSensitivity = 1.0F;
+        }
+
+        if (PatcherConfig.tabOpacity > 1.0F) {
+            PatcherConfig.tabOpacity = 1.0F;
+        }
+
+        if (PatcherConfig.imagePreviewWidth > 1.0F) {
+            PatcherConfig.imagePreviewWidth = 0.50F;
+        }
+
+        if (PatcherConfig.previewScale > 1.0F) {
+            PatcherConfig.previewScale = 1.0F;
+        }
+
+        this.forceSaveConfig();
     }
 
     /**
