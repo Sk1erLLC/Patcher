@@ -44,12 +44,12 @@ public class GuiPlayerTabOverlayHook {
         if (!PatcherConfig.customTabOpacity) return color;
         final int prevOpacity = Math.abs(color >> 24);
         final int opacity = (int) (prevOpacity * PatcherConfig.tabOpacity);
-        return opacity << 24 | color & 0xFFFFFF;
+        return (opacity << 24) | (color & 0xFFFFFF);
     }
 
     public static void drawPatcherPing(int offset, int xPosition, int yPosition, NetworkPlayerInfo info) {
         final int ping = info.getResponseTime();
-        final int x = xPosition + offset - (mc.fontRendererObj.getStringWidth(ping + "") >> 1) - 2;
+        final int x = (xPosition + offset) - (mc.fontRendererObj.getStringWidth(String.valueOf(ping)) >> 1) - 2;
         final int y = yPosition + 2;
 
         int color;
@@ -70,12 +70,10 @@ public class GuiPlayerTabOverlayHook {
             color = 11141120;
         }
 
-        if (ping >= 0 && ping < 10000) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            mc.fontRendererObj.drawStringWithShadow("   " + ping + "", 2 * x - 10, 2 * y, color);
-            GlStateManager.scale(2.0f, 2.0f, 2.0f);
-            GlStateManager.popMatrix();
-        }
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        mc.fontRendererObj.drawStringWithShadow("   " + (ping == 0 ? "?" : ping), (2 * x) - 10, 2 * y, color);
+        GlStateManager.scale(2.0f, 2.0f, 2.0f);
+        GlStateManager.popMatrix();
     }
 }

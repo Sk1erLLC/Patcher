@@ -11,18 +11,17 @@
 
 package club.sk1er.patcher.screen;
 
-import net.modcore.api.utils.Multithreading;
-import club.sk1er.elementa.components.UICircle;
 import club.sk1er.elementa.components.UIRoundedRectangle;
 import club.sk1er.patcher.Patcher;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.modcore.api.utils.Multithreading;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +39,7 @@ public class ScreenHistory extends GuiScreen {
     private String exceptionName;
 
     public ScreenHistory() {
-        this("", true);
+        this(null, true);
     }
 
     public ScreenHistory(String name, boolean focus) {

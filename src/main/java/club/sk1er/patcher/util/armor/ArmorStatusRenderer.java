@@ -31,14 +31,23 @@ public class ArmorStatusRenderer {
     @SubscribeEvent
     public void onRenderArmor(GuiScreenEvent.DrawScreenEvent e) {
         if ((PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) && (e.gui instanceof GuiInventory || e.gui instanceof GuiContainerCreative)) {
-            ScaledResolution res = new ScaledResolution(mc);
-            mc.fontRendererObj.drawString(getArmorString(), 10, res.getScaledHeight() - 16, -1, true);
+            final String armorValue = getArmorString();
+            if (armorValue == null) {
+                return;
+            }
+
+            final ScaledResolution res = new ScaledResolution(mc);
+            mc.fontRendererObj.drawString(armorValue, 10, res.getScaledHeight() - 16, -1, true);
         }
     }
 
     private String getArmorString() {
-        double protectionPotential = roundDecimals(getArmorPotential(false));
-        double projectileProtectionPotential = roundDecimals(getArmorPotential(true));
+        final double protectionPotential = roundDecimals(getArmorPotential(false));
+        final double projectileProtectionPotential = roundDecimals(getArmorPotential(true));
+        if (protectionPotential == 0.0 && projectileProtectionPotential == 0.0) {
+            return null;
+        }
+
 
         // man dont even try and make me understand what this is doing
         if (!PatcherConfig.protectionPercentage || !PatcherConfig.projectileProtectionPercentage) {
@@ -50,7 +59,7 @@ public class ArmorStatusRenderer {
                 return projectileProtectionPotential + "%";
             }
 
-            return "";
+            return null;
         }
 
         if (protectionPotential == projectileProtectionPotential) {
