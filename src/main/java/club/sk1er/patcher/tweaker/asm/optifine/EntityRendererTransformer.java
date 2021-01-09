@@ -373,6 +373,30 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
+                case "func_78476_b":
+                case "renderHand": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final LabelNode ifne = new LabelNode();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            final String fieldName = mapFieldNameFromNode(next);
+
+                            if (fieldName.equals("viewBobbing") || fieldName.equals("field_74336_f")) {
+                                methodNode.instructions.insertBefore(next.getNext().getNext(), checkMap(ifne));
+
+                                for (int i = 0; i < 8; i++) {
+                                    next = next.getNext();
+                                }
+
+                                methodNode.instructions.insertBefore(next.getNext(), ifne);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 /*case "func_181560_a":
                 case "updateCameraAndRender": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -398,6 +422,13 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 }*/
             }
         }
+    }
+
+    private InsnList checkMap(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "hasMap", "()Z", false));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList enablePolygonOffset() {

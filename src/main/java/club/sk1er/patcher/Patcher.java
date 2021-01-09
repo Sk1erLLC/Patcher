@@ -70,7 +70,6 @@ import net.modcore.api.utils.Multithreading;
 import net.modcore.api.utils.WebUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.BufferedReader;
@@ -171,8 +170,9 @@ public class Patcher {
 
         registerCommands(
             new PatcherCommand(),
-            new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(), new AsyncScreenshots.UploadScreenshot(),
-            new AsyncScreenshots.CopyScreenshot(), new AsyncScreenshots.ScreenshotsFolder()
+            new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
+            new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
+            new AsyncScreenshots.ScreenshotsFolder()
         );
 
         this.registerEvents(
@@ -207,20 +207,17 @@ public class Patcher {
      */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        Notifications notifications = KoinJavaComponent.get(Notifications.class);
-
+        final Notifications notifications = ModCoreAPI.getNotifications();
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         for (ModContainer container : activeModList) {
             final String modId = container.getModId();
             final String modName = container.getName();
-            if (PatcherConfig.entityCulling) {
-                if (modId.equals("enhancements")) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Entity Culling is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + modName);
-                    PatcherConfig.entityCulling = false;
-                }
+            if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
+                notifications.push(
+                    "Patcher",
+                    modName + " has been detected. Entity Culling is now disabled.\n" +
+                        "This is an unfixable incompatibility without an update from the authors of " + modName);
+                PatcherConfig.entityCulling = false;
             }
 
             if (modId.equals("labymod") || modId.equals("enhancements")) {
@@ -241,15 +238,13 @@ public class Patcher {
                 }
             }
 
-            if (PatcherConfig.optimizedFontRenderer) {
-                if (modId.equals("smoothfont")) {
-                    notifications.push(
-                        "Patcher",
-                        "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
-                            "has been automatically disabled.\nRestart your game for Smooth Font to work again."
-                    );
-                    PatcherConfig.optimizedFontRenderer = false;
-                }
+            if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
+                notifications.push(
+                    "Patcher",
+                    "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
+                        "has been automatically disabled.\nRestart your game for Smooth Font to work again."
+                );
+                PatcherConfig.optimizedFontRenderer = false;
             }
 
             this.forceSaveConfig();

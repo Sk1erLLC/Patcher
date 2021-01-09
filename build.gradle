@@ -306,9 +306,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
-    compile ("net.modcore:Loader:1.5")
 
-    implementation "net.modcore:ModCore:700-${mcVersion}-SNAPSHOT"
+    compile ("net.modcore:Loader:1.9")
+    implementation "net.modcore:ModCore:701-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

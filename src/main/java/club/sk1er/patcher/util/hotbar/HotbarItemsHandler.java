@@ -99,9 +99,15 @@ public class HotbarItemsHandler {
         if (heldItemStack != null) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            final ScaledResolution res = event.resolution;
 
             final String attackDamage = getAttackDamageString(heldItemStack);
+            if (attackDamage == null) {
+                GlStateManager.scale(2.0f, 2.0f, 2.0f);
+                GlStateManager.popMatrix();
+                return;
+            }
+
+            final ScaledResolution res = event.resolution;
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
             final int y = (res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -1 : 14) + 9 << 1) + 9;
 
@@ -157,6 +163,9 @@ public class HotbarItemsHandler {
         final ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
             final String toDraw = heldItemStack.getItem() instanceof ItemPotion ? getPotionEffectString(heldItemStack) : getEnchantmentString(heldItemStack);
+            if (toDraw == null) {
+                return;
+            }
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
@@ -229,7 +238,7 @@ public class HotbarItemsHandler {
             }
         }
 
-        return "";
+        return null;
     }
 
     /**
@@ -248,8 +257,7 @@ public class HotbarItemsHandler {
             data = 0;
         }
 
-        final ItemStack[] inventory = mc.thePlayer.inventory.mainInventory;
-        for (ItemStack itemStack : inventory) {
+        for (ItemStack itemStack : mc.thePlayer.inventory.mainInventory) {
             if (itemStack != null) {
                 final Item item = itemStack.getItem();
 
@@ -271,7 +279,7 @@ public class HotbarItemsHandler {
     private String getPotionEffectString(ItemStack heldItemStack) {
         final ItemPotion potion = (ItemPotion) heldItemStack.getItem();
         final List<PotionEffect> effects = potion.getEffects(heldItemStack);
-        if (effects == null) return "";
+        if (effects == null) return null;
 
         final StringBuilder potionBuilder = new StringBuilder();
 

@@ -439,6 +439,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean removeViewBobbing;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Map Bobbing",
+        description = "While using View Bobbing, remove the item bobbing when holding a map.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean mapBobbing;
+
     // PERFORMANCE
 
     @Property(
