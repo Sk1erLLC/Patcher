@@ -308,7 +308,7 @@ dependencies {
     }
 
     compile ("net.modcore:Loader:1.9")
-    implementation "net.modcore:ModCore:701-${mcVersion}-SNAPSHOT"
+    implementation "net.modcore:ModCore:702-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

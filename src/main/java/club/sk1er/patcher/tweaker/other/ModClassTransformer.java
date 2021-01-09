@@ -14,6 +14,7 @@ package club.sk1er.patcher.tweaker.other;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
+import club.sk1er.patcher.tweaker.asm.modcore.ModCoreModelRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.optifine.*;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.tweaker.asm.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
@@ -69,6 +70,9 @@ public class ModClassTransformer implements IClassTransformer {
 
         // Vanilla Enhancements by OrangeMarshall
         registerTransformer(new BetterChatTransformer());
+
+        // ModCore
+        registerTransformer(new ModCoreModelRendererTransformer());
 
         // SpiderFrog's oam overwrites our injection (because surely a 1.7 animations mod needs this feature)
         // only run in this transformer if it's loaded in prod
