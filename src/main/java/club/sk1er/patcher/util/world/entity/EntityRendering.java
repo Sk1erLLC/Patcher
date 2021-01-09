@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.world.entity;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.hooks.NameTagRenderingHooks;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -150,13 +151,7 @@ public class EntityRendering {
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
-
-        if (PatcherConfig.shadowedNametagText) {
-            fontRenderer.drawStringWithShadow(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
-        } else {
-            fontRenderer.drawString(name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
-        }
-
+        NameTagRenderingHooks.drawNametagText(fontRenderer, name, -stringWidth, 0, entity.isSneaking() ? 553648127 : -1);
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

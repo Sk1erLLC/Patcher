@@ -672,8 +672,8 @@ public class PatcherConfig extends Vigilant {
     public static boolean dontCullEntityNametags;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Don't Cull Armor Stand Nametags",
-        description = "Render nametags even when the armor stand is occluded.",
+        type = PropertyType.SWITCH, name = "Don't Cull Armorstand Nametags",
+        description = "Render nametags even when the armorstand is occluded.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullArmorStandNametags;
@@ -728,6 +728,20 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Culling"
     )
     public static boolean cullParticles = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Entity Back-face Culling",
+        description = "Stop rendering sides of entities that you cannot see.\n§cBeing inside an entity will cause that body part to be invisible.",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean entityBackFaceCulling;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Player Back-face Culling",
+        description = "Stop rendering sides of players that you cannot see.\n§cBeing inside a player will cause that body part to be invisible.",
+        category = "Performance", subcategory = "Culling"
+    )
+    public static boolean playerBackFaceCulling;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Mob Spawning",

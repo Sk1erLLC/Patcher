@@ -35,8 +35,7 @@ public class SoundHandler implements IResourceManagerReloadListener {
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
         if (event.result instanceof PositionedSound) {
-            PositionedSound result = (PositionedSound) event.result;
-            result.volume *= getVolumeMultiplier(event.result.getSoundLocation());
+            ((PositionedSound) event.result).volume *= getVolumeMultiplier(event.result.getSoundLocation());
         }
     }
 
@@ -53,11 +52,10 @@ public class SoundHandler implements IResourceManagerReloadListener {
     public void onResourceManagerReload(IResourceManager resourceManager) {
         Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = Minecraft.getMinecraft().getSoundHandler().sndRegistry.soundRegistry;
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
-            SoundEventAccessorComposite comp = entry.getValue();
             data.computeIfAbsent(entry.getKey(), location ->
                 ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
                     "Sounds",
-                    WordUtils.capitalizeFully(comp.getSoundCategory().getCategoryName()),
+                    WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
                     getName(location),
                     "Sound Multiplier for " + location.getResourcePath(),
                     100,
@@ -71,7 +69,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
     }
 
     private String getName(ResourceLocation location) {
-        String resourcePath = location.getResourcePath();
-        return WordUtils.capitalizeFully(resourcePath.replace(".", " ").replace("_", " "));
+        return WordUtils.capitalizeFully(location.getResourcePath().replace(".", " ").replace("_", " "));
     }
 }

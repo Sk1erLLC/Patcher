@@ -284,6 +284,8 @@ public class PatcherCommand extends Command {
         PatcherConfig.optimizedItemRenderer = status;
         PatcherConfig.limitChunks = status;
         PatcherConfig.optimizedResourcePackDiscovery = status;
+        PatcherConfig.playerBackFaceCulling = status;
+        PatcherConfig.entityBackFaceCulling = status;
 
         // fullbright requires a chunk reload once toggled, perform automatically
         Minecraft.getMinecraft().renderGlobal.loadRenderers();
