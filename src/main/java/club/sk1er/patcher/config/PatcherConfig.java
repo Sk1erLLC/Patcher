@@ -441,10 +441,17 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Map Bobbing",
-        description = "While using View Bobbing, remove the item bobbing when holding a map.",
+        description = "While using View Bobbing, remove the hand bobbing when holding a map.",
         category = "Miscellaneous", subcategory = "General"
     )
     public static boolean mapBobbing;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Static Items",
+        description = "Stop items from bobbing up and down when dropped on the ground.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean staticItems;
 
     // PERFORMANCE
 
