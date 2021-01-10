@@ -175,7 +175,7 @@ public class Patcher {
             new AsyncScreenshots.ScreenshotsFolder()
         );
 
-        this.registerEvents(
+        registerEvents(
             this, target, debugPerformanceRenderer, cloudHandler, dropModifier,
             new MenuPreviewHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),

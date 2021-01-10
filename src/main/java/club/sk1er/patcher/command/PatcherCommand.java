@@ -14,6 +14,7 @@ package club.sk1er.patcher.command;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.benchmark.impl.ItemBenchmark;
@@ -119,6 +120,12 @@ public class PatcherCommand extends Command {
 
     @SubCommand("mode")
     public void mode(@Options({"vanilla", "optimized"}) String mode) {
+        // users dont need this
+        if (ClassTransformer.isDevelopment()) {
+            ChatUtilities.sendNotification("Debug Renderer", "This command is disabled outside of development.");
+            return;
+        }
+
         if (mode.equals("vanilla")) {
             toggleOptions(false);
             Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");

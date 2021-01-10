@@ -11,7 +11,7 @@ public class RendererLivingEntityHook {
     private static boolean shouldCull = true;
 
     public static void backFaceCullingStart(Entity entity) {
-        shouldCull = (PatcherConfig.entityBackFaceCulling && !(entity instanceof EntityPlayer)) || (PatcherConfig.playerBackFaceCulling && entity instanceof EntityPlayer);
+        shouldCull = PatcherConfig.entityBackFaceCulling && !(entity instanceof EntityPlayer) || PatcherConfig.playerBackFaceCulling && entity instanceof EntityPlayer;
 
         if (shouldCull) {
             GlStateManager.enableCull();

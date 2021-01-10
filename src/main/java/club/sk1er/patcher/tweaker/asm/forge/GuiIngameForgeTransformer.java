@@ -108,9 +108,9 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/GuiIngameForge", "field_73839_d", "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71424_I", "Lnet/minecraft/profiler/Profiler;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/profiler/Profiler", "getNameOfLastSection", "()Ljava/lang/String;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/profiler/Profiler", "func_76322_c", "()Ljava/lang/String;", false));
         list.add(new LdcInsnNode("chat"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "endSection", "(Ljava/lang/String;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "endsWith", "(Ljava/lang/String;)Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
