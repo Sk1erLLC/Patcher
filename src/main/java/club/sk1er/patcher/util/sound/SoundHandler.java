@@ -54,10 +54,10 @@ public class SoundHandler implements IResourceManagerReloadListener {
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
             data.computeIfAbsent(entry.getKey(), location ->
                 ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
-                    "Sounds",
                     WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
+                    "Sounds",
                     getName(location),
-                    "Sound Multiplier for " + location.getResourcePath(),
+                    "Sound Multiplier for " + getName(location),
                     100,
                     0,
                     200,

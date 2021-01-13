@@ -215,25 +215,22 @@ public class Patcher {
             if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
                 notifications.push(
                     "Patcher",
-                    modName + " has been detected. Entity Culling is now disabled.\n" +
-                        "This is an unfixable incompatibility without an update from the authors of " + modName);
+                    modName + " has been detected. Entity Culling is now disabled.");
                 PatcherConfig.entityCulling = false;
             }
 
-            if (modId.equals("labymod") || modId.equals("enhancements")) {
-                if (PatcherConfig.compactChat) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Compact Chat is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + modName);
-                    PatcherConfig.compactChat = false;
-                }
+            if ((modId.equals("labymod") || modId.equals("enhancements")) && PatcherConfig.compactChat) {
+                notifications.push(
+                    "Patcher",
+                    modName + " has been detected. Compact Chat is now disabled.");
+                PatcherConfig.compactChat = false;
+            }
 
+            if (modId.equals("labymod")) {
                 if (PatcherConfig.optimizedResourcePackDiscovery) {
                     notifications.push(
                         "Patcher",
-                        "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.\n" +
-                            "This is an unfixable incompatibility without an update from the authors of " + modName);
+                        "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.");
                     PatcherConfig.optimizedResourcePackDiscovery = false;
                 }
             }
@@ -241,7 +238,7 @@ public class Patcher {
             if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
                 notifications.push(
                     "Patcher",
-                    "Patcher has identified Smooth Font and as such, Patcher's Optimized Font Renderer " +
+                    "Patcher has identified Smooth Font and as such, Patcher's Font Renderer " +
                         "has been automatically disabled.\nRestart your game for Smooth Font to work again."
                 );
                 PatcherConfig.optimizedFontRenderer = false;
@@ -306,19 +303,12 @@ public class Patcher {
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
-            logger.info("User is in singleplayer, setting string length to 256.");
             GuiChatTransformer.maxChatLength = 256;
             return;
         }
 
         final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
-        if (serverIP == null) {
-            logger.info("Server IP is somehow null, returning.");
-            return;
-        }
-
-        if (blacklistedServers.contains(serverIP)) {
-            logger.info("Current server supports 1.11+, but doesn't allow for 1.8.9 to use a high chat length, setting to 100.");
+        if (serverIP == null || blacklistedServers.contains(serverIP)) {
             GuiChatTransformer.maxChatLength = 100;
             return;
         }
@@ -347,7 +337,6 @@ public class Patcher {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
                 if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000L)) {
-                    logger.info("Deleted log {}", file.getName());
                     file.delete();
                 }
             }

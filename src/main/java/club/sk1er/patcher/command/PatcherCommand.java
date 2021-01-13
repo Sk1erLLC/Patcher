@@ -219,6 +219,11 @@ public class PatcherCommand extends Command {
         player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ);
     }
 
+    @SubCommand("sounds")
+    public void sounds() {
+        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
+    }
+
     public static void refreshSkin() {
         try {
             final SkinManager skinManager = Minecraft.getMinecraft().getSkinManager();
