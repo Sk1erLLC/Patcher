@@ -103,7 +103,7 @@ public class PatcherMenuEditor {
                 20,
                 "Refresh Skin"));
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(85348, 2, height - 22, 100, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(85348, (width >> 1) - 100, height / 6 + 146, 200, 20, "All Sounds"));
         }
     }
 
