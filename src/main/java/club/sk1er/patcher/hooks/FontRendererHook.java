@@ -345,10 +345,10 @@ public final class FontRendererHook {
         if (lastStart != null && lastStart.red == lastRed && lastStart.green == lastGreen && lastStart.blue == lastBlue && lastStart.alpha == lastAlpha) {
             if (lastStart.posX + lastStart.width >= posX - 1) {
                 lastStart.width = posX + effectiveWidth - lastStart.posX;
+                return;
             }
-        } else {
-            style.add(new RenderPair(posX, effectiveWidth, lastRed, lastGreen, lastBlue, lastAlpha));
         }
+        style.add(new RenderPair(posX, effectiveWidth, lastRed, lastGreen, lastBlue, lastAlpha));
     }
 
     private float getBoldOffset(int width) {
