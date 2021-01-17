@@ -46,12 +46,10 @@ public class TagRendererTransformer implements CommonTransformer {
             final String methodName = methodNode.name;
             if (methodName.equals("renderTag")) {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode node = iterator.next();
-
                     if (node.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldName = mapFieldNameFromNode(node);
+                        final String fieldName = mapFieldNameFromNode(node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             methodNode.instructions.insert(node, timesByModifier());
                             break;

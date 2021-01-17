@@ -64,10 +64,7 @@ public class ForgeHooksClientTransformer implements PatcherTransformer {
                 }
             } else if (methodName.equals("drawScreen")) {
                 methodNode.instructions.insert(redirectMouse());
-                methodNode.instructions.insertBefore(
-                    methodNode.instructions.getLast().getPrevious(),
-                    addReturn()
-                );
+                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), addReturn());
             }
         }
     }

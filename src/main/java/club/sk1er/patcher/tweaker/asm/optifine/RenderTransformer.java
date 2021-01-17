@@ -48,18 +48,17 @@ public class RenderTransformer implements CommonTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("renderLivingLabel") || methodName.equals("func_147906_a")) {
                 makeNametagTransparent(methodNode);
                 makeNametagShadowed(methodNode);
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    final AbstractInsnNode node = iterator.next();
 
                     if (node.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldName = mapFieldNameFromNode(node);
+                        final String fieldName = mapFieldNameFromNode(node);
                         if (fieldName.equals("playerViewX") || fieldName.equals("field_78732_j")) {
                             methodNode.instructions.insert(node, timesByModifier());
                             break;

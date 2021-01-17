@@ -60,7 +60,7 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                 case "checkGLError":
                 case "func_71361_d":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelGlCheck());
+                    methodNode.instructions.insert(cancelGlCheck());
                     break;
 
                 case "toggleFullscreen":
@@ -81,7 +81,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                     insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
                     insnList.add(new InsnNode(Opcodes.RETURN));
                     insnList.add(labelNode);
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insnList);
+                    methodNode.instructions.insert(insnList);
                     break;
                 }
 

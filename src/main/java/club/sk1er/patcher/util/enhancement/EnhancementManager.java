@@ -14,7 +14,6 @@ package club.sk1er.patcher.util.enhancement;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,10 +36,6 @@ public class EnhancementManager {
     @SuppressWarnings("unchecked")
     public <T extends Enhancement> T getEnhancement(Class<T> enhancement) {
         return (T) enhancementMap.get(enhancement);
-    }
-
-    public Collection<Enhancement> getEnhancements() {
-        return enhancementMap.values();
     }
 
     public static EnhancementManager getInstance() {

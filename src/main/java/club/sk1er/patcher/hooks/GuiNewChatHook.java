@@ -12,11 +12,12 @@ import net.minecraft.util.MathHelper;
 
 import java.util.Deque;
 
+@SuppressWarnings("unused")
 public class GuiNewChatHook {
 
     public static final Deque<IChatComponent> messageQueue = Queues.newArrayDeque();
     private static final Minecraft mc = Minecraft.getMinecraft();
-    public static long lastMessageAddedTime = 0L;
+    private static long lastMessageAddedTime = 0L;
 
     public static void processMessageQueue() {
         if (!messageQueue.isEmpty()) {

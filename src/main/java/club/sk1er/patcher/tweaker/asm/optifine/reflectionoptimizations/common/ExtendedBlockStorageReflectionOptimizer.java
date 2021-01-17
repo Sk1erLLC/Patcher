@@ -26,25 +26,26 @@ public class ExtendedBlockStorageReflectionOptimizer implements PatcherTransform
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("func_177484_a")) {
-                Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final InsnList instructions = methodNode.instructions;
+                final Iterator<AbstractInsnNode> iterator = instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    final AbstractInsnNode node = iterator.next();
                     if (node.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) node).name.equals("isInstance")) {
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.insertBefore(node, new VarInsnNode(Opcodes.ALOAD, 4));
-                        methodNode.instructions.insertBefore(node, new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraftforge/common/property/IExtendedBlockState"));
-                        methodNode.instructions.remove(node);
+                        instructions.remove(node.getPrevious());
+                        instructions.remove(node.getPrevious());
+                        instructions.insertBefore(node, new VarInsnNode(Opcodes.ALOAD, 4));
+                        instructions.insertBefore(node, new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraftforge/common/property/IExtendedBlockState"));
+                        instructions.remove(node);
                     } else if (node.getOpcode() == Opcodes.CHECKCAST && ((TypeInsnNode) node).desc.equals("net/minecraft/block/state/IBlockState")) {
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.remove(node.getPrevious());
-                        methodNode.instructions.insertBefore(node, new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraftforge/common/property/IExtendedBlockState"));
-                        methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/common/property/IExtendedBlockState", "getClean", "()Lnet/minecraft/block/state/IBlockState;", false));
-                        methodNode.instructions.remove(node);
+                        instructions.remove(node.getPrevious());
+                        instructions.remove(node.getPrevious());
+                        instructions.remove(node.getPrevious());
+                        instructions.remove(node.getPrevious());
+                        instructions.insertBefore(node, new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraftforge/common/property/IExtendedBlockState"));
+                        instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/common/property/IExtendedBlockState", "getClean", "()Lnet/minecraft/block/state/IBlockState;", false));
+                        instructions.remove(node);
                         break;
                     }
                 }

@@ -89,7 +89,7 @@ public class GuiChatTransformer implements PatcherTransformer {
                 case "drawScreen":
                 case "func_73863_a": {
                     LabelNode ifne = new LabelNode();
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getOption(ifne));
+                    methodNode.instructions.insert(getOption(ifne));
 
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 

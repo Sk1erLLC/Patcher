@@ -51,13 +51,11 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
                 makeNametagTransparent(methodNode);
             } else if (methodNode.name.equals("render")) {
                 makeNametagShadowed(methodNode);
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof InsnNode && next.getOpcode() == Opcodes.DCONST_0) {
-                        LabelNode gotoInsn = new LabelNode();
+                        final LabelNode gotoInsn = new LabelNode();
                         methodNode.instructions.insertBefore(next, moveNametag(gotoInsn));
                         methodNode.instructions.insertBefore(next.getNext(), gotoInsn);
                         break;

@@ -32,7 +32,7 @@ public class EntityCullingTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("shouldRenderEntity")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), this.smartEntityCulling());
+                method.instructions.insert(this.smartEntityCulling());
                 break;
             }
         }

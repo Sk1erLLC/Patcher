@@ -32,9 +32,8 @@ public class BlockPosTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-            String methodDesc = mapMethodDesc(methodNode);
-            switch (methodName) {
+            final String methodDesc = mapMethodDesc(methodNode);
+            switch (mapMethodName(classNode, methodNode)) {
                 case "func_177981_b":
                 case "func_177984_a":
                 case "up":

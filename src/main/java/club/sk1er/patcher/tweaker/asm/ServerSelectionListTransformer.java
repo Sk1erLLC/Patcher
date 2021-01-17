@@ -35,7 +35,7 @@ public class ServerSelectionListTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, method);
 
             if (methodName.equals("getListEntry") || methodName.equals("func_148180_b")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), checkList());
+                method.instructions.insert(checkList());
                 break;
             }
         }

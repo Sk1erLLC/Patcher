@@ -22,10 +22,8 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("renderExperience")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(8453920)) {
                         method.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                             ClassTransformer.optifineVersion.equals("I7") ? "CustomColors" : "net/optifine/CustomColors",

@@ -56,9 +56,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "createdLightmap", "Z", null, null));
 
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
-            switch (methodName) {
+            switch (mapMethodName(classNode, methodNode)) {
                 case "getFOVModifier":
                 case "func_78481_a": {
                     int zoomActiveIndex = -1;
@@ -70,33 +68,36 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         }
                     }
 
-                    Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    LabelNode ifne = new LabelNode();
+                    final Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final LabelNode ifne = new LabelNode();
                     while (iterator.hasNext()) {
-                        AbstractInsnNode thing = iterator.next();
-                        if (checkNode(thing)) {
-                            methodNode.instructions.insertBefore(thing, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "normalZoomSensitivity", "Z")); // False instead of true
-                            methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.ICONST_1));
-                            methodNode.instructions.insertBefore(thing, new InsnNode(Opcodes.IXOR));
-                            methodNode.instructions.insert(thing, callResetAndSensChange());
-                            methodNode.instructions.remove(thing);
-                        } else if (checkDivNode(thing)) {
-                            methodNode.instructions.remove(thing.getPrevious());
-                            methodNode.instructions.insertBefore(thing, getDivisor());
-                        } else if (checkZoomActiveNode(thing, zoomActiveIndex)) {
-                            methodNode.instructions.insertBefore(thing, setZoomed(zoomActiveIndex));
-                        } else if (thing instanceof MethodInsnNode && thing.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(thing);
-
-                            if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
-                                methodNode.instructions.insertBefore(thing.getPrevious(), createLabel(ifne));
+                        final AbstractInsnNode node = iterator.next();
+                        if (checkNode(node)) {
+                            methodNode.instructions.insertBefore(node, new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "normalZoomSensitivity", "Z")); // False instead of true
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.ICONST_1));
+                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
+                            methodNode.instructions.insert(node, callResetAndSensChange());
+                            methodNode.instructions.remove(node);
+                        } else if (checkDivNode(node)) {
+                            methodNode.instructions.remove(node.getPrevious());
+                            methodNode.instructions.insertBefore(node, getDivisor());
+                        } else if (checkZoomActiveNode(node, zoomActiveIndex)) {
+                            methodNode.instructions.insertBefore(node, setZoomed(zoomActiveIndex));
+                        } else if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(node);
+                            if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
+                                    methodNode.instructions.insertBefore(node.getPrevious(), createLabel(ifne));
+                                }
+                            } else if (node.getOpcode() == Opcodes.INVOKESTATIC) {
+                                if (methodInsnName.equals("isKeyDown") || methodInsnName.equals("func_100015_a")) {
+                                    methodNode.instructions.insert(node, modifyKeyDownIfToggleToZoom());
+                                }
                             }
-                        } else if (thing instanceof LdcInsnNode && ((LdcInsnNode) thing).cst.equals(70.0f) && thing.getPrevious().getOpcode() == Opcodes.FMUL) {
-                            methodNode.instructions.insert(thing.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
-                        } else if (thing.getOpcode() == Opcodes.INVOKESTATIC && (((MethodInsnNode) thing).name.equals("isKeyDown") || ((MethodInsnNode) thing).name.equals("func_100015_a"))) {
-                            methodNode.instructions.insert(thing, modifyKeyDownIfToggleToZoom());
-                        } else if (thing.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) thing).owner.equals("Config") && ((FieldInsnNode) thing).name.equals("zoomMode") && thing.getPrevious().getOpcode() == Opcodes.ICONST_0) {
-                            methodNode.instructions.insert(thing, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "resetSensitivity", "()V", false));
+                        } else if (node instanceof LdcInsnNode && ((LdcInsnNode) node).cst.equals(70.0f) && node.getPrevious().getOpcode() == Opcodes.FMUL) {
+                            methodNode.instructions.insert(node.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
+                        } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) node).owner.equals("Config") && ((FieldInsnNode) node).name.equals("zoomMode") && node.getPrevious().getOpcode() == Opcodes.ICONST_0) {
+                            methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "resetSensitivity", "()V", false));
                         }
                     }
 
@@ -104,7 +105,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 }
                 case "orientCamera":
                 case "func_78467_g": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     int movingobjectpositionIndex = -1,
                         d0Index = -1,
@@ -119,7 +120,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                     boolean useNormalIndex = ClassTransformer.optifineVersion.equals("I7");
 
-                    for (LocalVariableNode variable : methodNode.localVariables) {
+                    for (final LocalVariableNode variable : methodNode.localVariables) {
                         switch (variable.name) {
                             case "movingobjectposition":
                                 movingobjectpositionIndex = variable.index;
@@ -183,29 +184,28 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                 case "updateLightmap":
                 case "func_78472_g": {
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkFullbright());
+                    methodNode.instructions.insert(checkFullbright());
 
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
+                        final AbstractInsnNode next = iterator.next();
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
+                            final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
                             } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
-                                AbstractInsnNode suspect = next.getNext().getNext();
+                                final AbstractInsnNode suspect = next.getNext().getNext();
                                 if (suspect.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) suspect).owner.endsWith("CustomColors")) {
                                     continue;
                                 }
+
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), clampLightmap());
                             }
                         }
                     }
                     break;
                 }
+
                 case "renderStreamIndicator":
                 case "func_152430_c":
                     clearInstructions(methodNode);
@@ -214,13 +214,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                 case "renderWorldPass":
                 case "func_175068_a": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
-
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
+                            final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("renderEntities") || methodInsnName.equals("func_180446_a")) {
                                 methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
 
@@ -231,8 +229,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
                             }
                         } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
-                            final String fieldName = mapFieldNameFromNode(next);
-                            if (fieldName.equals("TRANSLUCENT")) {
+                            if (mapFieldNameFromNode(next).equals("TRANSLUCENT")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), enablePolygonOffset());
                             }
 
@@ -251,7 +248,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 if (next instanceof TypeInsnNode) {
                                     if (FMLDeobfuscatingRemapper.INSTANCE.map(((TypeInsnNode) next).desc).equals("net/minecraft/client/renderer/culling/Frustum")) {
                                         while (true) {
-                                            AbstractInsnNode insn = iterator.next();
+                                            final AbstractInsnNode insn = iterator.next();
                                             if (insn instanceof VarInsnNode) {
                                                 methodNode.instructions.insert(insn, getStoreCameraInsn(((VarInsnNode) insn).var));
                                                 break;
@@ -267,7 +264,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             case "L5": {
                                 int cameraVar = -1;
 
-                                for (LocalVariableNode var : methodNode.localVariables) {
+                                for (final LocalVariableNode var : methodNode.localVariables) {
                                     if (var.name.equals("icamera")) {
                                         cameraVar = var.index;
                                         break;
@@ -275,8 +272,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 }
 
                                 if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                                    String methodInsnName = mapMethodNameFromNode(next);
-
+                                    final String methodInsnName = mapMethodNameFromNode(next);
                                     if (methodInsnName.equals("getRenderViewEntity") || methodInsnName.equals("func_175606_aa")) {
                                         next = next.getPrevious().getPrevious();
 
@@ -293,57 +289,18 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                 case "func_78464_a":
                 case "updateRenderer": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
+                        final AbstractInsnNode next = iterator.next();
 
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
+                            final String methodInsnName = mapMethodNameFromNode(next);
 
                             if (methodInsnName.equals("getLightBrightness")) {
                                 ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
                                 methodNode.instructions.insertBefore(next.getPrevious(), getEyePosition());
                                 break;
-                            }
-                        }
-                    }
-
-                    break;
-                }
-
-                case "func_78466_h":
-                case "updateFogColor": {
-                    // optifine already fixes this and i wasn't even aware!
-                    if (!ClassTransformer.optifineVersion.equals("NONE")) {
-                        return;
-                    }
-
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
-                        int f6index = -1;
-
-                        for (LocalVariableNode variable : methodNode.localVariables) {
-                            if (variable.name.equals("f6")) {
-                                f6index = variable.index;
-                                break;
-                            }
-                        }
-
-                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            String fieldInsnName = mapFieldNameFromNode(next);
-
-                            if (fieldInsnName.equals("fogColorBlue") || fieldInsnName.equals("field_175081_S")) {
-                                if (next.getNext().getOpcode() == Opcodes.FDIV) {
-                                    final AbstractInsnNode newInsn = next.getNext().getNext().getNext().getNext().getNext().getNext();
-                                    if (newInsn instanceof VarInsnNode) {
-                                        methodNode.instructions.insertBefore(newInsn, clampVariable(f6index));
-                                    }
-                                }
                             }
                         }
                     }
@@ -521,20 +478,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.FLOAD, floatIndex));
         list.add(new InsnNode(Opcodes.F2D));
         list.add(new InsnNode(Opcodes.DADD));
-    }
-
-    private InsnList clampVariable(int f6index) {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Float", "isInfinite", "(F)Z", false));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f6index));
-        list.add(new InsnNode(Opcodes.DCONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Math", "nextAfter", "(FD)F", false));
-        list.add(new VarInsnNode(Opcodes.FSTORE, f6index));
-        list.add(ifeq);
-        return list;
     }
 
     private InsnList clampLightmap() {

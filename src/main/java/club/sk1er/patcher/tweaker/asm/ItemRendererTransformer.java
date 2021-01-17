@@ -46,9 +46,9 @@ public class ItemRendererTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderWaterOverlayTexture") || methodName.equals("func_78448_c")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), removeOverlay());
+                methodNode.instructions.insert(removeOverlay());
             } else if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeHeight());
+                methodNode.instructions.insert(changeHeight());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                     "net/minecraft/client/renderer/GlStateManager",
                     "func_179121_F",

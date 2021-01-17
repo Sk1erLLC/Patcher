@@ -129,7 +129,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
                 case "addBlockDestroyEffects":
                 case "func_180532_a":
                 case "addBlockHitEffects":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelParticles());
+                    methodNode.instructions.insert(cancelParticles());
                     break;
             }
         }

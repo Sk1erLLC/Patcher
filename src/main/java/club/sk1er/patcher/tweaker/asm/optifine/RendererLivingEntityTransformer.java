@@ -39,15 +39,15 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
     public void transform(ClassNode classNode, String name) {
         boolean transformedDoRender = false;
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
             if (!transformedDoRender && (methodName.equals("doRender") || methodName.equals("func_76986_a"))) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 int fIndex = -1;
                 int f1Index = -1;
                 int f2Index = -1;
 
-                for (LocalVariableNode var : methodNode.localVariables) {
+                for (final LocalVariableNode var : methodNode.localVariables) {
                     switch (var.name) {
                         case "var10":
                         case "f":
@@ -137,7 +137,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                 makeNametagTransparent(methodNode);
                 makeNametagShadowed(methodNode);
             } else if (methodName.equals("canRenderName") || methodName.equals("func_177070_b")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), modifyNametagRenderState(false));
+                methodNode.instructions.insert(modifyNametagRenderState(false));
             }
         }
     }

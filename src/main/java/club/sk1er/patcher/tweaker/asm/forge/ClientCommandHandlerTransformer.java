@@ -47,30 +47,25 @@ public class ClientCommandHandlerTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("executeCommand") || methodName.equals("func_71556_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    final AbstractInsnNode node = iterator.next();
 
                     if (node instanceof InsnNode && node.getOpcode() == Opcodes.AALOAD) {
-                        methodNode.instructions.insertBefore(node.getNext(), makeLowercase());
+                        methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+                            "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));
                         break;
                     }
                 }
 
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), checkForSlash());
+                methodNode.instructions.insert(checkForSlash());
                 break;
             }
         }
-    }
-
-    public static InsnList makeLowercase() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));
-        return list;
     }
 
     private InsnList checkForSlash() {

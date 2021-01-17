@@ -42,7 +42,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "drawDefaultBackground":
                 case "func_146276_q_":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelBackgroundRendering());
+                    methodNode.instructions.insert(cancelBackgroundRendering());
                     break;
 
                 case "handleKeyboardInput":

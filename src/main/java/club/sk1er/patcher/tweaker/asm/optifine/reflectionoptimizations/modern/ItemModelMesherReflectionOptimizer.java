@@ -45,13 +45,13 @@ public class ItemModelMesherReflectionOptimizer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
+            final String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("getItemModel") || methodName.equals("func_178089_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("exists")) {
                         for (int i = 0; i < 13; ++i) {

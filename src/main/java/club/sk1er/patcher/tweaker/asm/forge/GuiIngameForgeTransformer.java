@@ -80,7 +80,7 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                             next = next.getNext();
                         }
 
-                        methodNode.instructions.insertBefore(next, addIfeq(ifne, list));
+                        methodNode.instructions.insertBefore(next, ifne);
                         break;
                     }
                 }
@@ -142,11 +142,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
-        return list;
-    }
-
-    private InsnList addIfeq(LabelNode ifne, InsnList list) {
-        list.add(ifne);
         return list;
     }
 

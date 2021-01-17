@@ -27,7 +27,7 @@ public class GuiMultiplayerTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, method);
 
             if (methodName.equals("keyTyped") || methodName.equals("func_73869_a")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), selectServer());
+                method.instructions.insert(selectServer());
                 break;
             }
         }

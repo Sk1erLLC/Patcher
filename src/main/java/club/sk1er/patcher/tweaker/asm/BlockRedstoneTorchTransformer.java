@@ -45,9 +45,9 @@ public class BlockRedstoneTorchTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("<clinit>")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("newHashMap")) {
                         methodNode.instructions.remove(next);
@@ -55,7 +55,7 @@ public class BlockRedstoneTorchTransformer implements PatcherTransformer {
                     }
                 }
 
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), fixTorchMemoryLeak());
+                methodNode.instructions.insert(fixTorchMemoryLeak());
                 break;
             }
         }

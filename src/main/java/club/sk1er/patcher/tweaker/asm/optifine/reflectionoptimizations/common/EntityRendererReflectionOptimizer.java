@@ -32,11 +32,9 @@ public class EntityRendererReflectionOptimizer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("updateCameraAndRender") || methodName.equals("func_181560_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
 

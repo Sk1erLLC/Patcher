@@ -45,7 +45,7 @@ public class GameRulesValueTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             String methodName = mapMethodName(classNode, method);
             if (methodName.equals("setValue") || methodName.equals("func_82757_a")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), getCheck());
+                method.instructions.insert(getCheck());
                 break;
             }
         }

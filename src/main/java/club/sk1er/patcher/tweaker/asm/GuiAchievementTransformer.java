@@ -44,7 +44,7 @@ public class GuiAchievementTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("updateAchievementWindow") || methodName.equals("func_146254_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
                 break;
             }
         }

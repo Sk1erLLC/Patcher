@@ -48,7 +48,7 @@ public class ScreenShotHelperTransformer implements PatcherTransformer {
             String methodDesc = mapMethodDesc(methodNode);
             if ((methodName.equals("saveScreenshot") || methodName.equals("func_148259_a")) &&
                 methodDesc.equals("(Ljava/io/File;Ljava/lang/String;IILnet/minecraft/client/shader/Framebuffer;)Lnet/minecraft/util/IChatComponent;")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), betterScreenshots());
+                methodNode.instructions.insert(betterScreenshots());
                 break;
             }
         }

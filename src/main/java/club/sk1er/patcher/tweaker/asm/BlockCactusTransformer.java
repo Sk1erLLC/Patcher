@@ -32,8 +32,7 @@ public class BlockCactusTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            String methodName = mapMethodName(classNode, method);
-
+            final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("getSelectedBoundingBox") || methodName.equals("func_180646_a")) {
                 clearInstructions(method);
                 method.instructions.insert(fixedSelectionBox());

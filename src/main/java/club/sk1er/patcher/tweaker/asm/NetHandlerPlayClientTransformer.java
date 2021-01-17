@@ -43,7 +43,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "handleResourcePack":
                 case "func_175095_a":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelIfNotSafe());
+                    methodNode.instructions.insert(cancelIfNotSafe());
                     break;
 
                 case "handleJoinGame":

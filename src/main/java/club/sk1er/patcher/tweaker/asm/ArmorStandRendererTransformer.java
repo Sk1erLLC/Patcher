@@ -13,10 +13,9 @@ public class ArmorStandRendererTransformer implements CommonTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            String methodName = mapMethodName(classNode, method);
-
+            final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("canRenderName") || methodName.equals("func_177070_b")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), modifyNametagRenderState(false));
+                method.instructions.insert(modifyNametagRenderState(false));
                 break;
             }
         }

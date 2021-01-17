@@ -33,7 +33,7 @@ public class NBTTagStringTransformer implements PatcherTransformer {
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
                 insns.add(new InsnNode(Opcodes.ACONST_NULL));
                 insns.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/nbt/NBTTagString", "dataCache", "Ljava/lang/String;"));
-                method.instructions.insertBefore(method.instructions.getFirst(), insns);
+                method.instructions.insert(insns);
             } else if (methodName.equals("toString")) {
                 final InsnList list = new InsnList();
                 list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -41,7 +41,7 @@ public class NBTTagStringTransformer implements PatcherTransformer {
                 final LabelNode labelNode = new LabelNode();
                 list.add(new JumpInsnNode(Opcodes.IFNONNULL, labelNode));
                 list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                method.instructions.insertBefore(method.instructions.getFirst(), list);
+                method.instructions.insert(list);
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();

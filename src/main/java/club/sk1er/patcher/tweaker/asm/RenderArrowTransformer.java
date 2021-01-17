@@ -46,7 +46,7 @@ public class RenderArrowTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
                 break;
             }
         }

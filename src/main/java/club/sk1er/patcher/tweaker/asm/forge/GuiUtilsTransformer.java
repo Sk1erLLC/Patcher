@@ -2,7 +2,13 @@ package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -15,12 +21,11 @@ public class GuiUtilsTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if ("drawHoveringText".equals(methodName)) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode) {
                         if (next.getOpcode() == Opcodes.INVOKESTATIC) {
                             final String methodInsnName = mapMethodNameFromNode(next);
@@ -32,25 +37,23 @@ public class GuiUtilsTransformer implements PatcherTransformer {
                         methodNode.instructions.insert(next, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179097_i", "()V", false));
                     }
                 }
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getMoveForward());
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), getReset());
+
+                methodNode.instructions.insert(getMoveForward());
+                methodNode.instructions.insertBefore(
+                    methodNode.instructions.getLast().getPrevious(),
+                    new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", "()V", false)
+                );
             }
         }
     }
 
-    private AbstractInsnNode getReset() {
-        return new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", // translate
-                "()V", false);
-    }
-
     private InsnList getMoveForward() {
         InsnList insnList = new InsnList();
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false)); //Push matrix
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false));
         insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(-1F));
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
-                "(FFF)V", false));
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", "(FFF)V", false));
         return insnList;
     }
 }

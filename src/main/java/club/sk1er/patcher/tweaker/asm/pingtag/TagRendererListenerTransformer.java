@@ -48,10 +48,8 @@ public class TagRendererListenerTransformer implements CommonTransformer {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("render")) {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-
                     if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.DSTORE) {
                         methodNode.instructions.insertBefore(next.getNext(), changeHeight());
                         break;
