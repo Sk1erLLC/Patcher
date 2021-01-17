@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,10 +34,12 @@ import java.util.Set;
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
     public static final AssetsDatabase database = new AssetsDatabase();
+    public static final HashMap<String, String> resourceMap = new HashMap<>();
 
     static {
         try {
             negativeResourceCache.addAll(database.getAllNegative());
+            resourceMap.putAll(database.getAllMap());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,6 +48,7 @@ public class FallbackResourceManagerHook {
     @SuppressWarnings("unused")
     public static void clearCache() {
         negativeResourceCache.clear();
+        resourceMap.clear();
     }
 
     public static IResource getCachedResource(final FallbackResourceManager manager, final ResourceLocation location) throws IOException {
@@ -55,6 +59,17 @@ public class FallbackResourceManagerHook {
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
 
         InputStream mcMetaStream = null;
+        final String s = resourceMap.get(location.toString());
+        if (s != null) {
+            for (IResourcePack resourcePack : manager.resourcePacks) {
+                if (resourcePack.getPackName().equalsIgnoreCase(s)) {
+                    final InputStream fromFile = getFromFile(resourcePack, location);
+                    if (fromFile != null)
+                        return new SimpleResource(resourcePack.getPackName(), location, fromFile,
+                            getFromFile(resourcePack, mcMetaLocation), manager.frmMetadataSerializer);
+                }
+            }
+        }
         for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
             IResourcePack currentPack = manager.resourcePacks.get(i);
 
@@ -67,12 +82,17 @@ public class FallbackResourceManagerHook {
 
             InputStream stream = getFromFile(currentPack, location);
             if (stream != null) {
+                mapResource(location, currentPack.getPackName());
                 return new SimpleResource(currentPack.getPackName(), location, stream, mcMetaStream, manager.frmMetadataSerializer);
             }
         }
 
-        negativeResourceCache.add(location.getResourcePath());
+        negativeResourceCache.add(location.toString());
         throw new FileNotFoundException(location.toString());
+    }
+
+    public static void mapResource(ResourceLocation location, String name) {
+        resourceMap.put(location.toString(), name);
     }
 
     public static InputStream getFromFile(IResourcePack pack, ResourceLocation location) {
