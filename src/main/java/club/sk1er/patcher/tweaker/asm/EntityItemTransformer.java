@@ -47,9 +47,9 @@ public class EntityItemTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("searchForOtherItemsNearby") || methodName.equals("func_85054_d")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), stopSearch());
+                methodNode.instructions.insert(stopSearch());
             } else if (methodName.equals("combineItems") || methodName.equals("func_70289_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), stopSearchBoolean());
+                methodNode.instructions.insert(stopSearchBoolean());
             }
         }
     }

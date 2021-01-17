@@ -11,12 +11,12 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.tweaker.asm.forge.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.ListIterator;
@@ -51,7 +51,8 @@ public class CommandHandlerTransformer implements PatcherTransformer {
                     AbstractInsnNode node = iterator.next();
 
                     if (node instanceof InsnNode && node.getOpcode() == Opcodes.AALOAD) {
-                        methodNode.instructions.insertBefore(node.getNext(), ClientCommandHandlerTransformer.makeLowercase());
+                        methodNode.instructions.insertBefore(node.getNext(), new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+                            "java/lang/String", "toLowerCase", "()Ljava/lang/String;", false));
                         break;
                     }
                 }

@@ -34,10 +34,10 @@ public class KeyboardTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            if (methodNode.name.equals("getKeyName") && methodNode.desc.equals("(I)Ljava/lang/String;")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            if (methodNode.name.equals("getKeyName")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
+                    final AbstractInsnNode node = iterator.next();
                     if (node.getOpcode() == Opcodes.ARETURN) {
                         methodNode.instructions.insertBefore(node, getKeyName());
                         break;

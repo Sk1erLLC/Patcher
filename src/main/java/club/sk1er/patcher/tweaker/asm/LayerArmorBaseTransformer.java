@@ -44,7 +44,7 @@ public class LayerArmorBaseTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderGlint") || methodName.equals("func_177183_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
                 break;
             }
         }

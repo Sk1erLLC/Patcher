@@ -49,7 +49,7 @@ public class TileEntitySkullRendererTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderTileEntityAt") || methodName.equals("func_180535_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
             } else if (methodName.equals("renderSkull") || methodName.equals("func_180543_a")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 

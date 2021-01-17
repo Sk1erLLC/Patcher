@@ -44,7 +44,7 @@ public class TileEntityEnchantmentTableRendererTransformer implements PatcherTra
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("renderTileEntityAt") || methodName.equals("func_180535_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
                 break;
             }
         }

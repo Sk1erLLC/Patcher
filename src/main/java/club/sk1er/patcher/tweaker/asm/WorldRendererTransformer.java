@@ -66,7 +66,7 @@ public class WorldRendererTransformer implements PatcherTransformer {
                 insns.add(new InsnNode(Opcodes.IADD));
                 insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/nio/IntBuffer", "position", "(I)Ljava/nio/Buffer;", false));
                 insns.add(new InsnNode(Opcodes.POP));
-                method.instructions.insertBefore(method.instructions.getFirst(), insns);
+                method.instructions.insert(insns);
             }
         }
     }

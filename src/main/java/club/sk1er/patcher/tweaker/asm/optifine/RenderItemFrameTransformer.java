@@ -43,8 +43,7 @@ public class RenderItemFrameTransformer implements CommonTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("doRender") || methodName.equals("func_76986_a")) {
                 methodNode.instructions.insert(cancelRendering());
             } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {

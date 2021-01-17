@@ -24,7 +24,7 @@ public class FontRendererHookTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            String methodName = method.name;
+            final String methodName = method.name;
             if (methodName.equals("getOptifineBoldOffset")) {
                 method.instructions.clear();
                 final InsnList insns = new InsnList();

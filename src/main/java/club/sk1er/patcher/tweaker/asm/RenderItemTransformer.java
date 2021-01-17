@@ -56,9 +56,9 @@ public class RenderItemTransformer implements PatcherTransformer {
             if (methodNode.name.equals("<init>")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), renderItemHookInit());
             } else if (methodName.equals("renderEffect") || methodName.equals("func_180451_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
             } else if ((methodName.equals("renderModel") || methodName.equals("func_175045_a")) && methodNode.desc.equals("(Lnet/minecraft/client/resources/model/IBakedModel;ILnet/minecraft/item/ItemStack;)V")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), renderModelStart());
+                methodNode.instructions.insert(renderModelStart());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), renderModelEnd());
             }
         }

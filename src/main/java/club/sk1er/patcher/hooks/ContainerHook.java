@@ -11,16 +11,13 @@ import net.minecraft.util.ResourceLocation;
 
 @SuppressWarnings("unused")
 public class ContainerHook {
+
+    private static final Minecraft mc = Minecraft.getMinecraft();
+
     public static void playArmorBreakSound(Container container, int slotID, ItemStack stack) {
-        final Minecraft mc = Minecraft.getMinecraft();
-        if (!mc.theWorld.isRemote) {
+        if (!mc.theWorld.isRemote || stack != null) {
             return;
         }
-
-        if (stack != null) {
-            return;
-        }
-
 
         if (slotID >= 5 && slotID <= 8 && container instanceof ContainerPlayer) {
             final Slot slot = container.getSlot(slotID);

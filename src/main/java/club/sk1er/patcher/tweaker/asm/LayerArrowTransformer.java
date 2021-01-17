@@ -67,7 +67,7 @@ public class LayerArrowTransformer implements PatcherTransformer {
                     }
                 }
 
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), cancelRendering());
+                methodNode.instructions.insert(cancelRendering());
                 break;
             }
         }

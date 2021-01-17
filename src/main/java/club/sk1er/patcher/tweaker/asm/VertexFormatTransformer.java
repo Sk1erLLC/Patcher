@@ -41,7 +41,7 @@ public class VertexFormatTransformer implements PatcherTransformer {
                 || (methodName.equals("addElement") || methodName.equals("func_181721_a"))) {
                 method.instructions.insertBefore(method.instructions.getLast().getPrevious(), assignCache());
             } else if (methodName.equals("hashCode")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), returnCache());
+                method.instructions.insert(returnCache());
                 method.instructions.insertBefore(method.instructions.getLast().getPrevious(), reassignCache());
             }
         }

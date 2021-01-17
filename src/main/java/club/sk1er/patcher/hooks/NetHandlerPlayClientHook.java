@@ -32,7 +32,6 @@ import java.nio.charset.StandardCharsets;
  */
 @SuppressWarnings("unused")
 public class NetHandlerPlayClientHook {
-
     public static boolean validateResourcePackUrl(NetHandlerPlayClient client, String url, String hash) {
         try {
             URI uri = new URI(url);

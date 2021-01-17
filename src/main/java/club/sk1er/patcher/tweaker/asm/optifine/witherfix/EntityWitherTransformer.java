@@ -24,16 +24,12 @@ public class EntityWitherTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
-
             if (methodName.equals("onLivingUpdate") || methodName.equals("func_70636_d")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                         final String methodInsnName = mapMethodNameFromNode(next);
-
                         if ((methodInsnName.equals("isArmored") || methodInsnName.equals("func_82205_o")) && next.getNext().getOpcode() == Opcodes.ISTORE) {
                             method.instructions.insertBefore(next.getNext().getNext(), checkVisibility());
                             break;

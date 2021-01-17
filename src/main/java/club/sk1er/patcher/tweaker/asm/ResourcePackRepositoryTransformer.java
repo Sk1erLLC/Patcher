@@ -42,11 +42,11 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "deleteOldServerResourcesPacks":
                 case "func_183028_i":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), createDirectory());
+                    methodNode.instructions.insert(createDirectory());
                     break;
                 case "setResourcePackInstance":
                 case "func_177319_a":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKESTATIC,
                         getHooksPackage("FallbackResourceManagerHook"),
                         "clearCache",
                         "()V",

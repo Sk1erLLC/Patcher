@@ -36,10 +36,9 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("getPackImage") || methodName.equals("func_110586_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), downscaleImageSize());
+                methodNode.instructions.insert(downscaleImageSize());
                 break;
             }
         }

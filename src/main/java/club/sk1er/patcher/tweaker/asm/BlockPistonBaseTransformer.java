@@ -38,15 +38,15 @@ public class BlockPistonBaseTransformer implements PatcherTransformer {
             null));
 
         for (MethodNode method : classNode.methods) {
-            String methodName = mapMethodName(classNode, method);
+            final String methodName = mapMethodName(classNode, method);
 
             if (method.name.equals("<clinit>")) {
-                method.instructions.insertBefore(method.instructions.getFirst(), createDirections());
+                method.instructions.insert(createDirections());
             } else if (methodName.equals("shouldBeExtended") || methodName.equals("func_176318_b")) {
-                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("values")) {
                         method.instructions.insertBefore(next, new FieldInsnNode(Opcodes.GETSTATIC,

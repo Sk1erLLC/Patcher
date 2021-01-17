@@ -25,10 +25,8 @@ public class ModCoreModelRendererTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("cosmeticsShouldRender")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-
                     if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.DSTORE) {
                         method.instructions.insertBefore(next.getNext(), checkPatcherRenderDistance());
                         break;

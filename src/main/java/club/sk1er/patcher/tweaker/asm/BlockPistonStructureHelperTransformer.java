@@ -46,15 +46,14 @@ public class BlockPistonStructureHelperTransformer implements PatcherTransformer
             null));
 
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("<clinit>")) {
                 methodNode.instructions.insert(createDirections());
             } else if (methodName.equals("func_177250_b")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("values")) {
                         methodNode.instructions.insertBefore(next, new FieldInsnNode(Opcodes.GETSTATIC,

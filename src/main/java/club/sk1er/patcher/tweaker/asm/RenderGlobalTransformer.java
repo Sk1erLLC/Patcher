@@ -54,7 +54,7 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                 case "renderClouds":
                 case "func_180447_b": {
                     addCloudTransparency(methodNode.instructions.iterator(), methodNode);
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), patcherCloudRenderer());
+                    methodNode.instructions.insert(patcherCloudRenderer());
                     break;
                 }
 

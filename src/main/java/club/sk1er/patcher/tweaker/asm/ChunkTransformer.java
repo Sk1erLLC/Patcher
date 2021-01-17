@@ -58,7 +58,7 @@ public class ChunkTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
             if (brightness.contains(methodName)) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
+                methodNode.instructions.insert(setLightLevel());
             }
 
             switch (methodName) {

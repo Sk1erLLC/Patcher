@@ -43,10 +43,9 @@ public class InventoryPlayerTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("changeCurrentItem") || methodName.equals("func_70453_c")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), skipIfZoomed());
+                methodNode.instructions.insert(skipIfZoomed());
                 break;
             }
         }

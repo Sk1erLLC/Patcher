@@ -29,13 +29,11 @@ public class MinecraftForgeTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("initialize")) {
-                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst instanceof String) {
-                        String cst = (String) ((LdcInsnNode) next).cst;
+                        final String cst = (String) ((LdcInsnNode) next).cst;
                         if (cst.startsWith("net.minecraft.client.particle,EffectRenderer")) {
                             ((LdcInsnNode) next).cst = cst.replace(',', '.');
                         }

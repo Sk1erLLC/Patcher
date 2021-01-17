@@ -60,7 +60,7 @@ public class FontRendererTransformer implements PatcherTransformer {
             } else if (methodName.equals("renderStringAtPos") || methodName.equals("func_78255_a")) {
                 methodNode.instructions.insert(renderStringAtPosHook());
             } else if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getShadowHook());
+                methodNode.instructions.insert(getShadowHook());
             } else if ((methodName.equals("drawString") || methodName.equals("func_175065_a")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {

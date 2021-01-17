@@ -47,10 +47,10 @@ public class FaceBakeryReflectionOptimizer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             if (methodNode.name.equals("makeBakedQuad") && methodNode.desc.contains("minecraftforge")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    final AbstractInsnNode next = iterator.next();
 
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("exists")) {
                         for (int i = 0; i < 17; ++i) {

@@ -53,13 +53,13 @@ public class WorldTransformer implements PatcherTransformer {
 
             // take out of switch as it's looking for equals, not contains
             if (brightness.contains(methodName)) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setLightLevel());
+                methodNode.instructions.insert(setLightLevel());
             }
 
             switch (methodName) {
                 case "getHorizon":
                 case "func_72919_O":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), setSkyHeight());
+                    methodNode.instructions.insert(setSkyHeight());
                     break;
 
                 case "updateEntityWithOptionalForce":
@@ -101,7 +101,7 @@ public class WorldTransformer implements PatcherTransformer {
 
                 case "getSkyColor":
                 case "func_72833_a":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), getFasterSkyColor());
+                    methodNode.instructions.insert(getFasterSkyColor());
                     break;
 
                 case "func_72945_a":

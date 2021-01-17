@@ -23,14 +23,11 @@ public class BlockFluidRendererTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
-            String methodName = mapMethodName(classNode, method);
-
+            final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("renderFluid") || methodName.equals("func_178270_a")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(0.001F)) {
                         final LabelNode gotoInsn = new LabelNode();
                         method.instructions.insertBefore(next, fixStitching(gotoInsn));

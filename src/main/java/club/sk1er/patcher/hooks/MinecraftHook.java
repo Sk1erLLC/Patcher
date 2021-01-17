@@ -35,6 +35,7 @@ import java.awt.Toolkit;
 @SuppressWarnings("unused")
 public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private boolean lastFullscreen = false;
 
     private MinecraftHook() {
@@ -57,35 +58,34 @@ public class MinecraftHook {
             return false;
         }
 
-        Minecraft minecraft = Minecraft.getMinecraft();
-        minecraft.fullscreen = !minecraft.fullscreen;
+        mc.fullscreen = !mc.fullscreen;
 
         boolean grabbed = Mouse.isGrabbed();
         if (grabbed)
             Mouse.setGrabbed(false);
         try {
             DisplayMode displayMode = Display.getDesktopDisplayMode();
-            if (minecraft.fullscreen) {
+            if (mc.fullscreen) {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
                 Display.setDisplayMode(displayMode);
                 Display.setLocation(0, 0);
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
-                displayMode = new DisplayMode(minecraft.tempDisplayWidth, minecraft.tempDisplayHeight);
+                displayMode = new DisplayMode(mc.tempDisplayWidth, mc.tempDisplayHeight);
                 Display.setDisplayMode(displayMode);
                 displayCommon();
             }
             Display.setFullscreen(false);
 
-            minecraft.displayWidth = displayMode.getWidth();
-            minecraft.displayHeight = displayMode.getHeight();
-            if (minecraft.currentScreen != null) {
-                minecraft.resize(minecraft.displayWidth, minecraft.displayHeight);
+            mc.displayWidth = displayMode.getWidth();
+            mc.displayHeight = displayMode.getHeight();
+            if (mc.currentScreen != null) {
+                mc.resize(mc.displayWidth, mc.displayHeight);
             } else {
-                minecraft.updateFramebufferSize();
+                mc.updateFramebufferSize();
             }
-            INSTANCE.lastFullscreen = minecraft.fullscreen; //Forward so both behavior isn't ran
-            minecraft.updateDisplay();
+            INSTANCE.lastFullscreen = mc.fullscreen; //Forward so both behavior isn't ran
+            mc.updateDisplay();
             Mouse.setCursorPosition((Display.getX() + Display.getWidth()) / 2, (Display.getY() + Display.getHeight()) / 2);
             if (grabbed)
                 Mouse.setGrabbed(true);
@@ -125,14 +125,13 @@ public class MinecraftHook {
                 Display.setDisplayMode(Display.getDesktopDisplayMode());
                 Display.setLocation(0, 0);
                 Display.setFullscreen(false);
-
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
                 Display.setDisplayMode(new DisplayMode(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight));
                 displayCommon();
             }
-            Display.setResizable(!fullscreen);
 
+            Display.setResizable(!fullscreen);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }

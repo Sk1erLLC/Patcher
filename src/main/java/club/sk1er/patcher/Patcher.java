@@ -233,6 +233,13 @@ public class Patcher {
                         "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.");
                     PatcherConfig.optimizedResourcePackDiscovery = false;
                 }
+
+                if (PatcherConfig.chatPosition) {
+                    notifications.push(
+                        "Patcher",
+                        "Labymod has been detected. Chat Position is now disabled.");
+                    PatcherConfig.chatPosition = false;
+                }
             }
 
             if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {

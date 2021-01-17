@@ -52,7 +52,7 @@ public class ModelRendererTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("render") || methodName.equals("func_78785_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), renderStart());
+                methodNode.instructions.insert(renderStart());
             } else if (methodName.equals("compileDisplayList") || methodName.equals("func_78788_d")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
