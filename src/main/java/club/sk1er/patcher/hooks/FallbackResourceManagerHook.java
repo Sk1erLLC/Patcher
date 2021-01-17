@@ -13,10 +13,7 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.database.AssetsDatabase;
-import net.minecraft.client.resources.FallbackResourceManager;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.resources.SimpleResource;
+import net.minecraft.client.resources.*;
 import net.minecraft.util.ResourceLocation;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -72,7 +69,9 @@ public class FallbackResourceManagerHook {
         }
         for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
             IResourcePack currentPack = manager.resourcePacks.get(i);
-
+            if (currentPack instanceof FileResourcePack) {
+                if (!currentPack.resourceExists(location)) continue;
+            }
             if (mcMetaStream == null) {
                 InputStream safe = getFromFile(currentPack, mcMetaLocation);
                 if (safe != null) {
