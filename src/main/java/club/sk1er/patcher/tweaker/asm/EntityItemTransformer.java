@@ -47,57 +47,35 @@ public class EntityItemTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             if (methodName.equals("searchForOtherItemsNearby") || methodName.equals("func_85054_d")) {
-                methodNode.instructions.insert(stopSearch());
+                methodNode.instructions.insert(stopSearch(true));
             } else if (methodName.equals("combineItems") || methodName.equals("func_70289_a")) {
-                methodNode.instructions.insert(stopSearchBoolean());
+                methodNode.instructions.insert(stopSearch(false));
             }
         }
     }
 
-    private InsnList stopSearch() {
+    private InsnList stopSearch(boolean voidReturnType) {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "searchingOptimizationFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "itemSearching", "Z"));
+        LabelNode label = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", // getEntityItem
-            "()Lnet/minecraft/item/ItemStack;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 1));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", // stackSize
-            "I"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d",  // getMaxStackSize
-            "()I", false));
-        LabelNode ificmplt = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, ificmplt));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        list.add(ificmplt);
-        return list;
-    }
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", "()Lnet/minecraft/item/ItemStack;", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, voidReturnType ? 1 : 2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, voidReturnType ? 1 : 2));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", "I"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, voidReturnType ? 1 : 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d", "()I", false));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label));
 
-    private InsnList stopSearchBoolean() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "searchingOptimizationFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", // getEntityItem
-            "()Lnet/minecraft/item/ItemStack;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 2));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", // stackSize
-            "I"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d",  // getMaxStackSize
-            "()I", false));
-        LabelNode ificmplt = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, ificmplt));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(ifeq);
-        list.add(ificmplt);
+        if (voidReturnType) {
+            list.add(new InsnNode(Opcodes.RETURN));
+        } else {
+            list.add(new InsnNode(Opcodes.ICONST_0));
+            list.add(new InsnNode(Opcodes.IRETURN));
+        }
+
+        list.add(label);
         return list;
     }
 }

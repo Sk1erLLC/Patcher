@@ -460,7 +460,7 @@ public class PatcherConfig extends Vigilant {
         description = "Stop items from searching for extra items to combine with when the stack is already full.",
         category = "Performance", subcategory = "Items"
     )
-    public static boolean searchingOptimizationFix = true;
+    public static boolean itemSearching = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Instant World Swapping",

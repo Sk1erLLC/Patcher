@@ -15,7 +15,7 @@ import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.render.Viewer;
+import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
@@ -113,7 +113,7 @@ public class AsyncScreenshots implements Runnable {
             }
 
             if (PatcherConfig.screenshotPreview) {
-                Viewer.INSTANCE.newCapture(image);
+                ScreenshotPreview.INSTANCE.newCapture(image);
             }
 
             if (PatcherConfig.autoCopyScreenshot) {

@@ -15,7 +15,7 @@ import club.sk1er.hookinjection.getInstructions
 import club.sk1er.patcher.hooks.GuiPlayerTabOverlayHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
-import codes.som.anthony.koffee.insns.jvm.invokestatic
+import codes.som.anthony.koffee.insns.jvm.*
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 
@@ -54,12 +54,12 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                         }
                     }
 
-                    it.instructions.insertBefore(it.instructions.first, moveDownInstructions(it, true))
+                    it.instructions.insert(moveDownInstructions(it, true))
                     it.instructions.insertBefore(it.instructions.last.previous, moveDownInstructions(it, false))
                 }
 
                 "drawPing", "func_175245_a" -> {
-                    it.instructions.insertBefore(it.instructions.first, createNumberPing(it))
+                    it.instructions.insert(createNumberPing())
                 }
             }
         }
@@ -96,19 +96,23 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
         return list
     }
 
-    private fun createNumberPing(method: MethodNode): InsnList {
-        val list = InsnList()
-        list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "numberPing", "Z"))
-        val ifeq = LabelNode()
-        list.add(JumpInsnNode(Opcodes.IFEQ, ifeq))
-        list.add(getInstructions {
-            of(GuiPlayerTabOverlayHook::drawPatcherPing)
-            target(method)
-            before(method.instructions.first)
-            params(1, 2, 3, 4)
-            keepReturns
-        })
-        list.add(ifeq)
-        return list
-    }
+    private fun createNumberPing() = assembleBlock {
+        getstatic(patcherConfigClass, "numberPing", boolean)
+        ifeq(L["1"])
+        iload_1
+        iload_2
+        iload_3
+        aload(4)
+        invokestatic(
+            getHooksPackage("GuiPlayerTabOverlayHook"),
+            "drawPatcherPing",
+            void,
+            int,
+            int,
+            int,
+            "net/minecraft/client/network/NetworkPlayerInfo"
+        )
+        _return
+        +L["1"]
+    }.first
 }

@@ -13,7 +13,7 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 import java.util.concurrent.CompletableFuture
 
-object Viewer {
+object ScreenshotPreview {
 
     private var currentWindow: Window? = null
 
@@ -96,9 +96,7 @@ object Viewer {
                 1.0F,
                 RelativeConstraint(2.0F),
                 PatcherConfig.previewTime.toFloat()
-            ).onComplete {
-                currentWindow = null
-            }
+            ).onComplete { currentWindow = null }
         }
     }
 }

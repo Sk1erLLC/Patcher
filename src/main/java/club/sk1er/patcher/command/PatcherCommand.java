@@ -283,7 +283,7 @@ public class PatcherCommand extends Command {
     private void toggleOptions(boolean status) {
         PatcherConfig.cullParticles = status;
         PatcherConfig.entityCulling = status;
-        PatcherConfig.searchingOptimizationFix = status;
+        PatcherConfig.itemSearching = status;
         PatcherConfig.fullbright = status;
         PatcherConfig.disableConstantFogColorChecking = status;
         PatcherConfig.lowAnimationTick = status;

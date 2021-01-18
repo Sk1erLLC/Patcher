@@ -118,8 +118,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         d4Index = -1,
                         d5Index = -1;
 
-                    boolean useNormalIndex = ClassTransformer.optifineVersion.equals("I7");
-
                     for (final LocalVariableNode variable : methodNode.localVariables) {
                         switch (variable.name) {
                             case "movingobjectposition":
@@ -175,7 +173,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             final String methodDesc = mapMethodDescFromNode(next);
                             if ((methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) && methodDesc.equals("(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;")) {
                                 methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), changeCameraType(movingobjectpositionIndex, d0Index, d1Index,
-                                    d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, useNormalIndex));
+                                    d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, ClassTransformer.optifineVersion.equals("I7")));
                             }
                         }
                     }

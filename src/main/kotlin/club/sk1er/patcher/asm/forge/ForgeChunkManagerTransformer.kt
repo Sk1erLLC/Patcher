@@ -53,7 +53,7 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
                         invokeinterface(Map::class, "remove", Object::class, Object::class)
                     }
 
-                    method.instructions.insertBefore(method.instructions.first, removeWorld)
+                    method.instructions.insert(removeWorld)
                 }
 
                 "getPersistentChunksFor" -> {

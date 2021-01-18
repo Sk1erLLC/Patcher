@@ -10,13 +10,12 @@
  */
 package club.sk1er.patcher.asm
 
-import club.sk1er.hookinjection.getInstructions
-import club.sk1er.patcher.hooks.FarmHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.*
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.MethodNode
 
 class BlockNetherWartTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf(

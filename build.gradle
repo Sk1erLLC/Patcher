@@ -307,8 +307,8 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    compile ("net.modcore:Loader:1.9")
-    implementation "net.modcore:ModCore:712-${mcVersion}-SNAPSHOT"
+    embed ("net.modcore:Loader:2.0.0")
+    implementation "net.modcore:ModCore:714-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

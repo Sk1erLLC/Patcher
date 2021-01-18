@@ -16,7 +16,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.MinecraftHook;
-import club.sk1er.patcher.render.Viewer;
+import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.render.TitleFix;
@@ -181,7 +181,7 @@ public class Patcher {
             new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),
             new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(),
-            MinecraftHook.INSTANCE, Viewer.INSTANCE
+            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE
         );
 
         checkLogs();
