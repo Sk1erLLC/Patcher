@@ -977,7 +977,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Replace Open to Lan",
         description = "Remove the Open to Lan button when in a multiplayer server with a button to quickly open your server list.\n" +
-            "§eWill be reworked in the future to not kick you from the server.",
+            "Opening Direct Connect will make you leave the server.",
         category = "Screens", subcategory = "General"
     )
     public static boolean replaceOpenToLan;

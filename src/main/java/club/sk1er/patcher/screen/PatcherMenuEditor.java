@@ -76,34 +76,29 @@ public class PatcherMenuEditor {
                     button.width = 200;
 
                     if (button.id == 2) {
-                        button.xPosition = width / 2 - 204;
+                        button.xPosition = (width >> 1) - 204;
                     }
                 }
             }
         } else if (gui instanceof GuiIngameMenu) {
             if (PatcherConfig.skinRefresher) {
-                mcButtonList.add(new GuiButton(435762,
-                    2,
-                    height - 22,
-                    100,
-                    20,
-                    "Refresh Skin"));
+                mcButtonList.add(new GuiButton(435762, 2, height - 22, 100, 20, "Refresh Skin"));
             }
 
             if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
-                mcButtonList.add(new GuiButton(231423, width / 2 - 100, height / 4 + 72 + -16, "Server List"));
+                mcButtonList.add(new GuiButton(231423, (width >> 1) - 100, (height / 4) + 56, "Server List"));
             }
         } else if (gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
             mcButtonList.add(new GuiButton(435762,
-                width / 2 - 155 + 160,
-                height / 6 + 24 * (7 >> 1),
+                ((width >> 1) - 155) + 160,
+                (height / 6) + 72,
                 150,
                 20,
                 "Refresh Skin"));
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(85348, (width >> 1) - 100, height / 6 + 146, 200, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(85348, (width >> 1) - 100, (height / 6) + 146, 200, 20, "All Sounds"));
         }
     }
 
@@ -128,13 +123,8 @@ public class PatcherMenuEditor {
         final GuiScreen gui = event.gui;
         if (id == 435762 && (gui instanceof GuiIngameMenu || gui instanceof GuiCustomizeSkin)) {
             PatcherCommand.refreshSkin();
-        } else if (gui instanceof GuiIngameMenu) {
-            if (id == 231423) {
-                MinecraftForge.EVENT_BUS.post(new FMLNetworkEvent.ClientDisconnectionFromServerEvent(mc.getNetHandler().getNetworkManager()));
-                mc.theWorld.sendQuittingDisconnectingPacket();
-                mc.loadWorld(null);
-                mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
-            }
+        } else if (gui instanceof GuiIngameMenu && id == 231423) {
+            mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
         } else if (gui instanceof GuiScreenOptionsSounds && id == 85348) {
             mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
         }

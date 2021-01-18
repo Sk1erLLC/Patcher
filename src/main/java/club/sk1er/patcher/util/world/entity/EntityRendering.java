@@ -137,7 +137,7 @@ public class EntityRendering {
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.disableTexture2D();
 
-        int stringWidth = fontRenderer.getStringWidth(name) / 2;
+        int stringWidth = fontRenderer.getStringWidth(name) >> 1;
         if (!PatcherConfig.disableNametagBoxes) {
             GlStateManager.color(0, 0, 0, .25F);
             GL11.glBegin(GL11.GL_QUADS);

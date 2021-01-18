@@ -201,7 +201,7 @@ public class AsyncScreenshots implements Runnable {
 
     private void processPixelValues(int[] pixels, int displayWidth, int displayHeight) {
         final int[] xValues = new int[displayWidth];
-        for (int yValues = displayHeight / 2, val = 0; val < yValues; ++val) {
+        for (int yValues = displayHeight >> 1, val = 0; val < yValues; ++val) {
             System.arraycopy(pixels, val * displayWidth, xValues, 0, displayWidth);
             System.arraycopy(
                 pixels,

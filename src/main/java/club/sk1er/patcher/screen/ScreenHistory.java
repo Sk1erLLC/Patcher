@@ -86,7 +86,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        nameField = new GuiTextField(0, fontRendererObj, width / 2 - (115 / 2), height / 5 + 10, 115, 20);
+        nameField = new GuiTextField(0, fontRendererObj, (width >> 1) - 57, (height / 5) + 10, 115, 20);
         nameField.setText(name);
         nameField.setFocused(focus);
         nameField.setMaxStringLength(16);
@@ -109,7 +109,7 @@ public class ScreenHistory extends GuiScreen {
             3, new Color(22, 22, 24)
         );
 
-        drawCenteredString(fontRendererObj, "Name History", width / 2, height / 5, -1);
+        drawCenteredString(fontRendererObj, "Name History", width >> 1, height / 5, -1);
         nameField.drawTextBox();
 
         // Check if names have been scrolled outside of bounding box.

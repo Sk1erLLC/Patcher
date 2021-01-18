@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
  */
 public class CloudRenderer implements IResourceManagerReloadListener {
 
-    private static final float PX_SIZE = 1 / 256F;
+    private static final float PX_SIZE = 0.00390625f;
     private static final VertexFormat FORMAT = DefaultVertexFormats.POSITION_TEX_COLOR;
     private static final int TOP_SECTIONS = 12;
     private static final int HEIGHT = 4;

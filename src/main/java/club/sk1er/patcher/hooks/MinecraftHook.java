@@ -86,7 +86,7 @@ public class MinecraftHook {
             }
             INSTANCE.lastFullscreen = mc.fullscreen; //Forward so both behavior isn't ran
             mc.updateDisplay();
-            Mouse.setCursorPosition((Display.getX() + Display.getWidth()) / 2, (Display.getY() + Display.getHeight()) / 2);
+            Mouse.setCursorPosition((Display.getX() + Display.getWidth()) >> 1, (Display.getY() + Display.getHeight()) >> 1);
             if (grabbed)
                 Mouse.setGrabbed(true);
             Display.setResizable(false);
