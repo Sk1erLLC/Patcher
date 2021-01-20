@@ -19,10 +19,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DebugPerformanceRenderer {
