@@ -18,7 +18,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +31,7 @@ public class DebugPerformanceRenderer {
     private long updated = 0;
     private String mode = "???";
     private final DecimalFormat format = new DecimalFormat("#.00");
-    private final List<Long> frames = new ArrayList<>();
+    private final Deque<Long> frames = new ArrayDeque<>();
     private final String[] renderStrings = new String[5];
     private final Minecraft mc = Minecraft.getMinecraft();
 
@@ -40,7 +43,14 @@ public class DebugPerformanceRenderer {
 
         if (frameRender) {
             frames.add(System.currentTimeMillis());
-            frames.removeIf(time -> (System.currentTimeMillis() - time) > 60000);
+            final long currentTime = System.currentTimeMillis();
+            while ((currentTime - frames.getFirst()) > 60000) {
+                frames.removeFirst();
+
+                if (frames.isEmpty()) {
+                    break;
+                }
+            }
 
             if (System.currentTimeMillis() - updated > TimeUnit.SECONDS.toMillis(1)) {
                 updated = System.currentTimeMillis();

@@ -135,13 +135,6 @@ public class AsyncScreenshots implements Runnable {
             chatComponent = new ChatComponentText(prefix + "Screenshot saved.");
         }
 
-        chatComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$openfolder"));
-        chatComponent.getChatStyle()
-            .setChatHoverEvent(new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT,
-                new ChatComponentText(this.colorMessage("&7Open this screenshot."))
-            ));
-
         final IChatComponent favoriteComponent = new ChatComponentText(ChatColor.YELLOW.toString() + ChatColor.BOLD +
             (compact ? "FAV" : "FAVORITE"));
         favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$favorite"));
@@ -271,8 +264,6 @@ public class AsyncScreenshots implements Runnable {
                 if (screenshot.exists()) {
                     ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
                     screenshot.delete();
-
-                    // not on disk, remove from memory
                     screenshot = null;
                 } else {
                     ChatUtilities.sendMessage("&cCouldn't find " + screenshot.getName());

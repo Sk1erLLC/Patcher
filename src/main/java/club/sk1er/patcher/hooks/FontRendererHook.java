@@ -480,7 +480,8 @@ public final class FontRendererHook {
             stringWidthCache.clear();
         }
 
-        return stringWidthCache.computeIfAbsent(text, width -> getUncachedWidth(text));
+        final int uncachedWidth = getUncachedWidth(text);
+        return stringWidthCache.computeIfAbsent(text, width -> uncachedWidth);
     }
 
     private int getUncachedWidth(String text) {
