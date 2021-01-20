@@ -39,14 +39,16 @@ public class AssetsDatabase {
             try {
                 saveNegative(FallbackResourceManagerHook.negativeResourceCache);
                 final File file = new File(dir, "resource_map.txt");
-                final FileWriter fileWriter = new FileWriter(file);
-                final HashMap<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
-                JsonArray array = new JsonArray();
-                for (String s : resourceMap.keySet()) {
-                    array.add(new JsonHolder().put("key", s).put("value", resourceMap.get(s)).getObject());
+                try (final FileWriter fileWriter = new FileWriter(file)) {
+                    final HashMap<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
+                    final JsonArray array = new JsonArray();
+
+                    for (String s : resourceMap.keySet()) {
+                        array.add(new JsonHolder().put("key", s).put("value", resourceMap.get(s)).getObject());
+                    }
+
+                    fileWriter.write(array.toString());
                 }
-                fileWriter.write(array.toString());
-                fileWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

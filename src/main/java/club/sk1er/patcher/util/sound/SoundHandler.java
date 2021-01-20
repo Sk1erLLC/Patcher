@@ -12,6 +12,7 @@
 package club.sk1er.patcher.util.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
+import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.vigilance.data.PropertyData;
 import club.sk1er.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.text.WordUtils;
+import org.lwjgl.opengl.Display;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,11 @@ public class SoundHandler implements IResourceManagerReloadListener {
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
         if (event.result instanceof PositionedSound) {
+            if (!Display.isActive()) {
+                ((PositionedSound) event.result).volume *= PatcherConfig.unfocusedSounds;
+                return;
+            }
+
             ((PositionedSound) event.result).volume *= getVolumeMultiplier(event.result.getSoundLocation());
         }
     }

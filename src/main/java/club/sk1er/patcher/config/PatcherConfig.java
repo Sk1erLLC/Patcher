@@ -249,6 +249,28 @@ public class PatcherConfig extends Vigilant {
     public static boolean crosshairPerspective;
 
     @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Unfocused Sounds",
+        description = "Change the volume of sounds when you're not tabbed into the window.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static float unfocusedSounds = 1.0F;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Unfocused FPS",
+        description = "Toggle changing your FPS to whatever Unfocused FPS is set to when not tabbed into the window.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean unfocusedFPS;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Unfocused FPS Amount",
+        description = "Change the maximum FPS when you're not tabbed into the window, saving resources.\n§eRequires Unfocused FPS.",
+        category = "Miscellaneous", subcategory = "General",
+        min = 1, max = 240
+    )
+    public static int unfocusedFPSAmount = 60;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Ground Foliage",
         description = "Stop plants/flowers from rendering.",
         category = "Miscellaneous", subcategory = "Blocks", triggerActionOnInitialization = false

@@ -69,9 +69,10 @@ public class FallbackResourceManagerHook {
         }
         for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
             IResourcePack currentPack = manager.resourcePacks.get(i);
-            if (currentPack instanceof FileResourcePack) {
-                if (!currentPack.resourceExists(location)) continue;
+            if (currentPack instanceof FileResourcePack && !currentPack.resourceExists(location)) {
+                continue;
             }
+
             if (mcMetaStream == null) {
                 InputStream safe = getFromFile(currentPack, mcMetaLocation);
                 if (safe != null) {

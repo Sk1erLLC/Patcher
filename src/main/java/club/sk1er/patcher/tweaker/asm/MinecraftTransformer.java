@@ -58,6 +58,11 @@ public class MinecraftTransformer implements PatcherTransformer {
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
                     break;
 
+                case "func_90020_K":
+                case "getLimitFramerate":
+                    methodNode.instructions.insert(changeActiveFramerate());
+                    break;
+
                 case "checkGLError":
                 case "func_71361_d":
                     methodNode.instructions.insert(cancelGlCheck());
@@ -258,6 +263,19 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList changeActiveFramerate() {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "isActive", "()Z", false));
+        LabelNode label = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, label));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "unfocusedFPS", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "unfocusedFPSAmount", "I"));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(label);
+        return list;
     }
 
     private InsnList displayWorkingScreen() {
