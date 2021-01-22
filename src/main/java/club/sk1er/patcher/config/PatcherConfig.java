@@ -434,6 +434,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean shadowedNametagText;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Add Text Shadow to Actionbar",
+        description = "Render actionbar messages with shadowed text.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean shadowedActionbarText;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Text Shadow",
         description = "Remove shadows from text.\n§eCan positively impact performance.",
         category = "Miscellaneous", subcategory = "Rendering"
@@ -780,12 +787,37 @@ public class PatcherConfig extends Vigilant {
     public static boolean entityRenderDistanceToggle;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Entity Render Distance",
-        description = "Stop rendering entities outside of the specified radius.",
+        type = PropertyType.SLIDER, name = "Global Entity Render Distance",
+        description = "Stop rendering all entities outside of the specified radius.\n" +
+            "This will ignore the distance of other entity render distances if smaller.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
     )
     public static int entityRenderDistance = 64;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Player Render Distance",
+        description = "Stop rendering players outside of the specified radius.",
+        category = "Performance", subcategory = "Entity Rendering",
+        min = 1, max = 64
+    )
+    public static int playerRenderDistance = 64;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Passive Entity Render Distance",
+        description = "Stop rendering passive entities outside of the specified radius.",
+        category = "Performance", subcategory = "Entity Rendering",
+        min = 1, max = 64
+    )
+    public static int passiveEntityRenderDistance = 64;
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Hostile Entity Render Distance",
+        description = "Stop rendering hostile entities outside of the specified radius.",
+        category = "Performance", subcategory = "Entity Rendering",
+        min = 1, max = 64
+    )
+    public static int hostileEntityRenderDistance = 64;
 
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Resource Pack Discovery",

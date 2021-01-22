@@ -47,60 +47,96 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     break;
             }
 */
-            String methodName = mapMethodName(classNode, methodNode);
+            switch (mapMethodName(classNode, methodNode)) {
+                case "renderGameOverlay":
+                case "func_175180_a": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            if (((MethodInsnNode) next).name.equals("renderExperience")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), toggleAlpha(true));
+                                methodNode.instructions.insertBefore(next.getNext(), toggleAlpha(false));
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "renderCrosshairs": {
+                    //methodNode.instructions.insert(checkOverride());
 
-            if (methodName.equals("renderGameOverlay") || methodName.equals("func_175180_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+                        if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 775) {
+                            LabelNode ifne = new LabelNode();
+                            InsnList list = new InsnList();
+                            methodNode.instructions.insertBefore(next, createToggle(ifne, list));
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                            for (int i = 0; i < 5; ++i) {
+                                next = next.getNext();
+                            }
 
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        if (((MethodInsnNode) next).name.equals("renderExperience")) {
-                            methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), toggleAlpha(true));
-                            methodNode.instructions.insertBefore(next.getNext(), toggleAlpha(false));
+                            methodNode.instructions.insertBefore(next, ifne);
                             break;
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("renderCrosshairs")) {
-                //methodNode.instructions.insert(checkOverride());
+                case "renderChat": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 775) {
-                        LabelNode ifne = new LabelNode();
-                        InsnList list = new InsnList();
-                        methodNode.instructions.insertBefore(next, createToggle(ifne, list));
-
-                        for (int i = 0; i < 5; ++i) {
-                            next = next.getNext();
-                        }
-
-                        methodNode.instructions.insertBefore(next, ifne);
-                        break;
-                    }
-                }
-            } else if (methodName.equals("renderChat")) {
-                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                while (iterator.hasNext()) {
-                    final AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("post")) {
-                        if (((MethodInsnNode) next).owner.equals("net/minecraftforge/fml/common/eventhandler/EventBus")) {
-                            methodNode.instructions.insertBefore(next.getNext().getNext(), fixProfilerSection());
-                            break;
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("post")) {
+                            if (((MethodInsnNode) next).owner.equals("net/minecraftforge/fml/common/eventhandler/EventBus")) {
+                                methodNode.instructions.insertBefore(next.getNext().getNext(), fixProfilerSection());
+                                break;
+                            }
                         }
                     }
+                    break;
                 }
-            }/* else if (methodNode.name.equals("pre")) {
+                case "renderRecordOverlay": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("drawString") || methodInsnName.equals("func_78276_b")) {
+                                for (int i = 0; i < 18; i++) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                }
+
+                                methodNode.instructions.remove(next.getNext());
+                                methodNode.instructions.insertBefore(next, drawCustomActionbar());
+                                methodNode.instructions.remove(next);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            /* else if (methodNode.name.equals("pre")) {
                 methodNode.instructions.insert(checkCompatibilityMode());
             }*/
         }
+    }
+
+    private InsnList drawCustomActionbar() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/GuiIngameForge", "field_73838_g", "Ljava/lang/String;"));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 6));
+        list.add(new VarInsnNode(Opcodes.ILOAD, 5));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 24));
+        list.add(new InsnNode(Opcodes.ISHL));
+        list.add(new InsnNode(Opcodes.IOR));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiIngameForgeHook"), "drawActionbarText", "(Ljava/lang/String;I)V", false));
+        return list;
     }
 
     private InsnList fixProfilerSection() {

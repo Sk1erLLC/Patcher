@@ -21,6 +21,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityAmbientCreature;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
@@ -48,8 +52,17 @@ public class EntityRendering {
             event.setCanceled(true);
         }
 
-        if (entity.getDistanceToEntity(mc.thePlayer) > PatcherConfig.entityRenderDistance && PatcherConfig.entityRenderDistanceToggle && EntityCulling.shouldPerformCulling) {
-            event.setCanceled(true);
+        final float entityDistance = entity.getDistanceToEntity(mc.thePlayer);
+        if (PatcherConfig.entityRenderDistanceToggle && EntityCulling.shouldPerformCulling) {
+            if (entityDistance > PatcherConfig.entityRenderDistance) {
+                event.setCanceled(true);
+            } else if (entity instanceof IMob && entityDistance > PatcherConfig.hostileEntityRenderDistance) {
+                event.setCanceled(true);
+            } else if ((entity instanceof EntityAnimal || entity instanceof EntityAmbientCreature || entity instanceof EntityWaterMob) && entityDistance > PatcherConfig.passiveEntityRenderDistance) {
+                event.setCanceled(true);
+            } else if (entity instanceof EntityPlayer && entityDistance > PatcherConfig.playerRenderDistance) {
+                event.setCanceled(true);
+            }
         }
     }
 
