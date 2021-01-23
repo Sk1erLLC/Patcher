@@ -176,6 +176,18 @@ public class MinecraftTransformer implements PatcherTransformer {
                                     ));
                                     break;
                             }
+                        } else if (node instanceof IntInsnNode && node.getOpcode() == Opcodes.BIPUSH) {
+                            final int operand = ((IntInsnNode) node).operand;
+                            if (operand == 62) {
+                                methodNode.instructions.insertBefore(node, getKeybind("getClearShaders"));
+                                methodNode.instructions.remove(node);
+                            } else if (operand == 59) {
+                                methodNode.instructions.insertBefore(node, getKeybind("getHideScreen"));
+                                methodNode.instructions.remove(node);
+                            } else if (operand == 61 && !(node.getNext() instanceof MethodInsnNode)) {
+                                methodNode.instructions.insertBefore(node, getKeybind("getDebugView"));
+                                methodNode.instructions.remove(node);
+                            }
                         }
                     }
                     break;
@@ -263,6 +275,14 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList getKeybind(String keybindName) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", keybindName, "()Lnet/minecraft/client/settings/KeyBinding;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "getKeyCode", "()I", false));
+        return list;
     }
 
     private InsnList changeActiveFramerate() {

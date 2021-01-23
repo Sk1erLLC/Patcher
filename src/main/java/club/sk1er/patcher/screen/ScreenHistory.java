@@ -13,6 +13,7 @@ package club.sk1er.patcher.screen;
 
 import club.sk1er.elementa.components.UIRoundedRectangle;
 import club.sk1er.patcher.Patcher;
+import club.sk1er.vigilance.gui.VigilancePalette;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
@@ -106,7 +107,7 @@ public class ScreenHistory extends GuiScreen {
         UIRoundedRectangle.Companion.drawRoundedRectangle(
             left, top,
             right, bottom + (names.size() * 10) + offset,
-            3, new Color(22, 22, 24)
+            3, VigilancePalette.INSTANCE.getBACKGROUND()
         );
 
         drawCenteredString(fontRendererObj, "Name History", width >> 1, height / 5, -1);
@@ -124,18 +125,14 @@ public class ScreenHistory extends GuiScreen {
             final String text = names.get(currentName);
             if (currentName == 0) {
                 drawCenteredString(
-                    fontRendererObj,
-                    exceptionName != null ? text : text + " » Original",
-                    (int) xPos,
-                    (int) yPos,
+                    fontRendererObj, exceptionName != null ? text : text + " » Original",
+                    (int) xPos, (int) yPos,
                     new Color(0, 167, 81).getRGB()
                 );
             } else {
                 drawCenteredString(
-                    fontRendererObj,
-                    text,
-                    (int) xPos,
-                    (int) yPos,
+                    fontRendererObj, text,
+                    (int) xPos, (int) yPos,
                     currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1
                 );
             }

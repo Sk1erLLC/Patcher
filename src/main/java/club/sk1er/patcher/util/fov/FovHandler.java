@@ -54,7 +54,7 @@ public class FovHandler {
      */
     @SubscribeEvent
     public void fovChange(FOVUpdateEvent event) {
-        if (!PatcherConfig.allowFovModifying) return;
+        if (!PatcherConfig.allowFovModifying || event.entity.getActivePotionEffects().isEmpty()) return;
 
         float base = 1.0F;
 

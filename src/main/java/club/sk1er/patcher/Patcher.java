@@ -23,7 +23,6 @@ import club.sk1er.patcher.screen.render.TitleFix;
 import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
-import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
 import club.sk1er.patcher.tweaker.launch.PatcherTweak;
 import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
@@ -34,6 +33,7 @@ import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
+import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.sound.SoundHandler;
@@ -43,12 +43,10 @@ import club.sk1er.patcher.util.world.cloud.CloudHandler;
 import club.sk1er.patcher.util.world.entity.EntityRendering;
 import club.sk1er.patcher.util.world.entity.EntityTrace;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
-import club.sk1er.vigilance.Vigilant;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -95,20 +93,9 @@ public class Patcher {
     // extra branches will be 1.x-branch-y
     public static final String VERSION = "1.6";
 
-    /**
-     * Create an instance of Patcher to access methods without reinstating the main class.
-     * This is never null, as {@link Mod.Instance} creates the instance.
-     * <p>
-     * Can crash if classloaded before properly loaded.
-     */
     @Mod.Instance("patcher")
     public static Patcher instance;
-
     private final Logger logger = LogManager.getLogger("Patcher");
-
-    /**
-     * Create a file link to the .minecraft/logs folder, used for {@link Patcher#checkLogs()}.
-     */
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
 
     /**
@@ -116,46 +103,30 @@ public class Patcher {
      * our 1.11 text length modifier (bring message length from 100 to 256, as done in 1.11 and above) {@link Patcher#addOrRemoveBlacklist(String)}.
      */
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
 
-    /**
-     * Create an instance of our cloud handler, used in {@link RenderGlobal#renderClouds(float, int)}
-     * through ASM, modified through {@link RenderGlobalTransformer}.
-     */
     private final CloudHandler cloudHandler = new CloudHandler();
     private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
+
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
     private KeyBinding chatPeek;
+    private KeyBinding hideScreen, debugView, clearShaders;
 
-    /**
-     * Create an instance of our config using {@link Vigilant}.
-     */
     private PatcherConfig patcherConfig;
-
-    /**
-     * Create an instance of our sound config using {@link Vigilant}. The difference between this and the normal
-     * config {@link Patcher#getPatcherConfig()} is that this is a much larger file, containing any sound possible,
-     * and allowing for players to modify how loud a sound is (0 (mute)-2x).
-     */
     private PatcherSoundConfig patcherSoundConfig;
+
     private JsonObject duplicateModsJson;
+
     private boolean loadedGalacticFontRenderer;
 
-    /**
-     * Process important things that should be available by the time the game is done loading.
-     * <p>
-     * ModCore is initialized here, as well as any configuration.
-     * Commands and other classes using events are also registered here.
-     *
-     * @param event {@link FMLInitializationEvent}
-     */
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        ClientRegistry.registerKeyBinding(nameHistory = new KeybindNameHistory());
-        ClientRegistry.registerKeyBinding(dropModifier = new KeybindDropModifier());
-        ClientRegistry.registerKeyBinding(chatPeek = new KeybindChatPeek());
+        registerKeybinds(
+            nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
+            chatPeek = new KeybindChatPeek(), hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
+            debugView = new FunctionKeyChanger.KeybindDebugView(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
+        );
 
         patcherConfig = new PatcherConfig();
         patcherConfig.preload();
@@ -196,15 +167,9 @@ public class Patcher {
             Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
         }
 
-        // Close threads as it is no longer needed after startup.
         MCDispatchers.INSTANCE.getIO().close();
     }
 
-    /**
-     * Once the client has finished loading, alert the user of how long the client took to startup.
-     *
-     * @param event {@link FMLLoadCompleteEvent}
-     */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         final Notifications notifications = ModCoreAPI.getNotifications();
@@ -350,6 +315,12 @@ public class Patcher {
         }
     }
 
+    private void registerKeybinds(KeyBinding... keybinds) {
+        for (final KeyBinding keybind : keybinds) {
+            ClientRegistry.registerKeyBinding(keybind);
+        }
+    }
+
     private void registerEvents(Object... events) {
         for (final Object event : events) {
             MinecraftForge.EVENT_BUS.register(event);
@@ -362,25 +333,10 @@ public class Patcher {
         }
     }
 
-
-    /**
-     * Check if the current server they're connecting to is a blacklisted server.
-     *
-     * @param ip Current server IP.
-     * @return If the IP is in {@link Patcher#blacklistedServers}, return true, otherwise return false.
-     */
     private boolean isServerBlacklisted(String ip) {
         return ip != null && !ip.isEmpty() && !ip.trim().isEmpty() && blacklistedServers.contains(ip.trim());
     }
 
-    /**
-     * Used for adding or removing a server from the blacklist file and set.
-     *
-     * @param input Current server IP.
-     * @return If the user's input is null or empty, then return false, cancelling the method. Otherwise, if the server
-     * is inside of the blacklisted set, remove it from the blacklist and return false, else add it to the blacklist
-     * and return true.
-     */
     public boolean addOrRemoveBlacklist(String input) {
         if (input == null || input.isEmpty() || input.trim().isEmpty()) {
             return false;
@@ -397,9 +353,6 @@ public class Patcher {
         }
     }
 
-    /**
-     * Save the currently blacklisted servers to a text file, allowing the file to be read on server join.
-     */
     public void saveBlacklistedServers() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
             if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
@@ -435,7 +388,6 @@ public class Patcher {
     }
 
     public Set<String> keySet(JsonObject json) throws NullPointerException {
-        //JsonObject#keySet not a thing in Minecraft 1.8's old AF GSON
         Set<String> keySet = new HashSet<>();
 
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
@@ -465,49 +417,23 @@ public class Patcher {
         this.forceSaveConfig();
     }
 
-    /**
-     * Allow for accessing super methods in the {@link PatcherConfig} class.
-     *
-     * @return The Patcher Config instance.
-     */
     public PatcherConfig getPatcherConfig() {
         return patcherConfig;
     }
 
-    /**
-     * Allow for accessing super methods in the {@link PatcherSoundConfig} class.
-     *
-     * @return The Patcher Sound Config instance.
-     */
     public PatcherSoundConfig getPatcherSoundConfig() {
         return patcherSoundConfig;
     }
 
-    /**
-     * Allow for accessing our logger outside of the class.
-     *
-     * @return The Patcher logger instance.
-     */
     public Logger getLogger() {
         return logger;
     }
 
-    /**
-     * Allow for accessing our cloud handler outside of the class.
-     * Suppressing as it is used in an ASM method {@link RenderGlobalTransformer}.
-     *
-     * @return The Cloud Handler instance.
-     */
     @SuppressWarnings("unused")
     public CloudHandler getCloudHandler() {
         return cloudHandler;
     }
 
-    /**
-     * Allow for accessing our name history keybind outside of the class.
-     *
-     * @return The Name History keybind.
-     */
     public KeyBinding getNameHistory() {
         return nameHistory;
     }
@@ -523,6 +449,21 @@ public class Patcher {
 
     public DebugPerformanceRenderer getDebugPerformanceRenderer() {
         return debugPerformanceRenderer;
+    }
+
+    @SuppressWarnings("unused")
+    public KeyBinding getHideScreen() {
+        return hideScreen;
+    }
+
+    @SuppressWarnings("unused")
+    public KeyBinding getDebugView() {
+        return debugView;
+    }
+
+    @SuppressWarnings("unused")
+    public KeyBinding getClearShaders() {
+        return clearShaders;
     }
 
     public void forceSaveConfig() {
