@@ -11,12 +11,15 @@
 
 package club.sk1er.patcher.config;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
+import net.modcore.api.utils.GuiUtil;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
@@ -110,7 +113,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
-        description = "Fix the camera being too far back, seemingly making your eyes be in the back of your head.",
+        description = "Fix the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
+            "§cCurrently makes the F3 crosshair disappear.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean parallaxFix;
@@ -285,6 +289,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean showOwnNametag;
 
     @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Ridden Horse Opacity",
+        description = "Change the opacity of the horse you're currently riding for visibility.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static float riddenHorseOpacity = 1.0F;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Zoom Adjustment",
         description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
         category = "Miscellaneous", subcategory = "OptiFine"
@@ -336,7 +347,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Simplify FPS Counter",
-        description = "Remove the additions OptiFine L5 and above makes to the debug screen fps counter.",
+        description = "Remove the additions OptiFine L5 and above makes to the debug screen FPS counter.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean normalFpsCounter = true;
@@ -481,6 +492,15 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "General"
     )
     public static boolean staticItems;
+
+    @Property(
+        type = PropertyType.BUTTON, name = "Modify Every Sound",
+        description = "Open a separate GUI allowing you to mute or amplify individual sounds.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static void modifyEverySound() {
+        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
+    }
 
     // PERFORMANCE
 

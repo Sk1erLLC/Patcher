@@ -45,7 +45,8 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                 }
             } else {
                 final String optifineVersion = ClassTransformer.optifineVersion;
-                if ((optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5")) && methodName.equals("call")) {
+                final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5");
+                if (compatibleVersion && methodName.equals("call")) {
                     ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
                     while (iterator.hasNext()) {

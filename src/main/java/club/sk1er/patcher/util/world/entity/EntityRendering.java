@@ -19,11 +19,13 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
@@ -63,6 +65,40 @@ public class EntityRendering {
             } else if (entity instanceof EntityPlayer && entityDistance > PatcherConfig.playerRenderDistance) {
                 event.setCanceled(true);
             }
+        }
+    }
+
+    private boolean shouldMakeTransparent;
+
+    @SubscribeEvent
+    public void setHorseTransparentPre(RenderLivingEvent.Pre<EntityHorse> event) {
+        if (PatcherConfig.riddenHorseOpacity >= 1.0F) {
+            return;
+        }
+
+        final Entity ridingEntity = mc.thePlayer.ridingEntity;
+        if (ridingEntity == null) {
+            return;
+        }
+
+        shouldMakeTransparent = ridingEntity == event.entity;
+        if (shouldMakeTransparent) {
+            GlStateManager.enableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+            GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager.color(1, 1, 1, PatcherConfig.riddenHorseOpacity);
+            GlStateManager.disableDepth();
+        }
+    }
+
+    @SubscribeEvent
+    public void setHorseTransparentPre(RenderLivingEvent.Post<EntityHorse> event) {
+        if (shouldMakeTransparent) {
+            GlStateManager.disableBlend();
+            GlStateManager.disableAlpha();
+            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.enableDepth();
         }
     }
 
