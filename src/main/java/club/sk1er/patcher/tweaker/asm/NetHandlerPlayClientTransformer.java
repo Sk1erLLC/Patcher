@@ -11,7 +11,10 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
+import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.hooks.NetHandlerPlayClientHook;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -160,25 +163,18 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
     private InsnList cancelIfNotSafe() {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "resourceExploitFix", "Z"));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        LabelNode label = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-            "net/minecraft/network/play/server/S48PacketResourcePackSend",
-            "func_179784_b", "()Ljava/lang/String;", false));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-            "net/minecraft/network/play/server/S48PacketResourcePackSend",
-            "func_179783_a", "()Ljava/lang/String;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
             getHooksPackage("NetHandlerPlayClientHook"),
             "validateResourcePackUrl",
-            "(Lnet/minecraft/client/network/NetHandlerPlayClient;Ljava/lang/String;Ljava/lang/String;)Z",
+            "(Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/network/play/server/S48PacketResourcePackSend;)Z",
             false));
-        list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
+        list.add(new JumpInsnNode(Opcodes.IFNE, label));
         list.add(new InsnNode(Opcodes.RETURN));
-        list.add(labelNode);
+        list.add(label);
         return list;
     }
 }

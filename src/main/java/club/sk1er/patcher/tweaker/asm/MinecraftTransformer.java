@@ -281,7 +281,7 @@ public class MinecraftTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", keybindName, "()Lnet/minecraft/client/settings/KeyBinding;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "getKeyCode", "()I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "func_151463_i", "()I", false));
         return list;
     }
 

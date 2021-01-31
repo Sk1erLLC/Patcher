@@ -13,12 +13,11 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
+import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.C19PacketResourcePackStatus;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.UnsupportedEncodingException;
@@ -32,14 +31,15 @@ import java.nio.charset.StandardCharsets;
  */
 @SuppressWarnings("unused")
 public class NetHandlerPlayClientHook {
-    public static boolean validateResourcePackUrl(NetHandlerPlayClient client, String url, String hash) {
+    public static boolean validateResourcePackUrl(NetHandlerPlayClient client, S48PacketResourcePackSend packet) {
         try {
-            URI uri = new URI(url);
-            String scheme = uri.getScheme();
-            boolean isLevelProtocol = "level".equals(scheme);
+            String url = packet.getURL();
+            final URI uri = new URI(url);
+            final String scheme = uri.getScheme();
+            final boolean isLevelProtocol = "level".equals(scheme);
 
             if (!"http".equals(scheme) && !"https".equals(scheme) && !isLevelProtocol) {
-                client.getNetworkManager().sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
+                client.getNetworkManager().sendPacket(new C19PacketResourcePackStatus(packet.getHash(), C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
                 throw new URISyntaxException(url, "Wrong protocol");
             }
 
@@ -47,23 +47,21 @@ public class NetHandlerPlayClientHook {
 
             if (isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip"))) {
                 Patcher.instance.getLogger().warn("Malicious server tried to access " + url);
-                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-
-                if (player != null) {
-                    player.addChatMessage(new ChatComponentText(
-                        EnumChatFormatting.RED + EnumChatFormatting.BOLD.toString() +
-                            "[WARNING] The current server has attempted to be malicious but we have stopped them."));
+                if (Minecraft.getMinecraft().thePlayer != null) {
+                    ChatUtilities.sendMessage("&c&l[WARNING] The current server has attempted to be malicious but we have stopped them.");
                 }
 
                 throw new URISyntaxException(url, "Invalid levelstorage resourcepack path");
             }
+
             return true;
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            return true;
+            return false;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 }
