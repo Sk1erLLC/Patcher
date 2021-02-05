@@ -41,6 +41,22 @@ public class ConfigUtil {
 
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {
         return new Property() {
+
+            @Override
+            public float minF() {
+                return 0;
+            }
+
+            @Override
+            public float maxF() {
+                return 0;
+            }
+
+            @Override
+            public int decimalPlaces() {
+                return 0;
+            }
+
             @Override
             public String placeholder() {
                 return "";

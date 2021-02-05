@@ -83,7 +83,7 @@ object ScreenshotPreview {
             setColorAnimation(
                 Animations.IN_OUT_CIRCULAR,
                 1.0F,
-                Color.WHITE.asConstraint(),
+                Color.WHITE.toConstraint(),
                 PatcherConfig.previewTime.toFloat()
             ).onComplete { currentWindow = null }
         }
