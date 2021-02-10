@@ -49,6 +49,37 @@ public class VertexLighterFlatTransformer implements PatcherTransformer {
         MethodNode resetBlockInfo = new MethodNode(Opcodes.ACC_PUBLIC, "resetBlockInfo", "()V", null, null);
         resetBlockInfo.instructions.add(resetBlockInfoInstructions());
         classNode.methods.add(resetBlockInfo);
+
+        for (MethodNode method : classNode.methods) {
+            if (method.name.equals("updateBlockInfo")) {
+                method.instructions.insertBefore(method.instructions.getLast().getPrevious(), updateFlatLighting());
+            } else if (method.name.equals("updateLightmap")) {
+                clearInstructions(method);
+                method.instructions.insert(updateLightmap());
+            }
+        }
+    }
+
+    private InsnList updateLightmap() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/pipeline/VertexLighterFlat", "blockInfo", "Lnet/minecraftforge/client/model/pipeline/BlockInfo;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 3));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 4));
+        list.add(new VarInsnNode(Opcodes.FLOAD, 5));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("BlockInfoHook"), "updateLightmap", "(Lnet/minecraftforge/client/model/pipeline/BlockInfo;[F[FFFF)V", false));
+        list.add(new InsnNode(Opcodes.RETURN));
+        return list;
+    }
+
+    private InsnList updateFlatLighting() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/model/pipeline/VertexLighterFlat", "blockInfo", "Lnet/minecraftforge/client/model/pipeline/BlockInfo;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/BlockInfo", "updateFlatLighting", "()V", false));
+        return list;
     }
 
     private InsnList getBlockInfoInstructions() {

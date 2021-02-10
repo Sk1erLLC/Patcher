@@ -13,12 +13,15 @@ package club.sk1er.patcher.tweaker.asm.forge;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+
+import java.util.ListIterator;
 
 public class FMLClientHandlerTransformer implements PatcherTransformer {
     /**
@@ -43,6 +46,19 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
             if (methodNode.name.equals("stripSpecialChars")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(fasterSpecialChars());
+            } else if (methodNode.name.equals("addModAsResource")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("loadLanguagesFor")) {
+                        for (int i = 0; i < 4; i++) {
+                            methodNode.instructions.remove(next.getPrevious());
+                        }
+
+                        methodNode.instructions.remove(next);
+                        break;
+                    }
+                }
             }
         }
     }
