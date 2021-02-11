@@ -132,7 +132,7 @@ public class EntityRendering {
         if (!PatcherConfig.cleanView) return;
 
         if (event.phase == Phase.START) {
-            final EntityLivingBase entity = (EntityLivingBase) mc.getRenderViewEntity();
+            final EntityLivingBase entity = mc.thePlayer;
             final EntityLivingBase previousEntity = (reference != null) ? reference.get() : null;
             final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
             if (previousEntity != entity) {

@@ -68,14 +68,16 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (ticks++ >= 12000) {
-            final long time = System.currentTimeMillis();
-            chatMessageMap.entrySet().removeIf(next -> {
-                boolean oldEnough = (time - next.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L);
-                if (oldEnough) messagesForHash.remove(next.getKey());
-                return oldEnough;
-            });
-            ticks = 0;
+        if (event.phase == TickEvent.Phase.START) {
+            if (ticks++ >= 12000) {
+                final long time = System.currentTimeMillis();
+                chatMessageMap.entrySet().removeIf(next -> {
+                    boolean oldEnough = (time - next.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L);
+                    if (oldEnough) messagesForHash.remove(next.getKey());
+                    return oldEnough;
+                });
+                ticks = 0;
+            }
         }
     }
 

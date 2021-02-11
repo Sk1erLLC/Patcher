@@ -301,7 +301,9 @@ public class Patcher {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
-        EnhancementManager.getInstance().tick();
+        if (event.phase == TickEvent.Phase.START) {
+            EnhancementManager.getInstance().tick();
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

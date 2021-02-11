@@ -41,7 +41,9 @@ public class MenuPreviewHandler {
 
     @SubscribeEvent
     public void tickEvent(TickEvent.ClientTickEvent event) {
-        this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
+        if (event.phase == TickEvent.Phase.START) {
+            this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
+        }
     }
 
     @SubscribeEvent

@@ -32,9 +32,11 @@ public class KeybindDropModifier extends KeyBinding {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        final EntityPlayerSP player = mc.thePlayer;
-        if (player != null && !player.isSpectator() && GameSettings.isKeyDown(this) && GameSettings.isKeyDown(mc.gameSettings.keyBindDrop) && mc.currentScreen == null) {
-            player.dropOneItem(true);
+        if (event.phase == TickEvent.Phase.START) {
+            final EntityPlayerSP player = mc.thePlayer;
+            if (player != null && !player.isSpectator() && GameSettings.isKeyDown(this) && GameSettings.isKeyDown(mc.gameSettings.keyBindDrop) && mc.currentScreen == null) {
+                player.dropOneItem(true);
+            }
         }
     }
 }

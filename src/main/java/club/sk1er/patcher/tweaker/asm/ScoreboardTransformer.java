@@ -49,7 +49,7 @@ public class ScoreboardTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("removeTeam") || methodName.equals("func_147194_f")) {
+            if (methodName.equals("removeTeam") || methodName.equals("func_96511_d")) {
                 methodNode.instructions.insert(checkNullTeam());
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
