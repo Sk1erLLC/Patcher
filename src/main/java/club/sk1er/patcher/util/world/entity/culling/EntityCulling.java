@@ -41,9 +41,7 @@ import org.lwjgl.opengl.GLContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -147,16 +145,16 @@ public class EntityCulling {
             PatcherConfig.entityCulling = false;
             Patcher.instance.forceSaveConfig();
 
-           ModCoreAPI.getInstance().notifications().push("Patcher",
+            ModCoreAPI.getInstance().notifications().push("Patcher",
                 "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
-                    "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message",() -> {
-                   try {
-                       UDesktop.browse(new URI("https://sk1er.club/support-discord"));
-                   } catch (URISyntaxException e) {
-                       e.printStackTrace();
-                   }
-                   return Unit.INSTANCE;
-               });
+                    "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message", () -> {
+                    try {
+                        UDesktop.browse(new URI("https://sk1er.club/support-discord"));
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                    return Unit.INSTANCE;
+                });
 
             return 0;
         }
@@ -281,12 +279,14 @@ public class EntityCulling {
 
         List<UUID> remove = new ArrayList<>();
 
-        outer:
+        Set<UUID> loaded = new HashSet<>();
+        for (Entity entity : theWorld.loadedEntityList) {
+            loaded.add(entity.getUniqueID());
+        }
+
         for (OcclusionQuery value : queries.values()) {
-            for (Entity entity : theWorld.loadedEntityList) {
-                if (entity.getUniqueID() == value.uuid) {
-                    continue outer;
-                }
+            if (loaded.contains(value.uuid)) {
+                continue;
             }
 
             remove.add(value.uuid);
@@ -294,12 +294,9 @@ public class EntityCulling {
                 GL15.glDeleteQueries(value.nextQuery);
             }
         }
-
         for (UUID uuid : remove) {
             queries.remove(uuid);
         }
-
-
     }
 
     static class OcclusionQuery {
