@@ -29,9 +29,9 @@ public class RecipeBookCloningTransformer implements PatcherTransformer {
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        if (next.getPrevious().getPrevious().getOpcode() == Opcodes.IF_ICMPLT) {
+                        final String methodInsnName = mapMethodNameFromNode(next);
+                        if ((methodInsnName.equals("getGeneration") || methodInsnName.equals("func_179230_h")) && next.getNext().getOpcode() == Opcodes.ICONST_2) {
                             method.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), checkTagCompound(ifeq));
-                            break;
                         }
                     }
                 }

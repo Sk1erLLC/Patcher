@@ -193,7 +193,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ContainerTransformer());
         registerTransformer(new ScaledResolutionTransformer());
         registerTransformer(new TileEntityBannerRendererTransformer());
-        registerTransformer(new RecipeBookCloningTransformer());
+        //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new RenderTNTPrimedTransformer());
         registerTransformer(new ModelSkeletonTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
