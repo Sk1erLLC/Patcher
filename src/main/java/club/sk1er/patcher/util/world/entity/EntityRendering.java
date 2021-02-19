@@ -116,7 +116,7 @@ public class EntityRendering {
         final EntityLivingBase entity = event.entity;
         if (entity instanceof EntityPlayerSP
             && !((EntityPlayerSP) entity).isSpectator() && !entity.isInvisible()
-            && entity.isEntityEqual(renderManager.livingPlayer) && PatcherConfig.showOwnNametag) {
+            && entity == renderManager.livingPlayer && PatcherConfig.showOwnNametag) {
             renderTag(entity);
         }
     }

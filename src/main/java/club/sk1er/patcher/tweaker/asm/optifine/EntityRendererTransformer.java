@@ -34,6 +34,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private static long lastMillis = System.currentTimeMillis();
     private static float smoothZoomProgress = 0f;
     private static float desiredModifier = currentModifier;
+    private final boolean dev = isDevelopment();
 
     /**
      * The class name that's being transformed
@@ -237,7 +238,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             }
 
                             methodNode.instructions.insertBefore(nextInsn.getNext(), new MethodInsnNode(
-                                Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "disablePolygonOffset" : "func_179113_r", "()V", false
+                                Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "disablePolygonOffset" : "func_179113_r", "()V", false
                             ));
                         }
 
@@ -352,6 +353,31 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
                 }
 
+                case "func_78484_h":
+                case "addRainParticles": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
+                            final String fieldInsnName = mapFieldNameFromNode(next);
+                            if (fieldInsnName.equals("lava") || fieldInsnName.equals("field_151587_i")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), createBoundingBox());
+                            }
+                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("getBlockBoundsMinY") || methodInsnName.equals("func_149665_z")) {
+                                methodNode.instructions.remove(next.getPrevious());
+                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "minY" : "field_149760_C"));
+                                methodNode.instructions.remove(next);
+                            } else if (methodInsnName.equals("getBlockBoundsMaxY") || methodInsnName.equals("func_149669_A")) {
+                                methodNode.instructions.remove(next.getPrevious());
+                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "maxY" : "field_149756_F"));
+                                methodNode.instructions.remove(next);
+                            }
+                        }
+                    }
+                }
+
                 /*case "func_181560_a":
                 case "updateCameraAndRender": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -379,6 +405,23 @@ public class EntityRendererTransformer implements PatcherTransformer {
         }
     }
 
+    private InsnList fetchYBox(String value) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 30));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/util/AxisAlignedBB", value, "D"));
+        return list;
+    }
+
+    private InsnList createBoundingBox() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 18));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 17));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/block/Block", dev ? "getSelectedBoundingBox" : "func_180646_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/util/AxisAlignedBB;", false));
+        list.add(new VarInsnNode(Opcodes.ASTORE, 30));
+        return list;
+    }
+
     private InsnList checkMap(LabelNode ifne) {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "hasMap", "()Z", false));
@@ -390,8 +433,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new LdcInsnNode(-1.0F));
         list.add(new LdcInsnNode(-1.0F));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "doPolygonOffset" : "func_179136_a", "(FF)V", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "enablePolygonOffset" : "func_179088_q", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "doPolygonOffset" : "func_179136_a", "(FF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "enablePolygonOffset" : "func_179088_q", "()V", false));
         return list;
     }
 
@@ -399,8 +442,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", isDevelopment() ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "ingameGUI" : "field_71456_v", "Lnet/minecraft/client/gui/GuiIngame;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", dev ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", dev ? "ingameGUI" : "field_71456_v", "Lnet/minecraft/client/gui/GuiIngame;"));
         list.add(new VarInsnNode(Opcodes.FLOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/cache/HudCaching", "renderCachedHud", "(Lnet/minecraft/client/renderer/EntityRenderer;Lnet/minecraft/client/gui/GuiIngame;F)V", false));
         return list;
@@ -432,8 +475,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", isDevelopment() ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "theWorld" : "field_71441_e", "Lnet/minecraft/client/multiplayer/WorldClient;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", dev ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", dev ? "theWorld" : "field_71441_e", "Lnet/minecraft/client/multiplayer/WorldClient;"));
         list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
@@ -464,7 +507,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new InsnNode(Opcodes.ICONST_1));
         list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/multiplayer/WorldClient", isDevelopment() ? "rayTraceBlocks" : "func_147447_a", "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/multiplayer/WorldClient", dev ? "rayTraceBlocks" : "func_147447_a", "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;", false));
         list.add(new VarInsnNode(Opcodes.ASTORE, movingobjectpositionIndex));
         list.add(ifeq);
         return list;
@@ -480,7 +523,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
     private InsnList clampLightmap() {
         // using srg name in dev crashes? Ok Forge
-        final String clamp_float = isDevelopment() ? "clamp_float" : "func_76131_a";
+        final String clamp_float = dev ? "clamp_float" : "func_76131_a";
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.FLOAD, 12));
         clampFloat(12, 13, clamp_float, list);
@@ -506,7 +549,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.FCONST_1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/entity/Entity",
-            isDevelopment() ? "getPositionEyes" : "func_174824_e",
+            dev ? "getPositionEyes" : "func_174824_e",
             "(F)Lnet/minecraft/util/Vec3;",
             false));
         return list;

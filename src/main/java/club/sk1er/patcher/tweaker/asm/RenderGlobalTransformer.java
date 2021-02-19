@@ -13,17 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -95,20 +85,44 @@ public class RenderGlobalTransformer implements PatcherTransformer {
 
                 case "renderSky":
                 case "func_174976_a": {
-                    boolean shouldLook = false;
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode node = iterator.next();
-                        if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String invokeName = mapMethodNameFromNode(node);
-                            if (invokeName.equals("getPositionEyes") || invokeName.equals("func_174824_e")) {
-                                shouldLook = true;
+                    if (methodNode.desc.equals("(FI)V")) {
+                        boolean shouldLook = false;
+                        ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                        while (iterator.hasNext()) {
+                            AbstractInsnNode node = iterator.next();
+                            if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                String invokeName = mapMethodNameFromNode(node);
+                                if (invokeName.equals("getPositionEyes") || invokeName.equals("func_174824_e")) {
+                                    shouldLook = true;
+                                }
+                            } else if (shouldLook && node.getOpcode() == Opcodes.DCONST_0 && node.getNext().getOpcode() == Opcodes.DCMPG && node.getNext().getNext().getOpcode() == Opcodes.IFGE) {
+                                JumpInsnNode jumpInsnNode = (JumpInsnNode) node.getNext().getNext();
+                                methodNode.instructions.insert(jumpInsnNode, fixVoidRendering(jumpInsnNode.label));
                             }
-                        } else if (shouldLook && node.getOpcode() == Opcodes.DCONST_0 && node.getNext().getOpcode() == Opcodes.DCMPG && node.getNext().getNext().getOpcode() == Opcodes.IFGE) {
-                            JumpInsnNode jumpInsnNode = (JumpInsnNode) node.getNext().getNext();
-                            methodNode.instructions.insert(jumpInsnNode, fixVoidRendering(jumpInsnNode.label));
                         }
                     }
+
+                    break;
+                }
+
+                case "func_180449_a":
+                case "renderWorldBorder": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("getClosestDistance") || methodInsnName.equals("func_177729_b")) {
+                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(),
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179106_n", "()V", false));
+                                break;
+                            }
+                        }
+                    }
+
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(),
+                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179127_m", "()V", false));
+                    break;
                 }
             }
         }
