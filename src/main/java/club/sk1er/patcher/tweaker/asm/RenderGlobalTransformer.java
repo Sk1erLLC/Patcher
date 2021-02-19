@@ -110,18 +110,23 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        if (next instanceof MethodInsnNode) {
                             final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("getClosestDistance") || methodInsnName.equals("func_177729_b")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(),
-                                    new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179106_n", "()V", false));
-                                break;
+                            if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                if (methodInsnName.equals("getClosestDistance") || methodInsnName.equals("func_177729_b")) {
+                                    methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(),
+                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179106_n", "()V", false));
+                                }
+                            } else if (next.getOpcode() == Opcodes.INVOKESTATIC) {
+                                if ((methodInsnName.equals("depthMask") || methodInsnName.equals("func_179132_a")) && next.getPrevious().getOpcode() == Opcodes.ICONST_1) {
+                                    methodNode.instructions.insert(next,
+                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179127_m", "()V", false)
+                                    );
+                                }
                             }
                         }
                     }
 
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(),
-                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179127_m", "()V", false));
                     break;
                 }
             }
