@@ -196,6 +196,7 @@ public class ClassTransformer implements IClassTransformer {
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new RenderTNTPrimedTransformer());
         registerTransformer(new ModelSkeletonTransformer());
+        registerTransformer(new S34PacketMapsTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
