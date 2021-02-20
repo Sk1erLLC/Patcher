@@ -367,11 +367,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("getBlockBoundsMinY") || methodInsnName.equals("func_149665_z")) {
                                 methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "minY" : "field_149760_C"));
+                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "minY" : "field_72338_b"));
                                 methodNode.instructions.remove(next);
                             } else if (methodInsnName.equals("getBlockBoundsMaxY") || methodInsnName.equals("func_149669_A")) {
                                 methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "maxY" : "field_149756_F"));
+                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "maxY" : "field_72337_e"));
                                 methodNode.instructions.remove(next);
                             }
                         }

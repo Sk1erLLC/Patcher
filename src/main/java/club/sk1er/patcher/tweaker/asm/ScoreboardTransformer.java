@@ -49,47 +49,77 @@ public class ScoreboardTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equals("removeTeam") || methodName.equals("func_96511_d")) {
-                methodNode.instructions.insert(checkNullTeam());
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            switch (methodName) {
+                case "removeTeam":
+                case "func_96511_d": {
+                    methodNode.instructions.insert(checkNullTeam());
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                        String fieldInsnName = mapFieldNameFromNode(next);
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            String fieldInsnName = mapFieldNameFromNode(next);
 
-                        if (fieldInsnName.equals("teams") || fieldInsnName.equals("field_96542_e")) {
-                            LabelNode ifnull = new LabelNode();
-                            methodNode.instructions.insertBefore(next.getPrevious(), checkNullRegisteredName(ifnull));
+                            if (fieldInsnName.equals("teams") || fieldInsnName.equals("field_96542_e")) {
+                                LabelNode ifnull = new LabelNode();
+                                methodNode.instructions.insertBefore(next.getPrevious(), checkNullRegisteredName(ifnull));
 
-                            for (int i = 0; i < 4; i++) {
-                                next = next.getNext();
+                                for (int i = 0; i < 4; i++) {
+                                    next = next.getNext();
+                                }
+
+                                methodNode.instructions.insertBefore(next.getNext(), ifnull);
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "createTeam":
+                case "func_96527_f": {
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
+
+                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("A team with the name '")) {
+                            for (int i = 0; i < 5; i++) {
+                                next = next.getPrevious();
                             }
 
-                            methodNode.instructions.insertBefore(next.getNext(), ifnull);
+                            for (int i = 0; i < 13; i++) {
+                                methodNode.instructions.remove(next.getNext());
+                            }
+
+                            methodNode.instructions.insertBefore(next, returnExistingTeam());
+                            methodNode.instructions.remove(next);
+                            break;
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("createTeam") || methodName.equals("func_96527_f")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                case "removeObjective":
+                case "func_96519_k": {
+                    methodNode.instructions.insert(checkNullTeam());
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            final String fieldInsnName = mapFieldNameFromNode(next);
+                            if (fieldInsnName.equals("scoreObjectives") || fieldInsnName.equals("field_96545_a")) {
+                                LabelNode ifnull = new LabelNode();
+                                methodNode.instructions.insertBefore(next.getPrevious(), checkNullName(ifnull));
 
-                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("A team with the name '")) {
-                        for (int i = 0; i < 5; i++) {
-                            next = next.getPrevious();
+                                for (int i = 0; i < 4; i++) {
+                                    next = next.getNext();
+                                }
+
+                                methodNode.instructions.insert(next, ifnull);
+                            }
                         }
-
-                        for (int i = 0; i < 13; i++) {
-                            methodNode.instructions.remove(next.getNext());
-                        }
-
-                        methodNode.instructions.insertBefore(next, returnExistingTeam());
-                        methodNode.instructions.remove(next);
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -109,6 +139,14 @@ public class ScoreboardTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/ScorePlayerTeam", "func_96661_b", "()Ljava/lang/String;", false));
+        list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
+        return list;
+    }
+
+    private InsnList checkNullName(LabelNode ifnull) {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/ScoreObjective", "func_96679_b", "()Ljava/lang/String;", false));
         list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
         return list;
     }
