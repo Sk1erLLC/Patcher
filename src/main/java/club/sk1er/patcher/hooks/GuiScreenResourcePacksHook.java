@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.ResourcePackRepository;
 
+@SuppressWarnings("unused")
 public class GuiScreenResourcePacksHook {
     public static void clearHandles() {
         final ResourcePackRepository repository = Minecraft.getMinecraft().getResourcePackRepository();

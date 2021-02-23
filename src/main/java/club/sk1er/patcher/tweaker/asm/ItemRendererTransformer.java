@@ -13,15 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 public class ItemRendererTransformer implements PatcherTransformer {
     /**
@@ -48,7 +40,7 @@ public class ItemRendererTransformer implements PatcherTransformer {
             if (methodName.equals("renderWaterOverlayTexture") || methodName.equals("func_78448_c")) {
                 methodNode.instructions.insert(removeOverlay());
             } else if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
-                methodNode.instructions.insert(changeHeight());
+                methodNode.instructions.insert(changeHeightAndFixOverlay());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                     "net/minecraft/client/renderer/GlStateManager",
                     "func_179121_F",
@@ -68,18 +60,23 @@ public class ItemRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList changeHeight() {
+    private InsnList changeHeightAndFixOverlay() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", // pushMatrix
-            "()V", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ItemRenderer", "field_78455_a", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "func_147117_R", "()Lnet/minecraft/client/renderer/texture/TextureMap;", false));
+        list.add(new LdcInsnNode("minecraft:blocks/fire_layer_1"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureMap", "func_110572_b", "(Ljava/lang/String;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", "func_110970_k", "()I", false));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifne);
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false));
         list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fireHeight", "I"));
-        list.add(new InsnNode(Opcodes.I2F));
-        list.add(new LdcInsnNode(100F));
-        list.add(new InsnNode(Opcodes.FDIV));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fireOverlayHeight", "F"));
         list.add(new InsnNode(Opcodes.FCONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", // translate
-            "(FFF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", "(FFF)V", false));
         return list;
     }
 }

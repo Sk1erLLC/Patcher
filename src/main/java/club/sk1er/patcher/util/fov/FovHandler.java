@@ -47,36 +47,33 @@ public class FovHandler {
      */
     private static final Map<Integer, Float> MODIFIER_BY_TICK = new HashMap<>();
 
-    /**
-     * Change the FOV multiplier accordingly to what the user states.
-     *
-     * @param event {@link FOVUpdateEvent}
-     */
     @SubscribeEvent
     public void fovChange(FOVUpdateEvent event) {
-        if (!PatcherConfig.allowFovModifying || event.entity.getActivePotionEffects().isEmpty()) return;
+        if (!PatcherConfig.allowFovModifying) return;
 
         float base = 1.0F;
 
         if (event.entity.isSprinting()) {
-            base += (float) (0.15000000596046448 * PatcherConfig.sprintingFovModifier);
+            base += 0.15000000596046448 * PatcherConfig.sprintingFovModifierFloat;
         }
 
         final ItemStack item = event.entity.getItemInUse();
         if (item != null && item.getItem() == Items.bow) {
-            int duration = (int) Math.min(event.entity.getItemInUseDuration(), MAX_BOW_TICKS);
-            float modifier = MODIFIER_BY_TICK.get(duration);
-            base -= modifier * PatcherConfig.bowFovModifier;
+            final int duration = (int) Math.min(event.entity.getItemInUseDuration(), MAX_BOW_TICKS);
+            final float modifier = MODIFIER_BY_TICK.get(duration);
+            base -= modifier * PatcherConfig.bowFovModifierFloat;
         }
 
         final Collection<PotionEffect> effects = event.entity.getActivePotionEffects();
-        for (PotionEffect effect : effects) {
-            if (effect.getPotionID() == 1) {
-                base += (MODIFIER_SPEED * (effect.getAmplifier() + 1) * PatcherConfig.speedFovModifier);
-            }
+        if (!effects.isEmpty()) {
+            for (final PotionEffect effect : effects) {
+                if (effect.getPotionID() == 1) {
+                    base += MODIFIER_SPEED * (effect.getAmplifier() + 1) * PatcherConfig.speedFovModifierFloat;
+                }
 
-            if (effect.getPotionID() == 2) {
-                base += (MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifier);
+                if (effect.getPotionID() == 2) {
+                    base += MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifierFloat;
+                }
             }
         }
 
@@ -86,7 +83,7 @@ public class FovHandler {
     // Input the current state and modifier.
     static {
         MODIFIER_BY_TICK.put(0, 0.0F);
-        MODIFIER_BY_TICK.put(1, 3.7497282E-4f);
+        MODIFIER_BY_TICK.put(1, 0.00037497282f);
         MODIFIER_BY_TICK.put(2, 0.0015000105f);
         MODIFIER_BY_TICK.put(3, 0.0033749938f);
         MODIFIER_BY_TICK.put(4, 0.0059999824f);

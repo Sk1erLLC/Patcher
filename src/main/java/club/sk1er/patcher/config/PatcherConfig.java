@@ -185,12 +185,12 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableAchievements;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Fire Overlay Height",
+        type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Height",
         description = "Change the height of the fire overlay.",
         category = "Miscellaneous", subcategory = "Overlays",
-        min = -200, max = 200
+        minF = -0.5F, maxF = 1.5F
     )
-    public static int fireHeight;
+    public static float fireOverlayHeight;
 
     @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",
@@ -200,36 +200,36 @@ public class PatcherConfig extends Vigilant {
     public static boolean allowFovModifying;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Sprinting FOV",
+        type = PropertyType.DECIMAL_SLIDER, name = "Sprinting FOV",
         description = "Modify your FOV when sprinting.",
         category = "Miscellaneous", subcategory = "Field of View",
-        min = -5, max = 5
+        minF = -5, maxF = 5
     )
-    public static int sprintingFovModifier = 1;
+    public static float sprintingFovModifierFloat = 1;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Bow FOV",
+        type = PropertyType.DECIMAL_SLIDER, name = "Bow FOV",
         description = "Modify your FOV when pulling back a bow.",
         category = "Miscellaneous", subcategory = "Field of View",
-        min = -5, max = 5
+        minF = -5, maxF = 5
     )
-    public static int bowFovModifier = 1;
+    public static float bowFovModifierFloat = 1;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Speed FOV",
+        type = PropertyType.DECIMAL_SLIDER, name = "Speed FOV",
         description = "Modify your FOV when having the speed effect.",
         category = "Miscellaneous", subcategory = "Field of View",
-        min = -5, max = 5
+        minF = -5, maxF = 5
     )
-    public static int speedFovModifier = 1;
+    public static float speedFovModifierFloat = 1;
 
     @Property(
-        type = PropertyType.SLIDER, name = "Slowness FOV",
+        type = PropertyType.DECIMAL_SLIDER, name = "Slowness FOV",
         description = "Modify your FOV when having the slowness effect.",
         category = "Miscellaneous", subcategory = "Field of View",
-        min = -5, max = 5
+        minF = -5, maxF = 5
     )
-    public static int slownessFovModifier = 1;
+    public static float slownessFovModifierFloat = 1;
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Water FOV",
