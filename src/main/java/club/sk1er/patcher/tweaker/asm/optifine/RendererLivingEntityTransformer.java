@@ -138,6 +138,20 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                 makeNametagShadowed(methodNode);
             } else if (methodName.equals("canRenderName") || methodName.equals("func_177070_b")) {
                 methodNode.instructions.insert(modifyNametagRenderState(false));
+            } else if (methodName.equals("rotateCorpse") || methodName.equals("func_77043_a")) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(0.1F)) {
+                        methodNode.instructions.remove(next.getPrevious());
+                        methodNode.instructions.insertBefore(next,
+                            new MethodInsnNode(
+                                Opcodes.INVOKESTATIC,
+                                getHooksPackage("RendererLivingEntityHook"), "getVisibleHeight", "(Lnet/minecraft/entity/Entity;)F",
+                                false
+                            ));
+                    }
+                }
             }
         }
     }
