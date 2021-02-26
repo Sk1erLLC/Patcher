@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher;
 
+import club.sk1er.patcher.command.DeleteNameHistoryCommand;
 import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
@@ -143,7 +144,7 @@ public class Patcher {
             new PatcherCommand(),
             new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
-            new AsyncScreenshots.ScreenshotsFolder()
+            new AsyncScreenshots.ScreenshotsFolder(), new DeleteNameHistoryCommand()
         );
 
         registerEvents(
@@ -409,11 +410,15 @@ public class Patcher {
         }
 
         if (PatcherConfig.imagePreviewWidth > 1.0F) {
-            PatcherConfig.imagePreviewWidth = 0.50F;
+            PatcherConfig.imagePreviewWidth = 0.5F;
         }
 
         if (PatcherConfig.previewScale > 1.0F) {
             PatcherConfig.previewScale = 1.0F;
+        }
+
+        if (PatcherConfig.fireOverlayHeight < -0.5F || PatcherConfig.fireOverlayHeight > 1.5F) {
+            PatcherConfig.fireOverlayHeight = 0.0F;
         }
 
         this.forceSaveConfig();

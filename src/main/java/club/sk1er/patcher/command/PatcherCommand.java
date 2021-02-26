@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.command;
 
+import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
@@ -30,6 +31,10 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
 import net.modcore.api.commands.Command;
 import net.modcore.api.commands.DefaultHandler;
 import net.modcore.api.commands.DisplayName;
@@ -37,16 +42,21 @@ import net.modcore.api.commands.Greedy;
 import net.modcore.api.commands.Options;
 import net.modcore.api.commands.SubCommand;
 import net.modcore.api.utils.GuiUtil;
+import net.modcore.api.utils.Multithreading;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class PatcherCommand extends Command {
 
     private final Map<String, AbstractBenchmark> benchmarkMap = new HashMap<>();
     private final Minecraft mc = Minecraft.getMinecraft();
+    private final int randomBound = 85673;
+    public static int randomChatMessageId;
 
     public PatcherCommand() {
         super("patcher");
@@ -72,9 +82,48 @@ public class PatcherCommand extends Command {
         ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
     }
 
-    @SubCommand(value = "names", aliases = {"name"})
-    public void names(@Greedy @Nullable @DisplayName("name") String name) {
-        GuiUtil.open(name != null ? new ScreenHistory(name, false) : new ScreenHistory());
+    @SubCommand(value = "name", aliases = {"names", "namehistory"})
+    public void names(@Nullable @DisplayName("name") String name) {
+        final boolean invalidName = name == null || name.isEmpty();
+
+        if (PatcherConfig.nameHistoryStyle == 0) {
+            GuiUtil.open(name != null ? new ScreenHistory(name, false) : new ScreenHistory());
+        } else if (PatcherConfig.nameHistoryStyle == 1) {
+            if (invalidName) {
+                ChatUtilities.sendNotification("Name History", "Username cannot be null.");
+                return;
+            }
+
+            final ScreenHistory.NameFetcher nameFetcher = new ScreenHistory.NameFetcher();
+            ChatUtilities.sendNotification("Name History", "Fetching usernames...");
+            nameFetcher.execute(name);
+
+            Multithreading.schedule(() -> {
+                ChatComponentText message = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------" + ChatColor.RESET + '\n');
+                for (String usernames : nameFetcher.getNames()) {
+                    message.appendText(ChatColor.GRAY + usernames + '\n');
+                }
+                message.appendText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------");
+
+                final ChatComponentText deleteMessage = new ChatComponentText('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
+                final ChatStyle style = deleteMessage.getChatStyle();
+                style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY + "This will only delete the most recent name history message.")));
+                style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$deletenamehistory"));
+                message.appendSibling(deleteMessage);
+
+                randomChatMessageId = new Random().nextInt(randomBound);
+                mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(message, randomChatMessageId);
+                nameFetcher.getNames().clear();
+            }, 2, TimeUnit.SECONDS);
+        } else if (PatcherConfig.nameHistoryStyle == 2) {
+            if (invalidName) {
+                ChatUtilities.sendNotification("Name History", "Username cannot be null.");
+                return;
+            }
+
+            // create a popup in the top right
+            ChatUtilities.sendNotification("Name History", "Popup is not yet implemented.");
+        }
     }
 
     @SubCommand("blacklist")
@@ -121,7 +170,7 @@ public class PatcherCommand extends Command {
     @SubCommand("mode")
     public void mode(@Options({"vanilla", "optimized"}) String mode) {
         // users dont need this
-        if (ClassTransformer.isDevelopment()) {
+        if (!ClassTransformer.isDevelopment()) {
             ChatUtilities.sendNotification("Debug Renderer", "This command is disabled outside of development.");
             return;
         }

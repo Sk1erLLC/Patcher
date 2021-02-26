@@ -16,8 +16,6 @@ import club.sk1er.mods.core.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 public class ChatUtilities {
 
@@ -26,26 +24,26 @@ public class ChatUtilities {
     }
 
     public static void sendMessage(String message, boolean prefix) {
-        sendMessageHelper(prefix ? color("&e[Patcher] &r") + color(message) : color(message));
+        sendMessageHelper(prefix ? translate("&e[Patcher] &r") + translate(message) : translate(message));
     }
 
     private static void sendMessageHelper(String message) {
         final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 
         if (player != null) {
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(color(message)));
+            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(translate(message)));
         }
     }
 
     public static void sendNotification(String notificationCategory, String chatMessage) {
         if (!ModCoreAPI.getConfig().getDisableAllNotifications()) {
-            ModCoreAPI.getNotifications().push(notificationCategory, color(chatMessage));
+            ModCoreAPI.getNotifications().push(notificationCategory, translate(chatMessage));
         } else {
             sendMessage(chatMessage);
         }
     }
 
-    public static String color(String message) {
+    public static String translate(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 }

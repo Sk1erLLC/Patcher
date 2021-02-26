@@ -14,6 +14,7 @@ package club.sk1er.patcher.screen;
 import club.sk1er.elementa.components.UIRoundedRectangle;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.vigilance.gui.VigilancePalette;
+import me.kbrewster.exceptions.APIException;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
@@ -27,17 +28,16 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class ScreenHistory extends GuiScreen {
 
-    private final List<String> names = new ArrayList<>();
     private final boolean focus;
     private GuiTextField nameField;
     private String name;
     private int offset;
-    private String exceptionName;
 
     public ScreenHistory() {
         this(null, true);
@@ -49,39 +49,9 @@ public class ScreenHistory extends GuiScreen {
         getNameHistory(name);
     }
 
-    private void getNameHistory(String username) {
+    public void getNameHistory(String username) {
         offset = 0;
-        try {
-            if (username.isEmpty()) {
-                return;
-            }
-
-            Multithreading.runAsync(() -> {
-                UUID uuid = null;
-                try {
-                    uuid = MojangAPI.getUUID(username);
-                } catch (Exception e) {
-                    exceptionName = e.getClass().getSimpleName();
-                    Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
-                }
-
-                if (uuid != null) {
-                    for (Name history : MojangAPI.getNameHistory(uuid)) {
-                        String name = history.getName();
-                        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-                        if (history.getChangedToAt() == 0) {
-                            names.add(name);
-                        } else {
-                            names.add(String.format("%s » %s", name, format.format(history.getChangedToAt())));
-                        }
-                    }
-                } else {
-                    names.add("Failed to fetch " + username + "'s names: " + exceptionName);
-                }
-            });
-        } catch (Exception e) {
-            Patcher.instance.getLogger().warn("User catch failed, tried fetching {}.", username, e);
-        }
+        NameFetcher.INSTANCE.execute(username);
     }
 
     @Override
@@ -106,7 +76,7 @@ public class ScreenHistory extends GuiScreen {
 
         UIRoundedRectangle.Companion.drawRoundedRectangle(
             left, top,
-            right, bottom + (names.size() * 10) + offset,
+            right, bottom + (NameFetcher.INSTANCE.names.size() * 10) + offset,
             3, VigilancePalette.INSTANCE.getBACKGROUND()
         );
 
@@ -115,17 +85,17 @@ public class ScreenHistory extends GuiScreen {
 
         // Check if names have been scrolled outside of bounding box.
         // Highlight current and original names.
-        for (int currentName = 0; currentName < names.size(); currentName++) {
+        for (int currentName = 0; currentName < NameFetcher.INSTANCE.names.size(); currentName++) {
             final float xPos = width >> 1;
             final float yPos = bottom + (currentName * 10) + offset - 1;
             if (yPos < (height / 5f) + 35) {
                 continue;
             }
 
-            final String text = names.get(currentName);
+            final String text = NameFetcher.INSTANCE.names.get(currentName);
             if (currentName == 0) {
                 drawCenteredString(
-                    fontRendererObj, exceptionName != null ? text : text + " » Original",
+                    fontRendererObj, text + " » Original",
                     (int) xPos, (int) yPos,
                     new Color(0, 167, 81).getRGB()
                 );
@@ -133,7 +103,7 @@ public class ScreenHistory extends GuiScreen {
                 drawCenteredString(
                     fontRendererObj, text,
                     (int) xPos, (int) yPos,
-                    currentName == names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1
+                    currentName == NameFetcher.INSTANCE.names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1
                 );
             }
         }
@@ -148,8 +118,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_RETURN) {
-            this.names.clear();
-            this.exceptionName = null;
+            NameFetcher.INSTANCE.names.clear();
             this.getNameHistory(this.nameField.getText());
         }
 
@@ -161,10 +130,9 @@ public class ScreenHistory extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        names.clear();
+        NameFetcher.INSTANCE.names.clear();
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
-        exceptionName = null;
     }
 
     @Override
@@ -173,7 +141,7 @@ public class ScreenHistory extends GuiScreen {
         final int scrollBounds = Mouse.getEventDWheel();
         if (scrollBounds < 0) {
             // works out length of scrollable area
-            final int size = names.size();
+            final int size = NameFetcher.INSTANCE.names.size();
             final int length = height / 5 - (size * 9);
             if (offset - length + 1 > -size && length <= size) {
                 // regions it cant exceed
@@ -181,6 +149,49 @@ public class ScreenHistory extends GuiScreen {
             }
         } else if (scrollBounds > 0 && offset < 0) {
             offset += 10;
+        }
+    }
+
+    public static class NameFetcher {
+
+        public static final NameFetcher INSTANCE = new NameFetcher();
+        private final List<String> names = new ArrayList<>();
+        private final DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+        public void execute(String username) {
+            try {
+                if (username.isEmpty()) {
+                    return;
+                }
+
+                Multithreading.runAsync(() -> {
+                    UUID uuid = null;
+                    try {
+                        uuid = MojangAPI.getUUID(username);
+                    } catch (Exception e) {
+                        Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
+                    }
+
+                    if (uuid != null) {
+                        for (final Name history : MojangAPI.getNameHistory(uuid)) {
+                            final String name = history.getName();
+                            if (history.getChangedToAt() == 0) {
+                                names.add(name);
+                            } else {
+                                names.add(String.format("%s » %s", name, format.format(history.getChangedToAt())));
+                            }
+                        }
+                    } else {
+                        names.add("Failed to fetch " + username + "'s names");
+                    }
+                });
+            } catch (Exception e) {
+                Patcher.instance.getLogger().warn("User catch failed, tried fetching {}.", username, e);
+            }
+        }
+
+        public List<String> getNames() {
+            return names;
         }
     }
 }

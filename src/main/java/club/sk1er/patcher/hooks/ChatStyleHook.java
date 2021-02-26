@@ -39,7 +39,7 @@ public class ChatStyleHook {
         }
 
         final String actionMessage = action == ClickEvent.Action.RUN_COMMAND ? "Runs " : "Opens ";
-        final String msg = ChatUtilities.color("&7" + actionMessage + "&e" + chatClickEvent.getValue() + " &7on click.");
+        final String msg = ChatUtilities.translate("&7" + actionMessage + "&e" + chatClickEvent.getValue() + " &7on click.");
         if (hoverEvent == null) {
             return new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(msg));
         }

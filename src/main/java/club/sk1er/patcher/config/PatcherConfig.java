@@ -480,7 +480,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeViewBobbing;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Map Bobbing",
+        type = PropertyType.SWITCH, name = "Remove Map Bobbing",
         description = "While using View Bobbing, remove the hand bobbing when holding a map.",
         category = "Miscellaneous", subcategory = "General"
     )
@@ -847,6 +847,14 @@ public class PatcherConfig extends Vigilant {
     public static boolean optimizedResourcePackDiscovery = true;
 
     // SCREENS
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Name History Style",
+        description = "Change how the Name History will appear.",
+        category = "Screens", subcategory = "General",
+        options = {"Open in a GUI", "Send in chat", "Popup in the top-right"}
+    )
+    public static int nameHistoryStyle = 2;
 
     @Property(
         type = PropertyType.SWITCH, name = "Inventory Position",
