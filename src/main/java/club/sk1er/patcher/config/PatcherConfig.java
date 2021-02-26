@@ -246,6 +246,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean toggleTab;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Disable Hotbar Scrolling",
+        description = "Remove the ability to scroll through your hotbar.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean disableHotbarScrolling;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Crosshair Perspective",
         description = "Remove the crosshair when in third person.",
         category = "Miscellaneous", subcategory = "General"

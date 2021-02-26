@@ -45,19 +45,23 @@ public class InventoryPlayerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("changeCurrentItem") || methodName.equals("func_70453_c")) {
-                methodNode.instructions.insert(skipIfZoomed());
+                methodNode.instructions.insert(dontScroll());
                 break;
             }
         }
     }
 
-    private InsnList skipIfZoomed() {
+    private InsnList dontScroll() {
         InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableHotbarScrolling", "Z"));
+        LabelNode ifne = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "scrollToZoom", "Z"));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "zoomed", "Z"));
-        list.add(new InsnNode(Opcodes.IAND));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/tweaker/asm/optifine/EntityRendererTransformer", "zoomed", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(ifne);
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;
