@@ -899,6 +899,15 @@ public class PatcherConfig extends Vigilant {
     public static boolean guiCrosshair;
 
     @Property(
+        type = PropertyType.SWITCH, name = "1.11 Chat Length",
+        description = "Extend the amount of characters you can type from 100 to 256 on supported servers." +
+            "\n§eSupported servers are servers that support 1.11 or above." +
+            "\n§cSome servers may kick you for this despite supporting 1.11 or above.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean extendedChatLength = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Transparent Chat",
         description = "Remove the background from chat.\n§eCan positively impact performance.",
         category = "Screens", subcategory = "Chat"
