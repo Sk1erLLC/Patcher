@@ -91,6 +91,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean mouseBindFix = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Linux Button Combination Fix",
+        description = "Fixes an issue where number keys being modified by shift don't register on Linux.",
+        category = "Bug Fixes", subcategory = "General"
+    )
+    public static boolean linuxButtonCombinationFix = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
         description = "Keep the Vanilla shaders you're currently using while also being able to toggle perspective.",
         category = "Bug Fixes", subcategory = "General"
