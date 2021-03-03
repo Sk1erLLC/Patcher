@@ -54,18 +54,18 @@ public class BlockRendererDispatcherTransformer implements PatcherTransformer {
 
     private InsnList dontRender() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "groundFoliageContainer", "Ljava/util/List;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "groundFoliageContainer", "Ljava/util/Set;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/block/state/IBlockState", "func_177230_c", // getBlock
             "()Lnet/minecraft/block/Block;", true));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "contains", "(Ljava/lang/Object;)Z", true));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Set", "contains", "(Ljava/lang/Object;)Z", true));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeGroundFoliage", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(labelNode);
+        list.add(ifeq);
         return list;
     }
 }
