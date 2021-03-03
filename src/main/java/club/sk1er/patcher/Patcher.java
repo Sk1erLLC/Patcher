@@ -89,14 +89,15 @@ import java.util.concurrent.CompletableFuture;
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
 public class Patcher {
 
+    @Mod.Instance("patcher")
+    public static Patcher instance;
+
     // normal versions will be "1.x"
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
     // rcs will be 1.x-rc-y
     // extra branches will be 1.x-branch-y
     public static final String VERSION = "1.6";
 
-    @Mod.Instance("patcher")
-    public static Patcher instance;
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
 

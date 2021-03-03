@@ -32,72 +32,7 @@ class GuiIngameTransformer : PatcherTransformer {
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
-                "showCrosshair", "func_175183_b" -> it.instructions.insert(
-                    disableCrosshairRendering()
-                )
-
-                /*"renderVignette", "func_180480_a" -> it.instructions.insert(assembleBlock {
-                    getstatic("club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", boolean)
-                    ifeq(L["1"])
-                    _return
-                    +L["1"]
-                }.first)*/
-
-                /*"renderScoreboard", "func_180475_a" -> {
-                    if (ClassTransformer.optifineVersion == "L5" || ClassTransformer.optifineVersion == "NONE") {
-                        var foundOneDrawRect = false
-                        for (node in method.instructions) {
-                            if (node.opcode == Opcodes.ICONST_0 && node.next.opcode == Opcodes.ISTORE) {
-                                method.instructions.insert(node.next, assembleBlock {
-                                    iload(10) // l1
-                                    iconst_2
-                                    isub
-                                    iload(8) // j1
-                                    aload(4) // collection
-                                    invokeinterface(Collection::class, "size", int)
-                                    aload_0
-                                    invokevirtual(
-                                        "net/minecraft/client/gui/GuiIngame", "func_175179_f", //getFontRenderer
-                                        "net/minecraft/client/gui/FontRenderer"
-                                    )
-                                    getfield(
-                                        "net/minecraft/client/gui/FontRenderer", "field_78288_b", //FONT_HEIGHT
-                                        int
-                                    )
-                                    imul
-                                    isub
-                                    iconst_1
-                                    isub
-                                    aload_2
-                                    invokevirtual(
-                                        "net/minecraft/client/gui/ScaledResolution", "func_78326_a", //getScaledWidth
-                                        int
-                                    )
-                                    iload(9) // k1
-                                    isub
-                                    iconst_2
-                                    iadd
-                                    iload(8) // j1
-                                    ldc(1342177280)
-                                    invokestatic(
-                                        "net/minecraft/client/gui/Gui", "func_73734_a", //drawRect
-                                        void, int, int, int, int, int
-                                    )
-                                }.first)
-                            } else if (node is MethodInsnNode && node.name in listOf("drawRect", "func_73734_a")) {
-                                if (!foundOneDrawRect) {
-                                    foundOneDrawRect = true
-                                    continue
-                                }
-                                while (node.previous.opcode != Opcodes.ISTORE) {
-                                    method.instructions.remove(node.previous)
-                                }
-                                method.instructions.remove(node)
-                                break
-                            }
-                        }
-                    }
-                }*/
+                "showCrosshair", "func_175183_b" -> it.instructions.insert(disableCrosshairRendering())
             }
         }
     }

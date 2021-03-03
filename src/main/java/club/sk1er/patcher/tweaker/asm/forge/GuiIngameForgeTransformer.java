@@ -36,17 +36,7 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        //classNode.interfaces.add(getHooksPackage("accessors/IGuiIngameForge"));
-
         for (MethodNode methodNode : classNode.methods) {
-            /*switch(methodNode.name) {
-                case "pre":
-                case "post":
-                case "renderCrosshairs":
-                    methodNode.access = Opcodes.ACC_PUBLIC;
-                    break;
-            }
-*/
             switch (mapMethodName(classNode, methodNode)) {
                 case "renderGameOverlay":
                 case "func_175180_a": {
@@ -64,8 +54,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     break;
                 }
                 case "renderCrosshairs": {
-                    //methodNode.instructions.insert(checkOverride());
-
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
@@ -119,10 +107,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     break;
                 }
             }
-            
-            /* else if (methodNode.name.equals("pre")) {
-                methodNode.instructions.insert(checkCompatibilityMode());
-            }*/
         }
     }
 
@@ -153,29 +137,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/client/GuiIngameForge", "field_73839_d", "Lnet/minecraft/client/Minecraft;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71424_I", "Lnet/minecraft/profiler/Profiler;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/profiler/Profiler", "func_76319_b", "()V", false));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
-    }
-
-    private InsnList checkCompatibilityMode() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "hudCachingCompatibilityMode", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(ifeq);
-        return list;
-    }
-
-    private InsnList checkOverride() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/cache/HudCaching", "renderingCacheOverride", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;
