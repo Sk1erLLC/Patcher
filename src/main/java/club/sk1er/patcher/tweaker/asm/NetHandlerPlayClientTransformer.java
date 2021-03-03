@@ -148,8 +148,9 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
     private InsnList processChatMessage() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "processChatMessage",
-            "(Lnet/minecraft/network/play/server/S02PacketChat;)V", false));
+            "(Lnet/minecraft/network/play/server/S02PacketChat;Lnet/minecraft/util/IChatComponent;)V", false));
         return list;
     }
 

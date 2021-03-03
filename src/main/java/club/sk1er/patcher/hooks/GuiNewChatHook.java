@@ -66,11 +66,11 @@ public class GuiNewChatHook {
         }
     }
 
-    public static void processChatMessage(S02PacketChat packet) {
+    public static void processChatMessage(S02PacketChat packet, IChatComponent message) {
         if (packet.getType() == 0) {
-            queueMessage(packet.getChatComponent());
+            queueMessage(message);
         } else if (packet.getType() == 1) {
-            mc.ingameGUI.getChatGUI().printChatMessage(packet.getChatComponent());
+            mc.ingameGUI.getChatGUI().printChatMessage(message);
         }
     }
 

@@ -27,6 +27,7 @@ public class DebugPerformanceRenderer {
     private boolean frameRender = false;
     private long updated = 0;
     private String mode = "???";
+    private final int color = new Color(1, 165, 82).getRGB();
     private final DecimalFormat format = new DecimalFormat("#.00");
     private final Deque<Long> frames = new ArrayDeque<>();
     private final String[] renderStrings = new String[5];
@@ -71,7 +72,7 @@ public class DebugPerformanceRenderer {
             int y = 40;
 
             for (String render : renderStrings) {
-                mc.fontRendererObj.drawString(render, scaledResolution.getScaledWidth() - 5 - mc.fontRendererObj.getStringWidth(render), y, new Color(1, 165, 82).getRGB(), true);
+                mc.fontRendererObj.drawString(render, scaledResolution.getScaledWidth() - 5 - mc.fontRendererObj.getStringWidth(render), y, color, true);
                 y += 10;
             }
         }
