@@ -59,10 +59,22 @@ public class ChatHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
         if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
-            final String timeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
-            final ChatComponentIgnored time = new ChatComponentIgnored(ChatColor.GRAY + "[" + timeFormat + "] " + ChatColor.RESET);
-            time.appendSibling(event.message);
-            event.message = time;
+            final String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
+            if (PatcherConfig.timestampsStyle == 0) {
+                final ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
+                component.appendSibling(event.message);
+                event.message = component;
+            } else if (PatcherConfig.timestampsStyle == 1) {
+                if (event.message.getChatStyle().getChatHoverEvent() == null) {
+                    event.message.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
+                } else {
+                    // todo: expand to append upon siblings, cant figure out how to do so
+                    final IChatComponent value = event.message.getChatStyle().getChatHoverEvent().getValue();
+                    value.appendText("\n");
+                    value.appendText(ChatUtilities.translate("&7Sent at &e" + time + "&7."));
+                }
+            }
         }
     }
 
