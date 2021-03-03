@@ -29,57 +29,57 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullscreen Fix",
-        description = "Resolve an issue where you could not maximize the game once toggling fullscreen.",
-        category = "Bug Fixes", subcategory = "Window"
+        description = "Fixes an issue where you could not maximize the game once toggling fullscreen.",
+        category = "Bug Fixes", subcategory = "General"
     )
     public static boolean fullscreenFix = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Reset Death Timers",
-        description = "Resolve an issue where changing the fullscreen state while on the Game Over screen would lock the buttons.",
-        category = "Bug Fixes", subcategory = "Screen"
+        description = "Fixes an issue where changing the fullscreen state while on the Game Over screen would lock the buttons.",
+        category = "Bug Fixes", subcategory = "General"
     )
     public static boolean resetDeathTimers = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Command Handling",
-        description = "Fix Forge's command handler not checking for a '/' at the start of a command.",
+        description = "Fixes commands activating even without a slash at the start of the message.",
         category = "Bug Fixes", subcategory = "Chat"
     )
     public static boolean forgeCommandHandling = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Case Insensitive Commands",
-        description = "Stop Vanilla commands from forcing case sensitivity.",
+        description = "Fixes commands not being usable when not using proper casing.",
         category = "Bug Fixes", subcategory = "Chat"
     )
     public static boolean caseInsensitiveCommands = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Mouse Delay Fix",
-        description = "Resolve an issue where your crosshair is a tick behind your head position.",
+        type = PropertyType.SWITCH, name = "Mouse Delay",
+        description = "Fixes an issue where your crosshair is a tick behind your head position.",
         category = "Bug Fixes", subcategory = "Movement"
     )
     public static boolean mouseDelayFix = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Arm Rotation",
-        description = "Resolve an issue where your arm rotation would be angled upwards when mounting an entity.",
+        description = "Fixes an issue where your arm rotation would be angled upwards when mounting an entity.",
         category = "Bug Fixes", subcategory = "Movement"
     )
     public static boolean armPosition = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Head Rotations",
-        description = "Resolve an issue where your head would not properly rotate while riding an entity.",
+        description = "Fixes an issue where your head would not properly rotate while riding an entity.",
         category = "Bug Fixes", subcategory = "Movement"
     )
     public static boolean headRotation = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Sky Height",
-        description = "Remove the flickering effect from the void when passing between Y level 63.",
-        category = "Bug Fixes", subcategory = "World"
+        description = "Fixes the flickering effect from the void when passing between Y level 63.",
+        category = "Bug Fixes", subcategory = "Rendering"
     )
     public static boolean skyHeight = true;
 
@@ -91,7 +91,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean mouseBindFix = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Linux Button Combination Fix",
+        type = PropertyType.SWITCH, name = "Linux Button Combinations",
         description = "Fixes an issue where number keys being modified by shift don't register on Linux.",
         category = "Bug Fixes", subcategory = "General"
     )
@@ -99,28 +99,21 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
-        description = "Keep the Vanilla shaders you're currently using while also being able to toggle perspective.",
+        description = "Fixes the removal of any activated Vanilla shader when changing perspective.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean keepShadersOnPerspectiveChange = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Better Keybind Handling",
-        description = "Make keys re-register when closing a GUI, like in 1.12+.",
-        category = "Bug Fixes", subcategory = "General"
-    )
-    public static boolean newKeybindHandling = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Arrow Lighting",
-        description = "Stop arrows attached to an entity from messing up entity lighting.",
+        description = "Fixes arrows attached to an entity messing up entity lighting.",
         category = "Bug Fixes", subcategory = "Entities"
     )
     public static boolean fixArrowLighting;
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
-        description = "Fix the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
+        description = "Fixes the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
             "§cCurrently makes the F3 crosshair disappear.",
         category = "Bug Fixes", subcategory = "General"
     )
@@ -128,14 +121,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Culling Fix",
-        description = "Fix false negatives in frustum culling, creating sometimes invisible chunks.\n§cCan negatively impact performance.",
+        description = "Fixes false negatives in frustum culling, creating sometimes invisible chunks.\n§cCan negatively impact performance.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean cullingFix;
 
     @Property(
         type = PropertyType.SWITCH, name = "Resource Exploit Fix",
-        description = "Fix an exploit in 1.8 allowing servers to look through directories.",
+        description = "Fixes an exploit in 1.8 allowing servers to look through directories.",
         category = "Bug Fixes", subcategory = "Security"
     )
     public static boolean resourceExploitFix = true;
@@ -149,19 +142,26 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Player Void Rendering",
-        description = "Remove the black box around the player while in the void.",
+        description = "Fixes the black box around the player while in the void.",
         category = "Bug Fixes", subcategory = "Rendering"
     )
     public static boolean playerVoidRendering = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Fluid Stitching",
-        description = "Fix missing edges in fluids.",
+        description = "Fixes missing edges in fluids.",
         category = "Bug Fixes", subcategory = "Rendering", triggerActionOnInitialization = false
     )
     public static boolean fluidStitching = true;
 
     // MISCELLANEOUS
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Better Keybind Handling",
+        description = "Make keys re-register when closing a GUI, like in 1.12+.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean newKeybindHandling = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
@@ -1025,6 +1025,14 @@ public class PatcherConfig extends Vigilant {
         options = {"12 Hour", "24 Hour"}
     )
     public static int timestampsFormat = 0;
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Chat Timestamps Style",
+        description = "Choose how Chat Timestamps should appear.",
+        category = "Screens", subcategory = "Chat",
+        options = {"Always Present", "Message Hover"}
+    )
+    public static int timestampsStyle = 0;
 
     @Property(
         type = PropertyType.SWITCH, name = "Cross Chat",
