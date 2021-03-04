@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker.other;
 
+import club.sk1er.patcher.asm.optifine.WorldVertexBufferUploaderTransformer;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.asm.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.tweaker.asm.levelhead.LevelheadAboveHeadRenderTransformer;
@@ -125,6 +126,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new FontRendererHookTransformer());
         registerTransformer(new FullbrightTickerTransformer());
         registerTransformer(new EntityCullingTransformer());
+        registerTransformer(new WorldVertexBufferUploaderTransformer());
     }
 
     private void registerI7Transformers() {

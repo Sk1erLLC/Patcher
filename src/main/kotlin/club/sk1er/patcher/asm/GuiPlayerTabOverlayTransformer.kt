@@ -63,9 +63,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                     it.instructions.insertBefore(it.instructions.last.previous, moveDownInstructions(it, false))
                 }
 
-                "drawPing", "func_175245_a" -> {
-                    it.instructions.insert(createNumberPing())
-                }
+                "drawPing", "func_175245_a" -> it.instructions.insert(createNumberPing())
             }
         }
     }
