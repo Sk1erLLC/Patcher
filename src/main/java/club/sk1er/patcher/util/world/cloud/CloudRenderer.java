@@ -13,7 +13,6 @@ package club.sk1er.patcher.util.world.cloud;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

@@ -1,28 +1,11 @@
 // For those who want the bleeding edge
 buildscript {
-    def mcVersion
-    def (major, minor, patch) = project.name.tokenize('-')[0].tokenize('.')
-    mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
-    def fabric = project.name.endsWith("-fabric")
-    def vanilla = project.name.endsWith("-vanilla")
-    def forge = !fabric && !vanilla
-    project.ext.mcVersion = mcVersion
-    project.ext.fabric = fabric
-    project.ext.vanilla = vanilla
-    project.ext.forge = forge
-
     repositories {
         jcenter()
         mavenCentral()
         maven {
-            name = "fabric"
-            url = "https://maven.fabricmc.net/"
-        }
-        if (!fabric) {
-            maven {
-                name = "forge"
-                url = "https://files.minecraftforge.net/maven"
-            }
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
@@ -32,49 +15,19 @@ buildscript {
         maven {
             url = "https://repo.sk1er.club/repository/maven-public"
         }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
-        flatDir dirs: 'libs'
 
+        flatDir dirs: 'libs'
     }
 
     dependencies {
-        if (fabric) {
-            classpath 'fabric-loom:fabric-loom.gradle.plugin:0.4-SNAPSHOT'
-        } else if (mcVersion >= 11400) {
-            classpath('net.minecraftforge.gradle:ForgeGradle:3.+') {
-                exclude group: 'trove', module: 'trove' // preprocessor/idea requires more recent one
-            }
-            classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        } else if (mcVersion >= 10800) {
-            classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-            classpath('com.github.ReplayMod:ForgeGradle:' + (
-                    mcVersion >= 11200 ? '2817481' : // FG 2.3
-                            mcVersion >= 10904 ? '5bb7a53' : // FG 2.2
-                                    'dcfe5a56'   // FG 2.1
-            ) + ':all')
-        } else {
-            classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-            classpath 'com.github.ReplayMod:ForgeGradle:e93f77b4' // FG 1.2
-        }
+        classpath('com.github.ReplayMod:ForgeGradle:dcfe5a56:all')
     }
 }
-def kotlin_version = "1.3.72"
-def useMixin = false
-apply plugin: 'kotlin'
+
 
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        name = "kryonet"
-        url = "http://clojars.org/repo/"
-    }
-    maven {
-        url 'https://repository.apache.org/content/repositories/releases/org/apache/xmlgraphics/'
-    }
     maven { url 'https://jitpack.io' }
     maven { url "https://repo.sk1er.club/repository/maven-public" }
     maven {
@@ -82,170 +35,26 @@ repositories {
         url = 'https://repo.spongepowered.org/maven'
     }
 }
-def FABRIC = fabric
-def VANILLA = vanilla
-def FORGE = forge
-def FG2 = mcVersion <= 11202
-def FG3 = !fabric && mcVersion >= 11400
 
-if (mcVersion >= 10800) {
-    if (FABRIC) {
-        apply plugin: 'fabric-loom'
-    } else if (FG3) {
-        apply plugin: 'net.minecraftforge.gradle'
-    } else if (FORGE) {
-        apply plugin: 'net.minecraftforge.gradle.forge'
-    } else {
-        assert VANILLA
-        apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-    }
-} else {
-    apply plugin: 'forge'
-}
-if (!FABRIC && useMixin) {
-    ext {
-        mixinSrg = new File(project.buildDir, 'tmp/mixins/mixins.srg')
-        mixinRefMap = new File(project.buildDir, 'tmp/mixins/mixins.patcher.refmap.json')
-    }
-
-    compileJava {
-        options.compilerArgs += [
-                "-AoutRefMapFile=${project.mixinRefMap.canonicalPath}",
-        ]
-        if (VANILLA) {
-            options.compilerArgs += [
-                    "-AoutNotchSrgFile=${project.mixinSrg.canonicalPath}",
-                    "-AreobfNotchSrgFile=${project.file('build/mcp-notch.srg').canonicalPath}",
-                    "-AdefaultObfuscationEnv=notch"
-            ]
-        } else {
-            options.compilerArgs += [
-                    "-AoutSrgFile=${project.mixinSrg.canonicalPath}",
-                    "-AreobfSrgFile=${project.file('build/mcp-srg.srg').canonicalPath}"
-            ]
-        }
-    }
-}
+apply plugin: 'kotlin'
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'maven-publish'
 
-mcVersion = project.ext.mcVersion
-def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
-
-preprocess {
-    vars.put("MC", mcVersion)
-    vars.put("FABRIC", FABRIC ? 1 : 0)
-    vars.put("FORGE", FORGE ? 1 : 0)
-    vars.put("VANILLA", VANILLA ? 1 : 0)
-}
-
-version = this.properties.getOrDefault("BUILD_ID", "LOCAL") //BUILD_ID
+version = this.properties.getOrDefault("BUILD_ID", "LOCAL")
 group = modGroup
 archivesBaseName = modBaseName
 
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
+
 minecraft {
-    if (FABRIC) {
-        refmapName = 'mixins.patcher.refmap.json'
-        autoGenIDERuns = true
-    }
-    if (VANILLA) {
-        version = mcVersionStr
-        tweakClass = "club.sk1er.patcher.tweaker.LaunchTweaker"
-    }
-    if (FORGE && FG2) {
-        version = [
-                11202: '1.12.2-14.23.0.2486',
-                11201: '1.12.1-14.22.0.2444',
-                11200: '1.12-14.21.1.2387',
-                11102: '1.11.2-13.20.0.2216',
-                11100: '1.11-13.19.1.2188',
-                11002: '1.10.2-12.18.2.2099',
-                10904: '1.9.4-12.17.0.1976',
-                10809: '1.8.9-11.15.1.2318-1.8.9'
-        ][mcVersion]
-    }
-    if (FG2) {
-        mappings = [
-                11202: "snapshot_20170615",
-                11201: "snapshot_20170615",
-                11200: "snapshot_20170615",
-                11102: "snapshot_20161220",
-                11100: "snapshot_20161111",
-                11002: "snapshot_20160518",
-                10904: "snapshot_20160518",
-                10809: "stable_22"
-        ][mcVersion]
-
-
-        runDir = "run"
-        makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-        clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.other.ModTweaker"]
-    }
-    if (FG3) {
-        mappings channel: 'snapshot', version: '20200220-1.15.1'
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-        // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-
-        // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-        // Default run configurations.
-        // These can be tweaked, removed, or duplicated as needed.
-        runs {
-            client {
-                workingDirectory project.file('run')
-
-                // Recommended logging data for a userdev environment
-                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-                // Recommended logging level for the console
-                property 'forge.logging.console.level', 'info'
-
-                mods {
-                    examplemod {
-                        source sourceSets.main
-                    }
-                }
-            }
-
-            server {
-                workingDirectory project.file('run')
-
-                // Recommended logging data for a userdev environment
-                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-                // Recommended logging level for the console
-                property 'forge.logging.console.level', 'info'
-
-                mods {
-                    examplemod {
-                        source sourceSets.main
-                    }
-                }
-            }
-
-            data {
-                workingDirectory project.file('run')
-
-                // Recommended logging data for a userdev environment
-                property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-                // Recommended logging level for the console
-                property 'forge.logging.console.level', 'info'
-
-                args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
-
-                mods {
-                    examplemod {
-                        source sourceSets.main
-                    }
-                }
-            }
-        }
-    }
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    mappings = "stable_22"
+    runDir = "run"
+    makeObfSourceJar = false
+    clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.other.ModTweaker"]
 }
 
 configurations {
@@ -254,60 +63,13 @@ configurations {
 }
 
 dependencies {
-    if (FABRIC) {
-        minecraft 'com.mojang:minecraft:' + [
-                11404: '1.14.4',
-                11502: '1.15.2',
-                11601: '1.16.1',
-                11602: '1.16.2',
-        ][mcVersion]
-        mappings 'net.fabricmc:yarn:' + [
-                11404: '1.14.4+build.16',
-                11502: '1.15.2+build.14',
-                11601: '1.16.1+build.17:v2',
-                11602: '1.16.2+build.1:v2',
-        ][mcVersion]
-        modCompile 'net.fabricmc:fabric-loader:' + [
-                11404: '0.7.8+build.189',
-                11502: '0.7.8+build.189',
-                11601: '0.8.8+build.202',
-                11602: '0.9.1+build.205',
-        ][mcVersion]
-        def fabricApiVersion = [
-                11404: '0.4.3+build.247-1.14',
-                11502: '0.5.1+build.294-1.15',
-                11601: '0.14.0+build.371-1.16',
-                11602: '0.17.1+build.394-1.16',
-        ][mcVersion]
-        def fabricApiModules = [
-                "api-base",
-                "networking-v0",
-                "keybindings-v0",
-                "resource-loader-v0",
-        ]
-        if (mcVersion >= 11600) {
-            fabricApiModules.add("key-binding-api-v1")
-        }
-        print(mcVersion)
-        fabricApiModules.each { module ->
-            modCompile fabricApi.module("fabric-$module", fabricApiVersion)
-            include fabricApi.module("fabric-$module", fabricApiVersion)
-        }
-    }
-    if (FG3) {
-        minecraft 'net.minecraftforge:forge:' + [
-                11404: '1.14.4-28.1.113',
-                11502: '1.15.2-31.1.18',
-                11602: '1.16.2-33.0.58'
-        ][mcVersion]
-    }
-
+    def kotlin_version = "1.3.72"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
 
-    embed ("net.modcore:Loader:2.0.0")
+    embed("net.modcore:Loader:2.0.0")
     implementation "net.modcore:ModCore:776-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
@@ -328,71 +90,6 @@ dependencies {
         exclude module: "kotlin-stdlib-common"
         exclude module: "kotlin-stdlib"
     }
-
-    // FG already adds this even though it is not available at runtime, so we need to manually list it to bundle it
-    if (VANILLA) {
-        compile("org.ow2.asm:asm:5.0.3")
-    }
-
-    if (mcVersion == 11502) {
-        minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
-    }
-    if (!FABRIC && useMixin) {
-        annotationProcessor 'org.spongepowered:mixin:0.8'
-        implementation('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-            exclude module: 'launchwrapper'
-            exclude module: 'guava'
-            exclude module: 'gson'
-            exclude module: 'commons-io'
-        }
-        // Mixin needs these (and depends on them but for some reason that's not enough. FG, did you do that?)
-        annotationProcessor 'com.google.code.gson:gson:2.2.4'
-        annotationProcessor 'com.google.guava:guava:21.0'
-        annotationProcessor 'org.ow2.asm:asm-tree:6.2'
-    }
-}
-
-if (FABRIC) {
-    // not required, fabric manages those by itself just fine
-} else if (FG3) {
-    task copySrg(dependsOn: 'createMcpToSrg') {
-        doLast {
-            def tsrg = file(project.tasks.createMcpToSrg.output).readLines()
-            def srg = []
-            def cls = ''
-            for (def line : tsrg) {
-                if (line[0] != '\t') {
-                    srg.add('CL: ' + line)
-                    cls = line.split(' ')[0]
-                } else {
-                    def parts = line.substring(1).split(' ')
-                    if (line.contains('(')) {
-                        srg.add('MD: ' + cls + '/' + parts[0] + ' ' + parts[1] + ' ' + cls + '/' + parts[2] + ' ' + parts[1])
-                    } else {
-                        srg.add('FD: ' + cls + '/' + parts[0] + ' ' + cls + '/' + parts[1])
-                    }
-                }
-            }
-            new File(project.buildDir, 'mcp-srg.srg').write(srg.join('\n'))
-        }
-    }
-    compileJava.dependsOn copySrg
-} else {
-    assert FG2
-    task copySrg(type: Copy, dependsOn: 'genSrgs') {
-        from { project.tasks.genSrgs.mcpToSrg }
-        from { project.tasks.genSrgs.mcpToNotch }
-        into 'build'
-    }
-    compileJava.dependsOn copySrg
-}
-
-if (FG2 && useMixin) {
-    if (mcVersion <= 10710) {
-        reobf.addExtraSrgFile project.mixinSrg
-    } else {
-        reobfJar.addSecondarySrgFile project.mixinSrg
-    }
 }
 
 task moveResources {
@@ -405,23 +102,17 @@ task moveResources {
 moveResources.dependsOn processResources
 classes.dependsOn moveResources
 
-
 processResources {
     // this will ensure that this task is redone when the versions change.
-    if (mcVersion <= 11202) {
-        inputs.property "version", project.version
-        inputs.property "mcversion", project.minecraft.version
-        // replace stuff in mcmod.info, nothing else
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
 
-            // replace version and mcversion
-            expand 'version': project.version, 'mcversion': project.minecraft.version
-        }
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-
-    if (mcVersion < 11202)
-        rename("en_us.lang", "en_US.lang")
 
     exclude "META-INF/**"
     copy {
@@ -449,30 +140,18 @@ jar {
     }
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-    if (!FABRIC) {
-        if (useMixin) {
-            from files(project.mixinRefMap.canonicalPath)
-        }
-
-        manifest {
-            attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
-                    "ModSide": "CLIENT",
-                    'FMLAT': 'patcher_at.cfg',
-                    "FMLCorePluginContainsFMLMod": "Yes, yes it does",
-                    "Main-Class": "club.sk1er.container.ContainerMessage",
-                    "TweakClass": "club.sk1er.patcher.tweaker.launch.PatcherTweak",
-                    "TweakOrder": "0"
-        }
+    manifest {
+        attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
+                "ModSide": "CLIENT",
+                'FMLAT': 'patcher_at.cfg',
+                "FMLCorePluginContainsFMLMod": "Yes, yes it does",
+                "Main-Class": "club.sk1er.container.ContainerMessage",
+                "TweakClass": "club.sk1er.patcher.tweaker.launch.PatcherTweak",
+                "TweakOrder": "0"
     }
 }
 
 compileKotlin {
-//    kotlinOptions {
-//        languageVersion = "1.4"
-//        useIR = true
-//        jvmTarget = "1.8"
-//    }
-
     kotlinOptions {
         freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn', '-Xno-param-assertions']
     }
@@ -482,7 +161,10 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifactId = "Patcher"
-            version = "${this.properties.getOrDefault("branch", "master") != "master" ? this.properties.getOrDefault("branch", "master") + "-" : ""}${project.version}-$mcVersion${VANILLA ? "-vanilla" : ""}${this.properties.getOrDefault("IS_CI", false) ? "-SNAPSHOT" : ""}"
+            def mcVersion
+            def (major, minor, patch) = project.name.tokenize('-')[0].tokenize('.')
+            mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
+            version = "${this.properties.getOrDefault("branch", "master") != "master" ? this.properties.getOrDefault("branch", "master") + "-" : ""}${project.version}-$mcVersion${this.properties.getOrDefault("IS_CI", false) ? "-SNAPSHOT" : ""}"
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
