@@ -12,6 +12,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.metrics.MetricsData;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -41,6 +42,7 @@ public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
     private static final Minecraft mc = Minecraft.getMinecraft();
     private boolean lastFullscreen = false;
+    public static MetricsData metricsData;
 
     private MinecraftHook() {
 

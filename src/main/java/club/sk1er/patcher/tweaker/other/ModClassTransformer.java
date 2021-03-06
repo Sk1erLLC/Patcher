@@ -135,8 +135,8 @@ public class ModClassTransformer implements IClassTransformer {
 
     private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
-
         registerTransformer(new GuiDetailSettingsOFTransformer());
+        registerTransformer(new LagometerTransformer());
     }
 
     private void registerLSeriesFixesTransformers() {

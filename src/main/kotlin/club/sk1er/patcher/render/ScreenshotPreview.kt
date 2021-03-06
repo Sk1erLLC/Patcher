@@ -20,9 +20,7 @@ object ScreenshotPreview {
     @SubscribeEvent
     fun renderScreenshot(event: RenderGameOverlayEvent.Post) {
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return
-        if (this.currentWindow != null) {
-            this.currentWindow?.draw()
-        }
+        this.currentWindow?.draw()
     }
 
     fun newCapture(image: BufferedImage) {

@@ -24,7 +24,7 @@ class AsyncBlockAndItems(private val modelLoader: ModelLoader) {
 
     fun load() {
         logger.info("Loading blocks & items in async...")
-        val start = System.currentTimeMillis()
+        val start = System.nanoTime()
         runBlocking(MCDispatchers.IO) {
             val blocks = async {
                 (modelLoader as IModelLoader).callLoadBlocks()
@@ -38,6 +38,6 @@ class AsyncBlockAndItems(private val modelLoader: ModelLoader) {
             items.await()
         }
 
-        logger.info("Finished async block & item loading in ${(System.currentTimeMillis() - start) / 1000L} seconds.")
+        logger.info("Finished async block & item loading in ${(System.nanoTime() - start) / 1_000_000L}ms.")
     }
 }

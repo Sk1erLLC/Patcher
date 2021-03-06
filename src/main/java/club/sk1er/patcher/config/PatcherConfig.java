@@ -838,6 +838,13 @@ public class PatcherConfig extends Vigilant {
     // SCREENS
 
     @Property(
+        type = PropertyType.SWITCH, name = "Updated Metrics Renderer",
+        description = "Override the metrics renderer when using ALT+F3 to match newer versions.",
+        category = "Screens", subcategory = "General"
+    )
+    public static boolean updatedMetricsRenderer = true;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Name History Style",
         description = "Change how the Name History will appear.",
         category = "Screens", subcategory = "General",

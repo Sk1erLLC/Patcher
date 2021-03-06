@@ -53,6 +53,10 @@ public class MinecraftTransformer implements PatcherTransformer {
             final String methodDesc = mapMethodDesc(methodNode);
 
             switch (methodName) {
+                case "<init>":
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), createMetricsData());
+                    break;
+
                 case "startGame":
                 case "func_71384_a":
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
@@ -250,10 +254,8 @@ public class MinecraftTransformer implements PatcherTransformer {
                 case "runGameLoop":
                 case "func_71411_J": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
                     while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
+                        final AbstractInsnNode next = iterator.next();
                         if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("stream")) {
                             for (int i = 0; i < 33; ++i) {
                                 methodNode.instructions.remove(next.getNext());
@@ -262,9 +264,20 @@ public class MinecraftTransformer implements PatcherTransformer {
                             methodNode.instructions.remove(next.getPrevious().getPrevious());
                             methodNode.instructions.remove(next.getPrevious());
                             methodNode.instructions.remove(next);
-                            break;
                         }
                     }
+
+                    iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("addFrame") || methodInsnName.equals("func_181747_a")) {
+                                methodNode.instructions.insertBefore(next.getNext().getNext(), pushMetricsSample());
+                            }
+                        }
+                    }
+
                     break;
                 }
 
@@ -291,6 +304,26 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList pushMetricsSample() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        list.add(new VarInsnNode(Opcodes.LLOAD, 7));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_181543_z", "J"));
+        list.add(new InsnNode(Opcodes.LSUB));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/metrics/MetricsData", "pushSample", "(J)V", false));
+        return list;
+    }
+
+    private InsnList createMetricsData() {
+        InsnList list = new InsnList();
+        list.add(new TypeInsnNode(Opcodes.NEW, "club/sk1er/patcher/metrics/MetricsData"));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/metrics/MetricsData", "<init>", "()V", false));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        return list;
     }
 
     private InsnList fixAttributeMap() {
