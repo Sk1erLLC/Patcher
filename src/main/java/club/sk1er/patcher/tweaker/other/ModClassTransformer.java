@@ -121,6 +121,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
         registerTransformer(new EntityRendererReflectionOptimizer());
 
+        registerTransformer(new LagometerTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new OptifineFontRendererTransformer());
         registerTransformer(new FontRendererHookTransformer());
@@ -136,7 +137,6 @@ public class ModClassTransformer implements IClassTransformer {
     private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
         registerTransformer(new GuiDetailSettingsOFTransformer());
-        registerTransformer(new LagometerTransformer());
     }
 
     private void registerLSeriesFixesTransformers() {
