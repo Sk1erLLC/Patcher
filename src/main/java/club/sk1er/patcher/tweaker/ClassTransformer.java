@@ -195,6 +195,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderTNTPrimedTransformer());
         registerTransformer(new ModelSkeletonTransformer());
         registerTransformer(new S34PacketMapsTransformer());
+        registerTransformer(new EntityPlayerTransformer());
+        registerTransformer(new ItemModelMesherTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

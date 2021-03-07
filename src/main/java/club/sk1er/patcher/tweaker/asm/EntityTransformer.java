@@ -11,23 +11,13 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import club.sk1er.patcher.tweaker.transform.CommonTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
-public class EntityTransformer implements PatcherTransformer {
+public class EntityTransformer implements CommonTransformer {
     /**
      * The class name that's being transformed
      *
@@ -46,32 +36,41 @@ public class EntityTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "displayNameCacheTime", "J", null, null));
+        classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "displayNameCache", "Lnet/minecraft/util/IChatComponent;", null, null));
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodNode.name.equals("hasCapability")) {
                 clearInstructions(methodNode);
                 methodNode.instructions.insert(fasterCapabilityCheck());
-            } else if (methodName.equals("getBrightnessForRender") || methodName.equals("func_70070_b")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(getFixedBrightness());
-            } else if (methodName.equals("spawnRunningParticles") || methodName.equals("func_174830_Y")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+            }
 
-                LabelNode ifeq = new LabelNode();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
-                    if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFNE) {
-                        methodNode.instructions.insert(next.getNext(), checkOnGround(ifeq));
-                    } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        String methodInsnName = mapMethodNameFromNode(next);
-
-                        if (methodInsnName.equals("createRunningParticles") || methodInsnName.equals("func_174808_Z")) {
-                            methodNode.instructions.insert(next.getNext(), ifeq);
+            switch (methodName) {
+                case "getBrightnessForRender":
+                case "func_70070_b":
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(getFixedBrightness());
+                    break;
+                case "spawnRunningParticles":
+                case "func_174830_Y":
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    LabelNode ifeq = new LabelNode();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof JumpInsnNode && next.getOpcode() == Opcodes.IFNE) {
+                            methodNode.instructions.insert(next.getNext(), checkOnGround(ifeq));
+                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("createRunningParticles") || methodInsnName.equals("func_174808_Z")) {
+                                methodNode.instructions.insert(next.getNext(), ifeq);
+                            }
                         }
                     }
-                }
+                    break;
+                case "getDisplayName":
+                case "func_145748_c_":
+                    cachePlayerHoverEvents(methodNode);
+                    break;
             }
         }
     }

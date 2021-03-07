@@ -57,12 +57,7 @@ public class ImagePreview {
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-
-        if (!PatcherConfig.imagePreview) {
-            return;
-        }
-
+        if (event.phase != TickEvent.Phase.END || !PatcherConfig.imagePreview) return;
         final IChatComponent chatComponent = mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
         if (chatComponent != null) {
             final ChatStyle chatStyle = chatComponent.getChatStyle();
@@ -86,16 +81,13 @@ public class ImagePreview {
                 }
             }
 
-            if (!found) {
-                return;
-            }
+            if (!found) return;
         } catch (MalformedURLException e) {
             return;
         }
 
         if (!value.startsWith("http")) {
-            if (tex != -1)
-                GlStateManager.deleteTexture(tex);
+            if (tex != -1) GlStateManager.deleteTexture(tex);
             tex = -1;
             return;
         }
@@ -108,9 +100,7 @@ public class ImagePreview {
         if (!value.equals(loaded)) {
             loaded = value;
 
-            if (tex != -1) {
-                GlStateManager.deleteTexture(tex);
-            }
+            if (tex != -1) GlStateManager.deleteTexture(tex);
 
             tex = -1;
             String finalValue = value;
@@ -139,13 +129,8 @@ public class ImagePreview {
             float aspectRatio = width / (float) height;
             float scaleWidth = scaledResolution.getScaledWidth() * scaleFactor;
 
-            if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                scaleWidth *= PatcherConfig.imagePreviewWidth;
-            }
-
-            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-                scaleWidth = this.width;
-            }
+            if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) scaleWidth *= PatcherConfig.imagePreviewWidth;
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) scaleWidth = this.width;
 
             float maxWidth = scaleWidth;
             float height = maxWidth / aspectRatio;
@@ -190,9 +175,7 @@ public class ImagePreview {
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to load an image preview from {}", url, e);
         } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
+            if (connection != null) connection.disconnect();
         }
     }
 }

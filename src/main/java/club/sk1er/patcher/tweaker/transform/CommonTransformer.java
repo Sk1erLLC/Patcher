@@ -70,6 +70,57 @@ public interface CommonTransformer extends PatcherTransformer {
         }
     }
 
+    default void cachePlayerHoverEvents(MethodNode methodNode) {
+        methodNode.instructions.insert(getCacheTime());
+        final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+        while (iterator.hasNext()) {
+            final AbstractInsnNode next = iterator.next();
+            if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                final String methodInsnName = mapMethodNameFromNode(next);
+                if (methodInsnName.equals("setChatHoverEvent") || methodInsnName.equals("func_150209_a")) {
+                    iterator.next();
+                    iterator.remove();
+                    for (int i = 0; i < 5; i++) {
+                        iterator.previous();
+                        iterator.remove();
+                    }
+                    break;
+                }
+            }
+        }
+
+        methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setCacheTime());
+    }
+
+    default InsnList setCacheTime() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/Entity", "displayNameCache", "Lnet/minecraft/util/IChatComponent;"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/Entity", "displayNameCacheTime", "J"));
+        return list;
+    }
+
+    default InsnList getCacheTime() {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/Entity", "displayNameCacheTime", "J"));
+        list.add(new InsnNode(Opcodes.LSUB));
+        list.add(new LdcInsnNode(50));
+        list.add(new InsnNode(Opcodes.I2L));
+        list.add(new InsnNode(Opcodes.LCMP));
+        LabelNode ifge = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFGE, ifge));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/Entity", "displayNameCache", "Lnet/minecraft/util/IChatComponent;"));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ifge);
+        return list;
+    }
+
     default InsnList minus12() {
         InsnList list = new InsnList();
         LabelNode afterSub = new LabelNode();
