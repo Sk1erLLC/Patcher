@@ -23,7 +23,7 @@ public class MetricsData {
     }
 
     // todo: figure out what this is
-    public int method(long l, int fps, int tps) {
+    public int scaleSampleTo(long l, int fps, int tps) {
         final double d = (double) l / (double) (1000000000L / tps);
         return (int) (d * (double) fps);
     }

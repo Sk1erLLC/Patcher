@@ -64,7 +64,7 @@ public class MetricsRenderer extends Gui {
         renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         for (; startWrap != writeIndex; startWrap = data.wrapIndex(startWrap + 1)) {
-            final int valuePosition = data.method(samples[startWrap], showFps ? 30 : 60, showFps ? 60 : 20);
+            final int valuePosition = data.scaleSampleTo(samples[startWrap], showFps ? 30 : 60, showFps ? 60 : 20);
             final int colorValue = showFps ? 100 : 60;
             final int lineColor = this.getMetricsLineColor(MathHelper.clamp_int(valuePosition, 0, colorValue), colorValue / 2, colorValue);
             final int alpha = lineColor >> 24 & 255;
@@ -103,12 +103,10 @@ public class MetricsRenderer extends Gui {
         final String minMs = maxValue + " ms min";
         final String msAvg = o / sampleAverage + " ms avg";
         final String msMax = minValue + " ms max";
-        float textWidth = x + 2;
-        fontRenderer.drawStringWithShadow(minMs, textWidth, (scaledHeight - 60) - 9, 14737632);
-        textWidth = x + (sampleAverage >> 1) - (fontRenderer.getStringWidth(msAvg) >> 1);
-        fontRenderer.drawStringWithShadow(msAvg, textWidth, (scaledHeight - 60) - 9, 14737632);
-        textWidth = x + sampleAverage - fontRenderer.getStringWidth(msMax);
-        fontRenderer.drawStringWithShadow(msMax, textWidth, (scaledHeight - 60) - 9, 14737632);
+        final int textHeight = (scaledHeight - 60) - 9;
+        fontRenderer.drawStringWithShadow(minMs, x + 2, textHeight, 14737632);
+        fontRenderer.drawStringWithShadow(msAvg, x + (sampleAverage >> 1) - (fontRenderer.getStringWidth(msAvg) >> 1), textHeight, 14737632);
+        fontRenderer.drawStringWithShadow(msMax, x + sampleAverage - fontRenderer.getStringWidth(msMax), textHeight, 14737632);
         GlStateManager.enableDepth();
     }
 

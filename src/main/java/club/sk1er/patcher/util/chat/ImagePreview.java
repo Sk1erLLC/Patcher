@@ -40,10 +40,12 @@ import java.net.URL;
 public class ImagePreview {
 
     private final String[] ALLOWED_HOSTS = {
-        "cdn.discordapp.com",
+        "cdn.discordapp.com", "media.discordapp.net",
         "i.badlion.net",
         "i.imgur.com", "imgur.com",
-        "sk1er.exposed",
+        "sk1er.exposed", "inv.wtf", "i.inv.wtf",
+        "i.redd.it",
+        "pbs.twimg.com"
     };
 
     private final Minecraft mc = Minecraft.getMinecraft();
@@ -162,11 +164,11 @@ public class ImagePreview {
     public void drawTexturedModalRect(int x, int y, int width, int height) {
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, 0).tex(0, 1).endVertex();
-        worldrenderer.pos((x + width), (y + height), 0).tex(1, 1).endVertex();
-        worldrenderer.pos((x + width), (y), 0).tex(1, 0).endVertex();
-        worldrenderer.pos((x), (y), 0).tex(0, 0).endVertex();
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldrenderer.pos(x, y + height, 0).tex(0, 1).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos(x + width, y + height, 0).tex(1, 1).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos(x + width, y, 0).tex(1, 0).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos(x, y, 0).tex(0, 0).color(255, 255, 255, 255).endVertex();
         tessellator.draw();
     }
 
