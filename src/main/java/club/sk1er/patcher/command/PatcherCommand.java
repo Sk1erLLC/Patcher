@@ -28,8 +28,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.SkinManager;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -202,6 +204,15 @@ public class PatcherCommand extends Command {
         );
         mc.gameSettings.fovSetting = (float) amount;
         mc.gameSettings.saveOptions();
+    }
+
+    @SubCommand("armorstands")
+    public void armorstands() {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final WorldClient world = mc.theWorld;
+        for (int i = 0; i < 2000; i++) {
+            world.spawnEntityInWorld(new EntityArmorStand(world, mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ));
+        }
     }
 
     // todo: redo this and make it actually functional
