@@ -16,6 +16,7 @@ import club.sk1er.patcher.command.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
+import club.sk1er.patcher.hooks.CacheHooks;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.metrics.MetricsRenderer;
 import club.sk1er.patcher.render.ScreenshotPreview;
@@ -156,7 +157,7 @@ public class Patcher {
             new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),
             new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
-            new MetricsRenderer(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE
+            new MetricsRenderer(), new CacheHooks(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE
         );
 
         checkLogs();
@@ -188,11 +189,20 @@ public class Patcher {
                 PatcherConfig.entityCulling = false;
             }
 
-            if ((modId.equals("labymod") || modId.equals("enhancements")) && PatcherConfig.compactChat) {
-                notifications.push(
-                    "Patcher",
-                    modName + " has been detected. Compact Chat is now disabled.");
-                PatcherConfig.compactChat = false;
+            if ((modId.equals("labymod") || modId.equals("enhancements")) || modId.equals("hychat")) {
+                if (PatcherConfig.compactChat) {
+                    notifications.push(
+                        "Patcher",
+                        modName + " has been detected. Compact Chat is now disabled.");
+                    PatcherConfig.compactChat = false;
+                }
+
+                if (PatcherConfig.chatPosition) {
+                    notifications.push(
+                        "Patcher",
+                        modName + " has been detected. Chat Position is now disabled.");
+                    PatcherConfig.chatPosition = false;
+                }
             }
 
             if (modId.equals("labymod")) {
@@ -201,13 +211,6 @@ public class Patcher {
                         "Patcher",
                         "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.");
                     PatcherConfig.optimizedResourcePackDiscovery = false;
-                }
-
-                if (PatcherConfig.chatPosition) {
-                    notifications.push(
-                        "Patcher",
-                        "Labymod has been detected. Chat Position is now disabled.");
-                    PatcherConfig.chatPosition = false;
                 }
             }
 
@@ -305,16 +308,14 @@ public class Patcher {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            EnhancementManager.getInstance().tick();
-        }
+        if (event.phase == TickEvent.Phase.START) EnhancementManager.getInstance().tick();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
             for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
-                if (file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000L)) {
+                if (file.getName().endsWith("log.gz") && file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000L)) {
                     file.delete();
                 }
             }

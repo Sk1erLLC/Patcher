@@ -211,7 +211,7 @@ public class PatcherCommand extends Command {
         refreshSkin();
     }
 
-    @SubCommand(value = "scale", aliases = "invscale")
+    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"})
     public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
             ChatUtilities.sendMessage("             &eInventory Scale", false);
@@ -242,7 +242,7 @@ public class PatcherCommand extends Command {
             try {
                 scaling = Integer.parseInt(argument);
             } catch (Exception e) {
-                ChatUtilities.sendNotification("Inventory Scale", "Invalid scaling identifier. Use '/inventoryscale help' for assistance.");
+                ChatUtilities.sendNotification("Inventory Scale", "Invalid scaling identifier. Use '/patcher scale help' for assistance.");
                 return;
             }
         }

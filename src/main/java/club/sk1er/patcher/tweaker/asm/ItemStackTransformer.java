@@ -32,6 +32,8 @@ public class ItemStackTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "getTooltip":
                 case "func_82840_a":
+                    methodNode.instructions.insert(returnCachedTooltip());
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setCachedTooltip());
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         final AbstractInsnNode node = iterator.next();
@@ -57,6 +59,24 @@ public class ItemStackTransformer implements PatcherTransformer {
                     break;
             }
         }
+    }
+
+    private InsnList setCachedTooltip() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("CacheHooks"), "tooltipCache", "Ljava/util/List;"));
+        return list;
+    }
+
+    private InsnList returnCachedTooltip() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("CacheHooks"), "tooltipCache", "Ljava/util/List;"));
+        LabelNode ifnull = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("CacheHooks"), "tooltipCache", "Ljava/util/List;"));
+        list.add(new InsnNode(Opcodes.ARETURN));
+        list.add(ifnull);
+        return list;
     }
 
     private InsnList resetCachedDisplayName() {
