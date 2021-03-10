@@ -24,14 +24,13 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
+import club.sk1er.patcher.util.name.NameFetcher;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.SkinManager;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -96,7 +95,7 @@ public class PatcherCommand extends Command {
                 return;
             }
 
-            final ScreenHistory.NameFetcher nameFetcher = new ScreenHistory.NameFetcher();
+            final NameFetcher nameFetcher = new NameFetcher();
             ChatUtilities.sendNotification("Name History", "Fetching usernames...");
             nameFetcher.execute(name);
 
@@ -123,7 +122,7 @@ public class PatcherCommand extends Command {
                 return;
             }
 
-            // create a popup in the top right
+            // todo: create a popup in the top right
             ChatUtilities.sendNotification("Name History", "Popup is not yet implemented.");
         }
     }

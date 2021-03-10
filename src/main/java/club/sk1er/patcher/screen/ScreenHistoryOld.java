@@ -12,38 +12,28 @@
 package club.sk1er.patcher.screen;
 
 import club.sk1er.elementa.components.UIRoundedRectangle;
-import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.util.name.NameFetcher;
 import club.sk1er.vigilance.gui.VigilancePalette;
-import me.kbrewster.exceptions.APIException;
-import me.kbrewster.mojangapi.MojangAPI;
-import me.kbrewster.mojangapi.profile.Name;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.modcore.api.utils.Multithreading;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
-public class ScreenHistory extends GuiScreen {
-
+public class ScreenHistoryOld extends GuiScreen {
+    private final NameFetcher nameFetcher = new NameFetcher();
     private final boolean focus;
     private GuiTextField nameField;
     private String name;
     private int offset;
 
-    public ScreenHistory() {
+    public ScreenHistoryOld() {
         this(null, true);
     }
 
-    public ScreenHistory(String name, boolean focus) {
+    public ScreenHistoryOld(String name, boolean focus) {
         this.name = name;
         this.focus = focus;
         getNameHistory(name);
@@ -51,7 +41,7 @@ public class ScreenHistory extends GuiScreen {
 
     public void getNameHistory(String username) {
         offset = 0;
-        NameFetcher.INSTANCE.execute(username);
+        nameFetcher.execute(username);
     }
 
     @Override
@@ -76,7 +66,7 @@ public class ScreenHistory extends GuiScreen {
 
         UIRoundedRectangle.Companion.drawRoundedRectangle(
             left, top,
-            right, bottom + (NameFetcher.INSTANCE.names.size() * 10) + offset,
+            right, bottom + (nameFetcher.getNames().size() * 10) + offset,
             3, VigilancePalette.INSTANCE.getBACKGROUND()
         );
 
@@ -85,14 +75,14 @@ public class ScreenHistory extends GuiScreen {
 
         // Check if names have been scrolled outside of bounding box.
         // Highlight current and original names.
-        for (int currentName = 0; currentName < NameFetcher.INSTANCE.names.size(); currentName++) {
+        for (int currentName = 0; currentName < nameFetcher.getNames().size(); currentName++) {
             final float xPos = width >> 1;
             final float yPos = bottom + (currentName * 10) + offset - 1;
             if (yPos < (height / 5f) + 35) {
                 continue;
             }
 
-            final String text = NameFetcher.INSTANCE.names.get(currentName);
+            final String text = nameFetcher.getNames().get(currentName);
             if (currentName == 0) {
                 drawCenteredString(
                     fontRendererObj, text + " » Original",
@@ -103,7 +93,7 @@ public class ScreenHistory extends GuiScreen {
                 drawCenteredString(
                     fontRendererObj, text,
                     (int) xPos, (int) yPos,
-                    currentName == NameFetcher.INSTANCE.names.size() - 1 ? new Color(1, 162, 82).getRGB() : -1
+                    currentName == nameFetcher.getNames().size() - 1 ? new Color(1, 162, 82).getRGB() : -1
                 );
             }
         }
@@ -118,7 +108,7 @@ public class ScreenHistory extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_RETURN) {
-            NameFetcher.INSTANCE.names.clear();
+            nameFetcher.getNames().clear();
             this.getNameHistory(this.nameField.getText());
         }
 
@@ -130,7 +120,7 @@ public class ScreenHistory extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        NameFetcher.INSTANCE.names.clear();
+        nameFetcher.getNames().clear();
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
     }
@@ -141,7 +131,7 @@ public class ScreenHistory extends GuiScreen {
         final int scrollBounds = Mouse.getEventDWheel();
         if (scrollBounds < 0) {
             // works out length of scrollable area
-            final int size = NameFetcher.INSTANCE.names.size();
+            final int size = nameFetcher.getNames().size();
             final int length = height / 5 - (size * 9);
             if (offset - length + 1 > -size && length <= size) {
                 // regions it cant exceed
@@ -149,49 +139,6 @@ public class ScreenHistory extends GuiScreen {
             }
         } else if (scrollBounds > 0 && offset < 0) {
             offset += 10;
-        }
-    }
-
-    public static class NameFetcher {
-
-        public static final NameFetcher INSTANCE = new NameFetcher();
-        private final List<String> names = new ArrayList<>();
-        private final DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-
-        public void execute(String username) {
-            try {
-                if (username.isEmpty()) {
-                    return;
-                }
-
-                Multithreading.runAsync(() -> {
-                    UUID uuid = null;
-                    try {
-                        uuid = MojangAPI.getUUID(username);
-                    } catch (Exception e) {
-                        Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
-                    }
-
-                    if (uuid != null) {
-                        for (final Name history : MojangAPI.getNameHistory(uuid)) {
-                            final String name = history.getName();
-                            if (history.getChangedToAt() == 0) {
-                                names.add(name);
-                            } else {
-                                names.add(String.format("%s » %s", name, format.format(history.getChangedToAt())));
-                            }
-                        }
-                    } else {
-                        names.add("Failed to fetch " + username + "'s names");
-                    }
-                });
-            } catch (Exception e) {
-                Patcher.instance.getLogger().warn("User catch failed, tried fetching {}.", username, e);
-            }
-        }
-
-        public List<String> getNames() {
-            return names;
         }
     }
 }
