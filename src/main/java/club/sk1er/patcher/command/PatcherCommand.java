@@ -206,15 +206,6 @@ public class PatcherCommand extends Command {
         mc.gameSettings.saveOptions();
     }
 
-    @SubCommand("armorstands")
-    public void armorstands() {
-        final Minecraft mc = Minecraft.getMinecraft();
-        final WorldClient world = mc.theWorld;
-        for (int i = 0; i < 2000; i++) {
-            world.spawnEntityInWorld(new EntityArmorStand(world, mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ));
-        }
-    }
-
     // todo: redo this and make it actually functional
     // currently skins reset once joining a new world
     @SubCommand(value = "refresh", aliases = "refreshskin")
