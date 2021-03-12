@@ -170,20 +170,14 @@ public class PatcherCommand extends Command {
 
     @SubCommand("mode")
     public void mode(@Options({"vanilla", "optimized"}) String mode) {
-        // users dont need this
-        if (!ClassTransformer.isDevelopment()) {
-            ChatUtilities.sendNotification("Debug Renderer", "This command is disabled outside of development.");
-            return;
-        }
-
         if (mode.equals("vanilla")) {
             toggleOptions(false);
             Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
-            ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &cVanilla&a.");
+            ChatUtilities.sendNotification("Debug Mode", "&aSet mode: &cVanilla&a.");
         } else {
             toggleOptions(true);
             Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
-            ChatUtilities.sendNotification("Debug Renderer", "&aSet mode: &eOptimized&a.");
+            ChatUtilities.sendNotification("Debug Mode", "&aSet mode: &eOptimized&a.");
         }
     }
 
@@ -273,6 +267,19 @@ public class PatcherCommand extends Command {
     public void sounds() {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
+
+    /*@SubCommand("dev")
+    public void dev() {
+        if (!ClassTransformer.isDevelopment()) {
+            ChatUtilities.sendNotification("Development", "This command is made only for development purposes, and should typically not even be loaded.");
+            return;
+        }
+
+        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        for (int i = 0; i < 1000; i++) {
+            player.addChatComponentMessage(new ChatComponentText("spam"));
+        }
+    }*/
 
     public static void refreshSkin() {
         try {

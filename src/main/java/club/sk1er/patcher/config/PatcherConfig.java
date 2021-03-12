@@ -165,7 +165,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
-        description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.",
+        description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.\n§cMay conflict with minimaps.",
         category = "Miscellaneous", subcategory = "Rendering", triggerActionOnInitialization = false
     )
     public static boolean fullbright = true;

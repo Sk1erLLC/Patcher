@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class ChatHandler {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     public static int currentMessageHash = -1;
     private int ticks;
@@ -105,7 +107,7 @@ public class ChatHandler {
         }
 
         if (!refresh) {
-            final String message = cleanColour(chatComponent.getFormattedText()).trim();
+            final String message = cleanColor(chatComponent.getFormattedText()).trim();
             if (message.isEmpty() && PatcherConfig.antiClearChat) {
                 return false;
             }
@@ -130,7 +132,7 @@ public class ChatHandler {
                     } else {
                         entry.messageCount++;
                         entry.lastSeenMessageMillis = currentTime;
-                        chatComponent.appendSibling(new ChatComponentIgnored(ChatColor.GRAY + " (" + entry.messageCount + ")"));
+                        chatComponent.appendSibling(new ChatComponentIgnored(ChatColor.GRAY + " (" + decimalFormat.format(entry.messageCount) + ")"));
                     }
                 }
             }
@@ -210,7 +212,7 @@ public class ChatHandler {
 
     private static int getMessageIndex(List<ChatLine> chatMessageList, int index, ChatLine chatLine) {
         final ChatLine prevLine = chatMessageList.get(index);
-        if (isDivider(cleanColour(prevLine.getChatComponent().getUnformattedText())) &&
+        if (isDivider(cleanColor(prevLine.getChatComponent().getUnformattedText())) &&
             Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
@@ -220,7 +222,7 @@ public class ChatHandler {
         }
 
         final ChatLine nextLine = chatMessageList.get(index);
-        if (isDivider(cleanColour(nextLine.getChatComponent().getUnformattedText())) &&
+        if (isDivider(cleanColor(nextLine.getChatComponent().getUnformattedText())) &&
             Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
@@ -286,7 +288,7 @@ public class ChatHandler {
         return divider;
     }
 
-    public static String cleanColour(String in) {
+    private static String cleanColor(String in) {
         return in.replaceAll("(?i)\\u00A7.", "");
     }
 
