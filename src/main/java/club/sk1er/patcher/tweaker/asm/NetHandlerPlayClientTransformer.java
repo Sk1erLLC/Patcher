@@ -11,10 +11,7 @@
 
 package club.sk1er.patcher.tweaker.asm;
 
-import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.NetHandlerPlayClientHook;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -149,7 +146,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "processChatMessage",
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiNewChatHook"), "processChatMessage",
             "(Lnet/minecraft/network/play/server/S02PacketChat;Lnet/minecraft/util/IChatComponent;)V", false));
         return list;
     }
@@ -169,7 +166,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
-            getHooksPackage("NetHandlerPlayClientHook"),
+            getHookClass("NetHandlerPlayClientHook"),
             "validateResourcePackUrl",
             "(Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/network/play/server/S48PacketResourcePackSend;)Z",
             false));

@@ -63,7 +63,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
                     methodNode.instructions.insert(handleInputHead());
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
-                        getHooksPackage("GuiScreenHook"), "handleInputReturn", "()V", false
+                        getHookClass("GuiScreenHook"), "handleInputReturn", "()V", false
                     ));
 
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -87,7 +87,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
     private InsnList handleInputHead() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "handleInputHead", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiScreenHook"), "handleInputHead", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
         return list;
     }
 
@@ -95,11 +95,11 @@ public class GuiScreenTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionWidth", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiScreenHook"), "setWorldAndResolutionWidth", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 2));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "setWorldAndResolutionHeight", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiScreenHook"), "setWorldAndResolutionHeight", "(Lnet/minecraft/client/gui/GuiScreen;I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 3));
         return list;
     }
@@ -119,7 +119,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
             "Lnet/minecraft/client/gui/GuiScreen;"));
         LabelNode ifacmpeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, ifacmpeq));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenHook"), "handleInputReturn", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiScreenHook"), "handleInputReturn", "()V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifacmpeq);
         return list;

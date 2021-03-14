@@ -98,7 +98,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         } else if (node instanceof LdcInsnNode && ((LdcInsnNode) node).cst.equals(70.0f) && node.getPrevious().getOpcode() == Opcodes.FMUL) {
                             methodNode.instructions.insert(node.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
                         } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) node).owner.equals("Config") && ((FieldInsnNode) node).name.equals("zoomMode") && node.getPrevious().getOpcode() == Opcodes.ICONST_0) {
-                            methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "resetSensitivity", "()V", false));
+                            methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "resetSensitivity", "()V", false));
                         }
                     }
 
@@ -400,7 +400,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
     private InsnList checkMap(LabelNode ifne) {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "hasMap", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "hasMap", "()Z", false));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         return list;
     }
@@ -569,7 +569,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "toggleToZoom", "Z"));
         LabelNode ifDisabled = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifDisabled));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("EntityRendererHook"), "getZoomState", "(Z)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "getZoomState", "(Z)Z", false));
         list.add(ifDisabled);
         return list;
     }
@@ -674,7 +674,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 false));
         list.add(new MethodInsnNode(
             Opcodes.INVOKESTATIC,
-            getHooksPackage("EntityRendererHook"),
+            getHookClass("EntityRendererHook"),
             "reduceSensitivity",
             "()V",
             false));

@@ -31,7 +31,7 @@ public class ContainerTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("ContainerHook"), "playArmorBreakSound", "(Lnet/minecraft/inventory/Container;ILnet/minecraft/item/ItemStack;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("ContainerHook"), "playArmorBreakSound", "(Lnet/minecraft/inventory/Container;ILnet/minecraft/item/ItemStack;)V", false));
         return list;
     }
 }

@@ -35,7 +35,7 @@ public class VertexLighterSmoothAoTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.FLOAD, 3));
         list.add(new VarInsnNode(Opcodes.FLOAD, 4));
         list.add(new VarInsnNode(Opcodes.FLOAD, 5));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("VertexLighterSmoothAoHook"), "calcLightmap", "(Lnet/minecraftforge/client/model/pipeline/BlockInfo;[FFFF)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("VertexLighterSmoothAoHook"), "calcLightmap", "(Lnet/minecraftforge/client/model/pipeline/BlockInfo;[FFFF)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

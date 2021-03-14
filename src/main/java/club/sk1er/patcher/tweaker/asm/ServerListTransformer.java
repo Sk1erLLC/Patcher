@@ -22,7 +22,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class ServerListTransformer implements PatcherTransformer {
 
-    private final String hookClass = getHooksPackage("ServerListHook");
+    private final String hookClass = getHookClass("ServerListHook");
 
     /**
      * The class name that's being transformed

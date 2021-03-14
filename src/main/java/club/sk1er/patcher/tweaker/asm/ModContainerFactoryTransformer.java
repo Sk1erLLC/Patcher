@@ -33,7 +33,7 @@ public class ModContainerFactoryTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/fml/common/ModContainerFactory", "modTypes", "Ljava/util/Map;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("ModContainerFactoryHook"), "build", "(Lnet/minecraftforge/fml/common/discovery/asm/ASMModParser;Lnet/minecraftforge/fml/common/discovery/ModCandidate;Ljava/util/Map;)Lnet/minecraftforge/fml/common/ModContainer;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("ModContainerFactoryHook"), "build", "(Lnet/minecraftforge/fml/common/discovery/asm/ASMModParser;Lnet/minecraftforge/fml/common/discovery/ModCandidate;Ljava/util/Map;)Lnet/minecraftforge/fml/common/ModContainer;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         return list;
     }

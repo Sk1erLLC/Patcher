@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker.transform;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -114,29 +113,16 @@ public interface PatcherTransformer {
      */
     default void clearInstructions(MethodNode methodNode) {
         methodNode.instructions.clear();
-
-        // don't waste time clearing local variables if they're empty
-        if (!methodNode.localVariables.isEmpty()) {
-            methodNode.localVariables.clear();
-        }
-
-        // don't waste time clearing try-catches if they're empty
-        if (!methodNode.tryCatchBlocks.isEmpty()) {
-            methodNode.tryCatchBlocks.clear();
-        }
+        if (!methodNode.localVariables.isEmpty()) methodNode.localVariables.clear();
+        if (!methodNode.tryCatchBlocks.isEmpty()) methodNode.tryCatchBlocks.clear();
     }
 
-    /**
-     * Link to {@link PatcherConfig} in transformers easily
-     *
-     * @return patcher config class
-     */
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
     }
 
-    default String getHooksPackage(String hookClass) {
-        return "club/sk1er/patcher/hooks/" + hookClass;
+    default String getHookClass(String name) {
+        return "club/sk1er/patcher/hooks/" + name;
     }
 
     default boolean isDevelopment() {

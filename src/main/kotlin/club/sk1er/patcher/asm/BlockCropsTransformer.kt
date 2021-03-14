@@ -57,7 +57,7 @@ class BlockCropsTransformer : PatcherTransformer {
         )
         invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
-            getHooksPackage("FarmHook"),
+            getHookClass("FarmHook"),
             "updateCropsMaxY",
             void,
             "net/minecraft/world/World",
@@ -94,7 +94,7 @@ class BlockCropsTransformer : PatcherTransformer {
         )
         invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
-            getHooksPackage("FarmHook"),
+            getHookClass("FarmHook"),
             "updateCropsMaxY",
             void,
             "net/minecraft/world/World",

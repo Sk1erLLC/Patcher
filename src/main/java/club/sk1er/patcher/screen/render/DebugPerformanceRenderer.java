@@ -11,12 +11,12 @@
 
 package club.sk1er.patcher.screen.render;
 
-import club.sk1er.vigilance.gui.VigilancePalette;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -26,7 +26,7 @@ public class DebugPerformanceRenderer {
     private boolean frameRender = false;
     private long updated = 0;
     private String mode = "???";
-    private final int textColor = VigilancePalette.INSTANCE.getACCENT().getRGB();
+    private final int textColor = new Color(1, 165, 82).getRGB();
     private final DecimalFormat format = new DecimalFormat("#.00");
     private final Deque<Long> frames = new ArrayDeque<>();
     private final String[] renderStrings = new String[5];

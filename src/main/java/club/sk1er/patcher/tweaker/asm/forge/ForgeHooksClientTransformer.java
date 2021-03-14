@@ -11,11 +11,7 @@
 
 package club.sk1er.patcher.tweaker.asm.forge;
 
-import club.sk1er.patcher.hooks.ForgeHooksClientHook;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -28,7 +24,7 @@ import java.util.ListIterator;
 
 public class ForgeHooksClientTransformer implements PatcherTransformer {
 
-    private final String hooksClass = getHooksPackage("ForgeHooksClientHook");
+    private final String hooksClass = getHookClass("ForgeHooksClientHook");
 
     /**
      * The class name that's being transformed

@@ -40,7 +40,7 @@ public class DataWatcherTransformer implements PatcherTransformer {
 
     private InsnList checkRemote(LabelNode ifeq) {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("DataWatcherHook"), "checkWorldStatus", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("DataWatcherHook"), "checkWorldStatus", "()Z", false));
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         return list;
     }

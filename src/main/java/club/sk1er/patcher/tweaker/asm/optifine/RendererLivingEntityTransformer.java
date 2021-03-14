@@ -80,7 +80,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                             methodNode.instructions.remove(next);
                         } else if (methodInsnName.equals("enableCull") || methodInsnName.equals("func_179089_o")) {
                             methodNode.instructions.insertBefore(next, new MethodInsnNode(
-                                Opcodes.INVOKESTATIC, getHooksPackage("RendererLivingEntityHook"), "backFaceCullingEnd", "()V", false
+                                Opcodes.INVOKESTATIC, getHookClass("RendererLivingEntityHook"), "backFaceCullingEnd", "()V", false
                             ));
                             methodNode.instructions.remove(next);
                         }
@@ -147,7 +147,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                         methodNode.instructions.insertBefore(next,
                             new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                getHooksPackage("RendererLivingEntityHook"), "getVisibleHeight", "(Lnet/minecraft/entity/Entity;)F",
+                                getHookClass("RendererLivingEntityHook"), "getVisibleHeight", "(Lnet/minecraft/entity/Entity;)F",
                                 false
                             ));
                     }
@@ -159,7 +159,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
     private InsnList startCulling() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("RendererLivingEntityHook"),
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("RendererLivingEntityHook"),
             "backFaceCullingStart", "(Lnet/minecraft/entity/Entity;)V", false));
         return list;
     }

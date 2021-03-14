@@ -74,7 +74,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
                             final String methodInsnName = mapMethodNameFromNode(node);
                             if (methodInsnName.equals("getLineCount") || methodInsnName.equals("func_146232_i")) {
                                 methodNode.instructions.insertBefore(node.getPrevious(),
-                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "processMessageQueue", "()V", false));
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiNewChatHook"), "processMessageQueue", "()V", false));
                             }
                         } else if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
                             LabelNode ifeq = new LabelNode();
@@ -96,7 +96,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
                             if (prevNode.getOpcode() == Opcodes.ISTORE) {
                                 methodNode.instructions.insertBefore(node.getPrevious(),
-                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "drawMessageQueue", "()V", false));
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiNewChatHook"), "drawMessageQueue", "()V", false));
                             }
                         }
                     }
@@ -120,7 +120,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
     private InsnList clearMessageQueue() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("GuiNewChatHook"), "messageQueue", "Ljava/util/Deque;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("GuiNewChatHook"), "messageQueue", "Ljava/util/Deque;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Deque", "clear", "()V", true));
         return list;
     }

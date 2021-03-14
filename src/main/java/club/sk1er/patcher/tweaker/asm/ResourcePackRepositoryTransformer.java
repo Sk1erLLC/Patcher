@@ -47,7 +47,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                 case "setResourcePackInstance":
                 case "func_177319_a":
                     methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        getHooksPackage("FallbackResourceManagerHook"),
+                        getHookClass("FallbackResourceManagerHook"),
                         "clearCache",
                         "()V",
                         false));
@@ -62,7 +62,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                             if (mappedMethodName.equals("scheduleResourcesRefresh") || mappedMethodName.equals("func_175603_A")) {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(
                                     Opcodes.INVOKESTATIC,
-                                    getHooksPackage("FallbackResourceManagerHook"),
+                                    getHookClass("FallbackResourceManagerHook"),
                                     "clearCache",
                                     "()V",
                                     false
@@ -89,7 +89,7 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("ResourcePackRepositoryHook"), "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("ResourcePackRepositoryHook"), "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
         return list;

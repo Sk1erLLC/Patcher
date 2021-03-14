@@ -66,7 +66,7 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
     private InsnList fasterSpecialChars() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("FMLClientHandlerHook"), "stripSpecialChars", "(Ljava/lang/String;)Ljava/lang/String;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("FMLClientHandlerHook"), "stripSpecialChars", "(Ljava/lang/String;)Ljava/lang/String;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         return list;
     }

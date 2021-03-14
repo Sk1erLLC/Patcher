@@ -68,7 +68,7 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                             final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("saveOptions") || methodInsnName.equals("func_74303_b")) {
                                 methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                    getHooksPackage("FallbackResourceManagerHook"),
+                                    getHookClass("FallbackResourceManagerHook"),
                                     "clearCache",
                                     "()V",
                                     false));
@@ -77,7 +77,7 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                         } else if (next.getOpcode() == Opcodes.INVOKESTATIC) {
                             if (((MethodInsnNode) next).name.equals("reverse")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC, getHooksPackage("GuiScreenResourcePacksHook"), "clearHandles", "()V", false)
+                                    Opcodes.INVOKESTATIC, getHookClass("GuiScreenResourcePacksHook"), "clearHandles", "()V", false)
                                 );
                             }
                         }

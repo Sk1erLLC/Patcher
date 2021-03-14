@@ -45,7 +45,7 @@ public class TileEntityBannerRendererTransformer implements PatcherTransformer {
     private InsnList fixedBannerCache() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("TileEntityBannerRendererHook"),
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("TileEntityBannerRendererHook"),
             "getPatternResourceLocation", "(Lnet/minecraft/tileentity/TileEntityBanner;)Lnet/minecraft/util/ResourceLocation;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         return list;

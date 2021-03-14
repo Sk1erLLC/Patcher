@@ -160,7 +160,7 @@ public class GuiChatTransformer implements PatcherTransformer {
                             final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("handleComponentClick") || methodInsnName.equals("func_175276_a")) {
                                 methodNode.instructions.insertBefore(next.getNext().getNext(),
-                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiNewChatHook"), "mouseClicked", "()V", false));
+                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiNewChatHook"), "mouseClicked", "()V", false));
                             }
                         }
                     }

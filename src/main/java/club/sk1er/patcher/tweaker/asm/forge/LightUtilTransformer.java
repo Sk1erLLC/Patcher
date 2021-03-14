@@ -31,7 +31,7 @@ public class LightUtilTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.FLOAD, 0));
         list.add(new VarInsnNode(Opcodes.FLOAD, 1));
         list.add(new VarInsnNode(Opcodes.FLOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("LightUtilHook"), "diffuseLight", "(FFF)F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("LightUtilHook"), "diffuseLight", "(FFF)F", false));
         list.add(new InsnNode(Opcodes.FRETURN));
         return list;
     }

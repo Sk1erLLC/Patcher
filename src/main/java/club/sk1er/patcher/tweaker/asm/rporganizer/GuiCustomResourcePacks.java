@@ -55,7 +55,7 @@ public class GuiCustomResourcePacks implements PatcherTransformer {
                         final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("saveOptions") || methodInsnName.equals("func_74303_b")) {
                             methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                getHooksPackage("FallbackResourceManagerHook"),
+                                getHookClass("FallbackResourceManagerHook"),
                                 "clearCache",
                                 "()V",
                                 false));

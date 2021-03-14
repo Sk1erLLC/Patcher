@@ -119,7 +119,7 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
         list.add(new IntInsnNode(Opcodes.BIPUSH, 24));
         list.add(new InsnNode(Opcodes.ISHL));
         list.add(new InsnNode(Opcodes.IOR));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("GuiIngameForgeHook"), "drawActionbarText", "(Ljava/lang/String;I)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiIngameForgeHook"), "drawActionbarText", "(Ljava/lang/String;I)V", false));
         return list;
     }
 

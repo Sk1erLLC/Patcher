@@ -56,7 +56,7 @@ public class RenderItemFrameTransformer implements CommonTransformer {
     private InsnList cancelRendering() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("RenderItemFrameHook"), "shouldRenderItemFrame", "(Lnet/minecraft/entity/Entity;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("RenderItemFrameHook"), "shouldRenderItemFrame", "(Lnet/minecraft/entity/Entity;)Z", false));
         LabelNode ifne = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         list.add(new InsnNode(Opcodes.RETURN));

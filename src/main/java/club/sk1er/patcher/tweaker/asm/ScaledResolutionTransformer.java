@@ -33,7 +33,7 @@ public class ScaledResolutionTransformer implements PatcherTransformer {
                         if (fieldName.equals("guiScale") || fieldName.equalsIgnoreCase("field_74335_Z")) {
                             instructions.insertBefore(next.getNext(), new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                getHooksPackage("ScaledResolutionHook"), "modifyGuiScale", "(I)I", false
+                                getHookClass("ScaledResolutionHook"), "modifyGuiScale", "(I)I", false
                             ));
                         }
                     }

@@ -102,7 +102,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                     }
                     InsnList insnList = new InsnList();
                     LabelNode labelNode = new LabelNode();
-                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("MinecraftHook"), "fullscreen", "()Z", false));
+                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("MinecraftHook"), "fullscreen", "()Z", false));
                     insnList.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
                     insnList.add(new InsnNode(Opcodes.RETURN));
                     insnList.add(labelNode);
@@ -189,7 +189,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                                 case "func_110436_a":
                                     methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
                                         Opcodes.INVOKESTATIC,
-                                        getHooksPackage("FallbackResourceManagerHook"),
+                                        getHookClass("FallbackResourceManagerHook"),
                                         "clearCache",
                                         "()V",
                                         false
@@ -226,7 +226,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
                             methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IAND));
                             methodNode.instructions.insertBefore(node, new JumpInsnNode(Opcodes.IFEQ, ifeq));
-                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("MinecraftHook"), "updateKeyBindState", "()V", false));
+                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("MinecraftHook"), "updateKeyBindState", "()V", false));
                             methodNode.instructions.insertBefore(node, ifeq);
                             break;
                         }
@@ -308,7 +308,7 @@ public class MinecraftTransformer implements PatcherTransformer {
 
     private InsnList pushMetricsSample() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHooksPackage("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
         list.add(new VarInsnNode(Opcodes.LLOAD, 7));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_181543_z", "J"));
@@ -322,14 +322,14 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new TypeInsnNode(Opcodes.NEW, "club/sk1er/patcher/metrics/MetricsData"));
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/metrics/MetricsData", "<init>", "()V", false));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHooksPackage("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHookClass("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
         return list;
     }
 
     private InsnList fixAttributeMap() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 4));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHooksPackage("MinecraftHook"), "fixAttributeMap", "(Lnet/minecraft/client/entity/EntityPlayerSP;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("MinecraftHook"), "fixAttributeMap", "(Lnet/minecraft/client/entity/EntityPlayerSP;)V", false));
         return list;
     }
 

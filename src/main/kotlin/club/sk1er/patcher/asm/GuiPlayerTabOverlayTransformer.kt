@@ -33,7 +33,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                             if (methodName == "drawRect" || methodName == "func_73734_a") {
                                 it.instructions.insertBefore(insn, assembleBlock {
                                     invokestatic(
-                                        getHooksPackage("GuiPlayerTabOverlayHook"),
+                                        getHookClass("GuiPlayerTabOverlayHook"),
                                         "getNewColor",
                                         int,
                                         int
@@ -107,7 +107,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
         iload_3
         aload(4)
         invokestatic(
-            getHooksPackage("GuiPlayerTabOverlayHook"),
+            getHookClass("GuiPlayerTabOverlayHook"),
             "drawPatcherPing",
             void,
             int,
