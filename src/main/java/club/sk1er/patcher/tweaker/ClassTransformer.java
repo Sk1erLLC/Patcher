@@ -219,6 +219,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new MinecraftForgeTransformer());
         registerTransformer(new ASMModParserTransformer());
         registerTransformer(new LightUtilTransformer());
+        registerTransformer(new ModContainerFactoryTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
