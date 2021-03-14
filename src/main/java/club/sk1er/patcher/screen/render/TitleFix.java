@@ -24,12 +24,7 @@ public class TitleFix {
 
         // these are never cleared when logging out of a server while displaying a title or subtitle,
         // so clear these if they're not already cleared when leaving the server.
-        if (!gui.displayedTitle.isEmpty()) {
-            gui.displayedTitle = "";
-        }
-
-        if (!gui.displayedSubTitle.isEmpty()) {
-            gui.displayedSubTitle = "";
-        }
+        if (!gui.displayedTitle.isEmpty()) gui.displayedTitle = "";
+        if (!gui.displayedSubTitle.isEmpty()) gui.displayedSubTitle = "";
     }
 }

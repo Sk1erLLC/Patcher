@@ -64,10 +64,7 @@ public class PatcherMenuEditor {
             if (!Loader.isModLoaded("ResourcePackOrganizer")) {
                 for (GuiButton button : mcButtonList) {
                     button.width = 200;
-
-                    if (button.id == 2) {
-                        button.xPosition = (width >> 1) - 204;
-                    }
+                    if (button.id == 2) button.xPosition = (width >> 1) - 204;
                 }
             }
         } else if (gui instanceof GuiIngameMenu) {

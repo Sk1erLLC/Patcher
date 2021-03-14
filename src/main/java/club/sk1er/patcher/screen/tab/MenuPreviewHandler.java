@@ -34,16 +34,12 @@ public class MenuPreviewHandler {
 
     @SubscribeEvent
     public void keyPress(InputEvent.KeyInputEvent event) {
-        if (mc.gameSettings.keyBindPlayerList.isPressed()) {
-            this.toggledTab = !this.toggledTab;
-        }
+        if (mc.gameSettings.keyBindPlayerList.isPressed()) this.toggledTab = !this.toggledTab;
     }
 
     @SubscribeEvent
     public void tickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
-        }
+        if (event.phase == TickEvent.Phase.START) this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
     }
 
     @SubscribeEvent

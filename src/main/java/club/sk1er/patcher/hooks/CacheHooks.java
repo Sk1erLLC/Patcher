@@ -12,7 +12,7 @@ public class CacheHooks {
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
-            if (System.currentTimeMillis() - cacheTime < 200) return;
+            if ((System.currentTimeMillis() - cacheTime) < 200) return;
             tooltipCache = null;
             cacheTime = System.currentTimeMillis();
         }
