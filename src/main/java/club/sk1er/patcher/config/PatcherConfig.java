@@ -1173,6 +1173,16 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean compactScreenshotResponse;
 
+    // EXPERIMENTAL
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Replace Forge Model Loader",
+        description = "Replace Forge's model loader, which is typically unused in 1.8 due to most mods being entirely clientside.\n" +
+            "§eToggling will refresh resources.",
+        category = "Experimental", subcategory = "Model Loader", triggerActionOnInitialization = false
+    )
+    public static boolean replaceModelLoader;
+
     // HIDDEN
 
     @Property(
@@ -1188,5 +1198,6 @@ public class PatcherConfig extends Vigilant {
         registerListener("fullbright", reloadWorld);
         registerListener("fluidStitching", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
+        registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().scheduleResourcesRefresh());
     }
 }

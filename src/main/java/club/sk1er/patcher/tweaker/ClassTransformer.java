@@ -199,6 +199,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ItemModelMesherTransformer());
         registerTransformer(new DataWatcherTransformer());
         registerTransformer(new RenderWitherTransformer());
+        registerTransformer(new ModelManagerTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
