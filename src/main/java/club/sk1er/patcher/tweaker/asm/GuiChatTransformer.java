@@ -249,10 +249,8 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(gotoInsn);
         list.add(new VarInsnNode(Opcodes.ISTORE, 1));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatKeeper", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
+        LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,

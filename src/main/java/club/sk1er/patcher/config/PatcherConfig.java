@@ -70,46 +70,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean armPosition = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Head Rotations",
-        description = "Fixes an issue where your head would not properly rotate while riding an entity.",
-        category = "Bug Fixes", subcategory = "Movement"
-    )
-    public static boolean headRotation = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Sky Height",
-        description = "Fixes the flickering effect from the void when passing between Y level 63.",
-        category = "Bug Fixes", subcategory = "Rendering"
-    )
-    public static boolean skyHeight = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Mouse Bind Fix",
-        description = "Fixes an issue where keybinds bound to mouse buttons do not work in inventories.",
-        category = "Bug Fixes", subcategory = "General"
-    )
-    public static boolean mouseBindFix = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Linux Button Combinations",
-        description = "Fixes an issue where number keys being modified by shift don't register on Linux.",
-        category = "Bug Fixes", subcategory = "General"
-    )
-    public static boolean linuxButtonCombinationFix = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
         description = "Fixes the removal of any activated Vanilla shader when changing perspective.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean keepShadersOnPerspectiveChange = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Arrow Lighting",
-        description = "Fixes arrows attached to an entity messing up entity lighting.",
-        category = "Bug Fixes", subcategory = "Entities"
-    )
-    public static boolean fixArrowLighting;
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
@@ -146,13 +111,6 @@ public class PatcherConfig extends Vigilant {
         category = "Bug Fixes", subcategory = "Rendering"
     )
     public static boolean playerVoidRendering = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Fluid Stitching",
-        description = "Fixes missing edges in fluids.",
-        category = "Bug Fixes", subcategory = "Rendering", triggerActionOnInitialization = false
-    )
-    public static boolean fluidStitching = true;
 
     // MISCELLANEOUS
 
@@ -519,13 +477,6 @@ public class PatcherConfig extends Vigilant {
     // PERFORMANCE
 
     @Property(
-        type = PropertyType.SWITCH, name = "Item Searching",
-        description = "Stop items from searching for extra items to combine with when the stack is already full.",
-        category = "Performance", subcategory = "Items"
-    )
-    public static boolean itemSearching = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Instant World Swapping",
         description = "Remove the dirt screen and waiting time when switching a world.",
         category = "Performance", subcategory = "World"
@@ -747,13 +698,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeCloudTransparency;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Disable GL Error Checking",
-        description = "Disable unnecessary constant checking for errors in OpenGL.\n§cRequires restart once toggled.",
-        category = "Performance", subcategory = "General"
-    )
-    public static boolean glErrorChecking = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Optimized Item Renderer",
         description = "Cache information about items, avoiding recalculating everything about it every frame.",
         category = "Performance", subcategory = "Items"
@@ -780,13 +724,6 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "Culling"
     )
     public static boolean playerBackFaceCulling;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Disable Mob Spawning",
-        description = "Reduce memory usage by disabling the check for mob spawning despite the set game rule.\n§eThis will disable mob spawning in a singleplayer world.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean mobSpawningOptimization;
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Render Distance Toggle",
@@ -875,7 +812,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Tab Opacity",
-        description = "Change the tab list opacity.",
+        description = "Change the tab list opacity.\n§eRequires Custom Tab Opacity",
         category = "Screens", subcategory = "Tab"
     )
     public static float tabOpacity = 1.0F;
@@ -919,7 +856,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Set Tab Height",
-        description = "Choose how many pixels down the tab will go when there's an active bossbar.",
+        description = "Choose how many pixels down the tab will go when there's an active bossbar.\n§eRequires Tab Height.",
         category = "Screens", subcategory = "Tab",
         max = 24
     )
@@ -1042,25 +979,11 @@ public class PatcherConfig extends Vigilant {
     public static int timestampsStyle = 0;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Cross Chat",
-        description = "Stop clearing chat when switching servers.",
-        category = "Screens", subcategory = "Chat"
-    )
-    public static boolean crossChat = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Clean Main Menu",
         description = "Remove the Realms button on the main menu as you need to be on the latest Minecraft version to use Realms.",
         category = "Screens", subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Chat Keeper",
-        description = "Keep your currently-typed message in chat when toggling fullscreen.",
-        category = "Screens", subcategory = "Chat"
-    )
-    public static boolean chatKeeper = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Skin Refresher",
@@ -1197,7 +1120,6 @@ public class PatcherConfig extends Vigilant {
 
         final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
-        registerListener("fluidStitching", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
         registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().scheduleResourcesRefresh());
     }

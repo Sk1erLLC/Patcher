@@ -19,8 +19,6 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -146,22 +144,12 @@ public class RenderPlayerTransformer implements PatcherTransformer {
 
     private InsnList newArmLogic() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "armPosition", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new InsnNode(Opcodes.DUP_X1));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelPlayer", "field_78117_n", "Z"));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelPlayer", "field_78093_q", "Z"));
-        LabelNode gotoInsn = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-        list.add(ifeq);
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelPlayer", "field_78117_n", "Z"));
-        list.add(gotoInsn);
         return list;
     }
 }

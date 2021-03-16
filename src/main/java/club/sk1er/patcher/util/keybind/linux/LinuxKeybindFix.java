@@ -1,6 +1,5 @@
 package club.sk1er.patcher.util.keybind.linux;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -13,7 +12,7 @@ public class LinuxKeybindFix {
 
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
-        if (PatcherConfig.linuxButtonCombinationFix && SystemUtils.IS_OS_LINUX && mc.thePlayer != null && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
+        if (SystemUtils.IS_OS_LINUX && mc.thePlayer != null && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
             final int eventKey = Keyboard.getEventKey();
             switch (eventKey) {
                 case 145:

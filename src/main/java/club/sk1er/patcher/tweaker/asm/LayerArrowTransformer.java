@@ -75,11 +75,7 @@ public class LayerArrowTransformer implements PatcherTransformer {
 
     private InsnList fixArrowLighting(boolean status) {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "fixArrowLighting", "Z"));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/RenderHelper", status ? "func_74518_a" : "func_74519_b", "()V", false));
-        list.add(labelNode);
         return list;
     }
 

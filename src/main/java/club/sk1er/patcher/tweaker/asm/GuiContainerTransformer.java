@@ -49,45 +49,54 @@ public class GuiContainerTransformer implements PatcherTransformer {
         for (MethodNode method : classNode.methods) {
             String methodName = mapMethodName(classNode, method);
 
-            if (methodName.equals("mouseClicked") || methodName.equals("func_73864_a")) {
-                method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkHotbarKeys());
-            } else if (methodName.equals("updateDragSplitting") || methodName.equals("func_146980_g")) {
-                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+            switch (methodName) {
+                case "mouseClicked":
+                case "func_73864_a":
+                    method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkHotbarKeys());
+                    break;
+                case "updateDragSplitting":
+                case "func_146980_g": {
+                    ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
-                LabelNode gotoInsn = new LabelNode();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
+                    LabelNode gotoInsn = new LabelNode();
+                    while (iterator.hasNext()) {
+                        AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof MethodInsnNode) {
-                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
+                        if (next instanceof MethodInsnNode) {
+                            if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                                String methodInsnName = mapMethodNameFromNode(next);
 
-                            if (methodInsnName.equals("copy") || methodInsnName.equals("func_77946_l")) {
-                                method.instructions.insertBefore(next.getPrevious(), fixSplitRemnants(gotoInsn));
-                            }
-                        } else if (next.getOpcode() == Opcodes.INVOKEINTERFACE) {
-                            if (((MethodInsnNode) next).name.equals("iterator")) {
-                                method.instructions.insertBefore(next.getNext().getNext(), gotoInsn);
+                                if (methodInsnName.equals("copy") || methodInsnName.equals("func_77946_l")) {
+                                    method.instructions.insertBefore(next.getPrevious(), fixSplitRemnants(gotoInsn));
+                                }
+                            } else if (next.getOpcode() == Opcodes.INVOKEINTERFACE) {
+                                if (((MethodInsnNode) next).name.equals("iterator")) {
+                                    method.instructions.insertBefore(next.getNext().getNext(), gotoInsn);
+                                }
                             }
                         }
                     }
+                    break;
                 }
-            } else if (methodName.equals("keyTyped") || methodName.equals("func_73869_a")) {
-                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                case "keyTyped":
+                case "func_73869_a": {
+                    final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
 
-                while (iterator.hasNext()) {
-                    final AbstractInsnNode next = iterator.next();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
 
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        final String methodInsnName = mapMethodNameFromNode(next);
-                        if (methodInsnName.equals("isCtrlKeyDown") || methodInsnName.equals("func_146271_m")) {
-                            for (int i = 0; i < 7; i++) {
-                                method.instructions.remove(next.getNext());
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
+                            if (methodInsnName.equals("isCtrlKeyDown") || methodInsnName.equals("func_146271_m")) {
+                                for (int i = 0; i < 7; i++) {
+                                    method.instructions.remove(next.getNext());
+                                }
+
+                                method.instructions.insertBefore(next.getNext(), checkPatcherKey());
                             }
-
-                            method.instructions.insertBefore(next.getNext(), checkPatcherKey());
                         }
                     }
+                    break;
                 }
             }
         }
@@ -130,24 +139,12 @@ public class GuiContainerTransformer implements PatcherTransformer {
 
     private InsnList checkHotbarKeys() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "mouseBindFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-
         list.add(new VarInsnNode(Opcodes.BIPUSH, 100));
         list.add(new InsnNode(Opcodes.ISUB));
-
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL,
-                "net/minecraft/client/gui/inventory/GuiContainer",
-                "func_146983_a",
-                "(I)Z",
-                false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/inventory/GuiContainer", "func_146983_a", "(I)Z", false));
         list.add(new InsnNode(Opcodes.POP));
-        list.add(ifeq);
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

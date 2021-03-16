@@ -117,14 +117,10 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                                 if (next == node) {
                                     InsnList insnList = new InsnList();
                                     insnList.add(labelNode);
-                                    insnList.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "headRotation", "Z"));
-                                    LabelNode ifeq = new LabelNode();
-                                    insnList.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
                                     insnList.add(new VarInsnNode(Opcodes.FLOAD, f1Index));
                                     insnList.add(new VarInsnNode(Opcodes.FLOAD, fIndex));
                                     insnList.add(new InsnNode(Opcodes.FSUB));
                                     insnList.add(new VarInsnNode(Opcodes.FSTORE, f2Index));
-                                    insnList.add(ifeq);
                                     methodNode.instructions.insertBefore(next, insnList);
                                     transformedDoRender = true;
                                     break;

@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.enhancement.item;
 
-import net.modcore.api.utils.Multithreading;
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.hash.impl.ItemHash;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -34,7 +33,7 @@ public class EnhancedItemRenderer implements Enhancement {
     private final Cache<ItemHash, Integer> itemCache = Caffeine.newBuilder()
         .maximumSize(5000)
         .writer(new RemovalListener())
-        .executor(Multithreading.getPool())
+        .executor(POOL)
         .build();
 
     @Override

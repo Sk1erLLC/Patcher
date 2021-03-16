@@ -340,7 +340,6 @@ public class PatcherCommand extends Command {
     private void toggleOptions(boolean status) {
         PatcherConfig.cullParticles = status;
         PatcherConfig.entityCulling = status;
-        PatcherConfig.itemSearching = status;
         PatcherConfig.fullbright = status;
         PatcherConfig.disableConstantFogColorChecking = status;
         PatcherConfig.lowAnimationTick = status;
@@ -349,7 +348,6 @@ public class PatcherCommand extends Command {
         PatcherConfig.cacheFontData = status;
         PatcherConfig.removeCloudTransparency = status;
         PatcherConfig.gpuCloudRenderer = status;
-        PatcherConfig.glErrorChecking = status;
         PatcherConfig.optimizedItemRenderer = status;
         PatcherConfig.limitChunks = status;
         PatcherConfig.optimizedResourcePackDiscovery = status;

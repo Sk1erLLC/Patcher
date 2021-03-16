@@ -23,6 +23,10 @@ import net.minecraft.client.renderer.GLAllocation;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class EnhancedFontRenderer implements Enhancement {
 
@@ -32,7 +36,7 @@ public final class EnhancedFontRenderer implements Enhancement {
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
     private final Cache<StringHash, CachedString> stringCache = Caffeine.newBuilder()
         .writer(new RemovalListener())
-        .executor(Multithreading.getPool())
+        .executor(POOL)
         .maximumSize(5000).build();
 
     public EnhancedFontRenderer() {

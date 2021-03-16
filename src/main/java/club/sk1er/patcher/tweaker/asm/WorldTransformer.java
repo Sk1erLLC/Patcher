@@ -51,7 +51,6 @@ public class WorldTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            // take out of switch as it's looking for equals, not contains
             if (brightness.contains(methodName)) {
                 methodNode.instructions.insert(setLightLevel());
             }
@@ -59,6 +58,7 @@ public class WorldTransformer implements PatcherTransformer {
             switch (methodName) {
                 case "getHorizon":
                 case "func_72919_O":
+                    clearInstructions(methodNode);
                     methodNode.instructions.insert(setSkyHeight());
                     break;
 
@@ -229,12 +229,8 @@ public class WorldTransformer implements PatcherTransformer {
 
     private InsnList setSkyHeight() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "skyHeight", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.DCONST_0));
         list.add(new InsnNode(Opcodes.DRETURN));
-        list.add(ifeq);
         return list;
     }
 }

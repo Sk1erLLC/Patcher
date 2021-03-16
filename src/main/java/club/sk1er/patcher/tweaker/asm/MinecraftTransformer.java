@@ -83,11 +83,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                     methodNode.instructions.insert(changeActiveFramerate());
                     break;
 
-                case "checkGLError":
-                case "func_71361_d":
-                    methodNode.instructions.insert(cancelGlCheck());
-                    break;
-
                 case "toggleFullscreen":
                 case "func_71352_k": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -137,17 +132,17 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                 case "displayGuiScreen":
                 case "func_147108_a": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
-                        AbstractInsnNode node = iterator.next();
-
-                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(node);
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                            final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("clearChatMessages") || methodInsnName.equals("func_146231_a")) {
-                                LabelNode ifne = new LabelNode();
-                                methodNode.instructions.insertBefore(node.getPrevious().getPrevious().getPrevious().getPrevious(), addConfigOption(ifne));
-                                methodNode.instructions.insertBefore(node.getNext(), ifne);
+                                for (int i = 0; i < 3; i++) {
+                                    methodNode.instructions.remove(next.getPrevious());
+                                }
+
+                                methodNode.instructions.remove(next);
                                 break;
                             }
                         }
@@ -369,31 +364,14 @@ public class MinecraftTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList cancelGlCheck() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "glErrorChecking", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
-    }
-
     private InsnList toggleGLErrorChecking() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "glErrorChecking", "Z"));
+        list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD,
             "net/minecraft/client/Minecraft",
             "field_175619_R", // enableGLErrorChecking
             "Z"));
-        return list;
-    }
-
-    private InsnList addConfigOption(LabelNode ifne) {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "crossChat", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         return list;
     }
 

@@ -55,18 +55,17 @@ public class EntityItemTransformer implements PatcherTransformer {
     }
 
     private InsnList stopSearch(boolean voidReturnType) {
+        int varIndex = voidReturnType ? 1 : 2;
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "itemSearching", "Z"));
-        LabelNode label = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "func_92059_d", "()Lnet/minecraft/item/ItemStack;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, voidReturnType ? 1 : 2));
-        list.add(new VarInsnNode(Opcodes.ALOAD, voidReturnType ? 1 : 2));
+        list.add(new VarInsnNode(Opcodes.ASTORE, varIndex));
+        list.add(new VarInsnNode(Opcodes.ALOAD, varIndex));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "field_77994_a", "I"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, voidReturnType ? 1 : 2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, varIndex));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/item/ItemStack", "func_77976_d", "()I", false));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label));
+        LabelNode ificmplt = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, ificmplt));
 
         if (voidReturnType) {
             list.add(new InsnNode(Opcodes.RETURN));
@@ -75,7 +74,7 @@ public class EntityItemTransformer implements PatcherTransformer {
             list.add(new InsnNode(Opcodes.IRETURN));
         }
 
-        list.add(label);
+        list.add(ificmplt);
         return list;
     }
 }

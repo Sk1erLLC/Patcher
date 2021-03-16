@@ -34,9 +34,9 @@ import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
-import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
@@ -67,11 +67,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.modcore.api.ModCoreAPI;
 import net.modcore.api.commands.Command;
+import net.modcore.api.commands.CommandRegistry;
 import net.modcore.api.gui.Notifications;
 import net.modcore.api.utils.Multithreading;
 import net.modcore.api.utils.WebUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.BufferedReader;
@@ -335,8 +337,9 @@ public class Patcher {
     }
 
     private void registerCommands(Command... commands) {
+        final CommandRegistry commandRegistry = KoinJavaComponent.get(CommandRegistry.class);
         for (final Command command : commands) {
-            ModCoreAPI.getCommandRegistry().registerCommand(command);
+            commandRegistry.registerCommand(command);
         }
     }
 

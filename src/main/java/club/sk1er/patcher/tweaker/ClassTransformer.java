@@ -156,7 +156,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelRendererTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new BlockPosTransformer());
-        registerTransformer(new WorldServerTransformer());
         registerTransformer(new BlockPistonBaseTransformer());
         registerTransformer(new BlockPistonStructureHelperTransformer());
         registerTransformer(new GuiMultiplayerTransformer());
