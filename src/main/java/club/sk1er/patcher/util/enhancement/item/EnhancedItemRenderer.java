@@ -18,6 +18,7 @@ import com.github.benmanes.caffeine.cache.CacheWriter;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import net.minecraft.client.renderer.GLAllocation;
+import net.modcore.api.utils.Multithreading;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,7 +34,7 @@ public class EnhancedItemRenderer implements Enhancement {
     private final Cache<ItemHash, Integer> itemCache = Caffeine.newBuilder()
         .maximumSize(5000)
         .writer(new RemovalListener())
-        .executor(POOL)
+        .executor(Multithreading.getPool())
         .build();
 
     @Override

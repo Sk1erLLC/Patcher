@@ -75,20 +75,16 @@ public class EntityLivingBaseTransformer implements PatcherTransformer {
 
     private InsnList returnSpecial() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "mouseDelayFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/client/entity/EntityPlayerSP"));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.FLOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/entity/Entity", "func_70676_i", // getLook
             "(F)Lnet/minecraft/util/Vec3;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         list.add(ifeq);
-        list.add(labelNode);
         return list;
     }
 }

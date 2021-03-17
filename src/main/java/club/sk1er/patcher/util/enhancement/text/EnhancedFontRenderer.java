@@ -36,7 +36,7 @@ public final class EnhancedFontRenderer implements Enhancement {
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
     private final Cache<StringHash, CachedString> stringCache = Caffeine.newBuilder()
         .writer(new RemovalListener())
-        .executor(POOL)
+        .executor(Multithreading.getPool())
         .maximumSize(5000).build();
 
     public EnhancedFontRenderer() {

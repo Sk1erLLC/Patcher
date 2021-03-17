@@ -70,7 +70,9 @@ dependencies {
     }
 
     embed("net.modcore:Loader:2.0.0")
-    implementation "net.modcore:ModCore:797-${mcVersion}-SNAPSHOT"
+    implementation("net.modcore:ModCore:799-${mcVersion}-SNAPSHOT") {
+        exclude module: 'WaifUPnP'
+    }
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

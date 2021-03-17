@@ -67,13 +67,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.modcore.api.ModCoreAPI;
 import net.modcore.api.commands.Command;
-import net.modcore.api.commands.CommandRegistry;
 import net.modcore.api.gui.Notifications;
 import net.modcore.api.utils.Multithreading;
 import net.modcore.api.utils.WebUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.koin.java.KoinJavaComponent;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.io.BufferedReader;
@@ -337,9 +335,8 @@ public class Patcher {
     }
 
     private void registerCommands(Command... commands) {
-        final CommandRegistry commandRegistry = KoinJavaComponent.get(CommandRegistry.class);
         for (final Command command : commands) {
-            commandRegistry.registerCommand(command);
+            ModCoreAPI.getCommandRegistry().registerCommand(command);
         }
     }
 

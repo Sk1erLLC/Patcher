@@ -108,7 +108,7 @@ public class ChatHandler {
 
         if (!refresh) {
             final String message = cleanColor(chatComponent.getFormattedText()).trim();
-            if (message.isEmpty() && PatcherConfig.antiClearChat) {
+            if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
                 return false;
             }
 

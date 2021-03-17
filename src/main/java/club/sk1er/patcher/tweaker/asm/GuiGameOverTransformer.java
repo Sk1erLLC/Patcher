@@ -42,8 +42,7 @@ public class GuiGameOverTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
                 methodNode.instructions.insert(resetTimer());
                 break;
@@ -53,14 +52,9 @@ public class GuiGameOverTransformer implements PatcherTransformer {
 
     private InsnList resetTimer() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "resetDeathTimers", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/GuiGameOver", "field_146347_a", // enableButtonsTimer
-            "I"));
-        list.add(ifeq);
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/GuiGameOver", "field_146347_a", "I"));
         return list;
     }
 }

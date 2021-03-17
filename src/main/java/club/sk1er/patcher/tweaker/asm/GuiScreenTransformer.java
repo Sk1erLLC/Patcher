@@ -173,7 +173,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
             "Lnet/minecraft/client/multiplayer/WorldClient;"));
         LabelNode ifnull = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "disableTransparentBackgrounds", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeContainerBackground", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));

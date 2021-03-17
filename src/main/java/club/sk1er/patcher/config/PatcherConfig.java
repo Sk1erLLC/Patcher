@@ -28,46 +28,11 @@ public class PatcherConfig extends Vigilant {
     // BUG FIXES
 
     @Property(
-        type = PropertyType.SWITCH, name = "Fullscreen Fix",
-        description = "Fixes an issue where you could not maximize the game once toggling fullscreen.",
-        category = "Bug Fixes", subcategory = "General"
-    )
-    public static boolean fullscreenFix = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Reset Death Timers",
-        description = "Fixes an issue where changing the fullscreen state while on the Game Over screen would lock the buttons.",
-        category = "Bug Fixes", subcategory = "General"
-    )
-    public static boolean resetDeathTimers = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Command Handling",
-        description = "Fixes commands activating even without a slash at the start of the message.",
-        category = "Bug Fixes", subcategory = "Chat"
-    )
-    public static boolean forgeCommandHandling = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Case Insensitive Commands",
         description = "Fixes commands not being usable when not using proper casing.",
         category = "Bug Fixes", subcategory = "Chat"
     )
     public static boolean caseInsensitiveCommands = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Mouse Delay",
-        description = "Fixes an issue where your crosshair is a tick behind your head position.",
-        category = "Bug Fixes", subcategory = "Movement"
-    )
-    public static boolean mouseDelayFix = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Arm Rotation",
-        description = "Fixes an issue where your arm rotation would be angled upwards when mounting an entity.",
-        category = "Bug Fixes", subcategory = "Movement"
-    )
-    public static boolean armPosition = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
@@ -626,14 +591,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",
-        description = "Stop entities that aren't visible to the player from rendering.",
+        description = "Check to see if an entity is visible to the player before attempting to render them.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean entityCulling = true;
 
     @Property(
         type = PropertyType.SELECTOR, name = "Entity Culling Interval",
-        description = "The amount of time in ms between occlusion checks for entities.\nShorter periods are more costly toward performance but provide the most accurate information.\nLower values recommended in competitive environments.",
+        description = "The amount of time in ms between performing visibility checks for entities.\nShorter periods are more costly toward performance but provide the most accurate information.\nLower values recommended in competitive environments.",
         category = "Performance", subcategory = "Culling",
         options = {"50", "25", "10"}
     )
@@ -641,51 +606,51 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Smart Entity Culling",
-        description = "Stop the entity culling effect when using OptiFine shaders.\n§cDue to the way OptiFine shaders work, we are unable to make Entity Culling compatible.",
+        description = "Disable Entity Culling effect when using OptiFine shaders.\n§cDue to the way OptiFine shaders work, we are unable to make Entity Culling compatible.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean smartEntityCulling = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Player Nametags",
-        description = "Render nametags even when the player and nametag are occluded.",
+        description = "Continue to render Player Nametags when the entity is being occluded.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullNametags;
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Entity Nametags",
-        description = "Render nametags even when the entity and nametag are occluded.",
+        description = "Continue to render Entity Nametags when the entity is being occluded.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullEntityNametags;
 
     @Property(
         type = PropertyType.SWITCH, name = "Don't Cull Armorstand Nametags",
-        description = "Render nametags even when the armorstand is occluded.",
+        description = "Continue to render Armorstand Nametags when the entity is being occluded.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean dontCullArmorStandNametags;
 
     @Property(
         type = PropertyType.SWITCH, name = "Check Armorstand Rules",
-        description = "Don't cull armorstands that have a marker set in their entity rules." +
-            "\nThis will result in a lot of unculled armorstands in places like Hypixel Skyblock, " +
-            "but will provide better entity visibility, while losing out on some performance improvements.",
+        description = "Don't cull armorstands that have a specific rule assigned to them." +
+            "\nThis will result in a lot of non-occluded armorstands in places like Hypixel Skyblock, " +
+            "but will resolve special entities being occluded when they typically shouldn't be.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean checkArmorstandRules;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Enchantment Glint",
-        description = "Disable the enchantment glint on enchanted items/potions.",
+        description = "Disable the enchantment glint.",
         category = "Performance", subcategory = "General"
     )
     public static boolean disableEnchantmentGlint;
 
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
-        description = "Use modern rendering techniques to improve cloud rendering performance.",
+        description = "Improve cloud rendering performance by better utilizing the GPU.",
         category = "Performance", subcategory = "World"
     )
     public static boolean gpuCloudRenderer = true;
@@ -706,7 +671,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Particle Culling",
-        description = "Stop particles that aren't visible to the player from rendering.",
+        description = "Check to see if particles are visible to the player before attempting to render them.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean cullParticles = true;
@@ -767,7 +732,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Optimized Resource Pack Discovery",
-        description = "Optimize the time it takes to open the resource packs GUI.\n§cDoes not work with Labymod's RP24 addon.",
+        description = "Make Resource Pack discovery use a faster data structure, making opening the Resource Packs screen instantaneous.\n§cDoes not work with Labymod's RP24 addon.",
         category = "Performance", subcategory = "General"
     )
     public static boolean optimizedResourcePackDiscovery = true;
@@ -776,14 +741,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Updated Metrics Renderer",
-        description = "Override the metrics renderer when using ALT+F3 to match newer versions.",
+        description = "Override the metrics renderer in ALT+F3 to match newer versions.",
         category = "Screens", subcategory = "General"
     )
     public static boolean updatedMetricsRenderer = true;
 
     @Property(
         type = PropertyType.SELECTOR, name = "Name History Style",
-        description = "Change how the Name History will appear.",
+        description = "Choose how Name History should appear.",
         category = "Screens", subcategory = "General",
         options = {"Open in a GUI", "Send in chat", "Popup in the top-right"}
     )
@@ -797,11 +762,11 @@ public class PatcherConfig extends Vigilant {
     public static boolean inventoryPosition = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Container Backgrounds",
+        type = PropertyType.SWITCH, name = "Remove Container Background",
         description = "Remove the dark background inside of a container.",
         category = "Screens", subcategory = "General"
     )
-    public static boolean disableTransparentBackgrounds = false;
+    public static boolean removeContainerBackground = false;
 
     @Property(
         type = PropertyType.SWITCH, name = "Custom Tab Opacity",
@@ -812,7 +777,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Tab Opacity",
-        description = "Change the tab list opacity.\n§eRequires Custom Tab Opacity",
+        description = "Change the tab list opacity.\n§eRequires Custom Tab Opacity.",
         category = "Screens", subcategory = "Tab"
     )
     public static float tabOpacity = 1.0F;
@@ -849,14 +814,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Tab Height",
-        description = "Move the tab overlay down n amount of pixels when there's an active bossbar.",
+        description = "Move the tab overlay down the selected amount of pixels when there's an active bossbar.",
         category = "Screens", subcategory = "Tab"
     )
     public static boolean tabHeightAllow = true;
 
     @Property(
         type = PropertyType.SLIDER, name = "Set Tab Height",
-        description = "Choose how many pixels down the tab will go when there's an active bossbar.\n§eRequires Tab Height.",
+        description = "Choose how many pixels tab will move down when there's an active bossbar.\n§eRequires Tab Height.",
         category = "Screens", subcategory = "Tab",
         max = 24
     )
@@ -871,7 +836,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Consecutive Compact Chat",
-        description = "Only compact messages if they're consecutive.",
+        description = "Only compact messages if they're consecutive.\n§eRequires Compact Chat.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean consecutiveCompactChat;
@@ -885,15 +850,15 @@ public class PatcherConfig extends Vigilant {
     public static int compactChatTime = 60;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Anti Clear Chat",
-        description = "Remove blank messages from chat.",
+        type = PropertyType.SWITCH, name = "Remove Blank Messages",
+        description = "Stop messages with no content from showing up in chat.",
         category = "Screens", subcategory = "Chat"
     )
-    public static boolean antiClearChat;
+    public static boolean removeBlankMessages;
 
     @Property(
         type = PropertyType.SWITCH, name = "Shift Chat",
-        description = "Holding shift while pressing enter will keep chat open.",
+        description = "Keep chat open while sending a message if Shift is held while pressing Enter.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean shiftChat;
@@ -908,7 +873,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Startup Notification",
-        description = "Notify how long the game took to startup with a notification.",
+        description = "Notify how long the game took to start.",
         category = "Screens", subcategory = "General"
     )
     public static boolean startupNotification = true;
@@ -922,7 +887,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Item Count Glance",
-        description = "View the amount of the currently held item above your hotbar.",
+        description = "View the total amount of the currently held item above your hotbar.",
         category = "Screens", subcategory = "Combat Utilities"
     )
     public static boolean itemCountGlance = true;
@@ -980,7 +945,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean Main Menu",
-        description = "Remove the Realms button on the main menu as you need to be on the latest Minecraft version to use Realms.",
+        description = "Remove the Realms button on the main menu as it's useless on 1.8.9.",
         category = "Screens", subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
@@ -1003,7 +968,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",
         description = "Preview image links when hovering over a supported URL.\nPress Shift to use fullscreen and Control to render in native image resolution.\n" +
-            "§eCurrently supported: Imgur, Discord, Badlion Screenshots.",
+            "§eCurrently supported: Imgur, Discord, Reddit, Twitter, Badlion Screenshots.",
         category = "Screens", subcategory = "Image Preview"
     )
     public static boolean imagePreview = true;
@@ -1061,7 +1026,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Screenshot Preview",
-        description = "Preview the look of your screenshot when taken in the bottom right corner.",
+        description = "Preview your screenshot when taken in the bottom right corner.",
         category = "Screenshots", subcategory = "General"
     )
     public static boolean screenshotPreview;
