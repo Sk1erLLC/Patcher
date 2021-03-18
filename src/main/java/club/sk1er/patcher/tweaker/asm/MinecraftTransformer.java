@@ -83,6 +83,11 @@ public class MinecraftTransformer implements PatcherTransformer {
                     methodNode.instructions.insert(changeActiveFramerate());
                     break;
 
+                case "func_147107_h":
+                case "isFramerateLimitBelowMax":
+                    methodNode.instructions.insert(useCustomFrameLimit());
+                    break;
+
                 case "toggleFullscreen":
                 case "func_71352_k": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -301,6 +306,17 @@ public class MinecraftTransformer implements PatcherTransformer {
         }
     }
 
+    private InsnList useCustomFrameLimit() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "customFpsLimit", "I"));
+        LabelNode ifle = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ifle);
+        return list;
+    }
+
     private InsnList pushMetricsSample() {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
@@ -346,6 +362,12 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "unfocusedFPSAmount", "I"));
         list.add(new InsnNode(Opcodes.IRETURN));
         list.add(label);
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "customFpsLimit", "I"));
+        LabelNode ifle = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "customFpsLimit", "I"));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ifle);
         return list;
     }
 

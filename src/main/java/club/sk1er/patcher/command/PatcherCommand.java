@@ -15,7 +15,6 @@ import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.ScreenHistory;
-import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.benchmark.impl.ItemBenchmark;
@@ -70,20 +69,20 @@ public class PatcherCommand extends Command {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
     }
 
-    @SubCommand("resetcache")
+    @SubCommand(value = "resetcache", description = "Clears Font & Item cache. Typically should not be used.")
     public void resetCache() {
         EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
         EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
         ChatUtilities.sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
     }
 
-    @SubCommand("debugfps")
+    @SubCommand(value = "debugfps", description = "Made for debugging purposes. Typically should not be used.")
     public void debugFPS() {
         Patcher.instance.getDebugPerformanceRenderer().toggleFPS();
         ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
     }
 
-    @SubCommand(value = "name", aliases = {"names", "namehistory"})
+    @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
     public void names(@Nullable @DisplayName("name") String name) {
         final boolean invalidName = name == null || name.isEmpty();
 
@@ -127,7 +126,7 @@ public class PatcherCommand extends Command {
         }
     }
 
-    @SubCommand("blacklist")
+    @SubCommand(value = "blacklist", description = "Tell the client that you don't want to use the 1.11+ chat length on the specified server IP.")
     public void blacklist(@Greedy @DisplayName("ip") String ip) {
         final String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
         ChatUtilities.sendNotification(
@@ -137,7 +136,7 @@ public class PatcherCommand extends Command {
         Patcher.instance.saveBlacklistedServers();
     }
 
-    @SubCommand("benchmark")
+    @SubCommand(value = "benchmark", description = "Made for debugging purposes. This should typically not be used.")
     public void benchmark(@Options({"all", "text", "item"}) String type, @Nullable @Greedy @DisplayName("extra") String extra) {
         if (type.equals("all")) {
             long totalMillis = 0;
@@ -165,10 +164,11 @@ public class PatcherCommand extends Command {
             return;
         }
 
+        //noinspection ConstantConditions
         runBenchmark(type, extra.split(" "), benchmark);
     }
 
-    @SubCommand("mode")
+    @SubCommand(value = "mode", description = "Made for debugging purposes. This should typically not be used.")
     public void mode(@Options({"vanilla", "optimized"}) String mode) {
         if (mode.equals("vanilla")) {
             toggleOptions(false);
@@ -181,8 +181,8 @@ public class PatcherCommand extends Command {
         }
     }
 
-    @SubCommand("fov")
-    public void fov(@DisplayName("amount") double amount) {
+    @SubCommand(value = "fov", description = "Change your FOV to a custom value.")
+    public void fov(@DisplayName("amount") float amount) {
         if (amount <= 0) {
             ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
             return;
@@ -195,18 +195,18 @@ public class PatcherCommand extends Command {
             "FOV Changer",
             "FOV changed from &e" + mc.gameSettings.fovSetting + "&r to &a" + amount + "."
         );
-        mc.gameSettings.fovSetting = (float) amount;
+        mc.gameSettings.fovSetting = amount;
         mc.gameSettings.saveOptions();
     }
 
     // todo: redo this and make it actually functional
     // currently skins reset once joining a new world
-    @SubCommand(value = "refresh", aliases = "refreshskin")
+    @SubCommand(value = "refresh", aliases = "refreshskin", description = "Automatically refresh your skin without needing to relog.")
     public void refresh() {
         refreshSkin();
     }
 
-    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"})
+    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independant of your GUI scale.")
     public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
             ChatUtilities.sendMessage("             &eInventory Scale", false);
@@ -257,15 +257,27 @@ public class PatcherCommand extends Command {
         Patcher.instance.forceSaveConfig();
     }
 
-    @SubCommand("sendcoords")
+    @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat.")
     public void sendCoords() {
         final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ);
     }
 
-    @SubCommand("sounds")
+    @SubCommand(value = "sounds", description = "Open the Sound Configuration GUI.")
     public void sounds() {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
+    }
+
+    @SubCommand(value = "fps", description = "Choose what to limit the game's framerate to outside of Minecraft's options. 0 will use your normal framerate.")
+    public void fps(@DisplayName("amount") int amount) {
+        if (amount < 0) {
+            ChatUtilities.sendNotification("Custom FPS Limiter", "You cannot set your framerate to a negative number.");
+            return;
+        }
+
+        PatcherConfig.customFpsLimit = amount;
+        Patcher.instance.forceSaveConfig();
+        ChatUtilities.sendNotification("Custom FPS Limiter", "Custom framerate set to " + amount + ".");
     }
 
     /*@SubCommand("dev")

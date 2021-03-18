@@ -1076,8 +1076,15 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Desired Scale Override",
-        category = "hidden", hidden = true)
+        category = "hidden", hidden = true
+    )
     public static int desiredScaleOverride = -1;
+
+    @Property(
+        type = PropertyType.NUMBER, name = "Custom FPS Limit",
+        category = "hidden", hidden = true
+    )
+    public static int customFpsLimit = 0;
 
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));

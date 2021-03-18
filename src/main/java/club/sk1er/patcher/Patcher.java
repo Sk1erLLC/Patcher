@@ -231,24 +231,24 @@ public class Patcher {
                 try {
                     duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
-                    logger.error("Failed to fetch list of duplicate mods.", e);
+                    logger.error("Failed to fetch list of replaced mods.", e);
                     return;
                 }
 
-                final Set<String> duplicates = new HashSet<>();
+                final Set<String> replacements = new HashSet<>();
                 for (ModContainer modContainer : activeModList) {
                     for (String modid : keySet(duplicateModsJson)) {
-                        if (modContainer.getModId().contains(modid) && !duplicates.contains(modid)) {
-                            duplicates.add(modContainer.getName());
+                        if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
+                            replacements.add(modContainer.getName());
                         }
                     }
                 }
 
-                if (!duplicates.isEmpty()) {
-                    for (String duplicate : duplicates) {
+                if (!replacements.isEmpty()) {
+                    for (String replacement : replacements) {
                         notifications.push(
                             "Patcher",
-                            "Patcher has identified the mod " + duplicate + " to be a duplicate." +
+                            "The mod " + replacement + " can be removed as it is replaced by Patcher." +
                                 "\nThis message can be disabled in the Patcher settings."
                         );
                     }
