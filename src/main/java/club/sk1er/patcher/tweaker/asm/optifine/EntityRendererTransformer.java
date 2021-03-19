@@ -228,18 +228,19 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
                             }
                         } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
-                            if (mapFieldNameFromNode(next).equals("TRANSLUCENT")) {
+                            final String fieldInsnName = mapFieldNameFromNode(next);
+                            if (fieldInsnName.equals("TRANSLUCENT")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), enablePolygonOffset());
-                            }
 
-                            AbstractInsnNode nextInsn = next;
-                            for (int i = 0; i < 7; i++) {
-                                nextInsn = nextInsn.getNext();
-                            }
+                                AbstractInsnNode nextInsn = next;
+                                for (int i = 0; i < 7; i++) {
+                                    nextInsn = nextInsn.getNext();
+                                }
 
-                            methodNode.instructions.insertBefore(nextInsn.getNext(), new MethodInsnNode(
-                                Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "disablePolygonOffset" : "func_179113_r", "()V", false
-                            ));
+                                methodNode.instructions.insertBefore(nextInsn.getNext(), new MethodInsnNode(
+                                    Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "disablePolygonOffset" : "func_179113_r", "()V", false
+                                ));
+                            }
                         }
 
                         switch (ClassTransformer.optifineVersion) {

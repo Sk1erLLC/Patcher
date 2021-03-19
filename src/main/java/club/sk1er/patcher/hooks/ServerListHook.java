@@ -31,9 +31,8 @@ public class ServerListHook {
             return list.servers.get(index);
         } catch (Exception e) {
             logger.error("Failed to get server data.", e);
+            return null;
         }
-
-        return null;
     }
 
     public static void removeServerData(ServerList list, int index) {

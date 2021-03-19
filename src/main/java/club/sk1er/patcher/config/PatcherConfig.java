@@ -762,6 +762,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean inventoryPosition = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Click Out of Containers",
+        description = "Click outside of a container to close the menu.",
+        category = "Screens", subcategory = "Inventory"
+    )
+    public static boolean clickOutOfContainers;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Container Background",
         description = "Remove the dark background inside of a container.",
         category = "Screens", subcategory = "General"

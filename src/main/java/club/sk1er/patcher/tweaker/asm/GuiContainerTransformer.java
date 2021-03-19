@@ -51,9 +51,23 @@ public class GuiContainerTransformer implements PatcherTransformer {
 
             switch (methodName) {
                 case "mouseClicked":
-                case "func_73864_a":
+                case "func_73864_a": {
+                    final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            final String fieldName = mapFieldNameFromNode(next);
+                            if ((fieldName.equals("touchscreen") || fieldName.equals("field_85185_A")) && next.getNext().getNext().getOpcode() == Opcodes.ILOAD) {
+                                LabelNode ifne = new LabelNode();
+                                method.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), shouldActivateClick(ifne));
+                                method.instructions.insertBefore(next.getNext().getNext(), ifne);
+                            }
+                        }
+                    }
+
                     method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkHotbarKeys());
                     break;
+                }
                 case "updateDragSplitting":
                 case "func_146980_g": {
                     ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
@@ -100,6 +114,13 @@ public class GuiContainerTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList shouldActivateClick(LabelNode ifne) {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "clickOutOfContainers", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
     }
 
     private InsnList checkPatcherKey() {

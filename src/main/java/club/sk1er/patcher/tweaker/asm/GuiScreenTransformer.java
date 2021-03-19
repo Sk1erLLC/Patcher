@@ -53,9 +53,7 @@ public class GuiScreenTransformer implements PatcherTransformer {
 
                 case "func_146280_a":
                 case "setWorldAndResolution":
-                    methodNode.instructions.insert(
-                        redirectWidthAndHeight()
-                    );
+                    methodNode.instructions.insert(redirectWidthAndHeight());
                     break;
 
                 case "handleInput":

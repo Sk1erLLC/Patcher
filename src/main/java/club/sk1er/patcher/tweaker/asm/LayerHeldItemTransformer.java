@@ -45,13 +45,10 @@ public class LayerHeldItemTransformer implements PatcherTransformer {
                         } else if (((LdcInsnNode) next).cst.equals(0.625F)) {
                             ((LdcInsnNode) next).cst = 0.75F;
                         }
-
-                        break;
                     }
                 }
 
                 iterator = method.instructions.iterator();
-
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
                     if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
@@ -66,7 +63,6 @@ public class LayerHeldItemTransformer implements PatcherTransformer {
                             }
 
                             method.instructions.remove(next);
-                            break;
                         }
                     }
                 }
