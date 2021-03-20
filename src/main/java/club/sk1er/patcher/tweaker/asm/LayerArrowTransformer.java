@@ -46,21 +46,16 @@ public class LayerArrowTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            String methodName = mapMethodName(classNode, methodNode);
-
+            final String methodName = mapMethodName(classNode, methodNode);
             if (methodName.equals("doRenderLayer") || methodName.equals("func_177141_a")) {
-                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-
+                    final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC) {
-                        String methodInsnName = mapMethodNameFromNode(next);
+                        final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("disableStandardItemLighting") || methodInsnName.equals("func_74518_a")) {
-                            methodNode.instructions.insertBefore(next, fixArrowLighting(true));
                             methodNode.instructions.remove(next);
                         } else if (methodInsnName.equals("enableStandardItemLighting") || methodInsnName.equals("func_74519_b")) {
-                            methodNode.instructions.insertBefore(next, fixArrowLighting(false));
                             methodNode.instructions.remove(next);
                             break;
                         }
@@ -71,12 +66,6 @@ public class LayerArrowTransformer implements PatcherTransformer {
                 break;
             }
         }
-    }
-
-    private InsnList fixArrowLighting(boolean status) {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/RenderHelper", status ? "func_74518_a" : "func_74519_b", "()V", false));
-        return list;
     }
 
     private InsnList cancelRendering() {
