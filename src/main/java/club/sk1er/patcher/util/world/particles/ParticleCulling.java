@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.world.particles;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.culling.ICamera;
 
@@ -21,8 +20,6 @@ public class ParticleCulling {
     public static ICamera camera;
 
     public static boolean shouldRender(EntityFX entityFX) {
-        if (!PatcherConfig.cullParticles) return true;
-        if (entityFX == null) return false;
-        return camera == null || entityFX.distanceWalkedModified > -1;
+        return entityFX != null && (camera == null || entityFX.distanceWalkedModified > -1);
     }
 }

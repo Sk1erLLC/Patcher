@@ -350,10 +350,8 @@ public class PatcherCommand extends Command {
     }
 
     private void toggleOptions(boolean status) {
-        PatcherConfig.cullParticles = status;
         PatcherConfig.entityCulling = status;
         PatcherConfig.fullbright = status;
-        PatcherConfig.disableConstantFogColorChecking = status;
         PatcherConfig.lowAnimationTick = status;
         PatcherConfig.staticParticleColor = status;
         PatcherConfig.optimizedFontRenderer = status;
@@ -362,7 +360,6 @@ public class PatcherCommand extends Command {
         PatcherConfig.gpuCloudRenderer = status;
         PatcherConfig.optimizedItemRenderer = status;
         PatcherConfig.limitChunks = status;
-        PatcherConfig.optimizedResourcePackDiscovery = status;
         PatcherConfig.playerBackFaceCulling = status;
         PatcherConfig.entityBackFaceCulling = status;
 

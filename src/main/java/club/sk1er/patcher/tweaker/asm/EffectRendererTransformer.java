@@ -169,8 +169,6 @@ public class EffectRendererTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cullParticles", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));

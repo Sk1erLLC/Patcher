@@ -205,15 +205,6 @@ public class Patcher {
                 }
             }
 
-            if (modId.equals("labymod")) {
-                if (PatcherConfig.optimizedResourcePackDiscovery) {
-                    notifications.push(
-                        "Patcher",
-                        "Labymod has been detected. Optimized Resource Pack Discovery is now disabled.");
-                    PatcherConfig.optimizedResourcePackDiscovery = false;
-                }
-            }
-
             if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
                 notifications.push(
                     "Patcher",

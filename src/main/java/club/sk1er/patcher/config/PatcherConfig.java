@@ -471,13 +471,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean downscalePackImages = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Static Fog Color",
-        description = "Reduce the amount of instructions to produce the fog color to improve performance.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean disableConstantFogColorChecking = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Low Animation Tick",
         description = "Lowers the amount of animations that happen a second from 1000 to 500.",
         category = "Performance", subcategory = "World"
@@ -670,13 +663,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean optimizedItemRenderer = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Particle Culling",
-        description = "Check to see if particles are visible to the player before attempting to render them.",
-        category = "Performance", subcategory = "Culling"
-    )
-    public static boolean cullParticles = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
         description = "Stop rendering sides of entities that you cannot see.\nBeing inside an entity will cause that body part to be invisible.",
         category = "Performance", subcategory = "Culling"
@@ -729,13 +715,6 @@ public class PatcherConfig extends Vigilant {
         min = 1, max = 64
     )
     public static int hostileEntityRenderDistance = 64;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Optimized Resource Pack Discovery",
-        description = "Make Resource Pack discovery use a faster data structure, making opening the Resource Packs screen instantaneous.\n§cDoes not work with Labymod's RP24 addon.",
-        category = "Performance", subcategory = "General"
-    )
-    public static boolean optimizedResourcePackDiscovery = true;
 
     // SCREENS
 
