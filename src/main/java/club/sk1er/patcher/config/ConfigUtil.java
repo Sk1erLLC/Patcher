@@ -43,6 +43,11 @@ public class ConfigUtil {
         return new Property() {
 
             @Override
+            public int increment() {
+                return 0;
+            }
+
+            @Override
             public float minF() {
                 return 0;
             }

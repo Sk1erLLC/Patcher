@@ -12,13 +12,16 @@
 package club.sk1er.patcher.config;
 
 import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
 import net.modcore.api.utils.GuiUtil;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -26,13 +29,6 @@ import java.util.function.Consumer;
 public class PatcherConfig extends Vigilant {
 
     // BUG FIXES
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Case Insensitive Commands",
-        description = "Fixes commands not being usable when not using proper casing.",
-        category = "Bug Fixes", subcategory = "Chat"
-    )
-    public static boolean caseInsensitiveCommands = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
@@ -95,7 +91,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Smart Fullbright",
-        description = "Automatically disable the Fullbright effect when using OptiFine shaders.\n§eRequires Fullbright.",
+        description = "Automatically disable the Fullbright effect when using OptiFine shaders.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean smartFullbright = true;
@@ -205,7 +201,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Unfocused FPS Amount",
-        description = "Change the maximum FPS when you're not tabbed into the window, saving resources.\n§eRequires Unfocused FPS.",
+        description = "Change the maximum FPS when you're not tabbed into the window, saving resources.",
         category = "Miscellaneous", subcategory = "General",
         min = 1, max = 240
     )
@@ -319,14 +315,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Windowed Fullscreen",
-        description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window",
+        description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window.",
         category = "Miscellaneous", subcategory = "Window"
     )
     public static boolean windowedFullscreen;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Instant Fullscreen (Windows Only)",
-        description = "Instant switching between full screen and non fullscreen modes.\n§eRequires Windowed Fullscreen.",
+        type = PropertyType.SWITCH, name = "Instant Fullscreen",
+        description = "Instant switching between full screen and non fullscreen modes.",
         category = "Miscellaneous", subcategory = "Window"
     )
     public static boolean instantFullscreen;
@@ -763,7 +759,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Tab Opacity",
-        description = "Change the tab list opacity.\n§eRequires Custom Tab Opacity.",
+        description = "Change the tab list opacity.",
         category = "Screens", subcategory = "Tab"
     )
     public static float tabOpacity = 1.0F;
@@ -807,7 +803,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Set Tab Height",
-        description = "Choose how many pixels tab will move down when there's an active bossbar.\n§eRequires Tab Height.",
+        description = "Choose how many pixels tab will move down when there's an active bossbar.",
         category = "Screens", subcategory = "Tab",
         max = 24
     )
@@ -822,7 +818,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Consecutive Compact Chat",
-        description = "Only compact messages if they're consecutive.\n§eRequires Compact Chat.",
+        description = "Only compact messages if they're consecutive.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean consecutiveCompactChat;
@@ -1080,5 +1076,68 @@ public class PatcherConfig extends Vigilant {
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
         registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().scheduleResourcesRefresh());
+
+        try {
+            final Class<PatcherConfig> patcherConfigClass = PatcherConfig.class;
+            addDependency(patcherConfigClass.getField("smartFullbright"), patcherConfigClass.getField("fullbright"));
+            addDependency(patcherConfigClass.getField("unfocusedFPSAmount"), patcherConfigClass.getField("unfocusedFPS"));
+            addDependency(patcherConfigClass.getField("instantFullscreen"), patcherConfigClass.getField("windowedFullscreen"));
+            addDependency(patcherConfigClass.getField("tabOpacity"), patcherConfigClass.getField("customTabOpacity"));
+            addDependency(patcherConfigClass.getField("tabHeight"), patcherConfigClass.getField("tabHeightAllow"));
+            addDependency(patcherConfigClass.getField("consecutiveCompactChat"), patcherConfigClass.getField("compactChat"));
+            addDependency(patcherConfigClass.getField("compactChatTime"), patcherConfigClass.getField("compactChat"));
+            addDependency(patcherConfigClass.getField("timestampsFormat"), patcherConfigClass.getField("timestamps"));
+            addDependency(patcherConfigClass.getField("timestampsStyle"), patcherConfigClass.getField("timestamps"));
+            addDependency(patcherConfigClass.getField("imagePreviewWidth"), patcherConfigClass.getField("imagePreview"));
+
+            final Field fovModifier = patcherConfigClass.getField("allowFovModifying");
+            addDependency(patcherConfigClass.getField("slownessFovModifierFloat"), fovModifier);
+            addDependency(patcherConfigClass.getField("speedFovModifierFloat"), fovModifier);
+            addDependency(patcherConfigClass.getField("bowFovModifierFloat"), fovModifier);
+            addDependency(patcherConfigClass.getField("sprintingFovModifierFloat"), fovModifier);
+
+            addDependency(patcherConfigClass.getField("logOptimizerLength"), patcherConfigClass.getField("logOptimizer"));
+            addDependency(patcherConfigClass.getField("smoothZoomAlgorithm"), patcherConfigClass.getField("smoothZoomAnimation"));
+
+            final Field entityCulling = patcherConfigClass.getField("entityCulling");
+            addDependency(patcherConfigClass.getField("cullingInterval"), entityCulling);
+            addDependency(patcherConfigClass.getField("smartEntityCulling"), entityCulling);
+            addDependency(patcherConfigClass.getField("dontCullNametags"), entityCulling);
+            addDependency(patcherConfigClass.getField("dontCullEntityNametags"), entityCulling);
+            addDependency(patcherConfigClass.getField("dontCullArmorStandNametags"), entityCulling);
+            addDependency(patcherConfigClass.getField("checkArmorstandRules"), entityCulling);
+
+            final Field entityRenderDistance = patcherConfigClass.getField("entityRenderDistanceToggle");
+            addDependency(patcherConfigClass.getField("entityRenderDistance"), entityRenderDistance);
+            addDependency(patcherConfigClass.getField("playerRenderDistance"), entityRenderDistance);
+            addDependency(patcherConfigClass.getField("passiveEntityRenderDistance"), entityRenderDistance);
+            addDependency(patcherConfigClass.getField("hostileEntityRenderDistance"), entityRenderDistance);
+
+            addDependency(patcherConfigClass.getField("cacheFontData"), patcherConfigClass.getField("optimizedFontRenderer"));
+            addDependency(patcherConfigClass.getField("chunkUpdateLimit"), patcherConfigClass.getField("limitChunks"));
+
+            final Field screenshotManager = patcherConfigClass.getField("screenshotManager");
+            addDependency(patcherConfigClass.getField("screenshotNoFeedback"), screenshotManager);
+            addDependency(patcherConfigClass.getField("compactScreenshotResponse"), screenshotManager);
+            addDependency(patcherConfigClass.getField("autoCopyScreenshot"), screenshotManager);
+            addDependency(patcherConfigClass.getField("screenshotPreview"), screenshotManager);
+            addDependency(patcherConfigClass.getField("previewTime"), screenshotManager);
+            addDependency(patcherConfigClass.getField("previewAnimationStyle"), screenshotManager);
+            addDependency(patcherConfigClass.getField("previewScale"), screenshotManager);
+
+            hidePropertyIf(patcherConfigClass.getField("instantFullscreen"), !SystemUtils.IS_OS_WINDOWS);
+
+            final boolean checkOptifine = ClassTransformer.optifineVersion.equals("NONE");
+            hidePropertyIf(patcherConfigClass.getField("scrollToZoom"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("normalZoomSensitivity"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("customZoomSensitivity"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("smoothZoomAnimation"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("smoothZoomAnimationWhenScrolling"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("smoothZoomAlgorithm"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("toggleToZoom"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("normalFpsCounter"), checkOptifine);
+        } catch (Exception e) {
+            Patcher.instance.getLogger().error("Failed to access field.", e);
+        }
     }
 }
