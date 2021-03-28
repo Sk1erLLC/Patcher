@@ -22,10 +22,9 @@ public class MetricsData {
         }
     }
 
-    // todo: figure out what this is
-    public int scaleSampleTo(long l, int fps, int tps) {
-        final double d = (double) l / (double) (1000000000L / tps);
-        return (int) (d * (double) fps);
+    public int scaleSampleTo(long time, int multiplier, int counter) {
+        final double sample = (double) time / (double) (1000000000L / counter);
+        return (int) (sample * (double) multiplier);
     }
 
     public int wrapIndex(int index) {
