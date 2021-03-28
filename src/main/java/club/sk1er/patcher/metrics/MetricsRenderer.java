@@ -24,7 +24,7 @@ public class MetricsRenderer extends Gui {
 
     @SubscribeEvent
     public void draw(RenderGameOverlayEvent.Post event) {
-        if (PatcherConfig.updatedMetricsRenderer && event.type == RenderGameOverlayEvent.ElementType.DEBUG && mc.gameSettings.showLagometer && mc.gameSettings.showDebugInfo) {
+        if (PatcherConfig.useVanillaMetricsRenderer && event.type == RenderGameOverlayEvent.ElementType.DEBUG && mc.gameSettings.showLagometer && mc.gameSettings.showDebugInfo) {
             final ScaledResolution resolution = new ScaledResolution(mc);
             final int width = resolution.getScaledWidth();
             this.drawMetricsData(resolution, mc.fontRendererObj, MinecraftHook.metricsData, 0, width >> 1, true);

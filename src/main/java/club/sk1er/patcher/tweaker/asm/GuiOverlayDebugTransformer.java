@@ -17,9 +17,12 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
+import java.util.HashSet;
 import java.util.ListIterator;
+import java.util.Set;
 
 public class GuiOverlayDebugTransformer implements PatcherTransformer {
+
     @Override
     public String[] getClassName() {
         return new String[]{"net.minecraft.client.gui.GuiOverlayDebug"};
@@ -27,9 +30,10 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
 
     @Override
     public void transform(ClassNode classNode, String name) {
+        final String optifineVersion = ClassTransformer.optifineVersion;
+        final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5");
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
-
             if (methodName.equals("getDebugInfoRight") || methodName.equals("func_175238_c")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
@@ -51,20 +55,16 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            } else {
-                final String optifineVersion = ClassTransformer.optifineVersion;
-                final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5");
-                if (compatibleVersion && methodName.equals("call")) {
-                    final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("/")) {
-                            AbstractInsnNode prev = next;
-                            for (int i = 0; i < 8; i++) prev = prev.getPrevious();
-                            JumpInsnNode iflt = (JumpInsnNode) prev;
-                            method.instructions.insert(iflt, jumpIfNormalFpsCounter(iflt.label));
-                            break;
-                        }
+            } else if (methodName.equals("call") && compatibleVersion) {
+                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("/")) {
+                        AbstractInsnNode prev = next;
+                        for (int i = 0; i < 8; i++) prev = prev.getPrevious();
+                        JumpInsnNode iflt = (JumpInsnNode) prev;
+                        method.instructions.insert(iflt, jumpIfNormalFpsCounter(iflt.label));
+                        break;
                     }
                 }
             }
@@ -73,7 +73,7 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
 
     private InsnList renderMetricsData() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "updatedMetricsRenderer", "Z"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "useVanillaMetricsRenderer", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));

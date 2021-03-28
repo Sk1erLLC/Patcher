@@ -83,19 +83,19 @@ public class ModClassTransformer implements IClassTransformer {
         // and since we know they're using Forge, we're able to change methods back
         // to how they normally were (using Forge's changes).
         //
-        // Only I7, L5, and L6 are supported due to them being the biggest 1.8.9 versions of OptiFine.
+        // Only I7 and above are supported due to them being the biggest versions of OptiFine.
         final String optifineVersion = ClassTransformer.optifineVersion;
         if (optifineVersion.equals("I7")) {
             logger.info("Found OptiFine I7");
             registerCommonTransformers();
             registerI7Transformers();
-        } else if (optifineVersion.startsWith("L6") || optifineVersion.equals("L5")) {
-            logger.info("Found OptiFine " + optifineVersion);
+        } else if (optifineVersion.startsWith("L5") || optifineVersion.equals("L6")) {
+            logger.info("Found OptiFine {}", optifineVersion);
             registerCommonTransformers();
             registerLSeriesTransformers();
             registerLSeriesFixesTransformers();
-        } else if (optifineVersion.startsWith("M5")) {
-            logger.info("Found OptiFine M5");
+        } else if (optifineVersion.startsWith("M5") || optifineVersion.startsWith("M6")) {
+            logger.info("Found OptiFine {}", optifineVersion);
             registerCommonTransformers();
             registerLSeriesTransformers();
         } else {

@@ -286,6 +286,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean normalFpsCounter = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Use Vanilla Metrics Renderer",
+        description = "Replace OptiFine's ALT+F3 metrics renderer with the Vanilla renderer.",
+        category = "Miscellaneous", subcategory = "OptiFine"
+    )
+    public static boolean useVanillaMetricsRenderer = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Number Ping",
         description = "Show a readable ping number in tab instead of bars.",
         category = "Miscellaneous", subcategory = "Tab"
@@ -715,13 +722,6 @@ public class PatcherConfig extends Vigilant {
     // SCREENS
 
     @Property(
-        type = PropertyType.SWITCH, name = "Updated Metrics Renderer",
-        description = "Override the metrics renderer in ALT+F3 to match newer versions.",
-        category = "Screens", subcategory = "General"
-    )
-    public static boolean updatedMetricsRenderer = true;
-
-    @Property(
         type = PropertyType.SELECTOR, name = "Name History Style",
         description = "Choose how Name History should appear.",
         category = "Screens", subcategory = "General",
@@ -1136,6 +1136,7 @@ public class PatcherConfig extends Vigilant {
             hidePropertyIf(patcherConfigClass.getField("smoothZoomAlgorithm"), checkOptifine);
             hidePropertyIf(patcherConfigClass.getField("toggleToZoom"), checkOptifine);
             hidePropertyIf(patcherConfigClass.getField("normalFpsCounter"), checkOptifine);
+            hidePropertyIf(patcherConfigClass.getField("useVanillaMetricsRenderer"), checkOptifine);
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access field.", e);
         }

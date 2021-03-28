@@ -26,7 +26,6 @@ import club.sk1er.patcher.tweaker.asm.util.ForcePublicTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
@@ -43,13 +42,18 @@ import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ClassTransformer implements IClassTransformer {
@@ -58,9 +62,11 @@ public class ClassTransformer implements IClassTransformer {
     public static String optifineVersion = "NONE";
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
+    public static final Set<String> supportedOptiFineVersions = new HashSet<>();
 
     public ClassTransformer() {
         try {
+            this.fetchSupportedOptiFineVersions();
             ClassNode classNode = new ClassNode();
             ClassReader classReader = new ClassReader("Config");
             classReader.accept(classNode, ClassReader.SKIP_CODE);
@@ -71,15 +77,13 @@ public class ClassTransformer implements IClassTransformer {
                 }
             }
 
-            final Set<String> unsupportedOptiFineVersions = Sets.newHashSet("I3", "H8", "H7", "H6", "H5");
-            if (unsupportedOptiFineVersions.contains(optifineVersion)) {
+            if (!supportedOptiFineVersions.contains(optifineVersion)) {
                 logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
                 this.haltForOptifine("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
                     "Please update to a newer version of OptiFine (i7 and above are supported) before trying to launch.");
                 return;
             }
-        } catch (IOException e) {
-            logger.info("Something went wrong, or the user doesn't have optifine");
+        } catch (IOException ignored) {
         }
 
         registerTransformer(new S2EPacketCloseWindowTransformer());
@@ -343,6 +347,21 @@ public class ClassTransformer implements IClassTransformer {
             exit.invoke(null, 0);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void fetchSupportedOptiFineVersions() {
+        try {
+            URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(optifineVersions.openStream()))) {
+                String version;
+                while ((version = reader.readLine()) != null) {
+                    supportedOptiFineVersions.add(version);
+                }
+            }
+        } catch (Exception e) {
+            this.logger.error("Failed to read supported OptiFine versions, adding defaults.");
+            supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6"));
         }
     }
 

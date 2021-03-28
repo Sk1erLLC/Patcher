@@ -177,75 +177,10 @@ public class Patcher {
 
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
-        final Notifications notifications = ModCoreAPI.getNotifications();
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
-        for (ModContainer container : activeModList) {
-            final String modId = container.getModId();
-            final String modName = container.getName();
-            if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
-                notifications.push(
-                    "Patcher",
-                    modName + " has been detected. Entity Culling is now disabled.");
-                PatcherConfig.entityCulling = false;
-            }
-
-            if ((modId.equals("labymod") || modId.equals("enhancements")) || modId.equals("hychat")) {
-                if (PatcherConfig.compactChat) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Compact Chat is now disabled.");
-                    PatcherConfig.compactChat = false;
-                }
-
-                if (PatcherConfig.chatPosition) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Chat Position is now disabled.");
-                    PatcherConfig.chatPosition = false;
-                }
-            }
-
-            if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
-                notifications.push(
-                    "Patcher",
-                    "Patcher has identified Smooth Font and as such, Patcher's Font Renderer " +
-                        "has been automatically disabled.\nRestart your game for Smooth Font to work again."
-                );
-                PatcherConfig.optimizedFontRenderer = false;
-            }
-
-            this.forceSaveConfig();
-        }
-
-        if (PatcherConfig.replacedModsWarning) {
-            Multithreading.runAsync(() -> {
-                try {
-                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
-                } catch (Exception e) {
-                    logger.error("Failed to fetch list of replaced mods.", e);
-                    return;
-                }
-
-                final Set<String> replacements = new HashSet<>();
-                for (ModContainer modContainer : activeModList) {
-                    for (String modid : keySet(duplicateModsJson)) {
-                        if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
-                            replacements.add(modContainer.getName());
-                        }
-                    }
-                }
-
-                if (!replacements.isEmpty()) {
-                    for (String replacement : replacements) {
-                        notifications.push(
-                            "Patcher",
-                            "The mod " + replacement + " can be removed as it is replaced by Patcher." +
-                                "\nThis message can be disabled in the Patcher settings."
-                        );
-                    }
-                }
-            });
-        }
+        final Notifications notifications = ModCoreAPI.getNotifications();
+        this.detectIncompatibilities(activeModList, notifications);
+        this.detectReplacements(activeModList, notifications);
 
         final long time = (System.currentTimeMillis() - PatcherTweak.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
@@ -396,28 +331,89 @@ public class Patcher {
     }
 
     private void fixSettings() {
-        if (PatcherConfig.customZoomSensitivity > 1.0F) {
-            PatcherConfig.customZoomSensitivity = 1.0F;
-        }
-
-        if (PatcherConfig.tabOpacity > 1.0F) {
-            PatcherConfig.tabOpacity = 1.0F;
-        }
-
-        if (PatcherConfig.imagePreviewWidth > 1.0F) {
-            PatcherConfig.imagePreviewWidth = 0.5F;
-        }
-
-        if (PatcherConfig.previewScale > 1.0F) {
-            PatcherConfig.previewScale = 1.0F;
-        }
-
+        if (PatcherConfig.customZoomSensitivity > 1.0F) PatcherConfig.customZoomSensitivity = 1.0F;
+        if (PatcherConfig.tabOpacity > 1.0F) PatcherConfig.tabOpacity = 1.0F;
+        if (PatcherConfig.imagePreviewWidth > 1.0F) PatcherConfig.imagePreviewWidth = 0.5F;
+        if (PatcherConfig.previewScale > 1.0F) PatcherConfig.previewScale = 1.0F;
         if (PatcherConfig.fireOverlayHeight < -0.5F || PatcherConfig.fireOverlayHeight > 1.5F) {
             PatcherConfig.fireOverlayHeight = 0.0F;
         }
 
         this.forceSaveConfig();
     }
+
+    private void detectIncompatibilities(List<ModContainer> activeModList, Notifications notifications) {
+        for (ModContainer container : activeModList) {
+            final String modId = container.getModId();
+            final String modName = container.getName();
+            if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
+                notifications.push(
+                    "Patcher",
+                    modName + " has been detected. Entity Culling is now disabled.");
+                PatcherConfig.entityCulling = false;
+            }
+
+            if ((modId.equals("labymod") || modId.equals("enhancements")) || modId.equals("hychat")) {
+                if (PatcherConfig.compactChat) {
+                    notifications.push(
+                        "Patcher",
+                        modName + " has been detected. Compact Chat is now disabled.");
+                    PatcherConfig.compactChat = false;
+                }
+
+                if (PatcherConfig.chatPosition) {
+                    notifications.push(
+                        "Patcher",
+                        modName + " has been detected. Chat Position is now disabled.");
+                    PatcherConfig.chatPosition = false;
+                }
+            }
+
+            if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
+                notifications.push(
+                    "Patcher",
+                    "Patcher has identified Smooth Font and as such, Patcher's Font Renderer " +
+                        "has been automatically disabled.\nRestart your game for Smooth Font to work again."
+                );
+                PatcherConfig.optimizedFontRenderer = false;
+            }
+
+            this.forceSaveConfig();
+        }
+    }
+
+    private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
+        if (PatcherConfig.replacedModsWarning) {
+            Multithreading.runAsync(() -> {
+                try {
+                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                } catch (Exception e) {
+                    logger.error("Failed to fetch list of replaced mods.", e);
+                    return;
+                }
+
+                final Set<String> replacements = new HashSet<>();
+                for (ModContainer modContainer : activeModList) {
+                    for (String modid : keySet(duplicateModsJson)) {
+                        if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
+                            replacements.add(modContainer.getName());
+                        }
+                    }
+                }
+
+                if (!replacements.isEmpty()) {
+                    for (String replacement : replacements) {
+                        notifications.push(
+                            "Patcher",
+                            "The mod " + replacement + " can be removed as it is replaced by Patcher." +
+                                "\nThis message can be disabled in the Patcher settings."
+                        );
+                    }
+                }
+            });
+        }
+    }
+
 
     public PatcherConfig getPatcherConfig() {
         return patcherConfig;
