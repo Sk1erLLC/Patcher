@@ -54,6 +54,10 @@ public class EntityRendering {
             event.setCanceled(true);
         }
 
+        if (!(entity instanceof EntityArmorStand && (((EntityArmorStand) entity).hasMarker() || entity.hasCustomName())) && entity.isInvisible()) {
+            event.setCanceled(true);
+        }
+
         final float entityDistance = entity.getDistanceToEntity(mc.thePlayer);
         if (PatcherConfig.entityRenderDistanceToggle && EntityCulling.shouldPerformCulling) {
             if (entityDistance > PatcherConfig.entityRenderDistance) {

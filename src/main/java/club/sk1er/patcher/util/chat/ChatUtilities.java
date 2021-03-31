@@ -44,6 +44,6 @@ public class ChatUtilities {
     }
 
     public static String translate(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.Companion.translateAlternateColorCodes('&', message);
     }
 }

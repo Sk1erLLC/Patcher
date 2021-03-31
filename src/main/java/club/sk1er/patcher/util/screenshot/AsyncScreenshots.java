@@ -44,7 +44,7 @@ import java.util.Date;
 
 public class AsyncScreenshots implements Runnable {
 
-    public static final String prefix = ChatColor.translateAlternateColorCodes('&', "&e[Patcher] &r");
+    public static final String prefix = ChatUtilities.translate("&e[Patcher] &r");
     private static BufferedImage image;
     private static File screenshot;
     private final int width, height;
@@ -140,7 +140,7 @@ public class AsyncScreenshots implements Runnable {
         favoriteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$favorite"));
         favoriteComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-                this.colorMessage("&7This will save the screenshot to a new folder called\n" +
+                ChatUtilities.translate("&7This will save the screenshot to a new folder called\n" +
                     "&afavorite_screenshots &7in your Minecraft directory.\n" +
                     "&cThis cannot be done once a new screenshot is taken."))));
 
@@ -149,7 +149,7 @@ public class AsyncScreenshots implements Runnable {
         deleteComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$delete"));
         deleteComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-                this.colorMessage("&7This will delete the screenshot from your screenshots folder.\n" +
+                ChatUtilities.translate("&7This will delete the screenshot from your screenshots folder.\n" +
                     "&cThis is not recoverable and cannot be deleted once a\n" +
                     "&cnew screenshot is taken or made favorite."))));
 
@@ -158,7 +158,7 @@ public class AsyncScreenshots implements Runnable {
         imgurComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$upload"));
         imgurComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-                this.colorMessage("&7Upload the screenshot to Imgur, an image hosting website.\n" +
+                ChatUtilities.translate("&7Upload the screenshot to Imgur, an image hosting website.\n" +
                     "&cThis cannot be uploaded once a new screenshot\n" +
                     "&cis taken, made favorite, or deleted."))));
 
@@ -167,7 +167,7 @@ public class AsyncScreenshots implements Runnable {
         copyComponent.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$copyss"));
         copyComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-                this.colorMessage("&7Copy this image to your system clipboard.\n" +
+                ChatUtilities.translate("&7Copy this image to your system clipboard.\n" +
                     "&cThis cannot be copied once a new screenshot\n" +
                     "&cis taken, made favorite, or deleted."))));
 
@@ -177,7 +177,7 @@ public class AsyncScreenshots implements Runnable {
             .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, screenshotDirectory.getCanonicalPath()));
         folderComponent.getChatStyle()
             .setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(
-                this.colorMessage("&7Open your screenshots folder."))));
+                ChatUtilities.translate("&7Open your screenshots folder."))));
 
         final IChatComponent controlsMessage = new ChatComponentText("");
         controlsMessage
@@ -205,10 +205,6 @@ public class AsyncScreenshots implements Runnable {
             );
             System.arraycopy(xValues, 0, pixels, (displayHeight - 1 - val) * displayWidth, displayWidth);
         }
-    }
-
-    private String colorMessage(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public static class ScreenshotsFolder extends Command {
