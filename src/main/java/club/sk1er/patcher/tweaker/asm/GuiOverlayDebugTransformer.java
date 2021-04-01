@@ -31,7 +31,7 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         final String optifineVersion = ClassTransformer.optifineVersion;
-        final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5");
+        final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5") || optifineVersion.startsWith("M6");
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("getDebugInfoRight") || methodName.equals("func_175238_c")) {

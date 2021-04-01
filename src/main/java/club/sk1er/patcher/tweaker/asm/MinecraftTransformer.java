@@ -400,7 +400,8 @@ public class MinecraftTransformer implements PatcherTransformer {
 
     private InsnList resetScreenState() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "org/apache/commons/lang3/SystemUtils", "IS_OS_WINDOWS", "Z"));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71431_Q", "Z"));
         LabelNode ifne = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "org/apache/commons/lang3/SystemUtils", "IS_OS_WINDOWS", "Z"));
