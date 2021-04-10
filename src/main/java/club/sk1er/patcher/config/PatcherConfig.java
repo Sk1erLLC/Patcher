@@ -236,7 +236,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Remove Smoothness While Zoomed",
+        type = PropertyType.SWITCH, name = "Remove Smooth Camera While Zoomed",
         description = "Remove the smooth camera effect when using zoom.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )

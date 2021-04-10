@@ -44,8 +44,9 @@ public class NBTTagCompoundTransformer implements PatcherTransformer {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "compound", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
-            if (methodName.equals("setTag")) {
+            if (methodName.equals("setTag") || methodName.equals("func_74782_a")) {
                 method.instructions.insert(preventEntityCrash());
+                break;
             }
         }
     }
