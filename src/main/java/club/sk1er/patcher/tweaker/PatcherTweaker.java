@@ -11,16 +11,12 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.relauncher.CoreModManager;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -29,7 +25,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -38,30 +33,13 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
-    public static long clientLoadTime;
-
     public PatcherTweaker() {
-        clientLoadTime = System.currentTimeMillis();
-        // Unnecessary as we can now get ModCore to create both tweakers.
-//        this.createSecondTweaker();
         this.unlockLwjgl();
         this.detectIncompatibleMods();
     }
 
     @Override
     public String[] getASMTransformerClass() {
-        /*int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
-
-        if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {
-            // Technically wouldn't happen in simulated installed but is important for actual impl
-            System.out.println("Failed to load Sk1er Modcore - " + initialize + " - " + ModCoreInstaller.getError());
-        }
-
-        // If true the classes are loaded
-        if (ModCoreInstaller.isIsRunningModCore()) {
-            return new String[]{"club.sk1er.mods.core.forge.ClassTransformer", ClassTransformer.class.getName()};
-        }*/
-
         return new String[]{ClassTransformer.class.getName()};
     }
 
@@ -82,20 +60,6 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
     @Override
     public String getAccessTransformerClass() {
         return null;
-    }
-
-    private void createSecondTweaker() {
-        try {
-            // Create a second internal tweaker, creating after OptiFine does its thing.
-            FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
-            LaunchClassLoader classLoader = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, launchHandler, "classLoader");
-            Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
-            URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
-            File mod = new File(path.toURI().getSchemeSpecificPart().split("!")[0]);
-            loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
-        } catch (Exception e) {
-            System.out.println("Failed creating a second tweaker");
-        }
     }
 
     @SuppressWarnings("unchecked")

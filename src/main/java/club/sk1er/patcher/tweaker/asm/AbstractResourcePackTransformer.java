@@ -55,50 +55,7 @@ public class AbstractResourcePackTransformer implements PatcherTransformer {
             "(Ljava/lang/String;)Ljava/io/InputStream;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/texture/TextureUtil", "func_177053_a", // readBufferedImage
             "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 1));
-
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        LabelNode ifnonnull = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNONNULL, ifnonnull));
-        list.add(new InsnNode(Opcodes.ACONST_NULL));
-        list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(ifnonnull);
-
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getWidth", "()I", false));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        LabelNode ificmpgt = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, ificmpgt));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getHeight", "()I", false));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, ificmpgt));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(ificmpgt);
-
-        list.add(new TypeInsnNode(Opcodes.NEW, "java/awt/image/BufferedImage"));
-        list.add(new InsnNode(Opcodes.DUP));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new InsnNode(Opcodes.ICONST_2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/awt/image/BufferedImage", "<init>", "(III)V", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 2));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/image/BufferedImage", "getGraphics", "()Ljava/awt/Graphics;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 3));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 64));
-        list.add(new InsnNode(Opcodes.ACONST_NULL));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/Graphics", "drawImage", "(Ljava/awt/Image;IIIILjava/awt/image/ImageObserver;)Z", false));
-        list.add(new InsnNode(Opcodes.POP));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/awt/Graphics", "dispose", "()V", false));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("AbstractResourcePackHook"), "getPackImage", "(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         list.add(ifeq);
         return list;

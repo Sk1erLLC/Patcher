@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,8 +27,7 @@ public class MetricsRenderer extends Gui {
             final ScaledResolution resolution = new ScaledResolution(mc);
             final int width = resolution.getScaledWidth();
             this.drawMetricsData(resolution, mc.fontRendererObj, MinecraftHook.metricsData, 0, width >> 1, true);
-            final IntegratedServer server = mc.getIntegratedServer();
-            if (server != null) {
+            if (mc.getIntegratedServer() != null) {
                 this.drawMetricsData(resolution, mc.fontRendererObj, MinecraftServerHook.metricsData, width - Math.min(width >> 1, 240), width >> 1, false);
             }
         }

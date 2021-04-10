@@ -47,7 +47,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Culling Fix",
-        description = "Fixes false negatives in frustum culling, creating sometimes invisible chunks.\n§cCan negatively impact performance.",
+        description = "Fix false negatives in frustum culling, creating invisible chunks in some cases.\n§cCan negatively impact performance.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean cullingFix;
@@ -98,7 +98,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Nausea Effect",
-        description = "Remove the nether portal appearing when clearing nausea.",
+        description = "Remove the nether portal effect appearing when clearing nausea.",
         category = "Miscellaneous", subcategory = "Overlays"
     )
     public static boolean nauseaEffect;
@@ -236,7 +236,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean scrollToZoom = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Zoom Smooth Camera",
+        type = PropertyType.SWITCH, name = "Remove Smoothness While Zoomed",
         description = "Remove the smooth camera effect when using zoom.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
@@ -244,7 +244,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Zoom Sensitivity",
-        description = "Use a custom mouse sensitivity when zoomed.",
+        description = "Use a custom mouse sensitivity value when zoomed in.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static float customZoomSensitivity = 1.0F;
@@ -301,7 +301,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Numerical Enchantments",
-        description = "Use readable numbers instead of roman numerals on enchants.",
+        description = "Use readable numbers instead of Roman numerals on enchants.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean romanNumerals = true;
@@ -343,14 +343,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Log Optimizer",
-        description = "Delete any files in the logs folder, as this usually can take up a lot of space.\n§cThese files are not recoverable once deleted.",
+        description = "Delete all files in the logs folder, as these can usually take up a lot of space.\n§cThese files are not recoverable once deleted.",
         category = "Miscellaneous", subcategory = "General"
     )
     public static boolean logOptimizer;
 
     @Property(
         type = PropertyType.SLIDER, name = "Log Optimizer Amount",
-        description = "Choose how many days old a file must be before deleted.",
+        description = "Choose how many days old a file must be before being deleted.",
         category = "Miscellaneous", subcategory = "General",
         min = 1, max = 90
     )
@@ -688,7 +688,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Global Entity Render Distance",
-        description = "Stop rendering all entities outside of the specified radius.\n" +
+        description = "Stop rendering all entities outside of a specified radius.\n" +
             "This will ignore the distance of other entity render distances if smaller.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
@@ -697,7 +697,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Player Render Distance",
-        description = "Stop rendering players outside of the specified radius.",
+        description = "Stop rendering players outside of a specified radius.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
     )
@@ -705,7 +705,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Passive Entity Render Distance",
-        description = "Stop rendering passive entities outside of the specified radius.",
+        description = "Stop rendering passive entities outside of a specified radius.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
     )
@@ -713,7 +713,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Hostile Entity Render Distance",
-        description = "Stop rendering hostile entities outside of the specified radius.",
+        description = "Stop rendering hostile entities outside of a specified radius.",
         category = "Performance", subcategory = "Entity Rendering",
         min = 1, max = 64
     )
@@ -825,7 +825,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Compact Chat Time",
-        description = "Change how long before old messages are no longer compacted.\n§eMeasured in seconds.",
+        description = "Change the amount of time old messages take to stop being compacted.\n§eMeasured in seconds.",
         category = "Screens", subcategory = "Chat",
         min = 1, max = 120
     )
@@ -964,7 +964,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Safe Chat Clicks",
-        description = "Show the command/link that runs/opens on click.",
+        description = "Show the command or link that is ran/opened on click. ",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean safeChatClicks;

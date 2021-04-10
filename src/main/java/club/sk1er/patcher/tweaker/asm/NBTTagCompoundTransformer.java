@@ -15,6 +15,10 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class NBTTagCompoundTransformer implements PatcherTransformer {
 
@@ -38,5 +42,19 @@ public class NBTTagCompoundTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "profile", "Lcom/mojang/authlib/GameProfile;", null, null));
         classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "compound", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
+        for (MethodNode method : classNode.methods) {
+            final String methodName = mapMethodName(classNode, method);
+            if (methodName.equals("setTag")) {
+                method.instructions.insert(preventEntityCrash());
+            }
+        }
+    }
+
+    private InsnList preventEntityCrash() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 2));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("NBTTagCompoundHook"), "checkNullValue", "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false));
+        return list;
     }
 }

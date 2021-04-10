@@ -40,8 +40,9 @@ public final class FontRendererHook {
     private final EnhancedFontRenderer enhancedFontRenderer = EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
     private final FontRenderer fontRenderer;
     private final Minecraft mc = Minecraft.getMinecraft();
-    public int glTextureId = -1;
+    private final String styleDictionary = "0123456789abcdefklmnor";
     private OptifineHook hook = new OptifineHook();
+    public int glTextureId = -1;
     private int texSheetDim = 256;
     private float fontTexHeight = 16 * texSheetDim + 128;
     private float fontTexWidth = 16 * texSheetDim;
@@ -175,7 +176,7 @@ public final class FontRendererHook {
             char letter = text.charAt(messageChar);
 
             if (letter == 167 && messageChar + 1 < text.length()) {
-                int styleIndex = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
+                int styleIndex = this.styleDictionary.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
 
                 if (styleIndex < 16) {
                     this.fontRenderer.strikethroughStyle = false;

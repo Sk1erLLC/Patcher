@@ -70,7 +70,7 @@ dependencies {
     }
 
     embed("net.modcore:Loader:2.0.0")
-    implementation("net.modcore:ModCore:806-${mcVersion}-SNAPSHOT") {
+    implementation("net.modcore:ModCore:809-${mcVersion}-SNAPSHOT") {
         exclude module: 'WaifUPnP'
     }
 
