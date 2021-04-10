@@ -7,7 +7,7 @@ import net.modcore.api.commands.DefaultHandler;
 // dont want it to show up in /patcher help
 public class DeleteNameHistoryCommand extends Command {
     public DeleteNameHistoryCommand() {
-        super("$deletenamehistory");
+        super("$deletenamehistory", true, true);
     }
 
     @DefaultHandler

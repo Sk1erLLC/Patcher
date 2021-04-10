@@ -210,7 +210,7 @@ public class AsyncScreenshots implements Runnable {
     public static class ScreenshotsFolder extends Command {
 
         public ScreenshotsFolder() {
-            super("$openfolder");
+            super("$openfolder", true, true);
         }
 
         @DefaultHandler
@@ -227,7 +227,7 @@ public class AsyncScreenshots implements Runnable {
     public static class FavoriteScreenshot extends Command {
 
         public FavoriteScreenshot() {
-            super("$favorite");
+            super("$favorite", true, true);
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -251,7 +251,7 @@ public class AsyncScreenshots implements Runnable {
 
     public static class DeleteScreenshot extends Command {
         public DeleteScreenshot() {
-            super("$delete");
+            super("$delete", true, true);
         }
 
         @DefaultHandler
@@ -273,7 +273,7 @@ public class AsyncScreenshots implements Runnable {
     public static class UploadScreenshot extends Command {
 
         public UploadScreenshot() {
-            super("$upload");
+            super("$upload", true, true);
         }
 
         @DefaultHandler
@@ -285,7 +285,7 @@ public class AsyncScreenshots implements Runnable {
     public static class CopyScreenshot extends Command {
 
         public CopyScreenshot() {
-            super("$copyss");
+            super("$copyss", true, true);
         }
 
         @DefaultHandler
