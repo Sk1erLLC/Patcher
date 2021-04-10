@@ -14,6 +14,7 @@ package club.sk1er.patcher.command;
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.benchmark.BenchmarkResult;
@@ -122,7 +123,8 @@ public class PatcherCommand extends Command {
             }
 
             // todo: create a popup in the top right
-            ChatUtilities.sendNotification("Name History", "Popup is not yet implemented.");
+            HistoryPopUp.INSTANCE.addPopUp(name);
+//            ChatUtilities.sendNotification("Name History", "Popup is not yet implemented.");
         }
     }
 

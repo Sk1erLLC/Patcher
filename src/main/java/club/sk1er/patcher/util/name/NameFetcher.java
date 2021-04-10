@@ -29,12 +29,16 @@ public class NameFetcher {
     private String name = null;
 
     public void execute(String username) {
+        execute(username, true);
+    }
+
+    public void execute(String username, boolean async) {
         try {
             if (username.isEmpty()) {
                 return;
             }
 
-            Multithreading.runAsync(() -> {
+            Runnable fetchNames = () -> {
                 name = username;
                 uuid = null;
                 try {
@@ -60,7 +64,13 @@ public class NameFetcher {
                 } else {
                     names.add("Failed to fetch " + username + "'s names");
                 }
-            });
+            };
+
+            if (async) {
+                Multithreading.runAsync(fetchNames);
+            } else {
+                fetchNames.run();
+            }
         } catch (Exception e) {
             Patcher.instance.getLogger().warn("User catch failed, tried fetching {}.", username, e);
         }
