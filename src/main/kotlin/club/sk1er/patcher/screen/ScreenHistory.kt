@@ -21,6 +21,7 @@ import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import club.sk1er.elementa.effects.OutlineEffect
 import club.sk1er.mods.core.universal.*
+import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import club.sk1er.vigilance.gui.VigilancePalette
@@ -33,7 +34,6 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.util.ResourceLocation
-import net.modcore.api.ModCoreAPI
 import org.lwjgl.opengl.GL11
 import java.util.*
 
@@ -146,10 +146,16 @@ class ScreenHistory @JvmOverloads constructor(
                 setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.DARK_HIGHLIGHT.toConstraint())
             }
         }.onMouseClick {
-            // TODO make this better ig...
-            MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, Model.STEVE, skin.url)
-            ModCoreAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), 0.25F, 1.0F)
-            ChatUtilities.sendMessage("Changed your skin! (jack please make this better)")
+            try {
+                // TODO take in the players model type as well instead of just steve
+                MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, Model.STEVE, skin.url)
+            } catch (e: Exception) {
+                ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
+                Patcher.instance.logger.error("Failed to change players skin through name history.", e)
+                return@onMouseClick
+            }
+
+            ChatUtilities.sendNotification("Name History", "Successfully changed your skin!")
         }
     }
 

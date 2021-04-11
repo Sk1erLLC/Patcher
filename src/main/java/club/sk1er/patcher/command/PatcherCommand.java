@@ -122,9 +122,7 @@ public class PatcherCommand extends Command {
                 return;
             }
 
-            // todo: create a popup in the top right
             HistoryPopUp.INSTANCE.addPopUp(name);
-//            ChatUtilities.sendNotification("Name History", "Popup is not yet implemented.");
         }
     }
 

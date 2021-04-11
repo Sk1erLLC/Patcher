@@ -7,7 +7,6 @@ import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.dsl.*
 import club.sk1er.elementa.effects.OutlineEffect
 import club.sk1er.mods.core.universal.UResolution
-import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.screen.ScreenHistory
 import club.sk1er.patcher.util.name.NameFetcher
 import club.sk1er.vigilance.gui.VigilancePalette
@@ -41,7 +40,6 @@ object HistoryPopUp {
     fun onTick(event: TickEvent.ClientTickEvent) {
         if (event.phase == TickEvent.Phase.END) {
             val x = fetchers.poll() ?: return
-            Patcher.instance.logger.info("HELLO")
             PopUp(x) childOf window
         }
     }
@@ -76,7 +74,7 @@ object HistoryPopUp {
                     width = 150.pixels()
                 }
 
-                this effect OutlineEffect(VigilancePalette.ACCENT, 3f)
+                this effect OutlineEffect(VigilancePalette.ACCENT, 2f)
 
                 UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
                     x = 3.pixels()
@@ -98,6 +96,7 @@ object HistoryPopUp {
                     color = VigilancePalette.BRIGHT_TEXT.toConstraint()
                 }
 
+                fetcher.names.reverse()
                 for (i in fetcher.names.indices) {
                     if (i < 5) {
                         mkText(fetcher.names[i], i == 0) childOf this
