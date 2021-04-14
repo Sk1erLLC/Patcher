@@ -4,8 +4,8 @@ import club.sk1er.elementa.components.*
 import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.ChildBasedSizeConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
+import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
-import club.sk1er.elementa.effects.OutlineEffect
 import club.sk1er.mods.core.universal.UResolution
 import club.sk1er.patcher.screen.ScreenHistory
 import club.sk1er.patcher.util.name.NameFetcher
@@ -64,47 +64,33 @@ object HistoryPopUp {
         })
     }
 
-    private class PopUp(fetcher: NameFetcher) : UIBlock(VigilancePalette.DARK_BACKGROUND) {
+    private class PopUp(val fetcher: NameFetcher) : UIBlock(VigilancePalette.DARK_BACKGROUND) {
+        val img = UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
+            x = 5.percent()
+            y = CenterConstraint()
+            width = 25.percent()
+            height = basicHeightConstraint { it.getWidth() }
+        }
+        val timerBar = UIBlock(VigilancePalette.ACCENT).constrain {
+            x = 0.pixels()
+            y = 0.pixels(true)
+            height = 2.pixels()
+            width = 0.percent()
+        }
+
         init {
             if (fetcher.uuid != null) {
                 constrain {
                     x = 10.pixels(true)
-                    y = SiblingConstraint(12f)
-                    height = ChildBasedSizeConstraint()
-                    width = 150.pixels()
+                    y = SiblingConstraint(10f)
+                    height = 80.pixels()
+                    width = 200.pixels()
                 }
 
-                this effect OutlineEffect(VigilancePalette.ACCENT, 2f)
+                //this effect OutlineEffect(VigilancePalette.ACCENT, 2f)
 
-                UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
-                    x = 3.pixels()
-                    y = 3.pixels()
-                    height = 15.pixels()
-                    width = 15.pixels()
-                } childOf this
-
-                UIText(fetcher.name, false).constrain {
-                    x = 21.pixels()
-                    y = 3.pixels()
-                    textScale = 1.1f.pixels()
-                    color = VigilancePalette.BRIGHT_TEXT.toConstraint()
-                } childOf this
-
-                fun mkText(str: String, b: Boolean = false): UIText = UIText(str, false).constrain {
-                    x = CenterConstraint()
-                    y = SiblingConstraint(if (b) 3f else 1f)
-                    color = VigilancePalette.BRIGHT_TEXT.toConstraint()
-                }
-
-                fetcher.names.reverse()
-                for (i in fetcher.names.indices) {
-                    if (i < 5) {
-                        mkText(fetcher.names[i], i == 0) childOf this
-                    } else {
-                        mkText("...") childOf this
-                        break
-                    }
-                }
+                // todo when new-infra modcore branch is merged, cache this image.
+                img childOf this
 
                 onMouseClick {
                     // todo add thing that shows what each mouse button does
@@ -115,16 +101,58 @@ object HistoryPopUp {
                         }
                         1 -> {
                             // todo animate this
+                            println(this@PopUp.getHeight())
                             window.removeChild(this@PopUp)
                         }
                         else -> window.removeChild(this@PopUp)
                     }
                 }
+
+                timerBar childOf this
             }
 
             timer(5000L) {
                 window.removeChild(this)
             }
+        }
+
+        override fun afterInitialization() {
+            val t = UIText(fetcher.name, false).constrain {
+                x = 35.percent()
+                y = basicYConstraint { img.getTop() }
+                textScale = 1.1f.pixels()
+                color = VigilancePalette.BRIGHT_TEXT.toConstraint()
+            } childOf this
+
+            var j = 9 * 1.1f + 2
+
+            fun mkText(str: String, i: Int): UIText = UIText(str, false).constrain {
+                x = 35.percent()
+                y = SiblingConstraint(if (i == 0) 3f else 1f)
+                textScale = .8f.pixels()
+                color = when (i) {
+                    0 -> VigilancePalette.BRIGHT_TEXT
+                    1 -> VigilancePalette.MID_TEXT
+                    else -> VigilancePalette.DARK_TEXT
+                }.toConstraint()//VigilancePalette.BRIGHT_TEXT.toConstraint()
+            }
+
+            fetcher.names.reverse()
+            for (i in fetcher.names.indices) {
+                if (i < 5) {
+                    mkText(fetcher.names[i], i) childOf this
+                    j += 9.1f
+                } else {
+                    mkText("...", 4) childOf this
+                    break
+                }
+            }
+
+            timerBar.animate {
+                setWidthAnimation(Animations.LINEAR, 5f, 100.percent())
+            }
+
+            super.afterInitialization()
         }
     }
 }
