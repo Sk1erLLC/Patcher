@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -11,7 +12,7 @@ public class CacheHooks {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.START && PatcherConfig.tooltipCache) {
             if ((System.currentTimeMillis() - cacheTime) < 200) return;
             tooltipCache = null;
             cacheTime = System.currentTimeMillis();

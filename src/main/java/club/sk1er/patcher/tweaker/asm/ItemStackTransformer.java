@@ -70,12 +70,14 @@ public class ItemStackTransformer implements PatcherTransformer {
 
     private InsnList returnCachedTooltip() {
         InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "tooltipCache", "Z"));
+        LabelNode label = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("CacheHooks"), "tooltipCache", "Ljava/util/List;"));
-        LabelNode ifnull = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
+        list.add(new JumpInsnNode(Opcodes.IFNULL, label));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("CacheHooks"), "tooltipCache", "Ljava/util/List;"));
         list.add(new InsnNode(Opcodes.ARETURN));
-        list.add(ifnull);
+        list.add(label);
         return list;
     }
 

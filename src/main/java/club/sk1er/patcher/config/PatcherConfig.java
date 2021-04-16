@@ -666,6 +666,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean optimizedItemRenderer = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Tooltip Cache",
+        description = "Cache tooltips to avoid fetching very long lists every frame.\nMay cause tooltips to appear on another item for 200ms.",
+        category = "Performance", subcategory = "Items"
+    )
+    public static boolean tooltipCache = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
         description = "Stop rendering sides of entities that you cannot see.\nBeing inside an entity will cause that body part to be invisible.",
         category = "Performance", subcategory = "Culling"
