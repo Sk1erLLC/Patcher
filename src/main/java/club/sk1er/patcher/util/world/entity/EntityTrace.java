@@ -11,9 +11,9 @@
 
 package club.sk1er.patcher.util.world.entity;
 
+import club.sk1er.patcher.screen.ScreenHistory;
 import net.modcore.api.utils.GuiUtil;
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.screen.ScreenHistoryOld;
 import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -57,7 +57,7 @@ public class EntityTrace {
                 }
 
                 if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null && EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
-                    GuiUtil.open(new ScreenHistoryOld(targetEntity.getName(), false));
+                    GuiUtil.open(new ScreenHistory(targetEntity.getName(), false));
                 }
             }
         }

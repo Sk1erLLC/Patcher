@@ -50,15 +50,15 @@ class ScreenHistory @JvmOverloads constructor(
         y = CenterConstraint()
         height = 75.percent()
         width = 50.percent()
-        color = VigilancePalette.BACKGROUND.toConstraint()
+        color = VigilancePalette.getBackground().toConstraint()
     } childOf window
 
-    private val textHolder by UIBlock(VigilancePalette.DARK_HIGHLIGHT).constrain {
+    private val textHolder by UIBlock(VigilancePalette.getDarkHighlight()).constrain {
         x = CenterConstraint()
         y = 10.pixels()
         width = 80.percent()
         height = ChildBasedSizeConstraint() + 6.pixels()
-    } childOf background effect OutlineEffect(VigilancePalette.DIVIDER, 0.75f)
+    } childOf background effect OutlineEffect(VigilancePalette.getDivider(), 0.75f)
 
     private val textInput by UITextInput("Enter a name").constrain {
         x = 3.pixels()
@@ -90,13 +90,13 @@ class ScreenHistory @JvmOverloads constructor(
         width = 33.percent()
         x = 7.percent()
         height = 70.percent()
-        color = VigilancePalette.DARK_HIGHLIGHT.toConstraint()
+        color = VigilancePalette.getDarkHighlight().toConstraint()
     } childOf background
 
     private val skinText by UIText("Skin of $name").constrain {
         x = CenterConstraint()
         y = 1.pixel()
-        color = VigilancePalette.BRIGHT_TEXT.toConstraint()
+        color = VigilancePalette.getBrightText().toConstraint()
     } childOf playerHolder
 
     private val player by UIPlayer().constrain {
@@ -118,7 +118,7 @@ class ScreenHistory @JvmOverloads constructor(
         height = 100.percent()
         x = CenterConstraint()
         y = 0.pixels()
-        color = VigilancePalette.ACCENT.toConstraint()
+        color = VigilancePalette.getAccent().toConstraint()
     } childOf buttonContainer
 
 
@@ -127,23 +127,23 @@ class ScreenHistory @JvmOverloads constructor(
         height = basicHeightConstraint { changeSkinButton.getHeight() - 4 }
         y = CenterConstraint()
         x = CenterConstraint()
-        color = VigilancePalette.DARK_HIGHLIGHT.toConstraint()
+        color = VigilancePalette.getDarkHighlight().toConstraint()
     } childOf changeSkinButton
 
     init {
         UIText("Apply This Skin!").constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            color = VigilancePalette.BRIGHT_TEXT.toConstraint()
+            color = VigilancePalette.getBrightText().toConstraint()
         } childOf changeSkinButton
 
         changeSkinButton.onMouseEnter {
             buttonBody.animate {
-                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.ACCENT.toConstraint())
+                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getAccent().toConstraint())
             }
         }.onMouseLeave {
             buttonBody.animate {
-                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.DARK_HIGHLIGHT.toConstraint())
+                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getDarkHighlight().toConstraint())
             }
         }.onMouseClick {
             try {
@@ -251,12 +251,12 @@ class ScreenHistory @JvmOverloads constructor(
                 getRight(),
                 getTop() + i,
                 3f,
-                VigilancePalette.DARK_HIGHLIGHT
+                VigilancePalette.getDarkHighlight()
             )
 
             val j = (getWidth() / 2 + getLeft()).toInt()
             drawCenteredString(
-                fontRendererObj, "Name History", j, getTop().toInt() + 2, VigilancePalette.BRIGHT_TEXT.rgb
+                fontRendererObj, "Name History", j, getTop().toInt() + 2, VigilancePalette.getBrightText().rgb
             )
             for (k in nameFetcher.names.indices) {
                 drawCenteredString(
@@ -264,7 +264,7 @@ class ScreenHistory @JvmOverloads constructor(
                     nameFetcher.names[k],
                     j,
                     getTop().toInt() + 2 + (10 * (k + 1)),
-                    VigilancePalette.BRIGHT_TEXT.rgb
+                    VigilancePalette.getBrightText().rgb
                 )
             }
 

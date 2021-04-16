@@ -2,7 +2,6 @@ package club.sk1er.patcher.render
 
 import club.sk1er.elementa.components.*
 import club.sk1er.elementa.constraints.CenterConstraint
-import club.sk1er.elementa.constraints.ChildBasedSizeConstraint
 import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
@@ -64,14 +63,14 @@ object HistoryPopUp {
         })
     }
 
-    private class PopUp(val fetcher: NameFetcher) : UIBlock(VigilancePalette.DARK_BACKGROUND) {
+    private class PopUp(val fetcher: NameFetcher) : UIBlock(VigilancePalette.getDarkBackground()) {
         val img = UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
             x = 5.percent()
             y = CenterConstraint()
             width = 25.percent()
             height = basicHeightConstraint { it.getWidth() }
         }
-        val timerBar = UIBlock(VigilancePalette.ACCENT).constrain {
+        val timerBar = UIBlock(VigilancePalette.getAccent()).constrain {
             x = 0.pixels()
             y = 0.pixels(true)
             height = 2.pixels()
@@ -121,7 +120,7 @@ object HistoryPopUp {
                 x = 35.percent()
                 y = basicYConstraint { img.getTop() }
                 textScale = 1.1f.pixels()
-                color = VigilancePalette.BRIGHT_TEXT.toConstraint()
+                color = VigilancePalette.getBrightText().toConstraint()
             } childOf this
 
             var j = 9 * 1.1f + 2
@@ -131,10 +130,10 @@ object HistoryPopUp {
                 y = SiblingConstraint(if (i == 0) 3f else 1f)
                 textScale = .8f.pixels()
                 color = when (i) {
-                    0 -> VigilancePalette.BRIGHT_TEXT
-                    1 -> VigilancePalette.MID_TEXT
-                    else -> VigilancePalette.DARK_TEXT
-                }.toConstraint()//VigilancePalette.BRIGHT_TEXT.toConstraint()
+                    0 -> VigilancePalette.getBrightText()
+                    1 -> VigilancePalette.getMidText()
+                    else -> VigilancePalette.getDarkText()
+                }.toConstraint()
             }
 
             fetcher.names.reverse()
