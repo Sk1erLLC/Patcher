@@ -28,24 +28,15 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.opengl.GL11;
-
-import java.lang.ref.WeakReference;
-import java.util.Collection;
 
 public class EntityRendering {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final FontRenderer fontRenderer = mc.fontRendererObj;
     private final RenderManager renderManager = mc.getRenderManager();
-    private WeakReference<EntityLivingBase> reference;
 
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
@@ -122,42 +113,6 @@ public class EntityRendering {
             && !((EntityPlayerSP) entity).isSpectator() && !entity.isInvisible()
             && entity == renderManager.livingPlayer && PatcherConfig.showOwnNametag) {
             renderTag(entity);
-        }
-    }
-
-    /**
-     * Check the users current potion effects, and stop rendering those potion effects if the user does
-     * not want to see said potion effects.
-     *
-     * @param event {@link TickEvent.ClientTickEvent}
-     */
-    @SubscribeEvent
-    public void tickClient(ClientTickEvent event) {
-        if (!PatcherConfig.cleanView) return;
-
-        if (event.phase == Phase.START) {
-            final EntityLivingBase entity = mc.thePlayer;
-            final EntityLivingBase previousEntity = (reference != null) ? reference.get() : null;
-            final String key = "0256d9da-9c1b-46ea-a83c-01ae6981a2c8";
-            if (previousEntity != entity) {
-                if (previousEntity != null && previousEntity.getEntityData().getBoolean(key)) {
-                    final Collection<PotionEffect> effects = previousEntity.getActivePotionEffects();
-                    if (!effects.isEmpty()) {
-                        previousEntity.getDataWatcher().updateObject(7, PotionHelper.calcPotionLiquidColor(effects));
-                    }
-
-                    previousEntity.getEntityData().removeTag(key);
-                }
-
-                reference = entity != null ? new WeakReference<>(entity) : null;
-            }
-
-            if (entity != null) {
-                entity.getDataWatcher().updateObject(7, 0);
-                if (!entity.getEntityData().getBoolean(key)) {
-                    entity.getEntityData().setBoolean(key, true);
-                }
-            }
         }
     }
 

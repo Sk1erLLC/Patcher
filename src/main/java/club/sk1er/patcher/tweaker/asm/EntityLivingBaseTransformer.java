@@ -56,11 +56,29 @@ public class EntityLivingBaseTransformer implements PatcherTransformer {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEINTERFACE && ((MethodInsnNode) next).name.equals("get")) {
                         methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), checkPotionEffect(potionEffectIndex));
-                        break;
+                    } else if (next instanceof FieldInsnNode) {
+                        final String fieldName = mapFieldNameFromNode(next);
+                        if (fieldName.equals("SPELL_MOB_AMBIENT")) {
+                            methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious().getPrevious(), checkCleanView());
+                        }
                     }
                 }
             }
         }
+    }
+
+    private InsnList checkCleanView() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "cleanView", "Z"));
+        LabelNode label = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", "()Lnet/minecraft/client/Minecraft;", false));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71439_g", "Lnet/minecraft/client/entity/EntityPlayerSP;"));
+        list.add(new JumpInsnNode(Opcodes.IF_ACMPNE, label));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(label);
+        return list;
     }
 
     private InsnList checkPotionEffect(int potionEffectIndex) {
