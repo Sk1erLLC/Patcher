@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL11
 import java.util.*
 
 class ScreenHistory @JvmOverloads constructor(
-    name: String? = null,
+    val name: String? = null,
     focus: Boolean = name == null
 ) : WindowScreen() {
     private val nameFetcher = NameFetcher()
@@ -183,11 +183,10 @@ class ScreenHistory @JvmOverloads constructor(
                 player.player = FakePlayer(downloadPatcher)
             } else {
                 // uuid is the only thing that matters here
-                player.player = FakePlayer(GameProfile(uuid, "DownloadPatcher"))
+                player.player = FakePlayer(GameProfile(uuid, name))
                 val info = player.player.playerInfo
                 if (info != null) {
                     val url = MojangAPI.getProfile(uuid).textures.textures.skin.url
-                    println(url)
                     val rl = mc.skinManager.loadSkin(MinecraftProfileTexture(url, null), MinecraftProfileTexture.Type.SKIN)
                     player.player.playerInfo.locationSkin = rl
                     skin.take(rl to url)
@@ -205,7 +204,8 @@ class ScreenHistory @JvmOverloads constructor(
     override fun doesGuiPauseGame(): Boolean = false
 
     private inner class UIPlayer : UIComponent() {
-        var player: FakePlayer = FakePlayer(downloadPatcher)
+        val uuid: UUID? = MojangAPI.getUUID(name)
+        var player: FakePlayer = FakePlayer(GameProfile(uuid ?: downloadPatcher.id, name))
 
         override fun draw() {
             UGraphics.pushMatrix()
@@ -227,7 +227,14 @@ class ScreenHistory @JvmOverloads constructor(
             val yaw = posX2 - UMouse.getTrueX()
             val pitch = -(posY2 - UMouse.getTrueY())
 
-            GuiInventory.drawEntityOnScreen(posX + scale2 / 2, posY + scale2 * 2, scale2, yaw.toFloat(), pitch.toFloat(), player)
+            GuiInventory.drawEntityOnScreen(
+                posX + scale2 / 2,
+                posY + scale2 * 2,
+                scale2,
+                yaw.toFloat(),
+                pitch.toFloat(),
+                player
+            )
 
             UGraphics.depthFunc(GL11.GL_LEQUAL)
             UGraphics.popMatrix()
@@ -290,7 +297,11 @@ class ScreenHistory @JvmOverloads constructor(
     }
 
     companion object {
-        private val downloadPatcher: GameProfile = GameProfile(UUID.fromString("ec6081b2-19d0-47d0-8c67-be166f4dec5e"), "DownloadPatcher")
-        private val initialSkin: SelectableSkin = SelectableSkin(DefaultPlayerSkin.getDefaultSkinLegacy(), "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b")
+        private val downloadPatcher: GameProfile =
+            GameProfile(UUID.fromString("8667ba71-b85a-4004-af54-457a9734eed7"), "Steve")
+        private val initialSkin: SelectableSkin = SelectableSkin(
+            DefaultPlayerSkin.getDefaultSkinLegacy(),
+            "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b"
+        )
     }
 }
