@@ -13,19 +13,7 @@ package club.sk1er.patcher.tweaker.asm;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -62,7 +50,20 @@ public class FontRendererTransformer implements PatcherTransformer {
             } else if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 methodNode.instructions.insert(getShadowHook());
             } else if ((methodName.equals("drawString") || methodName.equals("func_175065_a")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
-                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) next).name.equals("max")) {
+                        AbstractInsnNode previous = next;
+                        for (int nodes = 0; nodes < 8; nodes++) {
+                            previous = previous.getPrevious();
+                        }
+
+                        methodNode.instructions.insertBefore(previous, resetStyle());
+                    }
+                }
+
+                iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.FLOAD && ((VarInsnNode) next).var == 2) {
@@ -71,11 +72,17 @@ public class FontRendererTransformer implements PatcherTransformer {
 
                         methodNode.instructions.insertBefore(next, insertCleanShadowLabel());
                         methodNode.instructions.remove(next);
-                        break;
                     }
                 }
             }
         }
+    }
+
+    private InsnList resetStyle() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/FontRenderer", "func_78265_b", "()V", false));
+        return list;
     }
 
     private InsnList insertCleanShadowLabel() {
