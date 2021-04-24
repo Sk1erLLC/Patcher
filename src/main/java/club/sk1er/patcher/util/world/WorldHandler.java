@@ -39,6 +39,7 @@ public class WorldHandler {
         }
     }
 
+    @SuppressWarnings("unused")
     public static int getAnimationTickCount() {
         return PatcherConfig.lowAnimationTick ? 100 : 1000;
     }

@@ -41,7 +41,11 @@ import org.lwjgl.opengl.GLContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -308,10 +312,6 @@ public class EntityCulling {
 
         public OcclusionQuery(UUID uuid) {
             this.uuid = uuid;
-        }
-
-        public UUID getUuid() {
-            return uuid;
         }
     }
 }

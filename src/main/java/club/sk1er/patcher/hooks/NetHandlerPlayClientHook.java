@@ -48,7 +48,7 @@ public class NetHandlerPlayClientHook {
             if (isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip"))) {
                 Patcher.instance.getLogger().warn("Malicious server tried to access " + url);
                 if (Minecraft.getMinecraft().thePlayer != null) {
-                    ChatUtilities.sendMessage("&c&l[WARNING] The current server has attempted to be malicious but we have stopped them.");
+                    ChatUtilities.sendNotification("Patcher", "&c&lThe current server has attempted to be malicious but we have stopped them.");
                 }
 
                 throw new URISyntaxException(url, "Invalid levelstorage resourcepack path");

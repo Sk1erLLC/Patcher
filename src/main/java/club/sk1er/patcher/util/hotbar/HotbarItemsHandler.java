@@ -286,7 +286,7 @@ public class HotbarItemsHandler {
         for (PotionEffect entry : effects) {
             final int duration = entry.getDuration() / 20;
             potionBuilder
-                .append(EnumChatFormatting.BOLD.toString())
+                .append(EnumChatFormatting.BOLD)
                 .append(StatCollector.translateToLocal(entry.getEffectName()))
                 .append(" ")
                 .append(entry.getAmplifier() + 1)
@@ -311,7 +311,7 @@ public class HotbarItemsHandler {
         final StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<Integer, Integer> entry : enchantmentMap.entrySet()) {
-            sb.append(EnumChatFormatting.BOLD.toString())
+            sb.append(EnumChatFormatting.BOLD)
                 .append(shortEnchantmentNames.get(entry.getKey()))
                 .append(" ")
                 .append(entry.getValue())

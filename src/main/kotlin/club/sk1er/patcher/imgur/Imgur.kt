@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.imgur
 
+import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.util.chat.ChatUtilities
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
@@ -39,8 +40,11 @@ class Imgur(private val clientId: String) {
 
             connection.outputStream.bufferedWriter().use { it.write(encodedParams) }
             if (connection.responseCode != 200) {
-                ChatUtilities.sendMessage("&cImgur responded with ${connection.responseCode}. Perhaps you're uploading too quickly?")
-                error("Imgur responded with ${connection.responseCode}")
+                ChatUtilities.sendNotification(
+                    "Screenshot Manager",
+                    "&cImgur responded with ${connection.responseCode}. Perhaps you're uploading too quickly?"
+                )
+                Patcher.instance.logger.error("Failed to upload image, Imgur responded with {}", connection.responseCode)
             }
 
             connection.inputStream.reader().use {
