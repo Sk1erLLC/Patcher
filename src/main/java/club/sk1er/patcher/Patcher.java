@@ -43,6 +43,7 @@ import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.sound.SoundHandler;
 import club.sk1er.patcher.util.status.ProtocolDetector;
+import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.patcher.util.world.cloud.CloudHandler;
 import club.sk1er.patcher.util.world.entity.EntityRendering;
@@ -113,6 +114,7 @@ public class Patcher {
 
     private final CloudHandler cloudHandler = new CloudHandler();
     private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
+    private final SavesWatcher savesWatcher = new SavesWatcher();
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
@@ -165,6 +167,8 @@ public class Patcher {
         checkLogs();
         loadBlacklistedServers();
         fixSettings();
+
+        this.savesWatcher.watch();
     }
 
     @EventHandler
