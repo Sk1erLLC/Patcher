@@ -495,6 +495,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean staticParticleColor = true;
 
     @Property(
+        type = PropertyType.SLIDER, name = "Max Particle Limit",
+        description = "Stop additional particles from appearing when there's too many at once.",
+        category = "Performance", subcategory = "Particles", max = 10000
+    )
+    public static int maxParticleLimit = 4000;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Optimized Font Renderer",
         description = "Use modern rendering techniques to improve the font renderer performance.",
         category = "Performance", subcategory = "Text Rendering"
