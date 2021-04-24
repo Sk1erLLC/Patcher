@@ -20,7 +20,7 @@ buildscript {
     }
 
     dependencies {
-        classpath('com.github.ReplayMod:ForgeGradle:dcfe5a56:all')
+        classpath('com.github.ReplayMod:ForgeGradle:48c4f0c6c7:all')
     }
 }
 

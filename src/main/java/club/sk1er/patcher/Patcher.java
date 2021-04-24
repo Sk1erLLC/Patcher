@@ -229,7 +229,7 @@ public class Patcher {
             try {
                 GuiChatTransformer.maxChatLength = future.get() ? 256 : 100;
             } catch (Exception e) {
-                e.printStackTrace();
+                this.logger.error("Failed to extend max chat length.", e);
             }
         });
     }

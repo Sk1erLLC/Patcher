@@ -312,7 +312,7 @@ public class PatcherCommand extends Command {
             ChatUtilities.sendNotification("Skin Cache", "Successfully refreshed skin cache.");
         } catch (Exception e) {
             ChatUtilities.sendNotification("Skin Cache", "Failed to refresh skin cache.");
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to refresh skin cache.", e);
         }
     }
 

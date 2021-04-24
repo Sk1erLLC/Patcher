@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.database.AssetsDatabase;
 import net.minecraft.client.resources.*;
@@ -38,7 +39,7 @@ public class FallbackResourceManagerHook {
             negativeResourceCache.addAll(database.getAllNegative());
             resourceMap.putAll(database.getAllMap());
         } catch (IOException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to fill negative resource cache/resource map.", e);
         }
     }
 

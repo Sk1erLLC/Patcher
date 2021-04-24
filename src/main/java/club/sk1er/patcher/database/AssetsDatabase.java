@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.database;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.hooks.FallbackResourceManagerHook;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -50,7 +51,7 @@ public class AssetsDatabase {
                     fileWriter.write(array.toString());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Patcher.instance.getLogger().error("Failed to write to resource map.", e);
             }
         }));
     }

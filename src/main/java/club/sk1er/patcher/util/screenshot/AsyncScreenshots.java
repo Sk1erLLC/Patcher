@@ -13,6 +13,7 @@ package club.sk1er.patcher.util.screenshot;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.universal.UDesktop;
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.command.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.ScreenshotPreview;
@@ -31,6 +32,7 @@ import net.modcore.api.utils.Multithreading;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -121,7 +123,7 @@ public class AsyncScreenshots implements Runnable {
             }
         } catch (Exception e) {
             ChatUtilities.sendMessage("Failed to capture screenshot. " + e.getMessage());
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to capture screenshot.", e);
         }
     }
 
@@ -218,7 +220,7 @@ public class AsyncScreenshots implements Runnable {
             try {
                 UDesktop.open(new File("./screenshots"));
             } catch (Exception e) {
-                ChatUtilities.sendMessage(
+                ChatUtilities.sendNotification("Screenshot Manager",
                     "Unfortunately, we were unable to open the screenshots folder. Please report this to us at https://discord.gg/sk1er.");
             }
         }
@@ -242,9 +244,9 @@ public class AsyncScreenshots implements Runnable {
                 }
 
                 ImageIO.write(image, "png", favoritedScreenshots);
-                ChatUtilities.sendMessage("&e" + screenshot.getName() + " has been favorited.");
+                ChatUtilities.sendNotification("Screenshot Manager", "&e" + screenshot.getName() + " has been favorited.");
             } catch (Throwable e) {
-                ChatUtilities.sendMessage("&cFailed to favorite screenshot, maybe the file was moved/deleted?");
+                ChatUtilities.sendNotification("Screenshot Manager", "&cFailed to favorite screenshot, maybe the file was moved/deleted?");
             }
         }
     }
@@ -258,14 +260,14 @@ public class AsyncScreenshots implements Runnable {
         public void handle() {
             try {
                 if (screenshot.exists()) {
-                    ChatUtilities.sendMessage("&c" + screenshot.getName() + " has been deleted.");
+                    ChatUtilities.sendNotification("Screenshot Manager", "&c" + screenshot.getName() + " has been deleted.");
                     screenshot.delete();
                     screenshot = null;
                 } else {
-                    ChatUtilities.sendMessage("&cCouldn't find " + screenshot.getName());
+                    ChatUtilities.sendNotification("Screenshot Manager", "&cCouldn't find " + screenshot.getName());
                 }
             } catch (NullPointerException e) {
-                ChatUtilities.sendMessage("&cFailed to delete screenshot, maybe the file was moved/deleted?");
+                ChatUtilities.sendNotification("Screenshot Manager", "&cFailed to delete screenshot, maybe the file was moved/deleted?");
             }
         }
     }
@@ -292,27 +294,19 @@ public class AsyncScreenshots implements Runnable {
         public void handle() {
             try {
                 copyScreenshot(true);
-            } catch (Exception e) {
-                ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
-                e.printStackTrace();
+            } catch (HeadlessException e) {
+                ChatUtilities.sendNotification("Screenshot Manager", "&cFailed to copy screenshot to clipboard.");
+                Patcher.instance.getLogger().error("Failed to copy screenshot to clipboard.", e);
             }
         }
 
-        public static void copyScreenshot(boolean message) {
+        public static void copyScreenshot(boolean message) throws HeadlessException {
             final ImageSelection sel = new ImageSelection(image);
-            Multithreading.runAsync(() -> {
-                try {
-                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
+            Multithreading.runAsync(() -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null));
 
-                    if (message) {
-                        ChatUtilities.sendMessage("&aScreenshot has been copied to your clipboard.", false);
-                    }
-                } catch (Exception e) {
-                    if (message) {
-                        ChatUtilities.sendMessage("&cFailed to copy screenshot to clipboard.", false);
-                    }
-                }
-            });
+            if (message) {
+                ChatUtilities.sendNotification("Screenshot Manager", "&aScreenshot has been copied to your clipboard.");
+            }
         }
     }
 

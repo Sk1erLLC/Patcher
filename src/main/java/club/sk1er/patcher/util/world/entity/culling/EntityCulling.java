@@ -151,7 +151,7 @@ public class EntityCulling {
                     try {
                         UDesktop.browse(new URI("https://sk1er.club/support-discord"));
                     } catch (URISyntaxException e) {
-                        e.printStackTrace();
+                        Patcher.instance.getLogger().error("Failed to open support discord.", e);
                     }
                     return Unit.INSTANCE;
                 });
