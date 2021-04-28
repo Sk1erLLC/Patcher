@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.commands
+package club.sk1er.patcher.tasks
 
 import club.sk1er.mods.core.universal.ChatColor
 import club.sk1er.mods.core.universal.UDesktop
