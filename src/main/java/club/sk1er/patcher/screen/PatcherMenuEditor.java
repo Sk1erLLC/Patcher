@@ -12,7 +12,7 @@
 package club.sk1er.patcher.screen;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.command.PatcherCommand;
+import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import net.minecraft.client.Minecraft;

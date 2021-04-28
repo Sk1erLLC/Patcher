@@ -14,7 +14,7 @@ package club.sk1er.patcher.util.screenshot;
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.command.UploadScreenshotTask;
+import club.sk1er.patcher.commands.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.util.chat.ChatUtilities;

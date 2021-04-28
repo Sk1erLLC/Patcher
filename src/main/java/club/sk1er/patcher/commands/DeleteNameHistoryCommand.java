@@ -1,4 +1,4 @@
-package club.sk1er.patcher.command;
+package club.sk1er.patcher.commands;
 
 import net.minecraft.client.Minecraft;
 import net.modcore.api.commands.Command;

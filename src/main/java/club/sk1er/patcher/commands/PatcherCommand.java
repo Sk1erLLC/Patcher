@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.command;
+package club.sk1er.patcher.commands;
 
 import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.Patcher;
