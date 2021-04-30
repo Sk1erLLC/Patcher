@@ -25,10 +25,12 @@ import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import club.sk1er.vigilance.gui.VigilancePalette
+import com.google.gson.JsonParser
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import me.kbrewster.mojangapi.MojangAPI
 import me.kbrewster.mojangapi.profile.Model
+import me.kbrewster.mojangapi.profile.Profile
 import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -147,8 +149,7 @@ class ScreenHistory @JvmOverloads constructor(
             }
         }.onMouseClick {
             try {
-                // TODO take in the players model type as well instead of just steve
-                MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, Model.STEVE, skin.url)
+                MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
             } catch (e: Exception) {
                 ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
                 Patcher.instance.logger.error("Failed to change players skin through name history.", e)
@@ -186,10 +187,12 @@ class ScreenHistory @JvmOverloads constructor(
                 player.player = FakePlayer(GameProfile(uuid, name))
                 val info = player.player.playerInfo
                 if (info != null) {
-                    val url = MojangAPI.getProfile(uuid).textures.textures.skin.url
-                    val rl = mc.skinManager.loadSkin(MinecraftProfileTexture(url, null), MinecraftProfileTexture.Type.SKIN)
+                    val profile = MojangAPI.getProfile(uuid)
+                    val url = profile.textures.textures.skin.url
+                    val alex = profile.isAlex()
+                    val rl = mc.skinManager.loadSkin(MinecraftProfileTexture(url, if (alex) mapOf("model" to "slim") else null), MinecraftProfileTexture.Type.SKIN)
                     player.player.playerInfo.locationSkin = rl
-                    skin.take(rl to url)
+                    skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
                     skinText.setText("Skin of ${nameFetcher.name}")
                 }
             }
@@ -199,6 +202,27 @@ class ScreenHistory @JvmOverloads constructor(
 
     private fun getNameHistory(username: String) {
         nameFetcher.execute(username)
+    }
+
+    private fun Profile.isAlex(): Boolean {
+        try {
+            val decodedJson = JsonParser().parse(String(Base64.getDecoder().decode(properties[0].value))).asJsonObject
+            Patcher.instance.logger.info(decodedJson.toString())
+            val skin = decodedJson["textures"]!!.asJsonObject["SKIN"]!!.asJsonObject
+            if (skin.has("metadata")) {
+                val metadataElement = skin["metadata"]
+                if (metadataElement.isJsonObject) {
+                    val metadata = metadataElement.asJsonObject
+                    if (metadata.has("model")) {
+                        return metadata["model"].asString == "slim"
+                    }
+                }
+            }
+            return false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
     }
 
     override fun doesGuiPauseGame(): Boolean = false
@@ -289,10 +313,11 @@ class ScreenHistory @JvmOverloads constructor(
         override fun getPlayerInfo(): NetworkPlayerInfo = playerInfo
     }
 
-    private data class SelectableSkin(var resourceLocation: ResourceLocation, var url: String) {
-        fun take(pair: Pair<ResourceLocation, String>) {
-            resourceLocation = pair.first
-            url = pair.second
+    private data class SelectableSkin(var resourceLocation: ResourceLocation, var url: String, var model: Model) {
+        fun take(triple: Triple<ResourceLocation, String, Model>) {
+            resourceLocation = triple.first
+            url = triple.second
+            model = triple.third
         }
     }
 
@@ -301,7 +326,8 @@ class ScreenHistory @JvmOverloads constructor(
             GameProfile(UUID.fromString("8667ba71-b85a-4004-af54-457a9734eed7"), "Steve")
         private val initialSkin: SelectableSkin = SelectableSkin(
             DefaultPlayerSkin.getDefaultSkinLegacy(),
-            "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b"
+            "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b",
+            Model.STEVE
         )
     }
 }
