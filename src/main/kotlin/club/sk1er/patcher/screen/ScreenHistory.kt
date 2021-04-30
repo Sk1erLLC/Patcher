@@ -17,9 +17,13 @@ import club.sk1er.elementa.components.*
 import club.sk1er.elementa.components.input.UITextInput
 import club.sk1er.elementa.constraints.CenterConstraint
 import club.sk1er.elementa.constraints.ChildBasedSizeConstraint
+import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import club.sk1er.elementa.effects.OutlineEffect
+import club.sk1er.elementa.effects.ScissorEffect
+import club.sk1er.elementa.state.BasicState
+import club.sk1er.elementa.utils.withAlpha
 import club.sk1er.mods.core.universal.*
 import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.util.chat.ChatUtilities
@@ -36,6 +40,7 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.util.ResourceLocation
+import net.modcore.api.ModCoreAPI
 import org.lwjgl.opengl.GL11
 import java.util.*
 
@@ -115,50 +120,14 @@ class ScreenHistory @JvmOverloads constructor(
         height = 7.5f.percent()
     } childOf background
 
-    private val changeSkinButton by UIRoundedRectangle(5f).constrain {
+    private val applySkinButton by BigButton(true, "Apply this Skin!") {
+        ChangeSkinConfirmationModal() childOf window
+    }.constrain {
         width = 80.percent()
         height = 100.percent()
         x = CenterConstraint()
         y = 0.pixels()
-        color = VigilancePalette.getAccent().toConstraint()
     } childOf buttonContainer
-
-
-    private val buttonBody by UIRoundedRectangle(5f).constrain {
-        width = basicWidthConstraint { changeSkinButton.getWidth() - 4 }
-        height = basicHeightConstraint { changeSkinButton.getHeight() - 4 }
-        y = CenterConstraint()
-        x = CenterConstraint()
-        color = VigilancePalette.getDarkHighlight().toConstraint()
-    } childOf changeSkinButton
-
-    init {
-        UIText("Apply This Skin!").constrain {
-            x = CenterConstraint()
-            y = CenterConstraint()
-            color = VigilancePalette.getBrightText().toConstraint()
-        } childOf changeSkinButton
-
-        changeSkinButton.onMouseEnter {
-            buttonBody.animate {
-                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getAccent().toConstraint())
-            }
-        }.onMouseLeave {
-            buttonBody.animate {
-                setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getDarkHighlight().toConstraint())
-            }
-        }.onMouseClick {
-            try {
-                MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
-            } catch (e: Exception) {
-                ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
-                Patcher.instance.logger.error("Failed to change players skin through name history.", e)
-                return@onMouseClick
-            }
-
-            ChatUtilities.sendNotification("Name History", "Successfully changed your skin!")
-        }
-    }
 
     private val historyScroller by ScrollComponent().constrain {
         x = 50.percent()
@@ -200,6 +169,21 @@ class ScreenHistory @JvmOverloads constructor(
         super.onDrawScreen(mouseX, mouseY, partialTicks)
     }
 
+    override fun onTick() {
+        val diff = System.currentTimeMillis() - lastSkinChange
+        if (diff < 60000L) {
+            if (applySkinButton.enabled) {
+                applySkinButton.disable()
+            }
+
+            applySkinButton.setText("Wait ${60 - (diff / 1000L)}s...")
+        } else if (!applySkinButton.enabled) {
+            applySkinButton.enable()
+            applySkinButton.setText("Apply this Skin!")
+        }
+        super.onTick()
+    }
+
     private fun getNameHistory(username: String) {
         nameFetcher.execute(username)
     }
@@ -207,7 +191,6 @@ class ScreenHistory @JvmOverloads constructor(
     private fun Profile.isAlex(): Boolean {
         try {
             val decodedJson = JsonParser().parse(String(Base64.getDecoder().decode(properties[0].value))).asJsonObject
-            Patcher.instance.logger.info(decodedJson.toString())
             val skin = decodedJson["textures"]!!.asJsonObject["SKIN"]!!.asJsonObject
             if (skin.has("metadata")) {
                 val metadataElement = skin["metadata"]
@@ -300,8 +283,193 @@ class ScreenHistory @JvmOverloads constructor(
             }
 
             UGraphics.popMatrix()
-
             super.draw()
+        }
+    }
+    
+    private inner class BigButton(
+        var enabled: Boolean,
+        buttonText: String,
+        buttonAction: () -> Unit
+    ) : UIRoundedRectangle(5f) {
+        private val buttonTextState = BasicState(buttonText)
+
+        init {
+            constrain {
+                color = VigilancePalette.getAccent().toConstraint()
+            }
+        }
+
+        private val buttonBody by UIRoundedRectangle(5f).constrain {
+            width = basicWidthConstraint { this@BigButton.getWidth() - 4 }
+            height = basicHeightConstraint { this@BigButton.getHeight() - 4 }
+            y = CenterConstraint()
+            x = CenterConstraint()
+            color = VigilancePalette.getDarkHighlight().toConstraint()
+        } childOf this
+
+        private val buttonTextComponent by UIText().bindText(buttonTextState).constrain {
+            x = CenterConstraint()
+            y = CenterConstraint()
+            color = VigilancePalette.getBrightText().toConstraint()
+        } childOf this
+
+        init {
+            onMouseEnter {
+                if (enabled) {
+                    buttonBody.animate {
+                        setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getAccent().toConstraint())
+                    }
+                }
+            }.onMouseLeave {
+                buttonBody.animate {
+                    setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getDarkHighlight().toConstraint())
+                }
+            }.onMouseClick {
+                if (enabled) {
+                    ModCoreAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    buttonAction()
+                }
+            }
+        }
+
+        fun setText(newButtonText: String): Unit = buttonTextState.set(newButtonText)
+
+        fun enable() {
+            enabled = true
+            if (buttonBody.isHovered()) {
+                buttonBody.setColor(VigilancePalette.getAccent().toConstraint())
+            }
+            buttonTextComponent.setColor(VigilancePalette.getBrightText().toConstraint())
+            setColor(VigilancePalette.getAccent().toConstraint())
+        }
+        fun disable() {
+            enabled = false
+            buttonBody.setColor(VigilancePalette.getDarkHighlight().toConstraint())
+            buttonTextComponent.setColor(VigilancePalette.getMidText().toConstraint())
+            setColor(VigilancePalette.getHighlight().toConstraint())
+        }
+    }
+
+    private inner class ChangeSkinConfirmationModal : UIBlock(VigilancePalette.getModalBackground().withAlpha(0)) {
+        init {
+            constrain {
+                x = 0.pixels()
+                y = 0.pixels()
+                height = 100.percent()
+                width = 100.percent()
+            }
+
+            onMouseClick {
+                closeModal()
+            }
+        }
+
+        private val actualModal by UIBlock(VigilancePalette.getDarkBackground()).constrain {
+            x = CenterConstraint()
+            y = CenterConstraint()
+            height = 1.pixel()
+            width = 1.pixel()
+        }.onMouseClick { e -> e.stopPropagation() } effect ScissorEffect() childOf this
+
+        init {
+            UIText("Are you sure?").constrain {
+                color = VigilancePalette.getBrightText().toConstraint()
+                x = CenterConstraint()
+                y = 25.percent()
+                textScale = 1.2f.pixels()
+            } childOf actualModal
+
+            UIWrappedText("You can only change your skin once per minute!", centered = true).constrain {
+                color = VigilancePalette.getMidText().toConstraint()
+                width = 70.percent()
+                x = CenterConstraint()
+                y = SiblingConstraint(3f)
+            } childOf actualModal
+        }
+
+        val modalBigButtonContainer by UIContainer().constrain {
+            x = CenterConstraint()
+            y = SiblingConstraint(5f)
+            height = basicHeightConstraint { buttonContainer.getHeight() }
+            width = basicWidthConstraint { buttonContainer.getWidth() }
+        } childOf actualModal
+
+        init {
+            BigButton(true, "Yes, I'm sure!") {
+                try {
+                    MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
+                } catch (e: Exception) {
+                    ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
+                    Patcher.instance.logger.error("Failed to change players skin through name history.", e)
+                    closeModal()
+                    return@BigButton
+                }
+
+                ChatUtilities.sendNotification("Name History", "Successfully changed your skin!")
+                lastSkinChange = System.currentTimeMillis()
+                closeModal()
+            }.constrain {
+                width = 80.percent()
+                height = 100.percent()
+                x = CenterConstraint()
+                y = 0.pixels()
+            } childOf modalBigButtonContainer
+
+            UIText("Wait, go back!").constrain {
+                x = CenterConstraint()
+                y = SiblingConstraint(5f)
+                color = VigilancePalette.getMidText().toConstraint()
+            }.onMouseEnter {
+                animate {
+                    setColorAnimation(Animations.OUT_EXP, .25f, VigilancePalette.getMidText().brighter().toConstraint())
+                }
+            }.onMouseLeave {
+                animate {
+                    setColorAnimation(Animations.OUT_EXP, .25f, VigilancePalette.getMidText().toConstraint())
+                }
+            }.onMouseClick {
+                closeModal()
+            } childOf actualModal
+        }
+
+        private fun closeModal() {
+            animate {
+                setColorAnimation(Animations.OUT_EXP, .5f, VigilancePalette.getModalBackground().withAlpha(0).toConstraint())
+            }
+
+            actualModal.animate {
+                setHeightAnimation(Animations.OUT_EXP, .25f, 1.pixel()).onComplete {
+                    actualModal.animate {
+                        setWidthAnimation(Animations.OUT_EXP, .25f, 1.pixel()).onComplete {
+                            window.removeChild(this@ChangeSkinConfirmationModal)
+                        }
+                    }
+                }
+            }
+        }
+
+        override fun afterInitialization() {
+            animate {
+                setColorAnimation(Animations.OUT_EXP, .5f, VigilancePalette.getModalBackground().toConstraint())
+            }
+
+            actualModal.animate {
+                setWidthAnimation(Animations.OUT_EXP, .25f, 35.percent()).onComplete {
+                    actualModal.animate {
+                        setHeightAnimation(Animations.OUT_EXP, .25f, 30.percent())
+                    }
+                }
+            }
+            super.afterInitialization()
+        }
+
+        override fun draw() {
+            // i hate this.
+            UGraphics.pushMatrix()
+            UGraphics.translate(0f, 0f, 500f)
+            super.draw()
+            UGraphics.popMatrix()
         }
     }
 
@@ -313,7 +481,11 @@ class ScreenHistory @JvmOverloads constructor(
         override fun getPlayerInfo(): NetworkPlayerInfo = playerInfo
     }
 
-    private data class SelectableSkin(var resourceLocation: ResourceLocation, var url: String, var model: Model) {
+    private data class SelectableSkin(
+        var resourceLocation: ResourceLocation,
+        var url: String,
+        var model: Model
+    ) {
         fun take(triple: Triple<ResourceLocation, String, Model>) {
             resourceLocation = triple.first
             url = triple.second
@@ -329,5 +501,6 @@ class ScreenHistory @JvmOverloads constructor(
             "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b",
             Model.STEVE
         )
+        private var lastSkinChange: Long = 0L
     }
 }
