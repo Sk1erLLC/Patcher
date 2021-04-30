@@ -6,10 +6,13 @@ import club.sk1er.elementa.constraints.SiblingConstraint
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import club.sk1er.mods.core.universal.UResolution
+import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.screen.ScreenHistory
+import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import club.sk1er.vigilance.gui.VigilancePalette
 import net.minecraft.client.Minecraft
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -59,25 +62,41 @@ object HistoryPopUp {
         Multithreading.runAsync(Runnable {
             val nf = NameFetcher()
             nf.execute(player, false)
-            fetchers.add(nf)
+            if (nf.uuid != null) {
+                fetchers.add(nf)
+            } else {
+                ChatUtilities.sendMessage("&cFailed to get name history of $player... is this a real player?")
+            }
         })
     }
 
     private class PopUp(val fetcher: NameFetcher) : UIBlock(VigilancePalette.getDarkBackground()) {
-        val img = UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
+        private val img by UIImage.ofURL(URL("https://cravatar.eu/helmavatar/${fetcher.uuid.toString().replace("-", "")}")).constrain {
             x = 5.percent()
             y = CenterConstraint()
             width = 25.percent()
             height = basicHeightConstraint { it.getWidth() }
         }
-        val timerBar = UIBlock(VigilancePalette.getAccent()).constrain {
+        private val timerBar by UIBlock(VigilancePalette.getAccent()).constrain {
             x = 0.pixels()
             y = 0.pixels(true)
             height = 2.pixels()
             width = 0.percent()
         }
+        private var animatingOut: Boolean = false
 
         init {
+            fun animateOut() {
+                if (!animatingOut) {
+                    animatingOut = true
+                    animate {
+                        setXAnimation(Animations.OUT_EXP, 1f, 0.pixels(alignOpposite = true, alignOutside = true)).onComplete {
+                            window.removeChild(this@PopUp)
+                        }
+                    }
+                }
+            }
+
             if (fetcher.uuid != null) {
                 constrain {
                     x = 10.pixels(true)
@@ -86,24 +105,21 @@ object HistoryPopUp {
                     width = 200.pixels()
                 }
 
-                //this effect OutlineEffect(VigilancePalette.ACCENT, 2f)
-
                 // todo when new-infra modcore branch is merged, cache this image.
                 img childOf this
 
                 onMouseClick {
                     // todo add thing that shows what each mouse button does
+                    ModCoreAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
                     when (it.mouseButton) {
                         0 -> {
                             ModCoreAPI.getGuiUtil().openScreen(ScreenHistory(fetcher.name))
                             window.removeChild(this@PopUp)
                         }
-                        1 -> {
-                            // todo animate this
-                            println(this@PopUp.getHeight())
+                        1 -> animateOut()
+                        else -> if (!animatingOut) {
                             window.removeChild(this@PopUp)
                         }
-                        else -> window.removeChild(this@PopUp)
                     }
                 }
 
@@ -111,12 +127,12 @@ object HistoryPopUp {
             }
 
             timer(5000L) {
-                window.removeChild(this)
+                animateOut()
             }
         }
 
         override fun afterInitialization() {
-            val t = UIText(fetcher.name, false).constrain {
+            UIText(fetcher.name, false).constrain {
                 x = 35.percent()
                 y = basicYConstraint { img.getTop() }
                 textScale = 1.1f.pixels()
