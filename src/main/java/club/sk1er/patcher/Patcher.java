@@ -126,8 +126,6 @@ public class Patcher {
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
 
-    private JsonObject duplicateModsJson;
-
     private boolean loadedGalacticFontRenderer;
 
     @Mod.EventHandler
@@ -393,8 +391,9 @@ public class Patcher {
     private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
         if (PatcherConfig.replacedModsWarning) {
             Multithreading.runAsync(() -> {
+                JsonObject replacedMods;
                 try {
-                    duplicateModsJson = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                    replacedMods = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
                 } catch (Exception e) {
                     logger.error("Failed to fetch list of replaced mods.", e);
                     return;
@@ -402,7 +401,7 @@ public class Patcher {
 
                 final Set<String> replacements = new HashSet<>();
                 for (ModContainer modContainer : activeModList) {
-                    for (String modid : keySet(duplicateModsJson)) {
+                    for (String modid : keySet(replacedMods)) {
                         if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
                             replacements.add(modContainer.getName());
                         }
