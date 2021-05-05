@@ -278,7 +278,7 @@ public final class FontRendererHook {
                         this.fontRenderer.posY += boldWidth;
                     }
 
-                    effectiveWidth += boldWidth;
+                    ++effectiveWidth;
                 }
 
                 if (this.fontRenderer.strikethroughStyle) {
