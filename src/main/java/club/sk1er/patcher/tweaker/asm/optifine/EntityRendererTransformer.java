@@ -322,7 +322,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 LabelNode ifne = new LabelNode();
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), removeViewBobbing(ifne));
                                 methodNode.instructions.insertBefore(next.getNext(), ifne);
-                                break;
+                            }
+                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            final String fieldInsnName = mapFieldNameFromNode(next);
+                            if (fieldInsnName.equals("rendererUpdateCount")) {
+                                methodNode.instructions.insertBefore(next.getPrevious(), removeNauseaEffect());
                             }
                         }
                     }
@@ -430,6 +434,19 @@ public class EntityRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "removeViewBobbing", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        return list;
+    }
+
+    private InsnList removeNauseaEffect() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "replaceNausea", "Z"));
+        LabelNode jump = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, jump));
+        list.add(new IntInsnNode(Opcodes.BIPUSH, 0));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 5));
+        list.add(new InsnNode(Opcodes.FCONST_1));
+        list.add(new VarInsnNode(Opcodes.FSTORE, 6));
+        list.add(jump);
         return list;
     }
 

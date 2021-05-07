@@ -13,6 +13,7 @@ package club.sk1er.patcher.config;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.ClassTransformer;
+import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
@@ -102,6 +103,13 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Overlays"
     )
     public static boolean nauseaEffect;
+
+    @Property(
+            type = PropertyType.SWITCH, name = "Replace Nausea",
+            description = "Replace nausea effect with a solid green overlay",
+            category = "Miscellaneous", subcategory = "Overlays"
+    )
+    public static boolean replaceNausea;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",

@@ -13,7 +13,10 @@ package club.sk1er.patcher.asm
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.MethodInsnNode
 
 class GuiIngameTransformer : PatcherTransformer {
     /**
@@ -33,9 +36,27 @@ class GuiIngameTransformer : PatcherTransformer {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
                 "showCrosshair", "func_175183_b" -> it.instructions.insert(disableCrosshairRendering())
+                "renderVignette", "func_180480_a" -> {
+                    val iterator = it.instructions.iterator()
+                    while (iterator.hasNext()) {
+                        val next = iterator.next()
+                        if (next is MethodInsnNode && next.opcode == Opcodes.INVOKEVIRTUAL) {
+                            val methodName = mapMethodNameFromNode(next)
+                            println("$methodName : ${it.instructions.indexOf(next)}")
+                            if (methodName == "getTextureManager" || methodName == "func_110434_K") {
+                                it.instructions.insertBefore(next.previous.previous, insertVignetteColorHook())
+                                break
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
+    private fun insertVignetteColorHook(): InsnList = assembleBlock {
+        invokestatic(getHookClass("GuiIngameHook"), "colorVignette", void)
+    }.first
 
     private fun disableCrosshairRendering() = assembleBlock {
         aload_0
