@@ -13,7 +13,6 @@ package club.sk1er.patcher.config;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.ClassTransformer;
-import club.sk1er.patcher.tweaker.asm.optifine.EntityRendererTransformer;
 import club.sk1er.vigilance.Vigilant;
 import club.sk1er.vigilance.data.Property;
 import club.sk1er.vigilance.data.PropertyType;
@@ -78,7 +77,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Better Keybind Handling",
-        description = "Make keys re-register when closing a GUI, like in 1.12+.",
+        description = "Make keys re-register when closing a GUI, like in 1.12+.\n§cDoes not work on macOS due to LWJGL issues.",
         category = "Miscellaneous", subcategory = "General"
     )
     public static boolean newKeybindHandling = true;
@@ -105,9 +104,9 @@ public class PatcherConfig extends Vigilant {
     public static boolean nauseaEffect;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Replace Nausea",
-            description = "Replace nausea effect with a solid green overlay",
-            category = "Miscellaneous", subcategory = "Overlays"
+        type = PropertyType.SWITCH, name = "Replace Nausea",
+        description = "Replace nausea effect with a solid green overlay",
+        category = "Miscellaneous", subcategory = "Overlays"
     )
     public static boolean replaceNausea;
 
@@ -525,7 +524,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
-        description = "Stop armorstands from rendering.\nArmorstands are commonly used for NPC nametags. Enabling this will stop those from rendering as well.",
+        description = "Stop armorstands from rendering.\n§cArmorstands are commonly used for NPC nametags. Enabling this will stop those from rendering as well.",
         category = "Performance", subcategory = "Entity Rendering"
     )
     public static boolean disableArmorstands;
