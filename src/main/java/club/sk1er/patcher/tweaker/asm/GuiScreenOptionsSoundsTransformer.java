@@ -54,9 +54,7 @@ public class GuiScreenOptionsSoundsTransformer implements PatcherTransformer {
 
     private InsnList saveOptions() {
         InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiScreenOptionsSounds$Button", "this$0", "Lnet/minecraft/client/gui/GuiScreenOptionsSounds;"));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiScreenOptionsSounds", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", "func_71410_x", "()Lnet/minecraft/client/Minecraft;", false));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/GameSettings", "func_74303_b", "()V", false));
         return list;
