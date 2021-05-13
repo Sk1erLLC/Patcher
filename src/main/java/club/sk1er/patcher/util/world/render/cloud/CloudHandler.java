@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.world.render.cloud;
 
-import club.sk1er.patcher.tweaker.asm.RenderGlobalTransformer;
+import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

@@ -30,7 +30,7 @@ class EnchantmentTransformer : PatcherTransformer {
 
     // oooooh spooky space in function name ooooh
     private fun `get Numerical Name`() = assembleBlock {
-        getstatic(patcherConfigClass, "romanNumerals", boolean)
+        getstatic("club/sk1er/patcher/config/PatcherConfig", "romanNumerals", boolean)
         ifeq(L["1"])
         new(StringBuilder::class)
         dup

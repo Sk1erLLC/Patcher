@@ -13,7 +13,7 @@ package club.sk1er.patcher.hooks;
 
 import net.modcore.api.utils.Multithreading;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.tweaker.asm.ScreenShotHelperTransformer;
+import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

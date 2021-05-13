@@ -12,7 +12,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.tweaker.asm.NetHandlerPlayClientTransformer;
+import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;

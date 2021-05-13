@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.tweaker.asm.ServerListTransformer;
+import club.sk1er.patcher.asm.network.ServerListTransformer;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import org.apache.logging.log4j.LogManager;

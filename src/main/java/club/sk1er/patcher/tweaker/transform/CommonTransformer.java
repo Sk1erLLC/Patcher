@@ -21,10 +21,7 @@ public interface CommonTransformer extends PatcherTransformer {
                 String nodeName = mapMethodNameFromNode(node);
                 if (nodeName.equals("begin") || nodeName.equals("func_181668_a")) {
                     AbstractInsnNode prevNode = node.getPrevious().getPrevious().getPrevious();
-                    methodNode.instructions.insertBefore(prevNode, new FieldInsnNode(Opcodes.GETSTATIC,
-                        getPatcherConfigClass(),
-                        "disableNametagBoxes",
-                        "Z"));
+                    methodNode.instructions.insertBefore(prevNode, getPatcherSetting("disableNametagBoxes", "Z"));
                     methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, afterDraw));
                 } else if (nodeName.equals("draw") || nodeName.equals("func_78381_a")) {
                     methodNode.instructions.insert(node, afterDraw);
@@ -124,7 +121,7 @@ public interface CommonTransformer extends PatcherTransformer {
     default InsnList minus12() {
         InsnList list = new InsnList();
         LabelNode afterSub = new LabelNode();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "chatPosition", "Z"));
+        list.add(getPatcherSetting("chatPosition", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, afterSub));
         list.add(new IincInsnNode(7, -12));
         list.add(afterSub);
@@ -133,7 +130,7 @@ public interface CommonTransformer extends PatcherTransformer {
 
     default InsnList modifyNametagRenderState(boolean voidReturnType) {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getPatcherConfigClass(), "betterHideGui", "Z"));
+        list.add(getPatcherSetting("betterHideGui", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/Minecraft", isDevelopment() ? "getMinecraft" : "func_71410_x", "()Lnet/minecraft/client/Minecraft;", false));

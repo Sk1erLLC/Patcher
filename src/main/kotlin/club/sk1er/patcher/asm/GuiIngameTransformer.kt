@@ -62,7 +62,7 @@ class GuiIngameTransformer : PatcherTransformer {
         getfield("net/minecraft/client/gui/GuiIngame", "field_73839_d", "net/minecraft/client/Minecraft")
         getfield("net/minecraft/client/Minecraft", "field_71462_r", "net/minecraft/client/gui/GuiScreen")
         ifnull(L["1"])
-        getstatic(patcherConfigClass, "guiCrosshair", boolean)
+        getstatic("club/sk1er/patcher/config/PatcherConfig", "guiCrosshair", boolean)
         ifne(L["2"])
         +L["1"]
         aload_0
@@ -70,7 +70,7 @@ class GuiIngameTransformer : PatcherTransformer {
         getfield("net/minecraft/client/Minecraft", "field_71474_y", "net/minecraft/client/settings/GameSettings")
         getfield("net/minecraft/client/settings/GameSettings", "field_74320_O", int)
         ifeq(L["3"])
-        getstatic(patcherConfigClass, "crosshairPerspective", boolean)
+        getstatic("club/sk1er/patcher/config/PatcherConfig", "crosshairPerspective", boolean)
         ifeq(L["3"])
         +L["2"]
         iconst_0

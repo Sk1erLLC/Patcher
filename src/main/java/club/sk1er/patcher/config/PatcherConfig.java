@@ -887,35 +887,35 @@ public class PatcherConfig extends Vigilant {
         description = "View the damage value of the currently held item above your hotbar.",
         category = "Screens", subcategory = "Combat Utilities"
     )
-    public static boolean damageGlance = true;
+    public static boolean damageGlance;
 
     @Property(
         type = PropertyType.SWITCH, name = "Item Count Glance",
         description = "View the total amount of the currently held item above your hotbar.",
         category = "Screens", subcategory = "Combat Utilities"
     )
-    public static boolean itemCountGlance = true;
+    public static boolean itemCountGlance;
 
     @Property(
         type = PropertyType.SWITCH, name = "Enchantment Glance",
         description = "View the enchantments of the currently held item above your hotbar.",
         category = "Screens", subcategory = "Combat Utilities"
     )
-    public static boolean enchantmentsGlance = true;
+    public static boolean enchantmentsGlance;
 
     @Property(
         type = PropertyType.SWITCH, name = "Protection Percentage",
         description = "View how much total armor protection you have inside of your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
-    public static boolean protectionPercentage = true;
+    public static boolean protectionPercentage;
 
     @Property(
         type = PropertyType.SWITCH, name = "Projectile Protection Percentage",
         description = "View how much total projectile protection you have inside of your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
-    public static boolean projectileProtectionPercentage = true;
+    public static boolean projectileProtectionPercentage;
 
     @Property(
         type = PropertyType.SWITCH, name = "Chat Position",

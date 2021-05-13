@@ -118,13 +118,9 @@ public interface PatcherTransformer {
         if (!methodNode.tryCatchBlocks.isEmpty()) methodNode.tryCatchBlocks.clear();
     }
 
-    default String getPatcherConfigClass() {
-        return "club/sk1er/patcher/config/PatcherConfig";
-    }
-
     // todo: convert to using this
     default FieldInsnNode getPatcherSetting(String settingName, String signature) {
-        return new FieldInsnNode(Opcodes.GETSTATIC, this.getPatcherConfigClass(), settingName, signature);
+        return new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/config/PatcherConfig", settingName, signature);
     }
 
     default String getHookClass(String name) {

@@ -72,7 +72,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
         val list = InsnList()
         val ifnonnull = LabelNode()
         list.add(JumpInsnNode(Opcodes.IFNONNULL, ifnonnull))
-        list.add(FieldInsnNode(Opcodes.GETSTATIC, patcherConfigClass, "layersInTab", "Z"))
+        list.add(getPatcherSetting("layersInTab", "Z"))
         list.add(JumpInsnNode(Opcodes.IFEQ, ifeq))
         list.add(JumpInsnNode(Opcodes.GOTO, goto))
         list.add(ifnonnull)
@@ -100,7 +100,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
     }
 
     private fun createNumberPing() = assembleBlock {
-        getstatic(patcherConfigClass, "numberPing", boolean)
+        getstatic("club/sk1er/patcher/config/PatcherConfig", "numberPing", boolean)
         ifeq(L["1"])
         iload_1
         iload_2
