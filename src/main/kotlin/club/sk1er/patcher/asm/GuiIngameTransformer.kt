@@ -36,20 +36,19 @@ class GuiIngameTransformer : PatcherTransformer {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
                 "showCrosshair", "func_175183_b" -> it.instructions.insert(disableCrosshairRendering())
-                "renderVignette", "func_180480_a" -> {
+                /*"renderVignette", "func_180480_a" -> {
                     val iterator = it.instructions.iterator()
                     while (iterator.hasNext()) {
                         val next = iterator.next()
                         if (next is MethodInsnNode && next.opcode == Opcodes.INVOKEVIRTUAL) {
                             val methodName = mapMethodNameFromNode(next)
-                            println("$methodName : ${it.instructions.indexOf(next)}")
                             if (methodName == "getTextureManager" || methodName == "func_110434_K") {
                                 it.instructions.insertBefore(next.previous.previous, insertVignetteColorHook())
                                 break
                             }
                         }
                     }
-                }
+                }*/
             }
         }
     }

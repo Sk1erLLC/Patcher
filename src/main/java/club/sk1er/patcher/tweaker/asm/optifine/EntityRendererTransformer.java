@@ -323,12 +323,12 @@ public class EntityRendererTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), removeViewBobbing(ifne));
                                 methodNode.instructions.insertBefore(next.getNext(), ifne);
                             }
-                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                        }/* else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
                             final String fieldInsnName = mapFieldNameFromNode(next);
                             if (fieldInsnName.equals("rendererUpdateCount")) {
                                 methodNode.instructions.insertBefore(next.getPrevious(), removeNauseaEffect());
                             }
-                        }
+                        }*/
                     }
 
                     break;

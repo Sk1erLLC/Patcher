@@ -103,12 +103,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean nauseaEffect;
 
-    @Property(
+    // todo: replace this with the proper way in 1.16 (separate texture, not modifying the vignette)
+    /*@Property(
         type = PropertyType.SWITCH, name = "Replace Nausea",
         description = "Replace nausea effect with a solid green overlay",
         category = "Miscellaneous", subcategory = "Overlays"
     )
-    public static boolean replaceNausea;
+    public static boolean replaceNausea;*/
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",

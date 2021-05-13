@@ -7,9 +7,9 @@ import net.minecraft.potion.Potion;
 
 @SuppressWarnings("unused")
 public class GuiIngameHook {
-    public static void colorVignette() {
+    /*public static void colorVignette() {
         if (PatcherConfig.replaceNausea && Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.confusion)) {
             GlStateManager.color(1f, 0, 1f, 1f);
         }
-    }
+    }*/
 }
