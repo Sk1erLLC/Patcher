@@ -13,7 +13,7 @@ package club.sk1er.patcher.asm
 
 import club.sk1er.hookinjection.getInstructions
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import club.sk1er.patcher.util.world.block.BlockUtil
+import club.sk1er.patcher.util.world.render.block.BlockUtil
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode

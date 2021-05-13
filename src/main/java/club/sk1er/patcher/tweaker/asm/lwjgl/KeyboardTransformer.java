@@ -57,7 +57,7 @@ public class KeyboardTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new JumpInsnNode(Opcodes.IFNONNULL, labelnode));
         list.add(new VarInsnNode(Opcodes.ILOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/KeycodeHelper", "getKeyName", "(I)Ljava/lang/String;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/keybind/KeycodeHelper", "getKeyName", "(I)Ljava/lang/String;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         list.add(labelnode);
 

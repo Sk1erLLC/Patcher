@@ -44,7 +44,7 @@ public class RenderEntityItemTransformer implements PatcherTransformer {
     private InsnList shouldItemRender() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "renderItem", "(Lnet/minecraft/entity/Entity;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/culling/EntityCulling", "renderItem", "(Lnet/minecraft/entity/Entity;)Z", false));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, labelNode));
         list.add(new InsnNode(Opcodes.RETURN));

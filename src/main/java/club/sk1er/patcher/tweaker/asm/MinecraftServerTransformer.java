@@ -78,20 +78,20 @@ public class MinecraftServerTransformer implements PatcherTransformer {
 
     private InsnList pushSample() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("MinecraftServerHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("MinecraftServerHook"), "metricsData", "Lclub/sk1er/patcher/screen/render/overlay/metrics/MetricsData;"));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/System", "nanoTime", "()J", false));
         list.add(new VarInsnNode(Opcodes.LLOAD, 1));
         list.add(new InsnNode(Opcodes.LSUB));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/metrics/MetricsData", "pushSample", "(J)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/screen/render/overlay/metrics/MetricsData", "pushSample", "(J)V", false));
         return list;
     }
 
     private InsnList createMetricsData() {
         InsnList list = new InsnList();
-        list.add(new TypeInsnNode(Opcodes.NEW, "club/sk1er/patcher/metrics/MetricsData"));
+        list.add(new TypeInsnNode(Opcodes.NEW, "club/sk1er/patcher/screen/render/overlay/metrics/MetricsData"));
         list.add(new InsnNode(Opcodes.DUP));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/metrics/MetricsData", "<init>", "()V", false));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHookClass("MinecraftServerHook"), "metricsData", "Lclub/sk1er/patcher/metrics/MetricsData;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/screen/render/overlay/metrics/MetricsData", "<init>", "()V", false));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHookClass("MinecraftServerHook"), "metricsData", "Lclub/sk1er/patcher/screen/render/overlay/metrics/MetricsData;"));
         return list;
     }
 

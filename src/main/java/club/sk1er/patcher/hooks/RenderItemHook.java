@@ -14,7 +14,7 @@ package club.sk1er.patcher.hooks;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
-import club.sk1er.patcher.util.hash.impl.ItemHash;
+import club.sk1er.patcher.util.enhancement.hash.impl.ItemHash;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;

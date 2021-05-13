@@ -25,7 +25,7 @@ import org.objectweb.asm.tree.MethodNode;
 public class EntityCullingTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"club.sk1er.patcher.util.world.entity.culling.EntityCulling"};
+        return new String[]{"club.sk1er.patcher.util.world.render.culling.EntityCulling"};
     }
 
     @Override

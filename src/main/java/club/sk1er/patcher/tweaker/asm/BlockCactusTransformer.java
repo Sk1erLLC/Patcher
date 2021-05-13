@@ -43,9 +43,9 @@ public class BlockCactusTransformer implements PatcherTransformer {
 
     private InsnList fixedSelectionBox() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "CACTUS_AABB", "Lnet/minecraft/util/AxisAlignedBB;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/render/block/BlockUtil", "CACTUS_AABB", "Lnet/minecraft/util/AxisAlignedBB;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "offset", "(Lnet/minecraft/util/AxisAlignedBB;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/util/AxisAlignedBB;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/block/BlockUtil", "offset", "(Lnet/minecraft/util/AxisAlignedBB;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/util/AxisAlignedBB;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
         return list;
     }

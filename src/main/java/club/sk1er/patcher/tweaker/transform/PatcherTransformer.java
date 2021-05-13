@@ -13,6 +13,7 @@ package club.sk1er.patcher.tweaker.transform;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -119,6 +120,11 @@ public interface PatcherTransformer {
 
     default String getPatcherConfigClass() {
         return "club/sk1er/patcher/config/PatcherConfig";
+    }
+
+    // todo: convert to using this
+    default FieldInsnNode getPatcherSetting(String settingName, String signature) {
+        return new FieldInsnNode(Opcodes.GETSTATIC, this.getPatcherConfigClass(), settingName, signature);
     }
 
     default String getHookClass(String name) {

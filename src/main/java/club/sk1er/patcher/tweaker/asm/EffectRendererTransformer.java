@@ -169,11 +169,11 @@ public class EffectRendererTransformer implements PatcherTransformer {
 
     private InsnList checkIfCull(int entityfxIndex) {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/render/culling/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         LabelNode labelNode = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, labelNode));
         list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/render/culling/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/particle/EntityFX", "func_174813_aQ", "()Lnet/minecraft/util/AxisAlignedBB;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/client/renderer/culling/ICamera", "func_78546_a", "(Lnet/minecraft/util/AxisAlignedBB;)Z", true));
@@ -193,7 +193,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
     private InsnList determineRender(int entityfxIndex, LabelNode ifeq) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, entityfxIndex));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/particles/ParticleCulling", "shouldRender", "(Lnet/minecraft/client/particle/EntityFX;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/culling/ParticleCulling", "shouldRender", "(Lnet/minecraft/client/particle/EntityFX;)Z", false));
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         return list;
     }

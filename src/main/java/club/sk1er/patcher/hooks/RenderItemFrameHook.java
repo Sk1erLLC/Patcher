@@ -1,7 +1,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
+import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Items;

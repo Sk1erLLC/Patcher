@@ -14,7 +14,7 @@ package club.sk1er.patcher.asm
 import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
-import club.sk1er.patcher.util.hash.FastHashedKey
+import club.sk1er.patcher.util.enhancement.hash.FastHashedKey
 import org.objectweb.asm.tree.ClassNode
 
 class LongHashMapTransformer : PatcherTransformer {

@@ -15,7 +15,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.text.CachedString;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
-import club.sk1er.patcher.util.hash.StringHash;
+import club.sk1er.patcher.util.enhancement.hash.StringHash;
 import kotlin.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

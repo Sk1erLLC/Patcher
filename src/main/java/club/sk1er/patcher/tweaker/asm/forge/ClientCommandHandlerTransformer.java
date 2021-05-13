@@ -11,14 +11,12 @@
 
 package club.sk1er.patcher.tweaker.asm.forge;
 
-import club.sk1er.patcher.agent.HotReloadable;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
-@HotReloadable
 public class ClientCommandHandlerTransformer implements PatcherTransformer {
     /**
      * The class name that's being transformed

@@ -552,7 +552,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList toggleCullingStatus(boolean status) {
         InsnList list = new InsnList();
         list.add(new InsnNode(status ? Opcodes.ICONST_1 : Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/entity/culling/EntityCulling", "shouldPerformCulling", "Z"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/render/culling/EntityCulling", "shouldPerformCulling", "Z"));
         return list;
     }
 
@@ -560,7 +560,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, var));
         list.add(new FieldInsnNode(Opcodes.PUTSTATIC,
-            "club/sk1er/patcher/util/world/particles/ParticleCulling",
+            "club/sk1er/patcher/util/world/render/culling/ParticleCulling",
             "camera",
             "Lnet/minecraft/client/renderer/culling/ICamera;"));
         return list;
@@ -609,7 +609,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
     private InsnList checkFullbright() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/FullbrightTicker", "isFullbright", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/FullbrightTicker", "isFullbright", "()Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));

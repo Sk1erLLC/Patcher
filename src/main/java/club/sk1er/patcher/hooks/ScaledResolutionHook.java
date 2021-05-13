@@ -1,8 +1,6 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.util.ResolutionHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
+import club.sk1er.patcher.screen.ResolutionHelper;
 
 @SuppressWarnings("unused")
 public class ScaledResolutionHook {

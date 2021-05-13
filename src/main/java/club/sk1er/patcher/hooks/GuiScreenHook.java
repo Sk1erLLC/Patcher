@@ -1,7 +1,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.util.ResolutionHelper;
+import club.sk1er.patcher.screen.ResolutionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;

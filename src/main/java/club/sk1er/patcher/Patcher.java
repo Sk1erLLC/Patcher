@@ -20,37 +20,37 @@ import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.CacheHooks;
 import club.sk1er.patcher.hooks.MinecraftHook;
-import club.sk1er.patcher.metrics.MetricsRenderer;
+import club.sk1er.patcher.screen.render.overlay.metrics.MetricsRenderer;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
-import club.sk1er.patcher.screen.render.DebugPerformanceRenderer;
-import club.sk1er.patcher.screen.render.TitleFix;
-import club.sk1er.patcher.screen.tab.MenuPreviewHandler;
+import club.sk1er.patcher.screen.render.overlay.DebugPerformanceRenderer;
+import club.sk1er.patcher.screen.render.title.TitleFix;
+import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
 import club.sk1er.patcher.tweaker.asm.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.asm.GuiChatTransformer;
 import club.sk1er.patcher.tweaker.launch.PatcherTweak;
-import club.sk1er.patcher.util.armor.ArmorStatusRenderer;
+import club.sk1er.patcher.screen.render.overlay.ArmorStatusRenderer;
 import club.sk1er.patcher.util.chat.ChatHandler;
-import club.sk1er.patcher.util.chat.ImagePreview;
+import club.sk1er.patcher.screen.render.overlay.ImagePreview;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
-import club.sk1er.patcher.util.hotbar.HotbarItemsHandler;
+import club.sk1er.patcher.screen.render.overlay.GlanceRenderer;
 import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
-import club.sk1er.patcher.util.sound.SoundHandler;
-import club.sk1er.patcher.util.status.ProtocolDetector;
+import club.sk1er.patcher.util.world.sound.SoundHandler;
+import club.sk1er.patcher.util.status.ProtocolVersionDetector;
 import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
-import club.sk1er.patcher.util.world.cloud.CloudHandler;
-import club.sk1er.patcher.util.world.entity.EntityRendering;
-import club.sk1er.patcher.util.world.entity.EntityTrace;
-import club.sk1er.patcher.util.world.entity.culling.EntityCulling;
+import club.sk1er.patcher.util.world.render.cloud.CloudHandler;
+import club.sk1er.patcher.util.world.render.entity.EntityRendering;
+import club.sk1er.patcher.util.world.render.entity.EntityTrace;
+import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -156,8 +156,8 @@ public class Patcher {
 
         registerEvents(
             this, target, debugPerformanceRenderer, cloudHandler, dropModifier,
-            new MenuPreviewHandler(), new EntityRendering(), new FovHandler(),
-            new ChatHandler(), new HotbarItemsHandler(), new EntityCulling(),
+            new OverlayHandler(), new EntityRendering(), new FovHandler(),
+            new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new CacheHooks(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
@@ -224,7 +224,7 @@ public class Patcher {
             return;
         }
 
-        final CompletableFuture<Boolean> future = ProtocolDetector.instance.isCompatibleWithVersion(
+        final CompletableFuture<Boolean> future = ProtocolVersionDetector.instance.isCompatibleWithVersion(
             serverIP,
             315 // 1.11
         );

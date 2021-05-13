@@ -54,7 +54,7 @@ public class BlockRendererDispatcherTransformer implements PatcherTransformer {
 
     private InsnList dontRender() {
         InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/block/BlockUtil", "groundFoliageContainer", "Ljava/util/Set;"));
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/render/block/BlockUtil", "groundFoliageContainer", "Ljava/util/Set;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "net/minecraft/block/state/IBlockState", "func_177230_c", // getBlock
             "()Lnet/minecraft/block/Block;", true));

@@ -12,7 +12,7 @@
 package club.sk1er.patcher.util.enhancement.item;
 
 import club.sk1er.patcher.util.enhancement.Enhancement;
-import club.sk1er.patcher.util.hash.impl.ItemHash;
+import club.sk1er.patcher.util.enhancement.hash.impl.ItemHash;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.CacheWriter;
 import com.github.benmanes.caffeine.cache.Caffeine;

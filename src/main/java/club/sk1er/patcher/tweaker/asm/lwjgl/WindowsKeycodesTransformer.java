@@ -45,7 +45,7 @@ public class WindowsKeycodesTransformer implements PatcherTransformer {
         LabelNode labelNode = new LabelNode();
 
         list.add(new VarInsnNode(Opcodes.ILOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/KeycodeHelper", "extraVirtualKeysWindows", "(I)I", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/keybind/KeycodeHelper", "extraVirtualKeysWindows", "(I)I", false));
         list.add(new VarInsnNode(Opcodes.ISTORE, 1));
 
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));

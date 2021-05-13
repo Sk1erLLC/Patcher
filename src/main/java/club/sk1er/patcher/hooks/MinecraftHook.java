@@ -12,7 +12,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.metrics.MetricsData;
+import club.sk1er.patcher.screen.render.overlay.metrics.MetricsData;
 import club.sk1er.patcher.tweaker.asm.MinecraftTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

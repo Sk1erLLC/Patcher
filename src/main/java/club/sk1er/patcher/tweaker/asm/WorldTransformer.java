@@ -215,7 +215,7 @@ public class WorldTransformer implements PatcherTransformer {
                 false));
         LabelNode ifeq = new LabelNode();
         insns.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/FullbrightTicker", "isFullbright", "()Z", false));
+        insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/FullbrightTicker", "isFullbright", "()Z", false));
         insns.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         insns.add(new IntInsnNode(Opcodes.BIPUSH, 15));
         insns.add(new InsnNode(Opcodes.IRETURN));
