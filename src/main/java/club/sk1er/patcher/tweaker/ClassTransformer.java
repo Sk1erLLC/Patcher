@@ -76,6 +76,7 @@ import club.sk1er.patcher.asm.render.world.ChunkRenderDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelPlayerTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelSkeletonTransformer;
+import club.sk1er.patcher.asm.render.world.entity.model.ModelVillagerTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityBannerRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEndPortalRendererTransformer;
@@ -283,6 +284,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelManagerTransformer());
         registerTransformer(new GuiScreenOptionsSoundsTransformer());
         registerTransformer(new LoadingScreenRendererTransformer());
+        registerTransformer(new ModelVillagerTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
