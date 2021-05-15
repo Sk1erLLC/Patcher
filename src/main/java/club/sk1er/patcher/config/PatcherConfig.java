@@ -230,6 +230,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean showOwnNametag;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Clean Projectiles",
+        description = "Show projectiles 2 ticks after they're shot to stop them from obstructing your view.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean cleanProjectiles;
+
+    @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Ridden Horse Opacity",
         description = "Change the opacity of the horse you're currently riding for visibility.",
         category = "Miscellaneous", subcategory = "Rendering"
