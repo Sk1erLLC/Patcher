@@ -1072,6 +1072,41 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean compactScreenshotResponse;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Favorite Screenshot",
+        description = "Show a text component that allows you to favorite a screenshot.",
+        category = "Screenshots", subcategory = "Feedback"
+    )
+    public static boolean favoriteScreenshot = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Delete Screenshot",
+        description = "Show a text component that allows you to delete a screenshot.",
+        category = "Screenshots", subcategory = "Feedback"
+    )
+    public static boolean deleteScreenshot = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Upload Screenshot",
+        description = "Show a text component that allows you to upload a screenshot to Imgur.\nSupport for custom services is currently planned.",
+        category = "Screenshots", subcategory = "Feedback"
+    )
+    public static boolean uploadScreenshot = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Copy Screenshot",
+        description = "Show a text component that allows you to copy a screenshot.",
+        category = "Screenshots", subcategory = "Feedback"
+    )
+    public static boolean copyScreenshot = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Open Screenshots Folder",
+        description = "Show a text component that allows you to open the screenshots folder.",
+        category = "Screenshots", subcategory = "Feedback"
+    )
+    public static boolean openScreenshotsFolder = true;
+
     // EXPERIMENTAL
 
     @Property(
@@ -1153,6 +1188,11 @@ public class PatcherConfig extends Vigilant {
             addDependency(patcherConfigClass.getField("previewTime"), screenshotManager);
             addDependency(patcherConfigClass.getField("previewAnimationStyle"), screenshotManager);
             addDependency(patcherConfigClass.getField("previewScale"), screenshotManager);
+            addDependency(patcherConfigClass.getField("favoriteScreenshot"), screenshotManager);
+            addDependency(patcherConfigClass.getField("deleteScreenshot"), screenshotManager);
+            addDependency(patcherConfigClass.getField("uploadScreenshot"), screenshotManager);
+            addDependency(patcherConfigClass.getField("copyScreenshot"), screenshotManager);
+            addDependency(patcherConfigClass.getField("openScreenshotsFolder"), screenshotManager);
 
             hidePropertyIf(patcherConfigClass.getField("instantFullscreen"), !SystemUtils.IS_OS_WINDOWS);
 
