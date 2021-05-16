@@ -12,6 +12,7 @@
 package club.sk1er.patcher.asm.render.screen;
 
 import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
@@ -29,7 +30,11 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         final String optifineVersion = ClassTransformer.optifineVersion;
-        final boolean compatibleVersion = optifineVersion.equals("L5") || optifineVersion.startsWith("L6") || optifineVersion.startsWith("M5") || optifineVersion.startsWith("M6");
+        final OptiFineGenerations generations = ClassTransformer.generations;
+        final boolean compatibleVersion = generations.getLGeneration().contains(optifineVersion)
+            || generations.getMGeneration().contains(optifineVersion)
+            || generations.getFutureGeneration().contains(optifineVersion);
+
         for (MethodNode method : classNode.methods) {
             final String methodName = mapMethodName(classNode, method);
             if (methodName.equals("getDebugInfoRight") || methodName.equals("func_175238_c")) {

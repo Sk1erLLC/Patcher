@@ -13,10 +13,10 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.asm.*;
+import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer;
 import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
-import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
@@ -35,13 +35,14 @@ import club.sk1er.patcher.asm.external.forge.render.lighting.VertexLighterSmooth
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiIngameForgeTransformer;
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiModListTransformer;
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiUtilsTransformer;
-import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
-import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
+import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
+import club.sk1er.patcher.asm.forge.ForgeChunkManagerTransformer;
+import club.sk1er.patcher.asm.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.network.LazyLoadBaseTransformer;
 import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
@@ -60,19 +61,19 @@ import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
 import club.sk1er.patcher.asm.render.block.BlockCactusTransformer;
 import club.sk1er.patcher.asm.render.block.BlockFluidRendererTransformer;
 import club.sk1er.patcher.asm.render.block.BlockRendererDispatcherTransformer;
+import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
+import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
+import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
 import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
+import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
+import club.sk1er.patcher.asm.render.particle.EntityFXTransformer;
+import club.sk1er.patcher.asm.render.screen.*;
+import club.sk1er.patcher.asm.render.world.ChunkRenderDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.WorldRendererTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
-import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
-import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
-import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
-import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
-import club.sk1er.patcher.asm.render.particle.EntityFXTransformer;
-import club.sk1er.patcher.asm.render.screen.*;
-import club.sk1er.patcher.asm.render.world.ChunkRenderDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelPlayerTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelSkeletonTransformer;
@@ -84,27 +85,35 @@ import club.sk1er.patcher.asm.render.world.tileentity.TileEntityPistonRendererTr
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.asm.resources.AbstractResourcePackTransformer;
-import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
 import club.sk1er.patcher.asm.resources.ModelManagerTransformer;
 import club.sk1er.patcher.asm.resources.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
 import club.sk1er.patcher.asm.resources.ThreadDownloadImageDataTransformer;
-import club.sk1er.patcher.asm.world.*;
-import club.sk1er.patcher.asm.world.entity.data.DataWatcherTransformer;
+import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
+import club.sk1er.patcher.asm.world.BlockPosTransformer;
+import club.sk1er.patcher.asm.world.ChunkTransformer;
+import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
+import club.sk1er.patcher.asm.world.ScoreboardTransformer;
+import club.sk1er.patcher.asm.world.StatBaseTransformer;
+import club.sk1er.patcher.asm.world.WorldClientTransformer;
+import club.sk1er.patcher.asm.world.WorldTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityItemTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityLivingBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerSPTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
+import club.sk1er.patcher.asm.world.entity.data.DataWatcherTransformer;
 import club.sk1er.patcher.asm.world.entity.data.NodeProcessorTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagStringTransformer;
+import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
@@ -114,6 +123,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -126,6 +136,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -141,11 +152,15 @@ public class ClassTransformer implements IClassTransformer {
     public static String optifineVersion = "NONE";
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
+
     public static final Set<String> supportedOptiFineVersions = new HashSet<>();
+    public static OptiFineGenerations generations;
+    private final Gson gson = new Gson();
 
     public ClassTransformer() {
         try {
             this.fetchSupportedOptiFineVersions();
+            this.updateOptiFineGenerations();
             ClassNode classNode = new ClassNode();
             ClassReader classReader = new ClassReader("Config");
             classReader.accept(classNode, ClassReader.SKIP_CODE);
@@ -433,17 +448,46 @@ public class ClassTransformer implements IClassTransformer {
     }
 
     private void fetchSupportedOptiFineVersions() {
+        HttpsURLConnection connection = null;
         try {
-            URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(optifineVersions.openStream()))) {
+            final URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
+            connection = (HttpsURLConnection) optifineVersions.openConnection();
+            connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String version;
                 while ((version = reader.readLine()) != null) {
                     supportedOptiFineVersions.add(version);
                 }
             }
         } catch (Exception e) {
-            this.logger.error("Failed to read supported OptiFine versions, adding defaults.");
+            this.logger.error("Failed to read supported OptiFine versions, adding defaults.", e);
             supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6"));
+        } finally {
+            if (connection != null) connection.disconnect();
+        }
+    }
+
+    private void updateOptiFineGenerations() {
+        HttpsURLConnection connection = null;
+        try {
+            final URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
+            connection = (HttpsURLConnection) optifineGenerations.openConnection();
+            connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
+            try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
+                generations = gson.fromJson(reader, OptiFineGenerations.class);
+            }
+        } catch (Exception e) {
+            this.logger.error("Failed to read OptiFine generations list. Supplying default supported generations.", e);
+            generations.getIGeneration().add("I7");
+
+            generations.getLGeneration().add("L5");
+            generations.getLGeneration().add("L6");
+
+            generations.getMGeneration().add("M5");
+            generations.getMGeneration().add("M6-pre1");
+            generations.getMGeneration().add("M6");
+        } finally {
+            if (connection != null) connection.disconnect();
         }
     }
 

@@ -12,6 +12,7 @@
 package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.asm.optifine.WorldVertexBufferUploaderTransformer;
+import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
@@ -85,17 +86,15 @@ public class ModClassTransformer implements IClassTransformer {
         //
         // Only I7 and above are supported due to them being the biggest versions of OptiFine.
         final String optifineVersion = ClassTransformer.optifineVersion;
-        if (optifineVersion.equals("I7")) {
-            logger.info("Found OptiFine I7");
+        final OptiFineGenerations generations = ClassTransformer.generations;
+        if (generations.getIGeneration().contains(optifineVersion)) {
             registerCommonTransformers();
             registerI7Transformers();
-        } else if (optifineVersion.startsWith("L5") || optifineVersion.equals("L6")) {
-            logger.info("Found OptiFine {}", optifineVersion);
+        } else if (generations.getLGeneration().contains(optifineVersion)) {
             registerCommonTransformers();
             registerLSeriesTransformers();
             registerLSeriesFixesTransformers();
-        } else if (optifineVersion.startsWith("M5") || optifineVersion.startsWith("M6")) {
-            logger.info("Found OptiFine {}", optifineVersion);
+        } else if (generations.getMGeneration().contains(optifineVersion) || generations.getFutureGeneration().contains(optifineVersion)) {
             registerCommonTransformers();
             registerLSeriesTransformers();
         } else {
