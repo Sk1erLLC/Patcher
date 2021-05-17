@@ -99,6 +99,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                 case "loadWorld":
                 case "func_71353_a":
                     if (methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
+                        methodNode.instructions.insert(clearLoadedMaps());
                         ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                         while (iterator.hasNext()) {
@@ -290,6 +291,21 @@ public class MinecraftTransformer implements PatcherTransformer {
                 }
             }
         }
+    }
+
+    private InsnList clearLoadedMaps() {
+        InsnList list = new InsnList();
+        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71441_e", "Lnet/minecraft/client/multiplayer/WorldClient;"));
+        LabelNode ifacmpeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ACMPEQ, ifacmpeq));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71460_t", "Lnet/minecraft/client/renderer/EntityRenderer;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/EntityRenderer", "func_147701_i", "()Lnet/minecraft/client/gui/MapItemRenderer;", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/MapItemRenderer", "func_148249_a", "()V", false));
+        list.add(ifacmpeq);
+        return list;
     }
 
     private InsnList useCustomFrameLimit() {
