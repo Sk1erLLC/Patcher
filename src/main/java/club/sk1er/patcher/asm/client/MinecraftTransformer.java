@@ -361,15 +361,28 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFNE, label));
         list.add(getPatcherSetting("unfocusedFPS", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, label));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74350_i", "I"));
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label));
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        list.add(getPatcherSetting("customFpsLimit", "I"));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, label));
         list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
         list.add(new InsnNode(Opcodes.IRETURN));
         list.add(label);
         list.add(getPatcherSetting("customFpsLimit", "I"));
-        LabelNode ifle = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
+        LabelNode label2 = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFLE, label2));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74350_i", "I"));
+        list.add(getPatcherSetting("customFpsLimit", "I"));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label2));
         list.add(getPatcherSetting("customFpsLimit", "I"));
         list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(ifle);
+        list.add(label2);
         return list;
     }
 

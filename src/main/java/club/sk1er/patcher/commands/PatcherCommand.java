@@ -273,11 +273,16 @@ public class PatcherCommand extends Command {
         if (amount < 0) {
             ChatUtilities.sendNotification("Custom FPS Limiter", "You cannot set your framerate to a negative number.");
             return;
+        } else if (amount == PatcherConfig.customFpsLimit) {
+            ChatUtilities.sendNotification("Custom FPS Limiter", "Custom framerate is already set to this value.");
+            return;
         }
 
         PatcherConfig.customFpsLimit = amount;
         Patcher.instance.forceSaveConfig();
-        ChatUtilities.sendNotification("Custom FPS Limiter", "Custom framerate set to " + amount + ".");
+
+        final String message = amount == 0 ? "Custom framerate was reset." : "Custom framerate set to " + amount + ".";
+        ChatUtilities.sendNotification("Custom FPS Limiter", message);
     }
 
     /*@SubCommand("dev")
