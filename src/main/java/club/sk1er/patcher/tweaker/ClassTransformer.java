@@ -300,6 +300,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenOptionsSoundsTransformer());
         registerTransformer(new LoadingScreenRendererTransformer());
         registerTransformer(new ModelVillagerTransformer());
+        registerTransformer(new GuiScreenBookTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
