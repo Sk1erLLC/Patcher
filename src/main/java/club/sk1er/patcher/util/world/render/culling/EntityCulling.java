@@ -60,6 +60,7 @@ public class EntityCulling {
     private static final ConcurrentHashMap<UUID, OcclusionQuery> queries = new ConcurrentHashMap<>();
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean shouldPerformCulling = false;
+    private int destroyTimer;
 
     /**
      * Used for checking if the entities nametag can be rendered if the user still wants
@@ -225,7 +226,7 @@ public class EntityCulling {
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) {
+        if (event.phase != TickEvent.Phase.END || !PatcherConfig.entityCulling) {
             return;
         }
 
@@ -271,24 +272,23 @@ public class EntityCulling {
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) {
-
-        if (event.phase != TickEvent.Phase.END) {
+        if (event.phase != TickEvent.Phase.END || !PatcherConfig.entityCulling || this.destroyTimer++ < 120) {
             return;
         }
 
+        this.destroyTimer = 0;
         final WorldClient theWorld = mc.theWorld;
         if (theWorld == null) {
             return;
         }
 
-        List<UUID> remove = new ArrayList<>();
-
-        Set<UUID> loaded = new HashSet<>();
+        final List<UUID> remove = new ArrayList<>();
+        final Set<UUID> loaded = new HashSet<>();
         for (Entity entity : theWorld.loadedEntityList) {
             loaded.add(entity.getUniqueID());
         }
 
-        for (OcclusionQuery value : queries.values()) {
+        for (final OcclusionQuery value : queries.values()) {
             if (loaded.contains(value.uuid)) {
                 continue;
             }
@@ -298,6 +298,7 @@ public class EntityCulling {
                 GL15.glDeleteQueries(value.nextQuery);
             }
         }
+
         for (UUID uuid : remove) {
             queries.remove(uuid);
         }

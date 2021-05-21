@@ -40,6 +40,7 @@ public class EntityTrace {
 
     /**
      * When the Name History keybind is pressed, check the currently hovered over entity.
+     * <p>
      * If the player is hovering over an entity and their name is not obfuscated (&k style) and their name
      * is currently rendering (avoid any case of allowing the player to identify their name while the server does not
      * allow them to view names), check their name history and open a GUI displaying the name history.
@@ -48,7 +49,7 @@ public class EntityTrace {
      */
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
-        if (Patcher.instance.getNameHistory().isPressed()) {
+        if (Patcher.instance.getNameHistory().isPressed() && mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null) {
             this.getMouseOver(this.partialTicks);
 
             if (targetEntity != null && targetEntity instanceof EntityPlayer) {
@@ -56,7 +57,7 @@ public class EntityTrace {
                     return;
                 }
 
-                if (mc.currentScreen == null && mc.theWorld != null && mc.thePlayer != null && EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
+                if (EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
                     GuiUtil.open(new ScreenHistory(targetEntity.getName(), false));
                 }
             }
@@ -68,9 +69,9 @@ public class EntityTrace {
      *
      * @param partialTicks Current world ticks.
      */
-    public void getMouseOver(float partialTicks) {
+    private void getMouseOver(float partialTicks) {
         Entity entity = mc.getRenderViewEntity();
-        if (entity != null && mc.theWorld != null) {
+        if (entity != null) {
             mc.mcProfiler.startSection("patcher_pick");
             double distance = 128;
             double distanceFromEyes = 128;
