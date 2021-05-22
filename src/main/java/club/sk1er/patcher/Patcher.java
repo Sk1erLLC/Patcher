@@ -11,6 +11,8 @@
 
 package club.sk1er.patcher;
 
+import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
+import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
 import club.sk1er.patcher.commands.DeleteNameHistoryCommand;
 import club.sk1er.patcher.commands.InventoryScaleCommand;
 import club.sk1er.patcher.commands.PatcherCommand;
@@ -20,44 +22,44 @@ import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.CacheHooks;
 import club.sk1er.patcher.hooks.MinecraftHook;
-import club.sk1er.patcher.screen.render.overlay.metrics.MetricsRenderer;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
-import club.sk1er.patcher.screen.render.overlay.DebugPerformanceRenderer;
-import club.sk1er.patcher.screen.render.title.TitleFix;
-import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
-import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
-import club.sk1er.patcher.tweaker.launch.PatcherTweak;
 import club.sk1er.patcher.screen.render.overlay.ArmorStatusRenderer;
-import club.sk1er.patcher.util.chat.ChatHandler;
+import club.sk1er.patcher.screen.render.overlay.DebugPerformanceRenderer;
+import club.sk1er.patcher.screen.render.overlay.GlanceRenderer;
 import club.sk1er.patcher.screen.render.overlay.ImagePreview;
+import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
+import club.sk1er.patcher.screen.render.overlay.metrics.MetricsRenderer;
+import club.sk1er.patcher.screen.render.title.TitleFix;
+import club.sk1er.patcher.tweaker.launch.PatcherTweak;
+import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.forge.EntrypointCaching;
 import club.sk1er.patcher.util.fov.FovHandler;
-import club.sk1er.patcher.screen.render.overlay.GlanceRenderer;
 import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
-import club.sk1er.patcher.util.world.sound.SoundHandler;
 import club.sk1er.patcher.util.status.ProtocolVersionDetector;
 import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.patcher.util.world.render.cloud.CloudHandler;
-import club.sk1er.patcher.util.world.render.entity.EntityRendering;
-import club.sk1er.patcher.util.world.render.entity.EntityTrace;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
+import club.sk1er.patcher.util.world.render.entity.EntityRendering;
+import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
+import club.sk1er.patcher.util.world.sound.SoundHandler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -103,7 +105,7 @@ public class Patcher {
     // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
     // rcs will be 1.x-rc-y
     // extra branches will be 1.x-branch-y
-    public static final String VERSION = "1.6";
+    public static final String VERSION = "1.6.0";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
@@ -116,8 +118,8 @@ public class Patcher {
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
 
     private final CloudHandler cloudHandler = new CloudHandler();
-    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
     private final SavesWatcher savesWatcher = new SavesWatcher();
+    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
@@ -161,7 +163,7 @@ public class Patcher {
             this, target, debugPerformanceRenderer, cloudHandler, dropModifier,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
-            new ArmorStatusRenderer(), new EntityTrace(), new PatcherMenuEditor(),
+            new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new CacheHooks(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
             HistoryPopUp.INSTANCE
@@ -190,13 +192,20 @@ public class Patcher {
         final Notifications notifications = ModCoreAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
+    }
 
+    private boolean alreadyDispatched;
+
+    @SubscribeEvent
+    public void dispatchStartupTime(GuiScreenEvent.InitGuiEvent event) {
+        if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
         final long time = (System.currentTimeMillis() - PatcherTweak.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            ModCoreAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
+        alreadyDispatched = true;
     }
 
     /**

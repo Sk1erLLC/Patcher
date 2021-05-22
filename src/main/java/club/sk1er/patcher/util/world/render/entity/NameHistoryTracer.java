@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import java.util.List;
 
-public class EntityTrace {
+public class NameHistoryTracer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private Entity targetEntity;
@@ -60,6 +60,8 @@ public class EntityTrace {
                 if (EntityCulling.canRenderName((EntityLivingBase) targetEntity)) {
                     GuiUtil.open(new ScreenHistory(targetEntity.getName(), false));
                 }
+            } else if (targetEntity == null) {
+                GuiUtil.open(new ScreenHistory("Steve", true));
             }
         }
     }

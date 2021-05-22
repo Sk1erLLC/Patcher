@@ -35,40 +35,38 @@ public class DebugPerformanceRenderer {
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+        if (event.phase != TickEvent.Phase.END || !frameRender) return;
 
-        if (frameRender) {
-            frames.add(System.currentTimeMillis());
-            final long currentTime = System.currentTimeMillis();
-            while ((currentTime - frames.getFirst()) > 60000) {
-                frames.removeFirst();
-                if (frames.isEmpty()) break;
-            }
+        frames.add(System.currentTimeMillis());
+        final long currentTime = System.currentTimeMillis();
+        while ((currentTime - frames.getFirst()) > 60000) {
+            frames.removeFirst();
+            if (frames.isEmpty()) break;
+        }
 
-            if ((System.currentTimeMillis() - updated) > 1000) {
-                updated = System.currentTimeMillis();
-                renderStrings[0] = "Mode: " + mode;
-                int renderMode = 0;
-                for (int interval : intervals) {
-                    int amt = 0;
+        if ((System.currentTimeMillis() - updated) > 1000) {
+            updated = System.currentTimeMillis();
+            renderStrings[0] = "Mode: " + mode;
+            int renderMode = 0;
+            for (int interval : intervals) {
+                int amt = 0;
 
-                    for (long frame : frames) {
-                        if ((System.currentTimeMillis() - frame) < (interval * 1000L)) {
-                            amt++;
-                        }
+                for (long frame : frames) {
+                    if ((System.currentTimeMillis() - frame) < (interval * 1000L)) {
+                        amt++;
                     }
-
-                    renderStrings[++renderMode] = "Avg on " + interval + "s: " + format.format(amt / ((float) interval));
                 }
-            }
 
-            final ScaledResolution scaledResolution = new ScaledResolution(mc);
-            int y = 40;
-
-            for (String render : renderStrings) {
-                mc.fontRendererObj.drawString(render, scaledResolution.getScaledWidth() - 5 - mc.fontRendererObj.getStringWidth(render), y, textColor, true);
-                y += 10;
+                renderStrings[++renderMode] = "Avg on " + interval + "s: " + format.format(amt / ((float) interval));
             }
+        }
+
+        final ScaledResolution scaledResolution = new ScaledResolution(mc);
+        int y = 40;
+
+        for (String render : renderStrings) {
+            mc.fontRendererObj.drawString(render, scaledResolution.getScaledWidth() - 5 - mc.fontRendererObj.getStringWidth(render), y, textColor, true);
+            y += 10;
         }
     }
 
