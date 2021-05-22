@@ -19,12 +19,7 @@ import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer
 import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.FluidRegistryTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.ModClassLoaderTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.ModContainerFactoryTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.*;
 import club.sk1er.patcher.asm.external.forge.render.ForgeHooksClientTransformer;
 import club.sk1er.patcher.asm.external.forge.render.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.asm.external.forge.render.block.BlockInfoTransformer;
@@ -322,6 +317,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ASMModParserTransformer());
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
+        registerTransformer(new JarDiscovererTransformer());
 
         // optifine
         registerTransformer(new InventoryPlayerTransformer());
