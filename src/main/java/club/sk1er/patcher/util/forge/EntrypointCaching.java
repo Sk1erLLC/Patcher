@@ -1,5 +1,6 @@
 package club.sk1er.patcher.util.forge;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +12,6 @@ import net.minecraftforge.fml.common.discovery.ModCandidate;
 import net.minecraftforge.fml.common.discovery.asm.ASMModParser;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +41,7 @@ public class EntrypointCaching {
     private Map<File, String> hashCache = new HashMap<>();
 
     private EntrypointCaching() {
+        if (!PatcherConfig.cacheEntrypoints) return;
         try {
             if (cacheFile.exists()) {
                 String cacheText = FileUtils.readFileToString(cacheFile);
@@ -55,7 +56,7 @@ public class EntrypointCaching {
 
     @SuppressWarnings("unused")
     public List<ModContainer> discoverCachedEntrypoints(ModCandidate candidate, ASMDataTable table, JarFile file, MetadataCollection mc) {
-
+        if (!PatcherConfig.cacheEntrypoints) return null;
         File modFile = candidate.getModContainer();
 
         String hash = getHash(modFile);
@@ -101,6 +102,7 @@ public class EntrypointCaching {
 
     @SuppressWarnings("unused")
     public void putCachedEntrypoints(ModCandidate candidate, ZipEntry ze) {
+        if (!PatcherConfig.cacheEntrypoints) return;
         File modFile = candidate.getModContainer();
         String modClass = ze.getName();
 
@@ -114,6 +116,7 @@ public class EntrypointCaching {
     }
 
     public void onInit() {
+        if (!PatcherConfig.cacheEntrypoints) return;
         readMap = null;
 
         File patcherDir = new File("patcher");

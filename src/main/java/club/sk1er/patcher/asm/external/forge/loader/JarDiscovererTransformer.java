@@ -33,9 +33,9 @@ public class JarDiscovererTransformer implements PatcherTransformer {
 
                     if (next instanceof MethodInsnNode) {
                         final MethodInsnNode insn = ((MethodInsnNode) next);
-                        if (insn.owner.equals("java/util/jar/JarFile") && insn.name.equals("entries") && insn.desc.equals("()Ljava/util/Enumeration;")) {
+                        if (insn.name.equals("entries")) {
                             method.instructions.insertBefore(next, discoverCachedJar());
-                        } else if (insn.owner.equals("net/minecraftforge/fml/common/ModContainer") && insn.name.equals("bindMetadata") && insn.desc.equals("(Lnet/minecraftforge/fml/common/MetadataCollection;)V")) {
+                        } else if (insn.name.equals("bindMetadata")) {
                             method.instructions.insert(insn, putCachedJar());
                         }
                     }
