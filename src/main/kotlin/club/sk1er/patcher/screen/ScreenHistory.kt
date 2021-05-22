@@ -47,7 +47,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen() {
+) : WindowScreen(newGuiScale = ModCoreAPI.getGuiUtil().scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
@@ -58,7 +58,7 @@ class ScreenHistory @JvmOverloads constructor(
         height = 75.percent()
         width = 50.percent()
         color = VigilancePalette.getBackground().toConstraint()
-    } childOf window
+    } effect ScissorEffect() childOf window
 
     private val textHolder by UIBlock(VigilancePalette.getDarkHighlight()).constrain {
         x = CenterConstraint()
