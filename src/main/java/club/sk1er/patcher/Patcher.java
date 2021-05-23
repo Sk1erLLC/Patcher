@@ -55,6 +55,11 @@ import club.sk1er.patcher.util.world.sound.SoundHandler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import gg.essential.api.EssentialAPI;
+import gg.essential.api.commands.Command;
+import gg.essential.api.gui.Notifications;
+import gg.essential.api.utils.Multithreading;
+import gg.essential.api.utils.WebUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -72,11 +77,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.modcore.api.ModCoreAPI;
-import net.modcore.api.commands.Command;
-import net.modcore.api.gui.Notifications;
-import net.modcore.api.utils.Multithreading;
-import net.modcore.api.utils.WebUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
@@ -189,7 +189,7 @@ public class Patcher {
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
-        final Notifications notifications = ModCoreAPI.getNotifications();
+        final Notifications notifications = EssentialAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
     }
@@ -201,7 +201,7 @@ public class Patcher {
         if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
         final long time = (System.currentTimeMillis() - PatcherTweak.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            ModCoreAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            EssentialAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
@@ -280,7 +280,7 @@ public class Patcher {
 
     private void registerCommands(Command... commands) {
         for (final Command command : commands) {
-            ModCoreAPI.getCommandRegistry().registerCommand(command);
+            EssentialAPI.getCommandRegistry().registerCommand(command);
         }
     }
 
@@ -405,7 +405,8 @@ public class Patcher {
             Multithreading.runAsync(() -> {
                 JsonObject replacedMods;
                 try {
-                    replacedMods = new JsonParser().parse(WebUtil.fetchString("https://static.sk1er.club/patcher/duplicate_mods.json")).getAsJsonObject();
+                    final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
+                    replacedMods = new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject();
                 } catch (Exception e) {
                     logger.error("Failed to fetch list of replaced mods.", e);
                     return;

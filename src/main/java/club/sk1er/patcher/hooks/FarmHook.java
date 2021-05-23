@@ -11,8 +11,8 @@
 
 package club.sk1er.patcher.hooks;
 
-import net.modcore.api.utils.MinecraftUtils;
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.api.utils.MinecraftUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
 import net.minecraft.block.BlockCrops;

@@ -11,9 +11,9 @@
 
 package club.sk1er.patcher.screen.render.overlay;
 
-import net.modcore.api.utils.Multithreading;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.api.utils.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;

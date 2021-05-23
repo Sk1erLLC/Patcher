@@ -11,11 +11,11 @@
 
 package club.sk1er.patcher.asm.external.mods.optifine;
 
-import club.sk1er.elementa.constraints.animation.Animations;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import gg.essential.elementa.constraints.animation.Animations;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;

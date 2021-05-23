@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.config;
 
-import club.sk1er.vigilance.Vigilant;
+import gg.essential.vigilance.Vigilant;
 
 import java.io.File;
 

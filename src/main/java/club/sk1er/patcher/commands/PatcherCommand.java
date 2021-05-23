@@ -11,22 +11,30 @@
 
 package club.sk1er.patcher.commands;
 
-import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.screen.ScreenHistory;
+import club.sk1er.patcher.util.chat.ChatUtilities;
+import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.enhancement.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.enhancement.benchmark.impl.ItemBenchmark;
 import club.sk1er.patcher.util.enhancement.benchmark.impl.TextBenchmark;
-import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import club.sk1er.patcher.util.name.NameFetcher;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import gg.essential.api.commands.Command;
+import gg.essential.api.commands.DefaultHandler;
+import gg.essential.api.commands.DisplayName;
+import gg.essential.api.commands.Greedy;
+import gg.essential.api.commands.Options;
+import gg.essential.api.commands.SubCommand;
+import gg.essential.api.utils.GuiUtil;
+import gg.essential.api.utils.Multithreading;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -36,14 +44,6 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
-import net.modcore.api.commands.Command;
-import net.modcore.api.commands.DefaultHandler;
-import net.modcore.api.commands.DisplayName;
-import net.modcore.api.commands.Greedy;
-import net.modcore.api.commands.Options;
-import net.modcore.api.commands.SubCommand;
-import net.modcore.api.utils.GuiUtil;
-import net.modcore.api.utils.Multithreading;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

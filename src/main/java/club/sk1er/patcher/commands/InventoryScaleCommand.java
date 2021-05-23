@@ -1,8 +1,8 @@
 package club.sk1er.patcher.commands;
 
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import net.modcore.api.commands.Command;
-import net.modcore.api.commands.DefaultHandler;
+import gg.essential.api.commands.Command;
+import gg.essential.api.commands.DefaultHandler;
 
 public class InventoryScaleCommand extends Command {
     public InventoryScaleCommand() {

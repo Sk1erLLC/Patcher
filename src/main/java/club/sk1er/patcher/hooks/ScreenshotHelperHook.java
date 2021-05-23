@@ -11,10 +11,10 @@
 
 package club.sk1er.patcher.hooks;
 
-import net.modcore.api.utils.Multithreading;
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
+import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
+import gg.essential.api.utils.Multithreading;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

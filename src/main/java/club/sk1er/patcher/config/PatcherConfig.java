@@ -13,11 +13,11 @@ package club.sk1er.patcher.config;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.tweaker.ClassTransformer;
-import club.sk1er.vigilance.Vigilant;
-import club.sk1er.vigilance.data.Property;
-import club.sk1er.vigilance.data.PropertyType;
+import gg.essential.api.utils.GuiUtil;
+import gg.essential.vigilance.Vigilant;
+import gg.essential.vigilance.data.Property;
+import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
-import net.modcore.api.utils.GuiUtil;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package club.sk1er.patcher.screen.disconnect;
 
-import club.sk1er.mods.core.universal.ChatColor;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;

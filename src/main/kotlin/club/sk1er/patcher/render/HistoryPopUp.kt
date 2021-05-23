@@ -1,24 +1,23 @@
 package club.sk1er.patcher.render
 
-import club.sk1er.elementa.components.*
-import club.sk1er.elementa.constraints.CenterConstraint
-import club.sk1er.elementa.constraints.SiblingConstraint
-import club.sk1er.elementa.constraints.animation.Animations
-import club.sk1er.elementa.dsl.*
-import club.sk1er.mods.core.universal.UResolution
-import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.screen.ScreenHistory
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
-import club.sk1er.vigilance.gui.VigilancePalette
+import gg.essential.api.EssentialAPI
+import gg.essential.api.utils.Multithreading
+import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.animation.Animations
+import gg.essential.elementa.dsl.*
+import gg.essential.universal.UResolution
+import gg.essential.vigilance.gui.VigilancePalette
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
-import net.modcore.api.ModCoreAPI
-import net.modcore.api.utils.Multithreading
 import org.lwjgl.input.Mouse
 import java.net.URL
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -110,10 +109,10 @@ object HistoryPopUp {
 
                 onMouseClick {
                     // todo add thing that shows what each mouse button does
-                    ModCoreAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    EssentialAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
                     when (it.mouseButton) {
                         0 -> {
-                            ModCoreAPI.getGuiUtil().openScreen(ScreenHistory(fetcher.name))
+                            EssentialAPI.getGuiUtil().openScreen(ScreenHistory(fetcher.name))
                             window.removeChild(this@PopUp)
                         }
                         1 -> animateOut()

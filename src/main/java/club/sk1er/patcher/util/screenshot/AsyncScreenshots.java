@@ -11,13 +11,16 @@
 
 package club.sk1er.patcher.util.screenshot;
 
-import club.sk1er.mods.core.universal.ChatColor;
-import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.tasks.UploadScreenshotTask;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.ScreenshotPreview;
+import club.sk1er.patcher.tasks.UploadScreenshotTask;
 import club.sk1er.patcher.util.chat.ChatUtilities;
+import gg.essential.api.commands.Command;
+import gg.essential.api.commands.DefaultHandler;
+import gg.essential.api.utils.Multithreading;
+import gg.essential.universal.ChatColor;
+import gg.essential.universal.UDesktop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -26,9 +29,6 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
-import net.modcore.api.commands.Command;
-import net.modcore.api.commands.DefaultHandler;
-import net.modcore.api.utils.Multithreading;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;

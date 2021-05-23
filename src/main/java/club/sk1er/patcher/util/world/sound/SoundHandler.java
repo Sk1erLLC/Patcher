@@ -13,8 +13,8 @@ package club.sk1er.patcher.util.world.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.vigilance.data.PropertyData;
-import club.sk1er.vigilance.data.PropertyType;
+import gg.essential.vigilance.data.PropertyData;
+import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundEventAccessorComposite;

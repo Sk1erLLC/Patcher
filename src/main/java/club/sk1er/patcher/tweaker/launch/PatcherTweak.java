@@ -1,11 +1,10 @@
 package club.sk1er.patcher.tweaker.launch;
 
-
 import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.other.ModTweaker;
-import net.modcore.loader.ModCoreSetupTweaker;
+import gg.essential.loader.EssentialTweaker;
 
-public class PatcherTweak extends ModCoreSetupTweaker {
+public class PatcherTweak extends EssentialTweaker {
 
     public static long clientLoadTime;
 

@@ -1,12 +1,12 @@
 package club.sk1er.patcher.render
 
-import club.sk1er.elementa.UIComponent
-import club.sk1er.elementa.components.UIImage
-import club.sk1er.elementa.components.Window
-import club.sk1er.elementa.constraints.RelativeConstraint
-import club.sk1er.elementa.constraints.animation.Animations
-import club.sk1er.elementa.dsl.*
 import club.sk1er.patcher.config.PatcherConfig
+import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.Window
+import gg.essential.elementa.constraints.RelativeConstraint
+import gg.essential.elementa.constraints.animation.Animations
+import gg.essential.elementa.dsl.*
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color

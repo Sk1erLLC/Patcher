@@ -33,6 +33,7 @@ public final class EnhancedFontRenderer implements Enhancement {
     private final List<StringHash> obfuscated = new ArrayList<>();
     private final Map<String, Integer> stringWidthCache = new HashMap<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
+    // todo: resolve deprecation
     private final Cache<StringHash, CachedString> stringCache = Caffeine.newBuilder()
         .writer(new RemovalListener())
         .executor(POOL)

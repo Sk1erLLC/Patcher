@@ -11,20 +11,20 @@
 
 package club.sk1er.patcher.tasks
 
-import club.sk1er.mods.core.universal.ChatColor
-import club.sk1er.mods.core.universal.UDesktop
 import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.coroutines.MCDispatchers
 import club.sk1er.patcher.imgur.Imgur
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots
+import gg.essential.api.EssentialAPI
+import gg.essential.universal.ChatColor
+import gg.essential.universal.UDesktop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.EnumChatFormatting
-import net.modcore.api.ModCoreAPI
 import java.io.File
 import java.net.URI
 
@@ -38,12 +38,12 @@ object UploadScreenshotTask {
 
                 MCDispatchers.PATCHER_SCOPE.launch(Dispatchers.IO) {
                     val link = client.upload(file)
-                    if (ModCoreAPI.getConfig().disableAllNotifications) {
+                    if (EssentialAPI.getConfig().disableAllNotifications) {
                         val message = ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to $link.")
                         message.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
                         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(message)
                     } else {
-                        ModCoreAPI.getNotifications().push(
+                        EssentialAPI.getNotifications().push(
                             "Screenshot Manager",
                             "${ChatColor.GREEN}Screenshot was uploaded to $link"
                         ) {

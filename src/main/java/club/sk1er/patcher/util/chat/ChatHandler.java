@@ -11,8 +11,8 @@
 
 package club.sk1er.patcher.util.chat;
 
-import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.event.HoverEvent;

@@ -11,7 +11,7 @@
 
 package club.sk1er.patcher.util.status;
 
-import net.modcore.api.utils.Multithreading;
+import gg.essential.api.utils.Multithreading;
 import kotlin.Pair;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.network.EnumConnectionState;

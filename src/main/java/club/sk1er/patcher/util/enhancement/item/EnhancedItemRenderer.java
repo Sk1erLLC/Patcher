@@ -30,11 +30,11 @@ public class EnhancedItemRenderer implements Enhancement {
 
     private static final List<EnhancedItemRenderer> instances = new ArrayList<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
+    // todo: resolve deprecation
     private final Cache<ItemHash, Integer> itemCache = Caffeine.newBuilder()
-        .maximumSize(5000)
         .writer(new RemovalListener())
         .executor(POOL)
-        .build();
+        .maximumSize(5000).build();
 
     @Override
     public String getName() {

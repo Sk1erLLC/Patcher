@@ -15,6 +15,7 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
+import gg.essential.api.EssentialAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiCustomizeSkin;
@@ -27,7 +28,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.modcore.api.ModCoreAPI;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class PatcherMenuEditor {
                 mcButtonList.get(4).enabled = false;
                 mcButtonList.add(new GuiButton(serverList,
                     (width >> 1) - 100, (height / 4) + 56,
-                    ModCoreAPI.getConfig().getOpenToFriends() ? 98 : 200, 20,
+                    EssentialAPI.getConfig().getOpenToFriends() ? 98 : 200, 20,
                     "Server List"
                 ));
             }

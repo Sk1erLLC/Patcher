@@ -12,9 +12,9 @@
 package club.sk1er.patcher.config;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.vigilance.data.Property;
-import club.sk1er.vigilance.data.PropertyData;
-import club.sk1er.vigilance.data.PropertyType;
+import gg.essential.vigilance.data.Property;
+import gg.essential.vigilance.data.PropertyData;
+import gg.essential.vigilance.data.PropertyType;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
@@ -41,6 +41,10 @@ public class ConfigUtil {
 
     public static Property createProperty(PropertyType type, String category, String subCategory, String name, String description, int min, int max) {
         return new Property() {
+            @Override
+            public boolean protectedText() {
+                return false;
+            }
 
             @Override
             public int increment() {

@@ -1,8 +1,8 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.mods.core.universal.ChatColor;
 import club.sk1er.patcher.config.PatcherConfig;
 import com.google.common.collect.Queues;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;

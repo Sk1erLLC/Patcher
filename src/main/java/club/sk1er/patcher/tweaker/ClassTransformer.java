@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
@@ -19,7 +18,13 @@ import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer
 import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.*;
+import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.FluidRegistryTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.JarDiscovererTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.ModClassLoaderTransformer;
+import club.sk1er.patcher.asm.external.forge.loader.ModContainerFactoryTransformer;
 import club.sk1er.patcher.asm.external.forge.render.ForgeHooksClientTransformer;
 import club.sk1er.patcher.asm.external.forge.render.MinecraftForgeClientTransformer;
 import club.sk1er.patcher.asm.external.forge.render.block.BlockInfoTransformer;
@@ -109,6 +114,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
+import gg.essential.universal.UDesktop;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;

@@ -17,8 +17,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import gg.essential.api.utils.JsonHolder;
 import net.minecraft.launchwrapper.Launch;
-import net.modcore.api.utils.JsonHolder;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

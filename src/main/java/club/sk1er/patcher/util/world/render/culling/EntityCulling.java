@@ -11,9 +11,10 @@
 
 package club.sk1er.patcher.util.world.render.culling;
 
-import club.sk1er.mods.core.universal.UDesktop;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.api.EssentialAPI;
+import gg.essential.universal.UDesktop;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -33,7 +34,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.modcore.api.ModCoreAPI;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL33;
@@ -150,7 +150,7 @@ public class EntityCulling {
             PatcherConfig.entityCulling = false;
             Patcher.instance.forceSaveConfig();
 
-            ModCoreAPI.getInstance().notifications().push("Patcher",
+            EssentialAPI.getInstance().notifications().push("Patcher",
                 "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
                     "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message", () -> {
                     try {

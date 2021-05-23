@@ -12,9 +12,9 @@
 package club.sk1er.patcher.util.name;
 
 import club.sk1er.patcher.Patcher;
+import gg.essential.api.utils.Multithreading;
 import me.kbrewster.mojangapi.MojangAPI;
 import me.kbrewster.mojangapi.profile.Name;
-import net.modcore.api.utils.Multithreading;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

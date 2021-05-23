@@ -1,6 +1,6 @@
 package club.sk1er.patcher.hooks;
 
-import net.modcore.api.utils.Multithreading;
+import gg.essential.api.utils.Multithreading;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.util.ResourceLocation;

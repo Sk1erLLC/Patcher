@@ -11,27 +11,28 @@
 
 package club.sk1er.patcher.screen
 
-import club.sk1er.elementa.UIComponent
-import club.sk1er.elementa.WindowScreen
-import club.sk1er.elementa.components.*
-import club.sk1er.elementa.components.input.UITextInput
-import club.sk1er.elementa.constraints.CenterConstraint
-import club.sk1er.elementa.constraints.ChildBasedSizeConstraint
-import club.sk1er.elementa.constraints.SiblingConstraint
-import club.sk1er.elementa.constraints.animation.Animations
-import club.sk1er.elementa.dsl.*
-import club.sk1er.elementa.effects.OutlineEffect
-import club.sk1er.elementa.effects.ScissorEffect
-import club.sk1er.elementa.state.BasicState
-import club.sk1er.elementa.utils.withAlpha
-import club.sk1er.mods.core.universal.*
 import club.sk1er.patcher.Patcher
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
-import club.sk1er.vigilance.gui.VigilancePalette
 import com.google.gson.JsonParser
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
+import gg.essential.api.EssentialAPI
+import gg.essential.elementa.UIComponent
+import gg.essential.elementa.WindowScreen
+import gg.essential.elementa.components.*
+import gg.essential.elementa.components.input.UITextInput
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedSizeConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.animation.Animations
+import gg.essential.elementa.dsl.*
+import gg.essential.elementa.effects.OutlineEffect
+import gg.essential.elementa.effects.ScissorEffect
+import gg.essential.elementa.state.BasicState
+import gg.essential.elementa.utils.withAlpha
+import gg.essential.universal.*
+import gg.essential.vigilance.gui.VigilancePalette
 import me.kbrewster.mojangapi.MojangAPI
 import me.kbrewster.mojangapi.profile.Model
 import me.kbrewster.mojangapi.profile.Profile
@@ -40,14 +41,13 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.util.ResourceLocation
-import net.modcore.api.ModCoreAPI
 import org.lwjgl.opengl.GL11
 import java.util.*
 
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = ModCoreAPI.getGuiUtil().scaleForScreenSize().ordinal) {
+) : WindowScreen(newGuiScale = EssentialAPI.getGuiUtil().scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
@@ -327,7 +327,7 @@ class ScreenHistory @JvmOverloads constructor(
                 }
             }.onMouseClick {
                 if (enabled) {
-                    ModCoreAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    EssentialAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
                     buttonAction()
                 }
             }
