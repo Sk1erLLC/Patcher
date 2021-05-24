@@ -12,6 +12,7 @@
 package club.sk1er.patcher.asm.render.world.entity;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import org.lwjgl.opengl.GL11;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -133,8 +134,8 @@ public class RenderPlayerTransformer implements PatcherTransformer {
     public static InsnList enableBlend() {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179147_l", "()V", false));
-        list.add(new IntInsnNode(Opcodes.SIPUSH, 770));
-        list.add(new IntInsnNode(Opcodes.SIPUSH, 771));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_SRC_ALPHA));
+        list.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_ONE_MINUS_SRC_ALPHA));
         list.add(new InsnNode(Opcodes.ICONST_1));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179120_a", "(IIII)V", false));

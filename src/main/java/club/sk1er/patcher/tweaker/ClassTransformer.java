@@ -58,6 +58,7 @@ import club.sk1er.patcher.asm.network.packet.S19PacketEntityStatusTransformer;
 import club.sk1er.patcher.asm.network.packet.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
+import club.sk1er.patcher.asm.render.GlStateManagerTransformer;
 import club.sk1er.patcher.asm.render.block.BlockCactusTransformer;
 import club.sk1er.patcher.asm.render.block.BlockFluidRendererTransformer;
 import club.sk1er.patcher.asm.render.block.BlockRendererDispatcherTransformer;
@@ -302,6 +303,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LoadingScreenRendererTransformer());
         registerTransformer(new ModelVillagerTransformer());
         registerTransformer(new GuiScreenBookTransformer());
+        registerTransformer(new FramebufferTransformer());
+        registerTransformer(new GlStateManagerTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

@@ -1126,6 +1126,14 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean cacheEntrypoints = true;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "HUD Caching",
+        description = "Reuse frames from the HUD instead of constantly recreating it every frame, as most HUD elements will stay the same for a long amount of time.\n" +
+            "§cThis may cause stuff with animations to feel \"choppy\".",
+        category = "Experimental", subcategory = "HUD Caching"
+    )
+    public static boolean hudCaching;
+
     // HIDDEN
 
     @Property(
@@ -1148,7 +1156,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean labyModMoment = true;
 
     public PatcherConfig() {
-        super(new File("./config/patcher.toml"));
+        super(new File("./config/patcher.toml"), "Patcher");
         initialize();
 
         final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();

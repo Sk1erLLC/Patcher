@@ -25,6 +25,7 @@ import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
+import club.sk1er.patcher.screen.render.caching.HUDCaching;
 import club.sk1er.patcher.screen.render.overlay.ArmorStatusRenderer;
 import club.sk1er.patcher.screen.render.overlay.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.render.overlay.GlanceRenderer;
@@ -165,7 +166,7 @@ public class Patcher {
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
-            new MetricsRenderer(), new CacheHooks(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
+            new MetricsRenderer(), new CacheHooks(), new HUDCaching(), MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
             HistoryPopUp.INSTANCE
         );
 

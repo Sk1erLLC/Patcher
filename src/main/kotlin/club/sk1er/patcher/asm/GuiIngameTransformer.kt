@@ -13,10 +13,8 @@ package club.sk1er.patcher.asm
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
-import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnList
-import org.objectweb.asm.tree.MethodInsnNode
 
 class GuiIngameTransformer : PatcherTransformer {
     /**
@@ -36,8 +34,9 @@ class GuiIngameTransformer : PatcherTransformer {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
                 "showCrosshair", "func_175183_b" -> it.instructions.insert(disableCrosshairRendering())
-                /*"renderVignette", "func_180480_a" -> {
-                    val iterator = it.instructions.iterator()
+                "renderVignette", "func_180480_a" -> {
+                    it.instructions.insert(checkCacheOverride())
+                    /*val iterator = it.instructions.iterator()
                     while (iterator.hasNext()) {
                         val next = iterator.next()
                         if (next is MethodInsnNode && next.opcode == Opcodes.INVOKEVIRTUAL) {
@@ -47,11 +46,18 @@ class GuiIngameTransformer : PatcherTransformer {
                                 break
                             }
                         }
-                    }
-                }*/
+                    }*/
+                }
             }
         }
     }
+
+    private fun checkCacheOverride() = assembleBlock {
+        getstatic("club/sk1er/patcher/screen/render/caching/HUDCaching", "renderingCacheOverride", boolean)
+        ifeq(L["1"])
+        _return
+        +L["1"]
+    }.first
 
     private fun insertVignetteColorHook(): InsnList = assembleBlock {
         invokestatic(getHookClass("GuiIngameHook"), "colorVignette", void)

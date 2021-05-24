@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Enhancement {
 
-    // todo: use when false fixes koin being stupid
     AtomicInteger counter = new AtomicInteger(0);
     ThreadPoolExecutor POOL = new ThreadPoolExecutor(50, 50,
         0L, TimeUnit.SECONDS,
