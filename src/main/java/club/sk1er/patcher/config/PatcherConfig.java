@@ -1140,6 +1140,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static int customFpsLimit = 0;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "LabyMod Moment",
+        description = "This is just a pseudo option to use as a true statement so LabyMod doesn't try to inject into something that doesn't exist.",
+        category = "hidden", hidden = true
+    )
+    public static boolean labyModMoment = true;
+
     public PatcherConfig() {
         super(new File("./config/patcher.toml"));
         initialize();

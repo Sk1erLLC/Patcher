@@ -85,9 +85,13 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
 
     private InsnList getFasterSearching() {
         InsnList list = new InsnList();
+        list.add(getPatcherSetting("labyModMoment", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("ResourcePackRepositoryHook"), "updateRepositoryEntriesAll", "(Lnet/minecraft/client/resources/ResourcePackRepository;)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
         return list;
     }
 
