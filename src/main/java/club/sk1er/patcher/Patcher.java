@@ -102,11 +102,11 @@ public class Patcher {
     @Mod.Instance("patcher")
     public static Patcher instance;
 
-    // normal versions will be "1.x"
-    // betas will be "1.x-beta-y" / "1.x-branch_beta-1"
-    // rcs will be 1.x-rc-y
-    // extra branches will be 1.x-branch-y
-    public static final String VERSION = "1.6.0";
+    // normal versions will be "1.x.x"
+    // betas will be "1.x.x-beta-y" / "1.x.x-branch_beta-y"
+    // rcs will be 1.x.x-rc-y
+    // extra branches will be 1.x.x-branch-y
+    public static final String VERSION = "1.6.0-beta-1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
