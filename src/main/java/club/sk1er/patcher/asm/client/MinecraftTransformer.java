@@ -50,22 +50,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
                     break;
 
-                case "func_71354_a":
-                case "setDimensionAndSpawnPlayer": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("updateWatchedObjectsFromList") || methodInsnName.equals("func_75687_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), fixAttributeMap());
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-
                 case "func_90020_K":
                 case "getLimitFramerate":
                     methodNode.instructions.insert(changeActiveFramerate());
@@ -336,13 +320,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/screen/render/overlay/metrics/MetricsData", "<init>", "()V", false));
         list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHookClass("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/screen/render/overlay/metrics/MetricsData;"));
-        return list;
-    }
-
-    private InsnList fixAttributeMap() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 4));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("MinecraftHook"), "fixAttributeMap", "(Lnet/minecraft/client/entity/EntityPlayerSP;)V", false));
         return list;
     }
 

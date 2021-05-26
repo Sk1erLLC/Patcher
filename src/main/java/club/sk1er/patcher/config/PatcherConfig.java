@@ -692,7 +692,7 @@ public class PatcherConfig extends Vigilant {
         description = "Cache tooltips to avoid fetching very long lists every frame.\nMay cause tooltips to appear on another item for 200ms.",
         category = "Performance", subcategory = "Items"
     )
-    public static boolean tooltipCache = true;
+    public static boolean tooltipCache;
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",

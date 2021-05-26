@@ -11,15 +11,11 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsData;
-import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.util.Util;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -140,18 +136,6 @@ public class MinecraftHook {
             Display.setResizable(!fullscreen);
         } catch (LWJGLException e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void fixAttributeMap(EntityPlayerSP player) {
-        for (IAttributeInstance oldAttribute : player.getAttributeMap().getAllAttributes()) {
-            final IAttribute attribute = oldAttribute.getAttribute();
-            final IAttributeInstance newAttribute = mc.thePlayer.getAttributeMap().getAttributeInstance(attribute);
-            newAttribute.setBaseValue(oldAttribute.getBaseValue());
-
-            for (AttributeModifier modifiers : oldAttribute.func_111122_c()) {
-                newAttribute.applyModifier(modifiers);
-            }
         }
     }
 }
