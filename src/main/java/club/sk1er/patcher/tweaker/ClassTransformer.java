@@ -459,6 +459,8 @@ public class ClassTransformer implements IClassTransformer {
             final URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
             connection = (HttpsURLConnection) optifineVersions.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String version;
                 while ((version = reader.readLine()) != null) {
@@ -479,6 +481,8 @@ public class ClassTransformer implements IClassTransformer {
             final URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
             connection = (HttpsURLConnection) optifineGenerations.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
                 generations = gson.fromJson(reader, OptiFineGenerations.class);
             }
