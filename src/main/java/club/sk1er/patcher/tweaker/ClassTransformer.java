@@ -488,6 +488,7 @@ public class ClassTransformer implements IClassTransformer {
             }
         } catch (Exception e) {
             this.logger.error("Failed to read OptiFine generations list. Supplying default supported generations.", e);
+            generations = new OptiFineGenerations();
             generations.getIGeneration().add("I7");
 
             generations.getLGeneration().add("L5");
