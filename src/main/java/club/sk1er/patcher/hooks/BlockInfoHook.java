@@ -29,7 +29,7 @@ public class BlockInfoHook {
                 for (int z = 0; z <= 2; z++) {
                     final BlockPos pos = blockPos.add(x - 1, y - 1, z - 1);
                     final Block blockState = world.getBlockState(pos).getBlock();
-                    translucent[x][y][z] = blockState.getLightOpacity(world, pos) < 15;
+                    translucent[x][y][z] = !blockState.isVisuallyOpaque() || block.getLightOpacity() == 0;
                     final int brightness = blockState.getMixedBrightnessForBlock(world, pos);
                     skyBrightness[x][y][z] = (brightness >> 0x14) & 0xF;
                     blockBrightness[x][y][z] = (brightness >> 0x04) & 0xF;
