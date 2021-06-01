@@ -747,8 +747,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
             EntityRendererHook.fixMissingChunks();
         }
 
-        if (desiredModifier < 0.8) {
-            desiredModifier = 0.8f;
+        if (desiredModifier < 1f) {
+            desiredModifier = 1f;
         }
 
         if (desiredModifier > 600) {

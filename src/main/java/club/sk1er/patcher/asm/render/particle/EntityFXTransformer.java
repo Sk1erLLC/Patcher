@@ -60,7 +60,7 @@ public class EntityFXTransformer implements PatcherTransformer {
                             InsnList list = new InsnList();
                             LabelNode gotoInsn = new LabelNode();
                             methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), makeBrightnessConstant(list, gotoInsn));
-                            methodNode.instructions.insert(next, insertGoto(list, gotoInsn));
+                            methodNode.instructions.insert(next, gotoInsn);
                             break;
                         }
                     }
@@ -78,11 +78,6 @@ public class EntityFXTransformer implements PatcherTransformer {
         list.add(new LdcInsnNode(0xf000f0));
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
         list.add(ifeq);
-        return list;
-    }
-
-    private InsnList insertGoto(InsnList list, LabelNode gotoInsn) {
-        list.add(gotoInsn);
         return list;
     }
 }
