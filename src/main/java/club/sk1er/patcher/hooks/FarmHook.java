@@ -12,6 +12,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.api.EssentialAPI;
 import gg.essential.api.utils.MinecraftUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
@@ -23,12 +24,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import org.koin.java.KoinJavaComponent;
+//import org.koin.java.KoinJavaComponent;
 
 @SuppressWarnings("unused")
 public class FarmHook {
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final MinecraftUtils minecraftUtils = KoinJavaComponent.get(MinecraftUtils.class);
+    private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();//KoinJavaComponent.get(MinecraftUtils.class);
 
     public static final AxisAlignedBB[] CARROT_POTATO_BOX = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
