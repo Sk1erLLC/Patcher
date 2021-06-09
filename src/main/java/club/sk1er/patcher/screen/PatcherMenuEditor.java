@@ -102,19 +102,19 @@ public class PatcherMenuEditor {
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
                 mcButtonList.add(new GuiButton(serverList,
-                    (width >> 1) - 100, (height / 4) + 56,
+                    (width >> 1) - 100, (height >> 2) + 56,
                     EssentialAPI.getConfig().getOpenToFriends() ? 98 : 200, 20,
                     "Server List"
                 ));
             }
         } else if (gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
             mcButtonList.add(new GuiButton(refreshSkin,
-                ((width >> 1) - 155) + 160, (height / 6) + 72,
+                (width >> 1) - 155 + 160, height / 6 + 72,
                 150, 20,
                 "Refresh Skin"
             ));
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, (height / 6) + 146, 200, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 200, 20, "All Sounds"));
         }
     }
 

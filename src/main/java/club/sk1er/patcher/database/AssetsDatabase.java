@@ -44,8 +44,8 @@ public class AssetsDatabase {
                     final HashMap<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
                     final JsonArray array = new JsonArray();
 
-                    for (String s : resourceMap.keySet()) {
-                        array.add(new JsonHolder().put("key", s).put("value", resourceMap.get(s)).getObject());
+                    for (Map.Entry<String, String> entry : resourceMap.entrySet()) {
+                        array.add(new JsonHolder().put("key", entry.getKey()).put("value", entry.getValue()).getObject());
                     }
 
                     fileWriter.write(array.toString());

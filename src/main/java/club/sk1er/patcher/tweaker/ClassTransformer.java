@@ -364,6 +364,8 @@ public class ClassTransformer implements IClassTransformer {
 
         if (outputBytecode) {
             File bytecodeDirectory = new File("bytecode");
+            if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
+
             String transformedClassName;
 
             // anonymous classes
@@ -374,15 +376,8 @@ public class ClassTransformer implements IClassTransformer {
             }
 
             try {
-                if (!bytecodeDirectory.exists()) {
-                    bytecodeDirectory.mkdirs();
-                }
-
                 File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
-
-                if (!bytecodeOutput.exists()) {
-                    bytecodeOutput.createNewFile();
-                }
+                if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();
 
                 try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
                     os.write(classWriter.toByteArray());
