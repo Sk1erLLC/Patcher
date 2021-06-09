@@ -16,24 +16,44 @@ import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
+import gg.essential.elementa.components.UIImage;
+import gg.essential.elementa.components.Window;
+import gg.essential.elementa.dsl.ComponentsKt;
+import gg.essential.elementa.dsl.UtilitiesKt;
+import kotlin.Unit;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiCustomizeSkin;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiScreenOptionsSounds;
-import net.minecraft.client.gui.GuiScreenResourcePacks;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 public class PatcherMenuEditor {
+    private boolean tripped = false;
 
     private final Minecraft mc = Minecraft.getMinecraft();
+    private final int[] sequence = new int[] {
+        50, // up
+        100, // up
+        156, // down
+        208, // down
+        325, // left
+        425, // right
+        425, // left
+        525, // right
+        25, // tab
+        72 // return
+    };
+    private final Window window = (Window) new Window().addChild(ComponentsKt.constrain(UIImage.ofResource("/patcher.png"), uiConstraints -> {
+        uiConstraints.setX(UtilitiesKt.pixels(0, true));
+        uiConstraints.setWidth(UtilitiesKt.pixels(200));
+        uiConstraints.setHeight(UtilitiesKt.pixels(200));
+        return Unit.INSTANCE;
+    }));
 
     // button ids
     private final int refreshSkin = 435762;
@@ -42,6 +62,12 @@ public class PatcherMenuEditor {
 
     private List<GuiButton> mcButtonList;
     private GuiButton realmsButton;
+
+    private int next = 0;
+
+    public PatcherMenuEditor() {
+
+    }
 
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
@@ -121,6 +147,29 @@ public class PatcherMenuEditor {
             if (realmsButton != null) {
                 realmsButton.visible = false;
                 realmsButton.enabled = false;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void renderTick(TickEvent.RenderTickEvent event) {
+        if (tripped && event.phase == TickEvent.Phase.END) {
+            window.draw();
+        }
+    }
+
+    @SubscribeEvent
+    public void keyboardInput(GuiScreenEvent.KeyboardInputEvent.Post event) {
+        if (event.gui instanceof GuiMainMenu) {
+            int key = Keyboard.getEventKey();
+            if (Keyboard.isKeyDown(key) && !Keyboard.isRepeatEvent()) {
+                int i = next + 1;
+                next = (key >> 3) * ((7 & key) + (i << 1)) == sequence[next] ? i : 0;
+                if (next > 9) {
+                    next = 0;
+                    tripped = !tripped;
+                    Patcher.instance.getLogger().info("yep");
+                }
             }
         }
     }
