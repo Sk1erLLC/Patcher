@@ -150,7 +150,7 @@ import java.util.Set;
 
 public class ClassTransformer implements IClassTransformer {
 
-    public static final boolean outputBytecode = "true".equals(System.getProperty("debugBytecode", "false"));
+    public static final boolean outputBytecode = "true".equals(System.getProperty("patcher.debugBytecode", "false"));
     public static String optifineVersion = "NONE";
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
@@ -366,17 +366,13 @@ public class ClassTransformer implements IClassTransformer {
             File bytecodeDirectory = new File("bytecode");
             if (!bytecodeDirectory.exists()) bytecodeDirectory.mkdirs();
 
-            String transformedClassName;
-
-            // anonymous classes
-            if (transformedName.contains("$")) {
-                transformedClassName = transformedName.replace('$', '.') + ".class";
-            } else {
-                transformedClassName = transformedName + ".class";
+            int lastIndex = transformedName.lastIndexOf('.');
+            if (lastIndex != -1) {
+                transformedName = transformedName.substring(lastIndex + 1) + ".class";
             }
 
             try {
-                File bytecodeOutput = new File(bytecodeDirectory, transformedClassName);
+                File bytecodeOutput = new File(bytecodeDirectory, transformedName);
                 if (!bytecodeOutput.exists()) bytecodeOutput.createNewFile();
 
                 try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
