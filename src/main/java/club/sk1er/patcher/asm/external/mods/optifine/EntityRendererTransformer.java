@@ -722,7 +722,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList setZoomed(int zoomActiveIndex) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ILOAD, zoomActiveIndex));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "zoomed", "Z"));
+        list.add(new FieldInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "setZoomedHook", "(Z)V"));
         return list;
     }
 
@@ -814,5 +814,12 @@ public class EntityRendererTransformer implements PatcherTransformer {
         currentModifier = normalModifier;
         desiredModifier = normalModifier;
         smoothZoomProgress = 0f;
+    }
+
+    public static void setZoomedHook(boolean newZoomed) {
+        if (newZoomed && !zoomed) {
+            Mouse.getDWheel();
+        }
+        zoomed = newZoomed;
     }
 }
