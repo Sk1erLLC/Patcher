@@ -1,8 +1,15 @@
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.asm.external.mods.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.item.ItemMap;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings("unused")
 public class EntityRendererHook {
@@ -10,6 +17,7 @@ public class EntityRendererHook {
     private static boolean zoomToggled = false;
     private static boolean isBeingHeld = false;
     private static float oldSensitivity;
+    private static float partialTicks;
 
     public static void fixMissingChunks() {
         mc.renderGlobal.setDisplayListEntitiesDirty();
@@ -37,5 +45,25 @@ public class EntityRendererHook {
 
     public static void resetSensitivity() {
         mc.gameSettings.mouseSensitivity = oldSensitivity;
+    }
+
+    public static float getHandFOVModifier(float original) {
+        if (PatcherConfig.renderHandWhenZoomed && (EntityRendererTransformer.zoomed || (PatcherConfig.smoothZoomAnimation && EntityRendererTransformer.smoothZoomProgress > 0))) {
+            float f = 70f;
+            if (!PatcherConfig.removeWaterFov) {
+                Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer, partialTicks);
+
+                if (block.getMaterial() == Material.water) {
+                    f = f * 60.0F / 70.0F;
+                }
+            }
+            return f;
+        }
+        return original;
+    }
+
+    @SubscribeEvent
+    public void worldRender(RenderWorldLastEvent event) {
+        partialTicks = event.partialTicks;
     }
 }

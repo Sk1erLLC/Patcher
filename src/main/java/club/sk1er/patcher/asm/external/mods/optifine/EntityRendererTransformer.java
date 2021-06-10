@@ -32,7 +32,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     public static boolean zoomed = false;
     private static boolean hasScrolledYet = false;
     private static long lastMillis = System.currentTimeMillis();
-    private static float smoothZoomProgress = 0f;
+    public static float smoothZoomProgress = 0f;
     private static float desiredModifier = currentModifier;
     private final boolean dev = isDevelopment();
 
@@ -341,7 +341,12 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            String methodName = mapMethodNameFromNode(next);
+                            if (methodName.equals("getFOVModifier") || methodName.equals("func_78481_a")) {
+                                methodNode.instructions.insert(next, new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "getHandFOVModifier", "(F)F", false));
+                            }
+                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
                             final String fieldName = mapFieldNameFromNode(next);
 
                             if (fieldName.equals("viewBobbing") || fieldName.equals("field_74336_f")) {
