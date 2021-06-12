@@ -48,7 +48,7 @@ public class PatcherMenuEditor {
         25, // tab
         72 // return
     };
-    private final Window window = (Window) new Window().addChild(ComponentsKt.constrain(UIImage.ofResource("/patcher.png"), uiConstraints -> {
+    private final Window window = (Window) new Window().addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
         uiConstraints.setX(UtilitiesKt.pixels(0, true));
         uiConstraints.setWidth(UtilitiesKt.pixels(200));
         uiConstraints.setHeight(UtilitiesKt.pixels(200));
@@ -64,10 +64,6 @@ public class PatcherMenuEditor {
     private GuiButton realmsButton;
 
     private int next = 0;
-
-    public PatcherMenuEditor() {
-
-    }
 
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
