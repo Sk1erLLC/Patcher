@@ -109,6 +109,29 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                     }
                     break;
                 }
+                case "renderHealth": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    boolean areDrawingAbsorption = false;
+                    int foundCalls = 0;
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (!areDrawingAbsorption && next.getOpcode() == Opcodes.FLOAD && ((VarInsnNode) next).var == 18) {
+                            areDrawingAbsorption = true;
+                        }
+                        if (areDrawingAbsorption) {
+                            if (foundCalls < 2) {
+                                if (next instanceof IntInsnNode) {
+                                    IntInsnNode intI = (IntInsnNode) next;
+                                    if ((intI.operand == 153 || intI.operand == 144) && next.getNext().getOpcode() == Opcodes.IADD) {
+                                        foundCalls++;
+                                        methodNode.instructions.insert(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiIngameForgeHook"), "fixHealthMargin", "(I)I", false));
+                                    }
+                                }
+                            } else break;
+                        }
+                    }
+                    break;
+                }
             }
         }
     }
