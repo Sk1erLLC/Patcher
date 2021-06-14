@@ -53,7 +53,7 @@ dependencies {
     }
 
     embed("gg.essential:Loader:0.9.8-SNAPSHOT")
-    implementation("gg.essential:Essential:965-${mcVersion}-SNAPSHOT") {
+    implementation("gg.essential:Essential:991-${mcVersion}-SNAPSHOT") {
         exclude module: 'WaifUPnP'
     }
 

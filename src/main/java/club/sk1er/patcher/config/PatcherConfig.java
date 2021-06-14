@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -1172,72 +1172,76 @@ public class PatcherConfig extends Vigilant {
         registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().scheduleResourcesRefresh());
 
         try {
-            final Class<PatcherConfig> patcherConfigClass = PatcherConfig.class;
-            addDependency(patcherConfigClass.getField("smartFullbright"), patcherConfigClass.getField("fullbright"));
-            addDependency(patcherConfigClass.getField("unfocusedFPSAmount"), patcherConfigClass.getField("unfocusedFPS"));
-            addDependency(patcherConfigClass.getField("instantFullscreen"), patcherConfigClass.getField("windowedFullscreen"));
-            addDependency(patcherConfigClass.getField("tabOpacity"), patcherConfigClass.getField("customTabOpacity"));
-            addDependency(patcherConfigClass.getField("tabHeight"), patcherConfigClass.getField("tabHeightAllow"));
-            addDependency(patcherConfigClass.getField("consecutiveCompactChat"), patcherConfigClass.getField("compactChat"));
-            addDependency(patcherConfigClass.getField("compactChatTime"), patcherConfigClass.getField("compactChat"));
-            addDependency(patcherConfigClass.getField("timestampsFormat"), patcherConfigClass.getField("timestamps"));
-            addDependency(patcherConfigClass.getField("timestampsStyle"), patcherConfigClass.getField("timestamps"));
-            addDependency(patcherConfigClass.getField("imagePreviewWidth"), patcherConfigClass.getField("imagePreview"));
+            addDependency("smartFullbright", "fullbright");
+            addDependency("unfocusedFPSAmount", "unfocusedFPS");
+            addDependency("instantFullscreen", "windowedFullscreen");
+            addDependency("tabOpacity", "customTabOpacity");
+            addDependency("tabHeight", "tabHeightAllow");
+            addDependency("consecutiveCompactChat", "compactChat");
+            addDependency("compactChatTime", "compactChat");
+            addDependency("timestampsFormat", "timestamps");
+            addDependency("timestampsStyle", "timestamps");
+            addDependency("imagePreviewWidth", "imagePreview");
 
-            final Field fovModifier = patcherConfigClass.getField("allowFovModifying");
-            addDependency(patcherConfigClass.getField("slownessFovModifierFloat"), fovModifier);
-            addDependency(patcherConfigClass.getField("speedFovModifierFloat"), fovModifier);
-            addDependency(patcherConfigClass.getField("bowFovModifierFloat"), fovModifier);
-            addDependency(patcherConfigClass.getField("sprintingFovModifierFloat"), fovModifier);
+            Arrays.asList(
+                "slownessFovModifierFloat",
+                "speedFovModifierFloat",
+                "bowFovModifierFloat",
+                "sprintingFovModifierFloat"
+            ).forEach(property -> addDependency(property, "allowFovModifying"));
 
-            addDependency(patcherConfigClass.getField("logOptimizerLength"), patcherConfigClass.getField("logOptimizer"));
-            addDependency(patcherConfigClass.getField("smoothZoomAlgorithm"), patcherConfigClass.getField("smoothZoomAnimation"));
+            addDependency("logOptimizerLength", "logOptimizer");
+            addDependency("smoothZoomAlgorithm", "smoothZoomAnimation");
 
-            final Field entityCulling = patcherConfigClass.getField("entityCulling");
-            addDependency(patcherConfigClass.getField("cullingInterval"), entityCulling);
-            addDependency(patcherConfigClass.getField("smartEntityCulling"), entityCulling);
-            addDependency(patcherConfigClass.getField("dontCullNametags"), entityCulling);
-            addDependency(patcherConfigClass.getField("dontCullEntityNametags"), entityCulling);
-            addDependency(patcherConfigClass.getField("dontCullArmorStandNametags"), entityCulling);
-            addDependency(patcherConfigClass.getField("checkArmorstandRules"), entityCulling);
+            Arrays.asList(
+                "cullingInterval",
+                "smartEntityCulling",
+                "dontCullNametags",
+                "dontCullEntityNametags",
+                "dontCullArmorStandNametags",
+                "checkArmorstandRules"
+            ).forEach(property -> addDependency(property, "entityCulling"));
 
-            final Field entityRenderDistance = patcherConfigClass.getField("entityRenderDistanceToggle");
-            addDependency(patcherConfigClass.getField("entityRenderDistance"), entityRenderDistance);
-            addDependency(patcherConfigClass.getField("playerRenderDistance"), entityRenderDistance);
-            addDependency(patcherConfigClass.getField("passiveEntityRenderDistance"), entityRenderDistance);
-            addDependency(patcherConfigClass.getField("hostileEntityRenderDistance"), entityRenderDistance);
+            Arrays.asList(
+                "entityRenderDistance",
+                "playerRenderDistance",
+                "passiveEntityRenderDistance",
+                "hostileEntityRenderDistance"
+            ).forEach(property -> addDependency(property, "entityRenderDistanceToggle"));
 
-            addDependency(patcherConfigClass.getField("cacheFontData"), patcherConfigClass.getField("optimizedFontRenderer"));
-            addDependency(patcherConfigClass.getField("chunkUpdateLimit"), patcherConfigClass.getField("limitChunks"));
+            addDependency("cacheFontData", "optimizedFontRenderer");
+            addDependency("chunkUpdateLimit", "limitChunks");
 
-            final Field screenshotManager = patcherConfigClass.getField("screenshotManager");
-            addDependency(patcherConfigClass.getField("screenshotNoFeedback"), screenshotManager);
-            addDependency(patcherConfigClass.getField("compactScreenshotResponse"), screenshotManager);
-            addDependency(patcherConfigClass.getField("autoCopyScreenshot"), screenshotManager);
-            addDependency(patcherConfigClass.getField("screenshotPreview"), screenshotManager);
-            addDependency(patcherConfigClass.getField("previewTime"), screenshotManager);
-            addDependency(patcherConfigClass.getField("previewAnimationStyle"), screenshotManager);
-            addDependency(patcherConfigClass.getField("previewScale"), screenshotManager);
-            addDependency(patcherConfigClass.getField("favoriteScreenshot"), screenshotManager);
-            addDependency(patcherConfigClass.getField("deleteScreenshot"), screenshotManager);
-            addDependency(patcherConfigClass.getField("uploadScreenshot"), screenshotManager);
-            addDependency(patcherConfigClass.getField("copyScreenshot"), screenshotManager);
-            addDependency(patcherConfigClass.getField("openScreenshotsFolder"), screenshotManager);
+            Arrays.asList(
+                "screenshotNoFeedback",
+                "compactScreenshotResponse",
+                "autoCopyScreenshot",
+                "screenshotPreview",
+                "previewTime",
+                "previewAnimationStyle",
+                "previewScale",
+                "favoriteScreenshot",
+                "deleteScreenshot",
+                "uploadScreenshot",
+                "copyScreenshot",
+                "openScreenshotsFolder"
+            ).forEach(property -> addDependency(property, "screenshotManager"));
 
-            hidePropertyIf(patcherConfigClass.getField("instantFullscreen"), !SystemUtils.IS_OS_WINDOWS);
+            hidePropertyIf("instantFullscreen", () -> !SystemUtils.IS_OS_WINDOWS);
 
-            final boolean checkOptifine = ClassTransformer.optifineVersion.equals("NONE");
-            hidePropertyIf(patcherConfigClass.getField("scrollToZoom"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("normalZoomSensitivity"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("customZoomSensitivity"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("smoothZoomAnimation"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("smoothZoomAnimationWhenScrolling"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("smoothZoomAlgorithm"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("toggleToZoom"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("normalFpsCounter"), checkOptifine);
-            hidePropertyIf(patcherConfigClass.getField("useVanillaMetricsRenderer"), checkOptifine);
+            Arrays.asList(
+                "scrollToZoom",
+                "normalZoomSensitivity",
+                "customZoomSensitivity",
+                "smoothZoomAnimation",
+                "smoothZoomAnimationWhenScrolling",
+                "smoothZoomAlgorithm",
+                "toggleToZoom",
+                "normalFpsCounter",
+                "useVanillaMetricsRenderer"
+            ).forEach(property -> hidePropertyIf(property, () -> ClassTransformer.optifineVersion.equals("NONE")));
         } catch (Exception e) {
-            Patcher.instance.getLogger().error("Failed to access field.", e);
+            Patcher.instance.getLogger().error("Failed to access property.", e);
         }
     }
 }
