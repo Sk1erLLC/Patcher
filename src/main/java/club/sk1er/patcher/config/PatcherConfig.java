@@ -258,9 +258,9 @@ public class PatcherConfig extends Vigilant {
     public static boolean normalZoomSensitivity;
 
     @Property(
-            type = PropertyType.SWITCH, name = "Render Hand While Zoomed",
-            description = "Keep your hand on screen when you zoom in.",
-            category = "Miscellaneous", subcategory = "OptiFine"
+        type = PropertyType.SWITCH, name = "Render Hand While Zoomed",
+        description = "Keep your hand on screen when you zoom in.",
+        category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean renderHandWhenZoomed;
 

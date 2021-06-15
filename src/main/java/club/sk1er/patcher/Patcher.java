@@ -184,8 +184,6 @@ public class Patcher {
             loadedGalacticFontRenderer = true;
             Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
         }
-
-        MCDispatchers.INSTANCE.getIO().close();
     }
 
     @EventHandler
