@@ -615,6 +615,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableNametagBoxes;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Unstacked Items",
+        description = "Render stacks of items on the ground as just one instead of having up to 5 copies in one stack.",
+        category = "Performance", subcategory = "Entity Rendering"
+    )
+    public static boolean unstackedItems;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Entity Culling",
         description = "Check to see if an entity is visible to the player before attempting to render them.",
         category = "Performance", subcategory = "Culling"

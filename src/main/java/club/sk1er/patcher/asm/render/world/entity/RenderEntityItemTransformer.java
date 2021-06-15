@@ -37,8 +37,21 @@ public class RenderEntityItemTransformer implements PatcherTransformer {
                 method.instructions.insert(shouldItemRender());
             } else if (method.name.equals("shouldBob")) {
                 method.instructions.insert(checkStaticItems());
+            } else if (methodName.equals("func_177078_a")) {
+                method.instructions.insert(unstackItems());
             }
         }
+    }
+
+    private InsnList unstackItems() {
+        InsnList list = new InsnList();
+        list.add(getPatcherSetting("unstackedItems", "Z"));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.ICONST_1));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ifeq);
+        return list;
     }
 
     private InsnList shouldItemRender() {
