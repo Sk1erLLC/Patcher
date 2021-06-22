@@ -32,14 +32,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Keep Shaders on Perspective Change",
-        description = "Fixes the removal of any activated Vanilla shader when changing perspective.",
+        description = "Resolve Vanilla shaders being cleared when changing perspective.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean keepShadersOnPerspectiveChange = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
-        description = "Fixes the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
+        description = "Resolve the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
             "§cCurrently makes the F3 crosshair disappear.",
         category = "Bug Fixes", subcategory = "General"
     )
@@ -47,31 +47,38 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Culling Fix",
-        description = "Fix false negatives in frustum culling, creating invisible chunks in some cases.\n§cCan negatively impact performance.",
+        description = "Resolve false negatives in frustum culling, creating invisible chunks in some cases.\n§cCan negatively impact performance.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean cullingFix;
 
     @Property(
         type = PropertyType.SWITCH, name = "Resource Exploit Fix",
-        description = "Fixes an exploit in 1.8 allowing servers to look through directories.",
+        description = "Resolve an exploit in 1.8 allowing servers to look through directories.",
         category = "Bug Fixes", subcategory = "Security"
     )
     public static boolean resourceExploitFix = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Layers In Tab",
-        description = "Fixes players sometimes not having a hat layer in Tab.",
+        description = "Resolve players sometimes not having a hat layer in Tab.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean layersInTab = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Player Void Rendering",
-        description = "Fixes the black box around the player while in the void.",
+        description = "Resolve the black box around the player while in the void.",
         category = "Bug Fixes", subcategory = "Rendering"
     )
     public static boolean playerVoidRendering = true;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Alex Arm Position",
+        description = "Resolve Alex-model arms being shifted down further than Steve-model arms.\n§eRequires a restart once toggled.",
+        category = "Bug Fixes", subcategory = "Rendering"
+    )
+    public static boolean fixedAlexArms = true;
 
     // MISCELLANEOUS
 
