@@ -354,7 +354,7 @@ public class ClassTransformer implements IClassTransformer {
             transformer.transform(classNode, transformedName);
         }
 
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        PatcherClassWriter classWriter = new PatcherClassWriter(PatcherClassWriter.COMPUTE_FRAMES);
 
         try {
             classNode.accept(classWriter);
