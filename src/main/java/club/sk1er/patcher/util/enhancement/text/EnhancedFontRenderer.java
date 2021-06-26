@@ -13,13 +13,10 @@ package club.sk1er.patcher.util.enhancement.text;
 
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.enhancement.hash.StringHash;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.CacheWriter;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.RemovalCause;
+import gg.essential.lib.caffeine.cache.Cache;
+import gg.essential.lib.caffeine.cache.Caffeine;
 import net.minecraft.client.renderer.GLAllocation;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +30,11 @@ public final class EnhancedFontRenderer implements Enhancement {
     private final List<StringHash> obfuscated = new ArrayList<>();
     private final Map<String, Integer> stringWidthCache = new HashMap<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
-    // todo: resolve deprecation
     private final Cache<StringHash, CachedString> stringCache = Caffeine.newBuilder()
-        .writer(new RemovalListener())
-        .executor(POOL)
-        .maximumSize(5000).build();
+        .removalListener((key, value, cause) -> {
+            if (value == null) return;
+            glRemoval.add(((CachedString) value).getListId());
+        }).executor(POOL).maximumSize(5000).build();
 
     public EnhancedFontRenderer() {
         instances.add(this);
@@ -89,22 +86,5 @@ public final class EnhancedFontRenderer implements Enhancement {
 
     public List<StringHash> getObfuscated() {
         return obfuscated;
-    }
-
-    private class RemovalListener implements CacheWriter<StringHash, CachedString> {
-
-        @Override
-        public void write(@Nonnull StringHash key, @Nonnull CachedString value) {
-
-        }
-
-        @Override
-        public void delete(@Nonnull StringHash key, CachedString value, @Nonnull RemovalCause cause) {
-            if (value == null) {
-                return;
-            }
-
-            glRemoval.add(value.getListId());
-        }
     }
 }

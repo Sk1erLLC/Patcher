@@ -11,12 +11,17 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.relauncher.CoreModManager;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -25,6 +30,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -33,7 +39,23 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
+    public static long clientLoadTime;
+
     public PatcherTweaker() {
+        clientLoadTime = System.currentTimeMillis();
+        try {
+            // Create a second internal tweaker, creating after OptiFine does its thing.
+            FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
+            LaunchClassLoader classLoader = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, launchHandler, "classLoader");
+            Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
+            URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
+            File mod = new File(path.toURI().getSchemeSpecificPart().split("!")[0]);
+            loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
+        } catch (Exception e) {
+            System.out.println("Failed creating a second tweaker");
+            e.printStackTrace();
+        }
+
         this.unlockLwjgl();
         this.detectIncompatibleMods();
     }
@@ -100,7 +122,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
                     }
 
                     if (zipFile.getEntry("club/sk1er/mods/core/ModCore.class") != null) {
-                        halt("ModCore should not be in your mods folder. This will cause issues and most likely crash. Please remove it from the mods folder.");
+                        halt("ModCore should not be in your mods folder. This will most likely cause issues and crash. Please remove it from the mods folder.");
                         continue;
                     }
 
@@ -120,6 +142,8 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
                         }
                     }
                 }
+            } catch (MalformedJsonException ignored) {
+                // powns lol
             } catch (Exception e) {
                 e.printStackTrace();
             }

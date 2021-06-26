@@ -44,7 +44,7 @@ minecraft {
     mappings = "stable_22"
     runDir = "run"
     makeObfSourceJar = false
-    clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker,club.sk1er.patcher.tweaker.other.ModTweaker"]
+    clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker"]
 }
 
 configurations {
@@ -59,10 +59,8 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    embed("gg.essential:Loader:0.9.8-SNAPSHOT")
-    implementation("gg.essential:Essential:1025-${mcVersion}-SNAPSHOT") {
-        exclude module: 'WaifUPnP'
-    }
+    embed "gg.essential:loader-launchwrapper:1.0.1"
+    implementation "gg.essential:Essential:1062-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -70,17 +68,11 @@ dependencies {
         exclude module: "kotlin-stdlib-jdk8"
         exclude module: "asm-debug-all"
     }
-    embed 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
         exclude module: 'asm-commons'
         exclude module: 'asm-tree'
         exclude module: 'asm'
-    }
-
-    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0') {
-        exclude module: "kotlin-stdlib-common"
-        exclude module: "kotlin-stdlib"
     }
 }
 
@@ -134,7 +126,7 @@ jar {
                 'FMLAT': 'patcher_at.cfg',
                 "FMLCorePluginContainsFMLMod": "Yes, yes it does",
                 "Main-Class": "club.sk1er.container.ContainerMessage",
-                "TweakClass": "club.sk1er.patcher.tweaker.launch.PatcherTweak",
+                "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker",
                 "TweakOrder": "0"
     }
 }

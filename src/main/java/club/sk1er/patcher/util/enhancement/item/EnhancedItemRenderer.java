@@ -13,13 +13,9 @@ package club.sk1er.patcher.util.enhancement.item;
 
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.enhancement.hash.impl.ItemHash;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.CacheWriter;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.RemovalCause;
+import gg.essential.lib.caffeine.cache.Cache;
+import gg.essential.lib.caffeine.cache.Caffeine;
 import net.minecraft.client.renderer.GLAllocation;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +26,11 @@ public class EnhancedItemRenderer implements Enhancement {
 
     private static final List<EnhancedItemRenderer> instances = new ArrayList<>();
     private final Queue<Integer> glRemoval = new ConcurrentLinkedQueue<>();
-    // todo: resolve deprecation
     private final Cache<ItemHash, Integer> itemCache = Caffeine.newBuilder()
-        .writer(new RemovalListener())
-        .executor(POOL)
-        .maximumSize(5000).build();
+        .removalListener((key, value, cause) -> {
+            if (value == null) return;
+            glRemoval.add((Integer) value);
+        }).executor(POOL).maximumSize(5000).build();
 
     @Override
     public String getName() {
@@ -56,39 +52,5 @@ public class EnhancedItemRenderer implements Enhancement {
 
     public Cache<ItemHash, Integer> getItemCache() {
         return itemCache;
-    }
-
-    private class RemovalListener implements CacheWriter<ItemHash, Integer> {
-        /***
-         * Writes the value corresponding to the {@code key} to the external resource. The cache will
-         * communicate a write when an entry in the cache is created or modified, except when that was
-         * due to a load or computation.
-         *
-         * @param key the non-null key whose value should be written
-         * @param value the value associated with {@code key} that should be written
-         * @throws RuntimeException or Error, in which case the mapping is unchanged
-         */
-        @Override
-        public void write(@NonNull ItemHash key, @NonNull Integer value) {
-
-        }
-
-        /**
-         * Deletes the value corresponding to the {@code key} from the external resource. The cache will
-         * communicate a delete when the entry is explicitly removed or evicted.
-         *
-         * @param key   the non-null key whose value was removed
-         * @param value the value associated with {@code key}, or {@code null} if collected
-         * @param cause the reason for which the entry was removed
-         * @throws RuntimeException or Error, in which case the mapping is unchanged
-         */
-        @Override
-        public void delete(@NonNull ItemHash key, @Nullable Integer value, @NonNull RemovalCause cause) {
-            if (value == null) {
-                return;
-            }
-
-            glRemoval.add(value);
-        }
     }
 }

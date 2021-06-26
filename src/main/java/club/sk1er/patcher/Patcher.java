@@ -19,7 +19,6 @@ import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.commands.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
-import club.sk1er.patcher.coroutines.MCDispatchers;
 import club.sk1er.patcher.hooks.CacheHooks;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
@@ -34,7 +33,7 @@ import club.sk1er.patcher.screen.render.overlay.ImagePreview;
 import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsRenderer;
 import club.sk1er.patcher.screen.render.title.TitleFix;
-import club.sk1er.patcher.tweaker.launch.PatcherTweak;
+import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
@@ -107,7 +106,7 @@ public class Patcher {
     // betas will be "1.x.x-beta-y" / "1.x.x-branch_beta-y"
     // rcs will be 1.x.x-rc-y
     // extra branches will be 1.x.x-branch-y
-    public static final String VERSION = "1.6.0-beta-1";
+    public static final String VERSION = "1.6.0+beta-1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "/" + File.separator + "logs" + File.separator);
@@ -199,7 +198,7 @@ public class Patcher {
     @SubscribeEvent
     public void dispatchStartupTime(GuiScreenEvent.InitGuiEvent event) {
         if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
-        final long time = (System.currentTimeMillis() - PatcherTweak.clientLoadTime) / 1000L;
+        final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
             EssentialAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
