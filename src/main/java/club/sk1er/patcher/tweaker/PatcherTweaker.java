@@ -15,6 +15,7 @@ import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.MalformedJsonException;
+import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.ForgeVersion;
@@ -31,6 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -50,7 +52,10 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
             URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
             File mod = new File(path.toURI().getSchemeSpecificPart().split("!")[0]);
-            loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
+            ITweaker coreMod = (ITweaker) loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
+            if (!((List<String>) Launch.blackboard.get("TweakClasses")).contains("net.minecraftforge.fml.common.launcher.FMLInjectionAndSortingTweaker")) {
+                ((List<ITweaker>) Launch.blackboard.get("Tweaks")).add(coreMod);
+            }
         } catch (Exception e) {
             System.out.println("Failed creating a second tweaker");
             e.printStackTrace();
