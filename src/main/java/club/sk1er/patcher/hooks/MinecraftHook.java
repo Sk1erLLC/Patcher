@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsData;
@@ -95,7 +96,7 @@ public class MinecraftHook {
             Display.setResizable(true);
             return true;
         } catch (LWJGLException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to toggle fullscreen.", e);
         }
         return false;
     }
@@ -135,7 +136,7 @@ public class MinecraftHook {
 
             Display.setResizable(!fullscreen);
         } catch (LWJGLException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to update screen type.", e);
         }
     }
 }

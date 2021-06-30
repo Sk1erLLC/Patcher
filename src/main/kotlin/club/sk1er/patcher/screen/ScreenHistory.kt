@@ -203,7 +203,7 @@ class ScreenHistory @JvmOverloads constructor(
             }
             return false
         } catch (e: Exception) {
-            e.printStackTrace()
+            Patcher.instance.logger.error("Failed to determine if model was of Alex format.", e)
             return false
         }
     }

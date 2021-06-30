@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.hooks;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.text.CachedString;
@@ -69,7 +70,7 @@ public final class FontRendererHook {
         try (final InputStream stream = mc.getResourceManager().getResource(fontRenderer.locationFontTexture).getInputStream()) {
             specWidth = ImageIO.read(stream).getWidth();
         } catch (IOException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to read font texture while establishing size.", e);
         }
 
         regularCharDim = specWidth;
@@ -97,7 +98,7 @@ public final class FontRendererHook {
         try (final InputStream stream = mc.getResourceManager().getResource(fontRenderer.locationFontTexture).getInputStream()) {
             bufferedImage.getGraphics().drawImage(ImageIO.read(stream), 0, 16 * texSheetDim, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            Patcher.instance.getLogger().error("Failed to draw texture sheet.", e);
         }
 
         glTextureId = new DynamicTexture(bufferedImage).getGlTextureId();

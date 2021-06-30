@@ -40,6 +40,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
  * Used for editing other mods (OptiFine, LevelHead, TNT Timer, etc) after they've loaded.
@@ -50,6 +51,7 @@ public class ModClassTransformer implements IClassTransformer {
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
     public ModClassTransformer() {
+        MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         // OptiFine loads these classes after we do, overwriting our changes,
         // so transform it AFTER OptiFine loads.
         registerTransformer(new EntityRendererTransformer());

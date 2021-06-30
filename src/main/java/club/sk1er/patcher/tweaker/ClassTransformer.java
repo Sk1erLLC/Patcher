@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.*;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
@@ -121,9 +122,9 @@ import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.JButton;
@@ -160,6 +161,7 @@ public class ClassTransformer implements IClassTransformer {
     private final Gson gson = new Gson();
 
     public ClassTransformer() {
+        MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         try {
             this.fetchSupportedOptiFineVersions();
             this.updateOptiFineGenerations();
@@ -378,7 +380,7 @@ public class ClassTransformer implements IClassTransformer {
                 try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
                     os.write(classWriter.toByteArray());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Patcher.instance.getLogger().error("Failed to create bytecode output for {}.", transformedName, e);
                 }
             } catch (Exception ignored) {
             }
