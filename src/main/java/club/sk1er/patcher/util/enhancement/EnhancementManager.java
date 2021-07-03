@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.enhancement;
 
-import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 
 import java.util.HashMap;
@@ -24,7 +23,6 @@ public class EnhancementManager {
 
     public EnhancementManager() {
         enhancementMap.put(EnhancedFontRenderer.class, new EnhancedFontRenderer());
-        enhancementMap.put(EnhancedItemRenderer.class, new EnhancedItemRenderer());
     }
 
     public void tick() {

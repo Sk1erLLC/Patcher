@@ -43,6 +43,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public static long clientLoadTime;
 
+    @SuppressWarnings("unchecked")
     public PatcherTweaker() {
         clientLoadTime = System.currentTimeMillis();
         try {

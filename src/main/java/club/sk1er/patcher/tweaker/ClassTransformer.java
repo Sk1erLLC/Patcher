@@ -158,7 +158,6 @@ public class ClassTransformer implements IClassTransformer {
 
     public static final Set<String> supportedOptiFineVersions = new HashSet<>();
     public static OptiFineGenerations generations;
-    private final Gson gson = new Gson();
 
     public ClassTransformer() {
         MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
@@ -477,7 +476,7 @@ public class ClassTransformer implements IClassTransformer {
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
             try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
-                generations = gson.fromJson(reader, OptiFineGenerations.class);
+                generations = new Gson().fromJson(reader, OptiFineGenerations.class);
             }
         } catch (Exception e) {
             this.logger.error("Failed to read OptiFine generations list. Supplying default supported generations.", e);

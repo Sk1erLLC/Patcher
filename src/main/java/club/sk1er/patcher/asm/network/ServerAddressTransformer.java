@@ -37,12 +37,12 @@ public class ServerAddressTransformer implements PatcherTransformer {
 
             if (methodName.equals("getIP") || methodName.equals("func_78861_a")) {
                 clearInstructions(method);
-                method.instructions.insert(getIpSafely(method));
+                method.instructions.insert(sanitizeInput(method));
             }
         }
     }
 
-    private InsnList getIpSafely(MethodNode method) {
+    private InsnList sanitizeInput(MethodNode method) {
         InsnList list = new InsnList();
         LabelNode start = new LabelNode(), end = new LabelNode(), handler = new LabelNode();
         method.tryCatchBlocks.add(new TryCatchBlockNode(start, end, handler, "java/lang/IllegalArgumentException"));

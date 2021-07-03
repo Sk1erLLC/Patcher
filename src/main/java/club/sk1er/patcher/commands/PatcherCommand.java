@@ -19,9 +19,7 @@ import club.sk1er.patcher.util.chat.ChatUtilities;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.benchmark.AbstractBenchmark;
 import club.sk1er.patcher.util.enhancement.benchmark.BenchmarkResult;
-import club.sk1er.patcher.util.enhancement.benchmark.impl.ItemBenchmark;
 import club.sk1er.patcher.util.enhancement.benchmark.impl.TextBenchmark;
-import club.sk1er.patcher.util.enhancement.item.EnhancedItemRenderer;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import club.sk1er.patcher.util.name.NameFetcher;
 import com.mojang.authlib.GameProfile;
@@ -62,7 +60,6 @@ public class PatcherCommand extends Command {
     public PatcherCommand() {
         super("patcher");
         benchmarkMap.put("text", new TextBenchmark());
-        benchmarkMap.put("item", new ItemBenchmark());
     }
 
     @DefaultHandler
@@ -73,7 +70,6 @@ public class PatcherCommand extends Command {
     @SubCommand(value = "resetcache", description = "Clears Font & Item cache. Typically should not be used.")
     public void resetCache() {
         EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-        EnhancementManager.getInstance().getEnhancement(EnhancedItemRenderer.class).invalidateAll();
         ChatUtilities.sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
     }
 
@@ -363,7 +359,6 @@ public class PatcherCommand extends Command {
         PatcherConfig.cacheFontData = status;
         PatcherConfig.removeCloudTransparency = status;
         PatcherConfig.gpuCloudRenderer = status;
-        PatcherConfig.optimizedItemRenderer = status;
         PatcherConfig.limitChunks = status;
         PatcherConfig.playerBackFaceCulling = status;
         PatcherConfig.entityBackFaceCulling = status;

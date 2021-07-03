@@ -702,13 +702,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeCloudTransparency;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Optimized Item Renderer",
-        description = "Cache information about items, avoiding recalculating everything about it every frame.",
-        category = "Performance", subcategory = "Items"
-    )
-    public static boolean optimizedItemRenderer = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Tooltip Cache",
         description = "Cache tooltips to avoid fetching very long lists every frame.\nMay cause tooltips to appear on another item for 200ms.",
         category = "Performance", subcategory = "Items"

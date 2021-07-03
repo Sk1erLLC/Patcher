@@ -161,7 +161,7 @@ public class EntrypointCaching {
             });
             return Hex.encodeHexString(md.digest());
         } catch (IOException | NoSuchAlgorithmException e) {
-            logger.error("Error hashing mod " + modFile, e);
+            logger.error("Error hashing mod {}", modFile, e);
         }
         return null;
     }
