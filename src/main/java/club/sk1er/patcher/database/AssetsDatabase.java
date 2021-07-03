@@ -39,9 +39,9 @@ public class AssetsDatabase {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 saveNegative(FallbackResourceManagerHook.negativeResourceCache);
-                final File file = new File(dir, "resource_map.txt");
-                try (final FileWriter fileWriter = new FileWriter(file)) {
-                    final HashMap<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
+                final File resourceMapFile = new File(dir, "resource_map.txt");
+                try (final FileWriter fileWriter = new FileWriter(resourceMapFile)) {
+                    final Map<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
                     final JsonArray array = new JsonArray();
 
                     for (Map.Entry<String, String> entry : resourceMap.entrySet()) {
@@ -65,19 +65,16 @@ public class AssetsDatabase {
         FileUtils.writeLines(new File(dir, "negative_cache.txt"), lines);
     }
 
-    public Map<String, String> getAllMap() {
-        final File file = new File(dir, "resource_map.txt");
-        if (!file.exists()) {
-            return new HashMap<>();
+    public Map<String, String> getAllMap() throws IOException {
+        final File resourceMapFile = new File(dir, "resource_map.txt");
+        if (!resourceMapFile.exists()) return new HashMap<>();
+
+        Map<String, String> resourceMap = new HashMap<>();
+        for (JsonElement jsonElement : new JsonParser().parse(FileUtils.readFileToString(resourceMapFile)).getAsJsonArray()) {
+            final JsonObject asJsonObject = jsonElement.getAsJsonObject();
+            resourceMap.put(asJsonObject.get("key").getAsString(), asJsonObject.get("value").getAsString());
         }
-        HashMap<String, String> map = new HashMap<>();
-        try {
-            for (JsonElement jsonElement : new JsonParser().parse(FileUtils.readFileToString(file)).getAsJsonArray()) {
-                final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-                map.put(asJsonObject.get("key").getAsString(), asJsonObject.get("value").getAsString());
-            }
-        } catch (Exception ignored) {
-        }
-        return map;
+
+        return resourceMap;
     }
 }

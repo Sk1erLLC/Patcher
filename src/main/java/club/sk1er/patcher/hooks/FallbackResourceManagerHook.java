@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,7 +33,7 @@ import java.util.Set;
 public class FallbackResourceManagerHook {
     public static final Set<String> negativeResourceCache = new HashSet<>();
     public static final AssetsDatabase database = new AssetsDatabase();
-    public static final HashMap<String, String> resourceMap = new HashMap<>();
+    public static final Map<String, String> resourceMap = new HashMap<>();
 
     static {
         try {
@@ -57,10 +58,10 @@ public class FallbackResourceManagerHook {
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
 
         InputStream mcMetaStream = null;
-        final String s = resourceMap.get(location.toString());
-        if (s != null) {
+        final String resourceLocation = resourceMap.get(location.toString());
+        if (resourceLocation != null) {
             for (IResourcePack resourcePack : manager.resourcePacks) {
-                if (resourcePack.getPackName().equalsIgnoreCase(s)) {
+                if (resourcePack.getPackName().equalsIgnoreCase(resourceLocation)) {
                     final InputStream fromFile = getFromFile(resourcePack, location);
                     if (fromFile != null)
                         return new SimpleResource(resourcePack.getPackName(), location, fromFile,
@@ -68,6 +69,7 @@ public class FallbackResourceManagerHook {
                 }
             }
         }
+
         for (int i = manager.resourcePacks.size() - 1; i >= 0; --i) {
             IResourcePack currentPack = manager.resourcePacks.get(i);
             if (currentPack instanceof FileResourcePack && !currentPack.resourceExists(location)) {

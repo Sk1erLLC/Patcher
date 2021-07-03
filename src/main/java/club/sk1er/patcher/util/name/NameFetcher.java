@@ -45,15 +45,15 @@ public class NameFetcher {
                     uuid = MojangAPI.getUUID(username);
                 } catch (Exception e) {
                     Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
+                    return;
                 }
 
                 names.clear();
                 if (uuid != null) {
-                    ArrayList<Name> nh = MojangAPI.getNameHistory(uuid);
-                    if (!nh.isEmpty()) {
-                        name = nh.get(nh.size() - 1).getName();
-                    }
-                    for (final Name history : nh) {
+                    List<Name> nameHistory = MojangAPI.getNameHistory(uuid);
+                    if (!nameHistory.isEmpty()) name = nameHistory.get(nameHistory.size() - 1).getName();
+
+                    for (final Name history : nameHistory) {
                         final String name = history.getName();
                         if (history.getChangedToAt() == 0) {
                             names.add(name);

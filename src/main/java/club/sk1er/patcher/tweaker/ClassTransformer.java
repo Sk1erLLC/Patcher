@@ -328,8 +328,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
         registerTransformer(new JarDiscovererTransformer());
-
-        // optifine
         registerTransformer(new InventoryPlayerTransformer());
 
         // lwjgl

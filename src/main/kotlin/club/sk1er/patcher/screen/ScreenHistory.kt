@@ -36,6 +36,7 @@ import gg.essential.vigilance.gui.VigilancePalette
 import me.kbrewster.mojangapi.MojangAPI
 import me.kbrewster.mojangapi.profile.Model
 import me.kbrewster.mojangapi.profile.Profile
+import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -159,7 +160,12 @@ class ScreenHistory @JvmOverloads constructor(
                     val profile = MojangAPI.getProfile(uuid)
                     val url = profile.textures.textures.skin.url
                     val alex = profile.isAlex()
-                    val rl = mc.skinManager.loadSkin(MinecraftProfileTexture(url, if (alex) mapOf("model" to "slim") else null), MinecraftProfileTexture.Type.SKIN)
+                    val rl = mc.skinManager.loadSkin(
+                        MinecraftProfileTexture(
+                            url,
+                            if (alex) mapOf("model" to "slim") else null
+                        ), MinecraftProfileTexture.Type.SKIN
+                    )
                     player.player.playerInfo.locationSkin = rl
                     skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
                     skinText.setText("Skin of ${nameFetcher.name}")
@@ -211,7 +217,13 @@ class ScreenHistory @JvmOverloads constructor(
     override fun doesGuiPauseGame(): Boolean = false
 
     private inner class UIPlayer : UIComponent() {
-        val uuid: UUID? = MojangAPI.getUUID(name)
+        val uuid: UUID? = try {
+            MojangAPI.getUUID(name)
+        } catch (e: Exception) {
+            Patcher.instance.logger.error("Failed to fetch UUID.", e)
+            EssentialAPI.getNotifications().push("Name History", "Failed to fetch UUID.")
+            null
+        }
         var player: FakePlayer = FakePlayer(GameProfile(uuid ?: downloadPatcher.id, name))
 
         override fun draw() {
@@ -286,7 +298,7 @@ class ScreenHistory @JvmOverloads constructor(
             super.draw()
         }
     }
-    
+
     private inner class BigButton(
         var enabled: Boolean,
         buttonText: String,
@@ -343,6 +355,7 @@ class ScreenHistory @JvmOverloads constructor(
             buttonTextComponent.setColor(VigilancePalette.getBrightText().toConstraint())
             setColor(VigilancePalette.getAccent().toConstraint())
         }
+
         fun disable() {
             enabled = false
             buttonBody.setColor(VigilancePalette.getDarkHighlight().toConstraint())
@@ -435,7 +448,11 @@ class ScreenHistory @JvmOverloads constructor(
 
         private fun closeModal() {
             animate {
-                setColorAnimation(Animations.OUT_EXP, .5f, VigilancePalette.getModalBackground().withAlpha(0).toConstraint())
+                setColorAnimation(
+                    Animations.OUT_EXP,
+                    .5f,
+                    VigilancePalette.getModalBackground().withAlpha(0).toConstraint()
+                )
             }
 
             actualModal.animate {
