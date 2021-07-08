@@ -29,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 public class OverlayHandler {
 
     private boolean toggledTab;
-    private boolean toggledChat;
+    public static boolean toggledChat;
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
@@ -39,7 +39,7 @@ public class OverlayHandler {
 
     @SubscribeEvent
     public void tickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) this.toggledChat = Patcher.instance.getChatPeek().isKeyDown();
+        if (event.phase == TickEvent.Phase.START) toggledChat = Patcher.instance.getChatPeek().isKeyDown();
     }
 
     @SubscribeEvent
@@ -49,17 +49,6 @@ public class OverlayHandler {
         final ScaledResolution resolution = new ScaledResolution(mc);
         final int scaledWidth = resolution.getScaledWidth();
         final int scaledHeight = resolution.getScaledHeight();
-
-        final GuiNewChat chat = mc.ingameGUI.getChatGUI();
-        if (this.toggledChat && !chat.getChatOpen()) {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GlStateManager.disableAlpha();
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, (float) (scaledHeight - (PatcherConfig.chatPosition ? 60 : 48)), 0.0F);
-            chat.drawChat(0);
-            GlStateManager.popMatrix();
-        }
 
         final Scoreboard scoreboard = mc.theWorld.getScoreboard();
         final ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);

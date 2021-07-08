@@ -67,6 +67,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
                 case "drawChat":
                 case "func_146230_a": {
+                    methodNode.instructions.insert(forceChatDraw());
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
@@ -116,6 +117,17 @@ public class GuiNewChatTransformer implements CommonTransformer {
                     methodNode.instructions.insert(clearMessageQueue());
             }
         }
+    }
+
+    private InsnList forceChatDraw() {
+        InsnList list = new InsnList();
+        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/screen/render/overlay/OverlayHandler", "toggledChat", "Z"));
+        LabelNode end = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, end));
+        list.add(new InsnNode(Opcodes.ICONST_0));
+        list.add(new VarInsnNode(Opcodes.ISTORE, 1));
+        list.add(end);
+        return list;
     }
 
     private InsnList clearMessageQueue() {
