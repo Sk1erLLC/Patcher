@@ -36,7 +36,6 @@ import gg.essential.vigilance.gui.VigilancePalette
 import me.kbrewster.mojangapi.MojangAPI
 import me.kbrewster.mojangapi.profile.Model
 import me.kbrewster.mojangapi.profile.Profile
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -48,7 +47,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = EssentialAPI.getGuiUtil().scaleForScreenSize().ordinal) {
+) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
