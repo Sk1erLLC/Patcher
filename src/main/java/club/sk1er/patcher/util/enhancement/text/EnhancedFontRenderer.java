@@ -60,14 +60,6 @@ public final class EnhancedFontRenderer implements Enhancement {
         return poll == null ? GLAllocation.generateDisplayLists(1) : poll;
     }
 
-    public Queue<Integer> getGlRemoval() {
-        return glRemoval;
-    }
-
-    public void invalidate() {
-        stringCache.invalidateAll();
-    }
-
     public CachedString get(StringHash key) {
         return stringCache.getIfPresent(key);
     }
