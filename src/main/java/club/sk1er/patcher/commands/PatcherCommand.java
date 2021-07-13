@@ -127,7 +127,7 @@ public class PatcherCommand extends Command {
         final String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
         ChatUtilities.sendNotification(
             "Server Blacklist",
-            "Server &e\"" + ip + "\" &r is " + status + " &rblacklisted from chat length extension."
+            "Server &e\"" + ip + "\" &ris " + status + " &rblacklisted from chat length extension."
         );
         Patcher.instance.saveBlacklistedServers();
     }

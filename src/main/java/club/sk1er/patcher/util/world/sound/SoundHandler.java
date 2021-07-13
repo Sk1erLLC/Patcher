@@ -37,12 +37,13 @@ public class SoundHandler implements IResourceManagerReloadListener {
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
         if (event.result instanceof PositionedSound) {
+            final PositionedSound result = (PositionedSound) event.result;
             if (!Display.isActive()) {
-                ((PositionedSound) event.result).volume *= PatcherConfig.unfocusedSounds;
+                result.volume *= PatcherConfig.unfocusedSounds;
                 return;
             }
 
-            ((PositionedSound) event.result).volume *= getVolumeMultiplier(event.result.getSoundLocation());
+            result.volume *= getVolumeMultiplier(event.result.getSoundLocation());
         }
     }
 
