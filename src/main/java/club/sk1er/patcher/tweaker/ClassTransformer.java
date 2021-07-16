@@ -88,7 +88,6 @@ import club.sk1er.patcher.asm.render.world.tileentity.TileEntityRendererDispatch
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.asm.resources.AbstractResourcePackTransformer;
 import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
-import club.sk1er.patcher.asm.resources.ModelManagerTransformer;
 import club.sk1er.patcher.asm.resources.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
@@ -297,7 +296,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityPlayerTransformer());
         registerTransformer(new ItemModelMesherTransformer());
         registerTransformer(new RenderWitherTransformer());
-        registerTransformer(new ModelManagerTransformer());
         registerTransformer(new GuiScreenOptionsSoundsTransformer());
         registerTransformer(new LoadingScreenRendererTransformer());
         registerTransformer(new ModelVillagerTransformer());

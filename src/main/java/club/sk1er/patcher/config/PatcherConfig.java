@@ -1125,15 +1125,6 @@ public class PatcherConfig extends Vigilant {
     // EXPERIMENTAL
 
     @Property(
-        type = PropertyType.SWITCH, name = "Replace Forge Model Loader",
-        description = "Replace Forge's model loader, which is typically unused in 1.8 due to most mods being entirely clientside.\n" +
-            "§eVanilla's model loader is noticeably faster as it doesn't need to run through tons of unnecessary resource paths. This will improve resource-loading times.\n" +
-            "§eToggling will refresh resources.",
-        category = "Experimental", subcategory = "Model Loader", triggerActionOnInitialization = false
-    )
-    public static boolean replaceModelLoader;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Cache Entrypoints",
         description = "Cache Forge mod entry points, improving startup time as Forge no longer needs to walk through " +
             "every class to find the @Mod annotation.",
@@ -1177,7 +1168,6 @@ public class PatcherConfig extends Vigilant {
         final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
-        registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().refreshResources());
 
         try {
             addDependency("smartFullbright", "fullbright");
