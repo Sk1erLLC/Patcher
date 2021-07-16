@@ -96,7 +96,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
-@Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION)
+@Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION, clientSideOnly = true)
 public class Patcher {
 
     @Mod.Instance("patcher")
