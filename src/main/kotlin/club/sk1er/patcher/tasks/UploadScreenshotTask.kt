@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.EnumChatFormatting
+import java.awt.Toolkit
 import java.io.File
 import java.net.URI
 
@@ -38,18 +39,9 @@ object UploadScreenshotTask {
 
                 MCDispatchers.PATCHER_SCOPE.launch(Dispatchers.IO) {
                     val link = client.upload(file)
-                    if (EssentialAPI.getConfig().disableAllNotifications) {
-                        val message = ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to $link.")
-                        message.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
-                        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(message)
-                    } else {
-                        EssentialAPI.getNotifications().push(
-                            "Screenshot Manager",
-                            "${ChatColor.GREEN}Screenshot was uploaded to $link"
-                        ) {
-                            UDesktop.browse(URI(link))
-                        }
-                    }
+                    val message = ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to $link.")
+                    message.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
+                    Minecraft.getMinecraft().thePlayer.addChatComponentMessage(message)
                 }
             } else {
                 ChatUtilities.sendNotification(
