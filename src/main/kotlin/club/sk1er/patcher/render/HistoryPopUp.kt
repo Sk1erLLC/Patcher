@@ -11,6 +11,7 @@ import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.universal.UResolution
+import gg.essential.universal.USound
 import gg.essential.vigilance.gui.VigilancePalette
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
@@ -109,7 +110,7 @@ object HistoryPopUp {
 
                 onMouseClick {
                     // todo add thing that shows what each mouse button does
-                    EssentialAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    USound.playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
                     when (it.mouseButton) {
                         0 -> {
                             EssentialAPI.getGuiUtil().openScreen(ScreenHistory(fetcher.name))

@@ -338,7 +338,7 @@ class ScreenHistory @JvmOverloads constructor(
                 }
             }.onMouseClick {
                 if (enabled) {
-                    EssentialAPI.getSoundUtil().playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    USound.playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
                     buttonAction()
                 }
             }
