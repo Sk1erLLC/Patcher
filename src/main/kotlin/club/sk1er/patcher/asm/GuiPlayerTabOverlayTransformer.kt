@@ -26,7 +26,7 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
                 "renderPlayerlist", "func_175249_a" -> {
-                    for (insn in it.instructions.iterator()) {
+                    it.instructions.iterator().forEach { insn ->
                         if (insn is MethodInsnNode && insn.opcode == Opcodes.INVOKESTATIC) {
                             val methodName = mapMethodNameFromNode(insn)
 
@@ -63,7 +63,16 @@ class GuiPlayerTabOverlayTransformer : PatcherTransformer {
                     it.instructions.insertBefore(it.instructions.last.previous, moveDownInstructions(it, false))
                 }
 
-                "drawPing", "func_175245_a" -> it.instructions.insert(createNumberPing())
+                "drawPing", "func_175245_a" -> {
+                    it.instructions.iterator().forEach { insn ->
+                        if (insn is MethodInsnNode && insn.opcode == Opcodes.INVOKESTATIC) {
+                            val methodInsnName = mapMethodNameFromNode(insn)
+                            if (methodInsnName == "color" || methodInsnName == "func_179131_c") {
+                                it.instructions.insertBefore(insn.previous?.previous?.previous?.previous, createNumberPing())
+                            }
+                        }
+                    }
+                }
             }
         }
     }
