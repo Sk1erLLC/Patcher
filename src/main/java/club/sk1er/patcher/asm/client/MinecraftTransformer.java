@@ -51,9 +51,20 @@ public class MinecraftTransformer implements PatcherTransformer {
                     break;
 
                 case "func_90020_K":
-                case "getLimitFramerate":
-                    methodNode.instructions.insert(changeActiveFramerate());
+                case "getLimitFramerate": {
+                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                    while (iterator.hasNext()) {
+                        final AbstractInsnNode next = iterator.next();
+                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
+                            final String fieldInsnName = mapFieldNameFromNode(next);
+                            if (fieldInsnName.equals("theWorld") || fieldInsnName.equals("field_71441_e")) {
+                                methodNode.instructions.insertBefore(next.getPrevious(), changeActiveFramerate());
+                                break;
+                            }
+                        }
+                    }
                     break;
+                }
 
                 case "func_147107_h":
                 case "isFramerateLimitBelowMax":
@@ -335,28 +346,47 @@ public class MinecraftTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "isActive", "()Z", false));
         LabelNode label = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, label));
-        list.add(getPatcherSetting("unfocusedFPS", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, label));
+        list.add(getPatcherSetting("customFpsLimit", "I"));
+        list.add(new JumpInsnNode(Opcodes.IFLE, label));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74350_i", "I"));
-        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label));
-        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
         list.add(getPatcherSetting("customFpsLimit", "I"));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPGT, label));
-        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label));
+        list.add(getPatcherSetting("customFpsLimit", "I"));
         list.add(new InsnNode(Opcodes.IRETURN));
         list.add(label);
-        list.add(getPatcherSetting("customFpsLimit", "I"));
+
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "isActive", "()Z", false));
         LabelNode label2 = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFLE, label2));
+        list.add(new JumpInsnNode(Opcodes.IFNE, label2));
+        list.add(getPatcherSetting("unfocusedFPS", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, label2));
+
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
         list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74350_i", "I"));
+        LabelNode ificmple = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLE, ificmple));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_74350_i", "I"));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ificmple);
+
         list.add(getPatcherSetting("customFpsLimit", "I"));
-        list.add(new JumpInsnNode(Opcodes.IF_ICMPLT, label2));
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        LabelNode ificmple2 = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLE, ificmple2));
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        list.add(new InsnNode(Opcodes.IRETURN));
+        list.add(ificmple2);
+
+        list.add(getPatcherSetting("unfocusedFPSAmount", "I"));
+        list.add(getPatcherSetting("customFpsLimit", "I"));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPLE, label2));
         list.add(getPatcherSetting("customFpsLimit", "I"));
         list.add(new InsnNode(Opcodes.IRETURN));
         list.add(label2);

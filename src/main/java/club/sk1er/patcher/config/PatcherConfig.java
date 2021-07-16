@@ -1177,7 +1177,7 @@ public class PatcherConfig extends Vigilant {
         final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
-        registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().scheduleResourcesRefresh());
+        registerListener("replaceModelLoader", resources -> Minecraft.getMinecraft().refreshResources());
 
         try {
             addDependency("smartFullbright", "fullbright");

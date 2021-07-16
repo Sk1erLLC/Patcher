@@ -107,7 +107,6 @@ import club.sk1er.patcher.asm.world.entity.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerSPTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
-import club.sk1er.patcher.asm.world.entity.data.DataWatcherTransformer;
 import club.sk1er.patcher.asm.world.entity.data.NodeProcessorTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagStringTransformer;
@@ -297,7 +296,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new EntityPlayerTransformer());
         registerTransformer(new ItemModelMesherTransformer());
-        registerTransformer(new DataWatcherTransformer());
         registerTransformer(new RenderWitherTransformer());
         registerTransformer(new ModelManagerTransformer());
         registerTransformer(new GuiScreenOptionsSoundsTransformer());
