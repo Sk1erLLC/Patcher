@@ -526,7 +526,8 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SLIDER, name = "Max Particle Limit",
         description = "Stop additional particles from appearing when there's too many at once.",
-        category = "Performance", subcategory = "Particles", max = 10000
+        category = "Performance", subcategory = "Particles",
+        min = 1, max = 10000
     )
     public static int maxParticleLimit = 4000;
 
