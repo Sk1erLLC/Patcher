@@ -70,9 +70,14 @@ public class AssetsDatabase {
         if (!resourceMapFile.exists()) return new HashMap<>();
 
         Map<String, String> resourceMap = new HashMap<>();
-        for (JsonElement jsonElement : new JsonParser().parse(FileUtils.readFileToString(resourceMapFile)).getAsJsonArray()) {
-            final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-            resourceMap.put(asJsonObject.get("key").getAsString(), asJsonObject.get("value").getAsString());
+        try {
+            for (JsonElement jsonElement : new JsonParser().parse(FileUtils.readFileToString(resourceMapFile)).getAsJsonArray()) {
+                final JsonObject asJsonObject = jsonElement.getAsJsonObject();
+                resourceMap.put(asJsonObject.get("key").getAsString(), asJsonObject.get("value").getAsString());
+            }
+        } catch (Exception e) {
+            resourceMapFile.delete();
+            Patcher.instance.getLogger().error("Failed to read resource map.", e);
         }
 
         return resourceMap;
