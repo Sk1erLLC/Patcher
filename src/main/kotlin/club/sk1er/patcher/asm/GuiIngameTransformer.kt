@@ -15,6 +15,7 @@ import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.LdcInsnNode
 
 class GuiIngameTransformer : PatcherTransformer {
     /**
@@ -47,6 +48,14 @@ class GuiIngameTransformer : PatcherTransformer {
                             }
                         }
                     }*/
+                }
+
+                "renderScoreboard", "func_180475_a" -> {
+                    it.instructions.iterator().forEach { insn ->
+                        if (insn is LdcInsnNode && insn.cst == 553648127) {
+                            insn.cst = -1
+                        }
+                    }
                 }
             }
         }
