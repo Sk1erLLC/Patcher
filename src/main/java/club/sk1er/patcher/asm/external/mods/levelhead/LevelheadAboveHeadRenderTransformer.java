@@ -11,17 +11,18 @@
 
 package club.sk1er.patcher.asm.external.mods.levelhead;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
+import net.minecraft.scoreboard.ScoreObjective;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -51,13 +52,21 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
                 makeNametagTransparent(methodNode);
             } else if (methodNode.name.equals("render")) {
                 makeNametagShadowed(methodNode);
+
+                int scoreObjectiveIndex = -1;
+                for (LocalVariableNode variable : methodNode.localVariables) {
+                    if (variable.name.equals("scoreObjective")) {
+                        scoreObjectiveIndex = variable.index;
+                        break;
+                    }
+                }
+
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
                     if (next instanceof InsnNode && next.getOpcode() == Opcodes.DCONST_0) {
-                        final LabelNode gotoInsn = new LabelNode();
-                        methodNode.instructions.insertBefore(next, moveNametag(gotoInsn));
-                        methodNode.instructions.insertBefore(next.getNext(), gotoInsn);
+                        methodNode.instructions.insert(next, moveNametag(scoreObjectiveIndex));
+                        methodNode.instructions.remove(next);
                         break;
                     }
                 }
@@ -65,14 +74,15 @@ public class LevelheadAboveHeadRenderTransformer implements CommonTransformer {
         }
     }
 
-    private InsnList moveNametag(LabelNode gotoInsn) {
+    private InsnList moveNametag(int scoreObjectiveIndex) {
         InsnList list = new InsnList();
-        list.add(getPatcherSetting("showOwnNametag", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new LdcInsnNode(0.3D));
-        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-        list.add(ifeq);
+        list.add(new VarInsnNode(Opcodes.ALOAD, scoreObjectiveIndex));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/levelhead/LevelheadAboveHeadRenderTransformer", "getPatcherOffset", "(Lnet/minecraft/scoreboard/ScoreObjective;)D", false));
         return list;
+    }
+
+    @SuppressWarnings("unused")
+    public static double getPatcherOffset(ScoreObjective scoreObjective) {
+        return PatcherConfig.showOwnNametag ? (scoreObjective == null ? 0.3 : 0.6) : 0;
     }
 }
