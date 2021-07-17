@@ -40,7 +40,7 @@ public class EntityRendererHook {
 
     public static void reduceSensitivity() {
         oldSensitivity = mc.gameSettings.mouseSensitivity;
-        mc.gameSettings.mouseSensitivity = oldSensitivity / PatcherConfig.customZoomSensitivity;
+        mc.gameSettings.mouseSensitivity = oldSensitivity * PatcherConfig.customZoomSensitivity;
     }
 
     public static void resetSensitivity() {
