@@ -84,7 +84,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             methodNode.instructions.insertBefore(node, getDivisor());
                         } else if (checkZoomActiveNode(node, zoomActiveIndex)) {
                             methodNode.instructions.insertBefore(node, setZoomed(zoomActiveIndex));
-                        } else if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        } else if (node instanceof MethodInsnNode) {
                             final String methodInsnName = mapMethodNameFromNode(node);
                             if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                                 if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
