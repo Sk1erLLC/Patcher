@@ -704,14 +704,17 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
-        description = "Stop rendering sides of entities that you cannot see.\nBeing inside an entity will cause that body part to be invisible.",
+        description = "Stop rendering sides of entities that you cannot see.\n" +
+            "Being inside an entity will cause that body part to be invisible.\n" +
+            "§cSome models may have a transparent face and will cause the back face to not show, such as Wither Skeletons.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean entityBackFaceCulling;
 
     @Property(
         type = PropertyType.SWITCH, name = "Player Back-face Culling",
-        description = "Stop rendering sides of players that you cannot see.\nBeing inside a player will cause that body part to be invisible.",
+        description = "Stop rendering sides of players that you cannot see.\n" +
+            "Being inside a player will cause that body part to be invisible.",
         category = "Performance", subcategory = "Culling"
     )
     public static boolean playerBackFaceCulling;
