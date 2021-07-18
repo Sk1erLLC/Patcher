@@ -290,14 +290,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                 case "func_78464_a":
                 case "updateRenderer": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
                     while (iterator.hasNext()) {
                         final AbstractInsnNode next = iterator.next();
-
                         if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                             final String methodInsnName = mapMethodNameFromNode(next);
-
-                            if (methodInsnName.equals("getLightBrightness")) {
+                            if (methodInsnName.equals("getLightBrightness") || methodInsnName.equals("func_175724_o")) {
                                 ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
                                 methodNode.instructions.insertBefore(next.getPrevious(), getEyePosition());
                                 break;

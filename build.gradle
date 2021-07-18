@@ -60,7 +60,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.0.2"
-    implementation "gg.essential:Essential:1199-${mcVersion}-SNAPSHOT"
+    implementation "gg.essential:Essential:1224-${mcVersion}-SNAPSHOT"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

@@ -203,7 +203,7 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independent of your GUI scale.")
-    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "4", "5"}) String argument) {
+    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "0", "1", "2", "3", "4", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
             ChatUtilities.sendMessage("             &eInventory Scale", false);
             ChatUtilities.sendMessage("&7Usage: /inventoryscale <scaling>", false);
