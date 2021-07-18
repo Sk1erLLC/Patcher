@@ -360,7 +360,8 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     }
                 }
 
-                case "func_78484_h":
+                // todo: causes rain to spawn a few blocks above instead of on the ground
+                /*case "func_78484_h":
                 case "addRainParticles": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
@@ -383,7 +384,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             }
                         }
                     }
-                }
+                }*/
 
                 case "func_181560_a":
                 case "updateCameraAndRender": {
