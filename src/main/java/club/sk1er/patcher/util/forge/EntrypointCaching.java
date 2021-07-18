@@ -27,7 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-public class EntrypointCaching {
+/*public class EntrypointCaching {
 
     public static EntrypointCaching INSTANCE = new EntrypointCaching();
 
@@ -166,4 +166,4 @@ public class EntrypointCaching {
         return null;
     }
 
-}
+}*/

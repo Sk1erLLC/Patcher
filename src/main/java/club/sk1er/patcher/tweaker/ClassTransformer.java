@@ -22,7 +22,6 @@ import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransfo
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FluidRegistryTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.JarDiscovererTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ModClassLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ModContainerFactoryTransformer;
@@ -323,7 +322,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ASMModParserTransformer());
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
-        registerTransformer(new JarDiscovererTransformer());
+        //registerTransformer(new JarDiscovererTransformer());
         registerTransformer(new InventoryPlayerTransformer());
 
         // lwjgl

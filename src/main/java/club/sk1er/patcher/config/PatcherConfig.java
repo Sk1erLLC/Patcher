@@ -1120,13 +1120,13 @@ public class PatcherConfig extends Vigilant {
 
     // EXPERIMENTAL
 
-    @Property(
+    /*@Property(
         type = PropertyType.SWITCH, name = "Cache Entrypoints",
         description = "Cache Forge mod entry points, improving startup time as Forge no longer needs to walk through " +
             "every class to find the @Mod annotation.",
         category = "Experimental", subcategory = "Mod Discovery"
     )
-    public static boolean cacheEntrypoints = true;
+    public static boolean cacheEntrypoints = true;*/
 
     @Property(
         type = PropertyType.SWITCH, name = "HUD Caching",
