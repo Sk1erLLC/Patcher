@@ -67,10 +67,10 @@ public class PatcherCommand extends Command {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
     }
 
-    @SubCommand(value = "resetcache", description = "Clears Font & Item cache. Typically should not be used.")
+    @SubCommand(value = "resetcache", description = "Clears enhancement cache. Typically should not be used.")
     public void resetCache() {
         EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-        ChatUtilities.sendNotification("Enhancement Cache", "&aCleared item & font enhancement cache.");
+        ChatUtilities.sendNotification("Enhancement Cache", "&aCleared enhancement cache.");
     }
 
     @SubCommand(value = "debugfps", description = "Made for debugging purposes. Typically should not be used.")
@@ -202,8 +202,8 @@ public class PatcherCommand extends Command {
         refreshSkin();
     }
 
-    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independant of your GUI scale.")
-    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "5"}) String argument) {
+    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independent of your GUI scale.")
+    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "1", "2", "3", "4", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
             ChatUtilities.sendMessage("             &eInventory Scale", false);
             ChatUtilities.sendMessage("&7Usage: /inventoryscale <scaling>", false);
@@ -280,19 +280,6 @@ public class PatcherCommand extends Command {
         final String message = amount == 0 ? "Custom framerate was reset." : "Custom framerate set to " + amount + ".";
         ChatUtilities.sendNotification("Custom FPS Limiter", message);
     }
-
-    /*@SubCommand("dev")
-    public void dev() {
-        if (!ClassTransformer.isDevelopment()) {
-            ChatUtilities.sendNotification("Development", "This command is made only for development purposes, and should typically not even be loaded.");
-            return;
-        }
-
-        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        for (int i = 0; i < 1000; i++) {
-            player.addChatComponentMessage(new ChatComponentText("spam"));
-        }
-    }*/
 
     public static void refreshSkin() {
         try {
