@@ -97,6 +97,14 @@ public class ChatHandler {
     }
 
     @SubscribeEvent
+    public void setChatMessageMap(ClientChatReceivedEvent event) {
+        final String message = cleanColor(event.message.getFormattedText()).trim();
+        if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void changeWorld(WorldEvent.Load event) {
         ticks = 0;
     }
@@ -108,10 +116,6 @@ public class ChatHandler {
 
         if (!refresh) {
             final String message = cleanColor(chatComponent.getFormattedText()).trim();
-            if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
-                return false;
-            }
-
             if (message.isEmpty() || isDivider(message)) {
                 return true;
             }
