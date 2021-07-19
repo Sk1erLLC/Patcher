@@ -1,0 +1,8 @@
+{
+  "package": "club.sk1er.patcher.mixins",
+  "refmap": "patcher.mixins.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MinecraftMixin"
+  ]
+}

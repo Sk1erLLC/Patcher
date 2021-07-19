@@ -6,10 +6,12 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://repo.sk1er.club/repository/maven-public" }
+        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
     }
 
     dependencies {
         classpath('com.github.ReplayMod:ForgeGradle:48c4f0c6c7:all')
+        classpath('org.spongepowered:mixingradle:0.6-SNAPSHOT')
     }
 }
 
@@ -17,7 +19,7 @@ repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "https://repo.sk1er.club/repository/maven-public" }
-    maven { url 'https://repo.spongepowered.org/maven' }
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
     maven {
         credentials {
             username "$nexus_user"
@@ -39,12 +41,35 @@ archivesBaseName = modBaseName
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
+ext {
+    mixinSrg = new File(project.buildDir, 'tmp/mixins/mixins.srg')
+    mixinRefMap = new File(project.buildDir, 'tmp/mixins/patcher.mixins.refmap.json')
+}
+
+compileJava {
+    options.compilerArgs += [
+            "-AoutRefMapFile=${project.mixinRefMap.canonicalPath}",
+            "-AoutSrgFile=${project.mixinSrg.canonicalPath}",
+            "-AreobfSrgFile=${project.file('build/mcp-srg.srg').canonicalPath}"
+    ]
+}
+
+task copySrg(type: Copy, dependsOn: 'genSrgs') {
+    from { project.tasks.genSrgs.mcpToSrg }
+    from { project.tasks.genSrgs.mcpToNotch }
+    into 'build'
+}
+compileJava.dependsOn copySrg
+
+reobfJar.addSecondarySrgFile project.ext.mixinSrg
+
 minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
     mappings = "stable_22"
     runDir = "run"
     makeObfSourceJar = false
-    clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker"]
+    clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker", "-Dpatcher.debugBytecode=true", "-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true", "-Dmixin.dumpTargetOnFailure=true"]
+    clientRunArgs += ["--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker", "--mixin patcher.mixins.json"]
 }
 
 configurations {
@@ -74,6 +99,12 @@ dependencies {
         exclude module: 'asm-tree'
         exclude module: 'asm'
     }
+
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    // Mixin needs these (and depends on them but for some reason that's not enough. FG, did you do that?)
+    annotationProcessor 'com.google.code.gson:gson:2.2.4'
+    annotationProcessor 'com.google.guava:guava:21.0'
+    annotationProcessor 'org.ow2.asm:asm-tree:6.2'
 }
 
 task moveResources {
@@ -119,6 +150,8 @@ jar {
         filesMatching("LICENSE*") { name = "$name.${i++}" }
     }
 
+    from files(project.mixinRefMap.canonicalPath)
+
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     manifest {
         attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
@@ -127,7 +160,8 @@ jar {
                 "FMLCorePluginContainsFMLMod": "Yes, yes it does",
                 "Main-Class": "club.sk1er.container.ContainerMessage",
                 "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker",
-                "TweakOrder": "0"
+                "TweakOrder": "0",
+                "MixinConfigs": "patcher.mixins.json"
     }
 }
 
