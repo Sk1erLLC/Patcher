@@ -138,11 +138,9 @@ public class Patcher {
             debugView = new FunctionKeyChanger.KeybindDebugView(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
         );
 
-        patcherConfig = new PatcherConfig();
-        patcherConfig.preload();
+        patcherConfig = PatcherConfig.INSTANCE;
 
         patcherSoundConfig = new PatcherSoundConfig();
-        patcherSoundConfig.preload();
 
         SoundHandler target = new SoundHandler();
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
