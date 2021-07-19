@@ -6,12 +6,11 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://repo.sk1er.club/repository/maven-public" }
-        maven { url "https://repo.spongepowered.org/repository/maven-public/" }
     }
 
     dependencies {
         classpath('com.github.ReplayMod:ForgeGradle:48c4f0c6c7:all')
-        classpath('org.spongepowered:mixingradle:0.6-SNAPSHOT')
+        classpath('com.github.LXGaming:MixinGradle:0.6-SNAPSHOT')
     }
 }
 
@@ -33,6 +32,7 @@ apply plugin: 'kotlin'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
 version = this.properties.getOrDefault("BUILD_ID", "LOCAL")
 group = modGroup
@@ -41,28 +41,6 @@ archivesBaseName = modBaseName
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
-ext {
-    mixinSrg = new File(project.buildDir, 'tmp/mixins/mixins.srg')
-    mixinRefMap = new File(project.buildDir, 'tmp/mixins/patcher.mixins.refmap.json')
-}
-
-compileJava {
-    options.compilerArgs += [
-            "-AoutRefMapFile=${project.mixinRefMap.canonicalPath}",
-            "-AoutSrgFile=${project.mixinSrg.canonicalPath}",
-            "-AreobfSrgFile=${project.file('build/mcp-srg.srg').canonicalPath}"
-    ]
-}
-
-task copySrg(type: Copy, dependsOn: 'genSrgs') {
-    from { project.tasks.genSrgs.mcpToSrg }
-    from { project.tasks.genSrgs.mcpToNotch }
-    into 'build'
-}
-compileJava.dependsOn copySrg
-
-reobfJar.addSecondarySrgFile project.ext.mixinSrg
-
 minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
     mappings = "stable_22"
@@ -70,6 +48,10 @@ minecraft {
     makeObfSourceJar = false
     clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker", "-Dpatcher.debugBytecode=true", "-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true", "-Dmixin.dumpTargetOnFailure=true"]
     clientRunArgs += ["--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker", "--mixin patcher.mixins.json"]
+}
+
+mixin {
+    add sourceSets.main, "patcher.mixins.refmap.json"
 }
 
 configurations {
@@ -149,8 +131,6 @@ jar {
         filesMatching("META-INF/mods.toml") { name = "$name.${i++}" }
         filesMatching("LICENSE*") { name = "$name.${i++}" }
     }
-
-    from files(project.mixinRefMap.canonicalPath)
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     manifest {

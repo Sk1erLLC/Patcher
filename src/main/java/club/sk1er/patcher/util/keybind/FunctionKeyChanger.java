@@ -12,7 +12,7 @@ public class FunctionKeyChanger {
 
     public static class KeybindDebugView extends KeyBinding {
         public KeybindDebugView() {
-            super("Debug View", Keyboard.KEY_F3, "Patcher");
+            super("Custom F3", Keyboard.KEY_F3, "Patcher");
         }
     }
 
