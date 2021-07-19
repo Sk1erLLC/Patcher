@@ -287,24 +287,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "func_78464_a":
-                case "updateRenderer": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("getLightBrightness") || methodInsnName.equals("func_175724_o")) {
-                                ((MethodInsnNode) next.getPrevious()).desc = "(Lnet/minecraft/util/Vec3;)V";
-                                methodNode.instructions.insertBefore(next.getPrevious(), getEyePosition());
-                                break;
-                            }
-                        }
-                    }
-
-                    break;
-                }
-
                 case "func_78479_a":
                 case "setupCameraTransform": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -558,18 +540,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/MathHelper", clamp_float, "(FFF)F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, storeIndex));
         list.add(new VarInsnNode(Opcodes.FLOAD, loadIndex));
-    }
-
-    private InsnList getEyePosition() {
-        // using srg name in dev crashes? Ok Forge
-        InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-            "net/minecraft/entity/Entity",
-            dev ? "getPositionEyes" : "func_174824_e",
-            "(F)Lnet/minecraft/util/Vec3;",
-            false));
-        return list;
     }
 
     private InsnList toggleCullingStatus(boolean status) {

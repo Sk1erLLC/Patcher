@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.tweaker.other;
 
+import club.sk1er.patcher.asm.external.mods.sidebarmod.GuiSidebarTransformer;
 import club.sk1er.patcher.asm.optifine.WorldVertexBufferUploaderTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.ClassTransformer;
@@ -81,6 +82,9 @@ public class ModClassTransformer implements IClassTransformer {
         // SpiderFrog's oam overwrites our injection (because surely a 1.7 animations mod needs this feature)
         // only run in this transformer if it's loaded in prod
         if (!isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
+
+        // Sidebar Mod
+        registerTransformer(new GuiSidebarTransformer());
 
         // OptiFine uses Reflection for compatibility between Forge & itself,
         // and since we know they're using Forge, we're able to change methods back
