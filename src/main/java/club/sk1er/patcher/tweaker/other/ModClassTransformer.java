@@ -12,7 +12,7 @@
 package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.asm.external.mods.sidebarmod.GuiSidebarTransformer;
-import club.sk1er.patcher.asm.optifine.WorldVertexBufferUploaderTransformer;
+import club.sk1er.patcher.asm.external.optifine.WorldVertexBufferUploaderTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;

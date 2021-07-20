@@ -41,7 +41,6 @@ public final class FontRendererHook {
     private final EnhancedFontRenderer enhancedFontRenderer = EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
     private final FontRenderer fontRenderer;
     private final Minecraft mc = Minecraft.getMinecraft();
-    private final String styleDictionary = "0123456789abcdefklmnor";
     private OptifineHook hook = new OptifineHook();
     public int glTextureId = -1;
     private int texSheetDim = 256;
@@ -143,10 +142,10 @@ public final class FontRendererHook {
             GlStateManager.callList(cachedString.getListId());
 
             // Call so states in game know the texture was changed.
-            // Otherwise the game won't know the active texture was changed on the GPU
+            // Otherwise, the game won't know the active texture was changed on the GPU
             textureState.textureName = glTextureId;
 
-            // Save thing as texture, it updated in GL so we need to update the MC cache of that value
+            // Save thing as texture, it updated in GL, so we need to update the MC cache of that value
             final GlStateManager.Color colorState = GlStateManager.colorState;
             colorState.red = cachedString.getLastRed();
             colorState.green = cachedString.getLastGreen();
@@ -177,7 +176,7 @@ public final class FontRendererHook {
             char letter = text.charAt(messageChar);
 
             if (letter == 167 && messageChar + 1 < text.length()) {
-                int styleIndex = this.styleDictionary.indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
+                int styleIndex =  "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
 
                 if (styleIndex < 16) {
                     this.fontRenderer.strikethroughStyle = false;
@@ -300,23 +299,25 @@ public final class FontRendererHook {
         if (hasStyle) {
             GlStateManager.disableTexture2D();
             GL11.glBegin(GL11.GL_QUADS);
+        }
 
-            for (final RenderPair renderPair : strikethrough) {
-                GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
-                GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 4.0f);
-                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 4.0f);
-                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 3.0f);
-                GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 3.0f);
-            }
+        for (final RenderPair renderPair : strikethrough) {
+            GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
+            GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 4.0f);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 4.0f);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 3.0f);
+            GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 3.0f);
+        }
 
-            for (final RenderPair renderPair : underline) {
-                GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
-                GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9);
-                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9);
-                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9 - 1.0F);
-                GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9 - 1.0F);
-            }
+        for (final RenderPair renderPair : underline) {
+            GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
+            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9);
+            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9 - 1.0F);
+            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9 - 1.0F);
+        }
 
+        if (hasStyle) {
             GL11.glEnd();
         }
 
@@ -352,7 +353,7 @@ public final class FontRendererHook {
     }
 
     private float getBoldOffset(int width) {
-        return fontRenderer.unicodeFlag || width == -1 ? 0.5F : getOptifineBoldOffset();
+        return width == -1 || fontRenderer.unicodeFlag ? 0.5F : getOptifineBoldOffset();
     }
 
     private float getOptifineBoldOffset() {
@@ -371,7 +372,7 @@ public final class FontRendererHook {
     /**
      * Render a single character with the default.png font at current (posX,posY) location...
      */
-    protected float renderDefaultChar(int characterIndex, boolean italic, char ch) {
+    private float renderDefaultChar(int characterIndex, boolean italic, char ch) {
         final float characterX = (characterIndex % 16 * 8 * regularCharDim >> 7) + .01f;
         final float characterY = ((characterIndex >> 4) * 8 * regularCharDim >> 7) + 16 * texSheetDim + .01f;
 
@@ -426,7 +427,7 @@ public final class FontRendererHook {
     /**
      * Render a single Unicode character at current (posX,posY) location using one of the /font/glyph_XX.png files...
      */
-    protected float renderUnicodeChar(char ch, boolean italic) {
+    private float renderUnicodeChar(char ch, boolean italic) {
         if (this.fontRenderer.glyphWidth[ch] == 0) {
             return 0.0F;
         } else {

@@ -8,7 +8,7 @@
  * Mount Vernon, NY
  * sk1er.club
  */
-package club.sk1er.patcher.asm.forge
+package club.sk1er.patcher.asm.external.forge
 
 import club.sk1er.hookinjection.getInstructionsWithTryCatchNodes
 import club.sk1er.patcher.hooks.ModelLoaderHook

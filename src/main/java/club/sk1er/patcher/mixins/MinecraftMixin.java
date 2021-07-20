@@ -11,7 +11,7 @@ public class MinecraftMixin {
     @ModifyArg(method = "runTick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;isKeyDown(I)Z", remap = false))
     private int replaceF3KeyChecks(int original) {
         if (original == 61)
-            return Patcher.instance.getDebugView().getKeyCode();
+            return Patcher.instance.getCustomDebug().getKeyCode();
         return original;
     }
 }

@@ -9,26 +9,31 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.asm
+package club.sk1er.patcher.asm.client
 
 import club.sk1er.hookinjection.injectInstructions
-import club.sk1er.patcher.hooks.FallbackResourceManagerHook
+import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
+import club.sk1er.patcher.util.enhancement.hash.FastHashedKey
 import org.objectweb.asm.tree.ClassNode
 
-class FallbackResourceManagerTransformer : PatcherTransformer {
-    override fun getClassName() = arrayOf("net.minecraft.client.resources.FallbackResourceManager")
+class LongHashMapTransformer : PatcherTransformer {
+    override fun getClassName() = arrayOf("net.minecraft.util.LongHashMap")
 
     override fun transform(classNode: ClassNode, name: String) {
+        if (ClassTransformer.optifineVersion != "NONE") {
+            return
+        }
+
         classNode.methods.first {
             val methodName = mapMethodName(classNode, it)
-            methodName == "getResource" || methodName == "func_110536_a"
+            methodName == "getHashedKey" || methodName == "func_76155_g"
         }?.apply {
             clearInstructions(this)
             injectInstructions {
-                of(FallbackResourceManagerHook::getCachedResource)
+                of(FastHashedKey::mix64)
                 into(this@apply)
-                params(0, 1)
+                param(0)
                 keepReturns
             }
         }

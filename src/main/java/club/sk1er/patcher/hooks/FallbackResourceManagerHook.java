@@ -12,7 +12,7 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.asm.FallbackResourceManagerTransformer;
+import club.sk1er.patcher.asm.resources.FallbackResourceManagerTransformer;
 import club.sk1er.patcher.database.AssetsDatabase;
 import net.minecraft.client.resources.*;
 import net.minecraft.util.ResourceLocation;

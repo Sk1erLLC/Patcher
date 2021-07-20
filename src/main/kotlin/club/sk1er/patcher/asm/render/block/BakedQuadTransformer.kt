@@ -9,7 +9,7 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.asm
+package club.sk1er.patcher.asm.render.block
 
 import club.sk1er.hookinjection.getInstructions
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer

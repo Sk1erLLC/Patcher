@@ -9,26 +9,26 @@
  * sk1er.club
  */
 
-package club.sk1er.patcher.asm
+package club.sk1er.patcher.asm.resources
 
 import club.sk1er.hookinjection.injectInstructions
-import club.sk1er.patcher.hooks.TexturedQuadHook
+import club.sk1er.patcher.hooks.FallbackResourceManagerHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.tree.ClassNode
 
-class TexturedQuadTransformer : PatcherTransformer {
-    override fun getClassName() = arrayOf("net.minecraft.client.model.TexturedQuad")
+class FallbackResourceManagerTransformer : PatcherTransformer {
+    override fun getClassName() = arrayOf("net.minecraft.client.resources.FallbackResourceManager")
 
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.first {
             val methodName = mapMethodName(classNode, it)
-            methodName == "draw" || methodName == "func_178765_a"
+            methodName == "getResource" || methodName == "func_110536_a"
         }?.apply {
             clearInstructions(this)
             injectInstructions {
-                of(TexturedQuadHook::draw)
+                of(FallbackResourceManagerHook::getCachedResource)
                 into(this@apply)
-                params(0, 1, 2)
+                params(0, 1)
                 keepReturns
             }
         }

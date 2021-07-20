@@ -10,8 +10,8 @@ public class FunctionKeyChanger {
         }
     }
 
-    public static class KeybindDebugView extends KeyBinding {
-        public KeybindDebugView() {
+    public static class KeybindCustomDebug extends KeyBinding {
+        public KeybindCustomDebug() {
             super("Custom F3", Keyboard.KEY_F3, "Patcher");
         }
     }

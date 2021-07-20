@@ -8,26 +8,27 @@
  * Mount Vernon, NY
  * sk1er.club
  */
-package club.sk1er.patcher.asm
+
+package club.sk1er.patcher.asm.client.block
 
 import club.sk1er.hookinjection.injectInstructions
-import club.sk1er.patcher.hooks.ChatStyleHook
+import club.sk1er.patcher.hooks.BlockBrewingStandHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import org.objectweb.asm.tree.ClassNode
 
-class ChatStyleTransformer : PatcherTransformer {
-    override fun getClassName() = arrayOf("net.minecraft.util.ChatStyle")
+class BlockBrewingStandTransformer : PatcherTransformer {
+    override fun getClassName() = arrayOf("net.minecraft.block.BlockBrewingStand")
 
     override fun transform(classNode: ClassNode, name: String) {
         classNode.methods.first {
             val methodName = mapMethodName(classNode, it)
-            methodName == "getChatHoverEvent" || methodName == "func_150210_i"
+            methodName == "randomDisplayTick" || methodName == "func_180655_c"
         }?.apply {
             clearInstructions(this)
             injectInstructions {
-                of(ChatStyleHook::getChatHoverEvent)
+                of(BlockBrewingStandHook::randomDisplayTick)
                 into(this@apply)
-                param(0)
+                params(1, 2, 4)
                 keepReturns
             }
         }

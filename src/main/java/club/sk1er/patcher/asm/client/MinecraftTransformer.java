@@ -187,7 +187,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                                 methodNode.instructions.insertBefore(node, getKeybind("getHideScreen"));
                                 methodNode.instructions.remove(node);
                             } else if (operand == 61 && !(node.getNext() instanceof MethodInsnNode)) {
-                                methodNode.instructions.insertBefore(node, getKeybind("getDebugView"));
+                                methodNode.instructions.insertBefore(node, getKeybind("getCustomDebug"));
                                 methodNode.instructions.remove(node);
                             }
                         }

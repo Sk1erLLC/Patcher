@@ -8,7 +8,7 @@
  * Mount Vernon, NY
  * sk1er.club
  */
-package club.sk1er.patcher.asm
+package club.sk1er.patcher.asm.render.screen
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock

@@ -8,7 +8,7 @@
  * Mount Vernon, NY
  * sk1er.club
  */
-package club.sk1er.patcher.asm
+package club.sk1er.patcher.asm.client.block
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
@@ -17,9 +17,9 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.MethodNode
 
-class BlockNetherWartTransformer : PatcherTransformer {
+class BlockCropsTransformer : PatcherTransformer {
     override fun getClassName() = arrayOf(
-        "net.minecraft.block.BlockNetherWart"
+        "net.minecraft.block.BlockCrops"
     )
 
     override fun transform(classNode: ClassNode, name: String) {
@@ -58,7 +58,7 @@ class BlockNetherWartTransformer : PatcherTransformer {
         invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
             getHookClass("FarmHook"),
-            "updateWartMaxY",
+            "updateCropsMaxY",
             void,
             "net/minecraft/world/World",
             "net/minecraft/util/BlockPos",
@@ -95,7 +95,7 @@ class BlockNetherWartTransformer : PatcherTransformer {
         invokeinterface("net/minecraft/block/state/IBlockState", "func_177230_c", "net/minecraft/block/Block")
         invokestatic(
             getHookClass("FarmHook"),
-            "updateWartMaxY",
+            "updateCropsMaxY",
             void,
             "net/minecraft/world/World",
             "net/minecraft/util/BlockPos",

@@ -123,7 +123,7 @@ public class Patcher {
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
     private KeyBinding chatPeek;
-    private KeyBinding hideScreen, debugView, clearShaders;
+    private KeyBinding hideScreen, customDebug, clearShaders;
 
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
@@ -135,7 +135,7 @@ public class Patcher {
         registerKeybinds(
             nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
             chatPeek = new KeybindChatPeek(), hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
-            debugView = new FunctionKeyChanger.KeybindDebugView(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
+            customDebug = new FunctionKeyChanger.KeybindCustomDebug(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
         );
 
         patcherConfig = PatcherConfig.INSTANCE;
@@ -468,8 +468,8 @@ public class Patcher {
     }
 
     @SuppressWarnings("unused")
-    public KeyBinding getDebugView() {
-        return debugView;
+    public KeyBinding getCustomDebug() {
+        return customDebug;
     }
 
     @SuppressWarnings("unused")

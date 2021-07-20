@@ -1,4 +1,4 @@
-package club.sk1er.patcher.asm.optifine
+package club.sk1er.patcher.asm.external.optifine
 
 import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
