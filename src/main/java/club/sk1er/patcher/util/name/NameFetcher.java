@@ -12,9 +12,9 @@
 package club.sk1er.patcher.util.name;
 
 import club.sk1er.patcher.Patcher;
+import gg.essential.api.EssentialAPI;
 import gg.essential.api.utils.Multithreading;
-import me.kbrewster.mojangapi.MojangAPI;
-import me.kbrewster.mojangapi.profile.Name;
+import gg.essential.api.utils.mojang.Name;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,7 +42,7 @@ public class NameFetcher {
                 name = username;
                 uuid = null;
                 try {
-                    uuid = MojangAPI.getUUID(username);
+                    uuid = EssentialAPI.getMojangAPI().getUUID(username).get();
                 } catch (Exception e) {
                     Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
                     return;
@@ -50,7 +50,7 @@ public class NameFetcher {
 
                 names.clear();
                 if (uuid != null) {
-                    List<Name> nameHistory = MojangAPI.getNameHistory(uuid);
+                    List<Name> nameHistory = EssentialAPI.getMojangAPI().getNameHistory(uuid);
                     if (!nameHistory.isEmpty()) name = nameHistory.get(nameHistory.size() - 1).getName();
 
                     for (final Name history : nameHistory) {

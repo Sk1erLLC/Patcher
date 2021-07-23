@@ -18,6 +18,9 @@ import com.google.gson.JsonParser
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import gg.essential.api.EssentialAPI
+import gg.essential.api.utils.mojang.Model
+import gg.essential.api.utils.mojang.MojangAPI
+import gg.essential.api.utils.mojang.Profile
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
@@ -33,9 +36,6 @@ import gg.essential.elementa.state.BasicState
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.*
 import gg.essential.vigilance.gui.VigilancePalette
-import me.kbrewster.mojangapi.MojangAPI
-import me.kbrewster.mojangapi.profile.Model
-import me.kbrewster.mojangapi.profile.Profile
 import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -148,6 +148,7 @@ class ScreenHistory @JvmOverloads constructor(
         if (uuid != nameFetcher.uuid) {
             uuid = nameFetcher.uuid
             // update gui info
+            val uuid = uuid
             if (uuid == null) {
                 // set blank
                 player.player = FakePlayer(downloadPatcher)
@@ -156,18 +157,22 @@ class ScreenHistory @JvmOverloads constructor(
                 player.player = FakePlayer(GameProfile(uuid, name))
                 val info = player.player.playerInfo
                 if (info != null) {
-                    val profile = MojangAPI.getProfile(uuid)
-                    val url = profile.textures.textures.skin.url
-                    val alex = profile.isAlex()
-                    val rl = mc.skinManager.loadSkin(
-                        MinecraftProfileTexture(
-                            url,
-                            if (alex) mapOf("model" to "slim") else null
-                        ), MinecraftProfileTexture.Type.SKIN
-                    )
-                    player.player.playerInfo.locationSkin = rl
-                    skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
-                    skinText.setText("Skin of ${nameFetcher.name}")
+                    val profile = EssentialAPI.getMojangAPI().getProfile(uuid)
+                    if (profile != null) {
+                        val url = profile.textures.textures?.skin?.url
+                        if (url != null) {
+                            val alex = profile.isAlex()
+                            val rl = mc.skinManager.loadSkin(
+                                MinecraftProfileTexture(
+                                    url,
+                                    if (alex) mapOf("model" to "slim") else null
+                                ), MinecraftProfileTexture.Type.SKIN
+                            )
+                            player.player.playerInfo.locationSkin = rl
+                            skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
+                            skinText.setText("Skin of ${nameFetcher.name}")
+                        }
+                    }
                 }
             }
         }
@@ -195,7 +200,7 @@ class ScreenHistory @JvmOverloads constructor(
 
     private fun Profile.isAlex(): Boolean {
         try {
-            val decodedJson = JsonParser().parse(String(Base64.getDecoder().decode(properties[0].value))).asJsonObject
+            val decodedJson = JsonParser().parse(String(Base64.getDecoder().decode(properties?.get(0)?.value))).asJsonObject
             val skin = decodedJson["textures"]!!.asJsonObject["SKIN"]!!.asJsonObject
             if (skin.has("metadata")) {
                 val metadataElement = skin["metadata"]
@@ -217,7 +222,7 @@ class ScreenHistory @JvmOverloads constructor(
 
     private inner class UIPlayer : UIComponent() {
         val uuid: UUID? = try {
-            MojangAPI.getUUID(name)
+            EssentialAPI.getMojangAPI().getUUID(name ?: "")?.get()
         } catch (e: Exception) {
             Patcher.instance.logger.error("Failed to fetch UUID.", e)
             EssentialAPI.getNotifications().push("Name History", "Failed to fetch UUID.")
@@ -410,7 +415,7 @@ class ScreenHistory @JvmOverloads constructor(
         init {
             BigButton(true, "Yes, I'm sure!") {
                 try {
-                    MojangAPI.changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
+                    EssentialAPI.getMojangAPI().changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
                 } catch (e: Exception) {
                     ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
                     Patcher.instance.logger.error("Failed to change players skin through name history.", e)
