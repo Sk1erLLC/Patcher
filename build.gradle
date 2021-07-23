@@ -59,6 +59,8 @@ configurations {
     implementation.extendsFrom(embed)
 }
 
+def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
+
 dependencies {
     def kotlin_version = "1.5.10"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -67,7 +69,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.0.2"
-    implementation "gg.essential:Essential:1224-${mcVersion}-SNAPSHOT"
+    implementation "gg.essential:essential-${mcVersionStr}-forge:1244"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
