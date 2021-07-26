@@ -65,19 +65,17 @@ public class AssetsDatabase {
         FileUtils.writeLines(new File(dir, "negative_cache.txt"), lines);
     }
 
-    public Map<String, String> getAllMap() throws IOException {
+    public Map<String, String> getAllMap() {
         final File resourceMapFile = new File(dir, "resource_map.txt");
         if (!resourceMapFile.exists()) return new HashMap<>();
 
         Map<String, String> resourceMap = new HashMap<>();
         try {
-            for (JsonElement jsonElement : new JsonParser().parse(FileUtils.readFileToString(resourceMapFile)).getAsJsonArray()) {
-                final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-                resourceMap.put(asJsonObject.get("key").getAsString(), asJsonObject.get("value").getAsString());
+            for (JsonElement element : new JsonParser().parse(FileUtils.readFileToString(resourceMapFile)).getAsJsonArray()) {
+                final JsonObject object = element.getAsJsonObject();
+                resourceMap.put(object.get("key").getAsString(), object.get("value").getAsString());
             }
-        } catch (Exception e) {
-            resourceMapFile.delete();
-            Patcher.instance.getLogger().error("Failed to read resource map.", e);
+        } catch (Exception ignored) {
         }
 
         return resourceMap;

@@ -46,7 +46,7 @@ public class NetHandlerPlayClientHook {
             url = URLDecoder.decode(url.substring("level://".length()), StandardCharsets.UTF_8.toString());
 
             if (isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip"))) {
-                Patcher.instance.getLogger().warn("Malicious server tried to access " + url);
+                Patcher.instance.getLogger().warn("Malicious server tried to access {}", url);
                 if (Minecraft.getMinecraft().thePlayer != null) {
                     ChatUtilities.sendNotification("Patcher", "&c&lThe current server has attempted to be malicious but we have stopped them.");
                 }
