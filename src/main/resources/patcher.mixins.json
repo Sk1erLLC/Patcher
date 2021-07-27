@@ -3,6 +3,7 @@
   "refmap": "patcher.mixins.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MinecraftMixin"
+    "MinecraftMixin_CustomF3",
+    "MinecraftMixin_FpsLimit"
   ]
 }

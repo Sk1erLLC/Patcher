@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+public class MinecraftMixin_CustomF3 {
     @ModifyArg(method = "runTick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;isKeyDown(I)Z", remap = false))
     private int replaceF3KeyChecks(int original) {
         if (original == 61)
