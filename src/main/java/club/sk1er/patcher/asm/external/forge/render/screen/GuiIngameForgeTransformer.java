@@ -56,7 +56,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                 }
                 case "renderCrosshairs": {
                     methodNode.access = Opcodes.ACC_PUBLIC;
-                    methodNode.instructions.insert(cancelCrosshair());
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
@@ -134,16 +133,6 @@ public class GuiIngameForgeTransformer implements PatcherTransformer {
                 }
             }
         }
-    }
-
-    private InsnList cancelCrosshair() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/screen/render/caching/HUDCaching", "renderingCacheOverride", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
     }
 
     private InsnList drawCustomActionbar() {

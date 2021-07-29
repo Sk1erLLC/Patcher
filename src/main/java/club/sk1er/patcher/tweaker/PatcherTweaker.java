@@ -23,6 +23,8 @@ import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.Mixins;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -45,6 +47,9 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     @SuppressWarnings("unchecked")
     public PatcherTweaker() {
+        MixinBootstrap.init();
+        Mixins.addConfiguration("patcher.mixins.json");
+
         clientLoadTime = System.currentTimeMillis();
         try {
             // Create a second internal tweaker, creating after OptiFine does its thing.
@@ -164,6 +169,10 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
         }
 
         JOptionPane.showMessageDialog(null, message, "Launch Aborted", JOptionPane.ERROR_MESSAGE);
+        invokeExit();
+    }
+
+    static void invokeExit() {
         try {
             final Class<?> aClass = Class.forName("java.lang.Shutdown");
             final Method exit = aClass.getDeclaredMethod("exit", int.class);

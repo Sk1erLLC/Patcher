@@ -20,7 +20,7 @@ public class MinecraftMixin_FpsLimit {
     public WorldClient theWorld;
 
     @Inject(method = "getLimitFramerate", at = @At("HEAD"), cancellable = true)
-    private void modifyFpsLimit(CallbackInfoReturnable<Integer> cir) {
+    private void patcher$modifyFpsLimit(CallbackInfoReturnable<Integer> cir) {
         if (this.theWorld == null && this.currentScreen != null) return;
 
         if (!Display.isActive() && PatcherConfig.unfocusedFPS) {

@@ -15,18 +15,16 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.client.EnchantmentTransformer;
 import club.sk1er.patcher.asm.client.LongHashMapTransformer;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
-import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
-import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer;
-import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.asm.client.block.BlockBrewingStandTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
+import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
+import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer;
+import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
-import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
-import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiIngameTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiPlayerTabOverlayTransformer;
+import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
+import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
@@ -50,8 +48,6 @@ import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
-import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
-import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.network.LazyLoadBaseTransformer;
 import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
@@ -67,10 +63,11 @@ import club.sk1er.patcher.asm.network.packet.S19PacketEntityStatusTransformer;
 import club.sk1er.patcher.asm.network.packet.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
-import club.sk1er.patcher.asm.render.GlStateManagerTransformer;
+import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.BlockCactusTransformer;
 import club.sk1er.patcher.asm.render.block.BlockFluidRendererTransformer;
 import club.sk1er.patcher.asm.render.block.BlockRendererDispatcherTransformer;
+import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
 import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
@@ -148,8 +145,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
@@ -310,8 +305,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LoadingScreenRendererTransformer());
         registerTransformer(new ModelVillagerTransformer());
         registerTransformer(new GuiScreenBookTransformer());
-        registerTransformer(new FramebufferTransformer());
-        registerTransformer(new GlStateManagerTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
@@ -429,24 +422,13 @@ public class ClassTransformer implements IClassTransformer {
         close.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                close();
+                PatcherTweaker.invokeExit();
             }
         });
 
         Object[] options = {openOptifine, close};
         JOptionPane.showOptionDialog(null, message, "Launch Aborted", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-        this.close();
-    }
-
-    private void close() {
-        try {
-            final Class<?> aClass = Class.forName("java.lang.Shutdown");
-            final Method exit = aClass.getDeclaredMethod("exit", int.class);
-            exit.setAccessible(true);
-            exit.invoke(null, 0);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        PatcherTweaker.invokeExit();
     }
 
     private void fetchSupportedOptiFineVersions() {

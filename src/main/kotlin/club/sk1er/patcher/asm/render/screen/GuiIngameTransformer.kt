@@ -14,7 +14,6 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.LdcInsnNode
 
 class GuiIngameTransformer : PatcherTransformer {
@@ -35,21 +34,6 @@ class GuiIngameTransformer : PatcherTransformer {
         classNode.methods.forEach {
             when (mapMethodName(classNode, it)) {
                 "showCrosshair", "func_175183_b" -> it.instructions.insert(disableCrosshairRendering())
-                "renderVignette", "func_180480_a" -> {
-                    it.instructions.insert(checkCacheOverride())
-                    /*val iterator = it.instructions.iterator()
-                    while (iterator.hasNext()) {
-                        val next = iterator.next()
-                        if (next is MethodInsnNode && next.opcode == Opcodes.INVOKEVIRTUAL) {
-                            val methodName = mapMethodNameFromNode(next)
-                            if (methodName == "getTextureManager" || methodName == "func_110434_K") {
-                                it.instructions.insertBefore(next.previous.previous, insertVignetteColorHook())
-                                break
-                            }
-                        }
-                    }*/
-                }
-
                 "renderScoreboard", "func_180475_a" -> {
                     it.instructions.iterator().forEach { insn ->
                         if (insn is LdcInsnNode && insn.cst == 553648127) {
@@ -60,17 +44,6 @@ class GuiIngameTransformer : PatcherTransformer {
             }
         }
     }
-
-    private fun checkCacheOverride() = assembleBlock {
-        getstatic("club/sk1er/patcher/screen/render/caching/HUDCaching", "renderingCacheOverride", boolean)
-        ifeq(L["1"])
-        _return
-        +L["1"]
-    }.first
-
-    private fun insertVignetteColorHook(): InsnList = assembleBlock {
-        invokestatic(getHookClass("GuiIngameHook"), "colorVignette", void)
-    }.first
 
     private fun disableCrosshairRendering() = assembleBlock {
         aload_0

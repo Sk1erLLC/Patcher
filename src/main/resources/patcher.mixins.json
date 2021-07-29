@@ -4,6 +4,11 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MinecraftMixin_CustomF3",
-    "MinecraftMixin_FpsLimit"
+    "MinecraftMixin_FpsLimit",
+    "hudcaching.EntityRendererMixin_HUDCaching",
+    "hudcaching.FramebufferMixin_HUDCaching",
+    "hudcaching.GlStateManagerMixin_HUDCaching",
+    "hudcaching.GuiIngameForgeMixin_HUDCaching",
+    "hudcaching.GuiIngameMixin_HUDCaching"
   ]
 }
