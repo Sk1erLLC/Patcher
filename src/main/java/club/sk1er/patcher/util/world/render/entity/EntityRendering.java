@@ -76,7 +76,6 @@ public class EntityRendering {
             GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
             GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             GlStateManager.color(1, 1, 1, PatcherConfig.riddenHorseOpacity);
-            GlStateManager.disableDepth();
         }
     }
 
@@ -86,7 +85,6 @@ public class EntityRendering {
             GlStateManager.disableBlend();
             GlStateManager.disableAlpha();
             GlStateManager.color(1, 1, 1, 1);
-            GlStateManager.enableDepth();
         }
     }
 }
