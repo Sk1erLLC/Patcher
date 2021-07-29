@@ -1234,7 +1234,8 @@ public class PatcherConfig extends Vigilant {
                 "smoothZoomAlgorithm",
                 "toggleToZoom",
                 "normalFpsCounter",
-                "useVanillaMetricsRenderer"
+                "useVanillaMetricsRenderer",
+                "renderHandWhenZoomed"
             ).forEach(property -> hidePropertyIf(property, () -> ClassTransformer.optifineVersion.equals("NONE")));
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);

@@ -94,7 +94,7 @@ public class PatcherMenuEditor {
                 mcButtonList.add(new GuiButton(refreshSkin, 2, height - 22, 100, 20, "Refresh Skin"));
             }
 
-            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
+            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
                 mcButtonList.add(new GuiButton(serverList,

@@ -141,7 +141,7 @@ public class GlanceRenderer {
                 final ScaledResolution resolution = event.resolution;
                 mc.fontRendererObj.drawString(String.valueOf(count),
                     resolution.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
-                    resolution.getScaledHeight() - 46 - offset,
+                    resolution.getScaledHeight() - 43 - offset,
                     -1,
                     true);
             }
@@ -172,10 +172,10 @@ public class GlanceRenderer {
             final ScaledResolution res = event.resolution;
 
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
-            int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -2 : 14) + 9 << 1;
+            int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? 2 : 14) + 9 << 1;
 
             if (this.renderingArrows) {
-                y -= 10;
+                y -= 7;
             }
 
             mc.fontRendererObj.drawString(toDraw, x, y, -1, true);

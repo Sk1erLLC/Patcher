@@ -258,9 +258,8 @@ public class AsyncScreenshots implements Runnable {
         @DefaultHandler
         public void handle() {
             try {
-                if (screenshot.exists()) {
+                if (screenshot.exists() && screenshot.delete()) {
                     ChatUtilities.sendNotification("Screenshot Manager", "&c" + screenshot.getName() + " has been deleted.");
-                    screenshot.delete();
                     screenshot = null;
                 } else {
                     ChatUtilities.sendNotification("Screenshot Manager", "&cCouldn't find " + screenshot.getName());
@@ -304,7 +303,7 @@ public class AsyncScreenshots implements Runnable {
             Multithreading.runAsync(() -> Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null));
 
             if (message) {
-                ChatUtilities.sendNotification("Screenshot Manager", "&aScreenshot has been copied to your clipboard.");
+                ChatUtilities.sendMessage("&aScreenshot has been copied to your clipboard.");
             }
         }
     }
