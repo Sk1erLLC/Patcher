@@ -47,8 +47,10 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     @SuppressWarnings("unchecked")
     public PatcherTweaker() {
-        MixinBootstrap.init();
-        Mixins.addConfiguration("patcher.mixins.json");
+        // I need this for mixins to work in dev. why? who knows!
+        // breaks shit in prod though, keep it uncommented when pushing
+        //MixinBootstrap.init();
+        //Mixins.addConfiguration("patcher.mixins.json");
 
         clientLoadTime = System.currentTimeMillis();
         try {
