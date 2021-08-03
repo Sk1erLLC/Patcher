@@ -13,24 +13,12 @@ public class FakeMultiplayerMenu extends GuiMultiplayer {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
-        switch (button.id) {
-            case 1:
-            case 4:
-                this.performDisconnection();
-                break;
-        }
-
-        super.actionPerformed(button);
-    }
-
-    @Override
     public void connectToSelected() {
         this.performDisconnection();
         super.connectToSelected();
     }
 
-    private void performDisconnection() {
+    public void performDisconnection() {
         if (this.mc.theWorld != null) {
             this.mc.theWorld.sendQuittingDisconnectingPacket();
             this.mc.loadWorld(null);
