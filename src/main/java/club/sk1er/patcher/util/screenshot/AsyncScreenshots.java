@@ -23,8 +23,6 @@ import gg.essential.universal.ChatColor;
 import gg.essential.universal.UDesktop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -53,13 +51,11 @@ public class AsyncScreenshots implements Runnable {
     private final int[] pixelValues;
     private final Minecraft mc = Minecraft.getMinecraft();
     private final File screenshotDirectory;
-    private final Framebuffer framebuffer;
 
-    public AsyncScreenshots(int width, int height, int[] pixelValues, Framebuffer framebuffer, File screenshotDirectory) {
+    public AsyncScreenshots(int width, int height, int[] pixelValues, File screenshotDirectory) {
         this.width = width;
         this.height = height;
         this.pixelValues = pixelValues;
-        this.framebuffer = framebuffer;
         this.screenshotDirectory = screenshotDirectory;
     }
 
@@ -89,25 +85,8 @@ public class AsyncScreenshots implements Runnable {
         screenshot = getTimestampedPNGFileForDirectory(screenshotDirectory);
 
         try {
-            if (OpenGlHelper.isFramebufferEnabled()) {
-                image = new BufferedImage(framebuffer.framebufferWidth, framebuffer.framebufferHeight, 1);
-
-                int tHeight;
-
-                for (int heightSize = tHeight = framebuffer.framebufferTextureHeight - framebuffer.framebufferHeight; tHeight < framebuffer.framebufferTextureHeight; ++tHeight) {
-                    for (int widthSize = 0; widthSize < framebuffer.framebufferWidth; ++widthSize) {
-                        image.setRGB(
-                            widthSize,
-                            tHeight - heightSize,
-                            pixelValues[tHeight * framebuffer.framebufferTextureWidth + widthSize]
-                        );
-                    }
-                }
-            } else {
-                image = new BufferedImage(width, height, 1);
-                image.setRGB(0, 0, width, height, pixelValues, 0, width);
-            }
-
+            image = new BufferedImage(width, height, 1);
+            image.setRGB(0, 0, width, height, pixelValues, 0, width);
             ImageIO.write(image, "png", screenshot);
 
             if (!PatcherConfig.screenshotNoFeedback) {

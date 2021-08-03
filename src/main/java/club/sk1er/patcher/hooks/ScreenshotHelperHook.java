@@ -67,7 +67,7 @@ public class ScreenshotHelperHook {
         }
 
         pixelBuffer.get(pixelValues);
-        Multithreading.runAsync(new AsyncScreenshots(width, height, pixelValues, framebuffer, screenshotDirectory));
+        Multithreading.runAsync(new AsyncScreenshots(width, height, pixelValues, screenshotDirectory));
 
         if (Minecraft.getMinecraft().thePlayer != null && !PatcherConfig.screenshotNoFeedback) {
             Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(" "));
