@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.asm.render.screen;
 
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
@@ -40,14 +41,18 @@ public class FontRendererTransformer implements PatcherTransformer {
         classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL, "patcherFontRenderer", "L" + getHookClass("FontRendererHook;"), null, null));
         for (MethodNode methodNode : classNode.methods) {
             final String methodName = mapMethodName(classNode, methodNode);
-            if (methodNode.name.equals("<init>")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), fontRendererHookInit());
-            } else if (methodName.equals("getStringWidth") || methodName.equals("func_78256_a")) {
-                clearInstructions(methodNode);
-                methodNode.instructions.insert(getStringWidthHook());
-            } else if (methodName.equals("renderStringAtPos") || methodName.equals("func_78255_a")) {
-                methodNode.instructions.insert(renderStringAtPosHook());
-            } else if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
+            if (!ClassTransformer.smoothFontDetected) {
+                if (methodNode.name.equals("<init>")) {
+                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), fontRendererHookInit());
+                } else if (methodName.equals("getStringWidth") || methodName.equals("func_78256_a")) {
+                    clearInstructions(methodNode);
+                    methodNode.instructions.insert(getStringWidthHook());
+                } else if (methodName.equals("renderStringAtPos") || methodName.equals("func_78255_a")) {
+                    methodNode.instructions.insert(renderStringAtPosHook());
+                }
+            }
+
+            if ((methodName.equals("renderString") || methodName.equals("func_180455_b")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 methodNode.instructions.insert(getShadowHook());
             } else if ((methodName.equals("drawString") || methodName.equals("func_175065_a")) && methodNode.desc.equals("(Ljava/lang/String;FFIZ)I")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();

@@ -11,6 +11,7 @@
 
 package club.sk1er.patcher.asm.external.mods.optifine;
 
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
@@ -23,6 +24,10 @@ public class FontRendererHookTransformer implements PatcherTransformer {
 
     @Override
     public void transform(ClassNode classNode, String name) {
+        if (ClassTransformer.smoothFontDetected) {
+            return;
+        }
+
         for (MethodNode method : classNode.methods) {
             final String methodName = method.name;
             if (methodName.equals("getOptifineBoldOffset")) {

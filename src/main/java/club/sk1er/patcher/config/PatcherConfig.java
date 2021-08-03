@@ -17,6 +17,7 @@ import gg.essential.api.utils.GuiUtil;
 import gg.essential.vigilance.Vigilant;
 import gg.essential.vigilance.data.Property;
 import gg.essential.vigilance.data.PropertyType;
+import kotlin.jvm.functions.Function0;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -1236,6 +1237,10 @@ public class PatcherConfig extends Vigilant {
                 "useVanillaMetricsRenderer",
                 "renderHandWhenZoomed"
             ).forEach(property -> hidePropertyIf(property, () -> ClassTransformer.optifineVersion.equals("NONE")));
+
+            final Function0<Boolean> smoothFontDetected = () -> ClassTransformer.smoothFontDetected;
+            hidePropertyIf("optimizedFontRenderer", smoothFontDetected);
+            hidePropertyIf("cacheFontData", smoothFontDetected);
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }

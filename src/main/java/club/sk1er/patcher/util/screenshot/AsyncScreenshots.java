@@ -85,7 +85,7 @@ public class AsyncScreenshots implements Runnable {
         screenshot = getTimestampedPNGFileForDirectory(screenshotDirectory);
 
         try {
-            image = new BufferedImage(width, height, 1);
+            image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             image.setRGB(0, 0, width, height, pixelValues, 0, width);
             ImageIO.write(image, "png", screenshot);
 

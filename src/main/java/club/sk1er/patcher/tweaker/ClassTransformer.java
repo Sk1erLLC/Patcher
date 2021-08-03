@@ -159,12 +159,20 @@ public class ClassTransformer implements IClassTransformer {
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
 
+    public static boolean smoothFontDetected;
     public static final Set<String> supportedOptiFineVersions = new HashSet<>();
     public static OptiFineGenerations generations;
 
     public ClassTransformer() {
         MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         try {
+            // detect SmoothFont
+            if (this.getClass().getClassLoader().getResource("bre/smoothfont/mod_SmoothFont.class") != null) {
+                smoothFontDetected = true;
+                this.logger.warn("SmoothFont detected, disabling FontRenderer optimizations.");
+            }
+
+            // OptiFine stuff
             this.fetchSupportedOptiFineVersions();
             this.updateOptiFineGenerations();
             ClassNode classNode = new ClassNode();
