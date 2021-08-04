@@ -50,6 +50,7 @@ public class GlanceRenderer {
     private final Map<String, ItemStack> cachedDamageMap = new HashMap<>();
     private final DecimalFormat format = new DecimalFormat("#.###");
     private boolean renderingArrows;
+    private boolean renderingDamage;
 
     /**
      * Create a map for short enchantment name identification.
@@ -97,15 +98,14 @@ public class GlanceRenderer {
 
         final ItemStack heldItemStack = player.inventory.getCurrentItem();
         if (heldItemStack != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5f, 0.5f, 0.5f);
-
             final String attackDamage = getAttackDamageString(heldItemStack);
             if (attackDamage == null) {
-                GlStateManager.scale(2.0f, 2.0f, 2.0f);
-                GlStateManager.popMatrix();
                 return;
             }
+
+            renderingDamage = true;
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5f, 0.5f, 0.5f);
 
             final ScaledResolution res = event.resolution;
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
@@ -174,7 +174,7 @@ public class GlanceRenderer {
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
             int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? 2 : 14) + 9 << 1;
 
-            if (this.renderingArrows) {
+            if (this.renderingArrows || this.renderingDamage) {
                 y -= 7;
             }
 
