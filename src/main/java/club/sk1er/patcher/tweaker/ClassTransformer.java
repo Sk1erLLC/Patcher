@@ -167,7 +167,8 @@ public class ClassTransformer implements IClassTransformer {
         MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         try {
             // detect SmoothFont
-            if (this.getClass().getClassLoader().getResource("bre/smoothfont/mod_SmoothFont.class") != null) {
+            final ClassLoader classLoader = this.getClass().getClassLoader();
+            if (classLoader.getResource("bre/smoothfont/mod_SmoothFont.class") != null) {
                 smoothFontDetected = true;
                 this.logger.warn("SmoothFont detected, disabling FontRenderer optimizations.");
             }

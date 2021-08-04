@@ -58,7 +58,6 @@ configurations {
     embed
     implementation.extendsFrom(embed)
 }
-
 def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
 
 dependencies {
@@ -68,7 +67,7 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    embed "gg.essential:loader-launchwrapper:1.0.2"
+    embed "gg.essential:loader-launchwrapper:1.1.0"
     implementation "gg.essential:essential-${mcVersionStr}-forge:1260"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
