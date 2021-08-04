@@ -193,7 +193,7 @@ public class GlanceRenderer {
     }
 
     /**
-     * Get the currently held items attack damage by searching through the items lore.
+     * Get the currently held items attack damage by searching through the item's lore.
      *
      * @param stack Currently held item.
      * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.

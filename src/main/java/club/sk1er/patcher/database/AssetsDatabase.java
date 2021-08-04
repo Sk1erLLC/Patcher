@@ -39,7 +39,7 @@ public class AssetsDatabase {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 saveNegative(FallbackResourceManagerHook.negativeResourceCache);
-                final File resourceMapFile = new File(dir, "resource_map.txt");
+                /*final File resourceMapFile = new File(dir, "resource_map.txt");
                 try (final FileWriter fileWriter = new FileWriter(resourceMapFile)) {
                     final Map<String, String> resourceMap = FallbackResourceManagerHook.resourceMap;
                     final JsonArray array = new JsonArray();
@@ -49,7 +49,7 @@ public class AssetsDatabase {
                     }
 
                     fileWriter.write(array.toString());
-                }
+                }*/
             } catch (IOException e) {
                 Patcher.instance.getLogger().error("Failed to write to resource map.", e);
             }
@@ -65,7 +65,7 @@ public class AssetsDatabase {
         FileUtils.writeLines(new File(dir, "negative_cache.txt"), lines);
     }
 
-    public Map<String, String> getAllMap() {
+    /*public Map<String, String> getAllMap() {
         final File resourceMapFile = new File(dir, "resource_map.txt");
         if (!resourceMapFile.exists()) return new HashMap<>();
 
@@ -79,5 +79,5 @@ public class AssetsDatabase {
         }
 
         return resourceMap;
-    }
+    }*/
 }

@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.asm.external.forge.loader;
 
-import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -44,48 +43,21 @@ public class FMLClientHandlerTransformer implements PatcherTransformer {
     @Override
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
-            switch (methodNode.name) {
-                case "stripSpecialChars":
-                    clearInstructions(methodNode);
-                    methodNode.instructions.insert(fasterSpecialChars());
-                    break;
-                case "addModAsResource": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("loadLanguagesFor")) {
-                            for (int i = 0; i < 4; i++) {
-                                methodNode.instructions.remove(next.getPrevious());
-                            }
-
-                            methodNode.instructions.remove(next);
-                            break;
+            if ("stripSpecialChars".equals(methodNode.name)) {
+                clearInstructions(methodNode);
+                methodNode.instructions.insert(fasterSpecialChars());
+            } else if ("addModAsResource".equals(methodNode.name)) {
+                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+                while (iterator.hasNext()) {
+                    final AbstractInsnNode next = iterator.next();
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) next).name.equals("loadLanguagesFor")) {
+                        for (int i = 0; i < 4; i++) {
+                            methodNode.instructions.remove(next.getPrevious());
                         }
-                    }
-                    break;
-                }
-                case "finishMinecraftLoading": {
-                    if (!PatcherTweaker.resourcepackManagerDetected) {
-                        return;
-                    }
 
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("refreshResources") || methodInsnName.equals("func_110436_a")) {
-                                methodNode.instructions.insertBefore(next, new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC,
-                                    getHookClass("FallbackResourceManagerHook"),
-                                    "clearCache",
-                                    "()V",
-                                    false
-                                ));
-                            }
-                        }
+                        methodNode.instructions.remove(next);
+                        break;
                     }
-                    break;
                 }
             }
         }
