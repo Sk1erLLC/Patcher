@@ -132,28 +132,6 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
             } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
                 makeNametagShadowed(methodNode);
-            } else if (methodName.equals("canRenderName") || methodName.equals("func_177070_b")) {
-                methodNode.instructions.insert(modifyNametagRenderState(false));
-                for (ListIterator<AbstractInsnNode> it = methodNode.instructions.iterator(); it.hasNext(); ) {
-                    AbstractInsnNode insn = it.next();
-                    if (insn instanceof FieldInsnNode) {
-                        FieldInsnNode fieldInsnNode = (FieldInsnNode) insn;
-                        if (fieldInsnNode.getOpcode() == Opcodes.GETFIELD && fieldInsnNode.owner.equals("net/minecraft/client/renderer/entity/RenderManager")) {
-                            String fieldName = mapFieldNameFromNode(fieldInsnNode);
-                            if (fieldName.equals("livingPlayer") || fieldName.equals("field_78734_h")) {
-                                if (insn.getNext().getOpcode() == Opcodes.IF_ACMPEQ) {
-                                    JumpInsnNode jump = ((JumpInsnNode) insn.getNext());
-                                    methodNode.instructions.insertBefore(
-                                            jump,
-                                            new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("RendererLivingEntityHook"), "shouldRenderNametag", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity;)Z", false)
-                                    );
-                                    methodNode.instructions.set(jump, new JumpInsnNode(Opcodes.IFEQ, jump.label));
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
             } else if (methodName.equals("rotateCorpse") || methodName.equals("func_77043_a")) {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
