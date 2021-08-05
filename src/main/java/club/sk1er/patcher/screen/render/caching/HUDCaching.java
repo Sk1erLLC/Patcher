@@ -53,7 +53,7 @@ public class HUDCaching {
             if (framebuffer != null) {
                 if (ingame instanceof GuiIngameForge) {
                     ((IGuiIngameForge) ingame).renderCrosshairs(width, height);
-                } else if (ingame.showCrosshair()) {
+                } else if (ingame.showCrosshair() && GuiIngameForge.renderCrosshairs) {
                     mc.getTextureManager().bindTexture(Gui.icons);
                     GlStateManager.enableBlend();
                     GlStateManager.tryBlendFuncSeparate(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
