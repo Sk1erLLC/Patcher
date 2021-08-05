@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.boss.BossStatus;
+import net.minecraftforge.client.GuiIngameForge;
 import org.objectweb.asm.tree.ClassNode;
 
 /**
@@ -27,14 +28,14 @@ public class GuiPlayerTabOverlayHook {
     public static final Minecraft mc = Minecraft.getMinecraft();
 
     public static void moveTabDownPushMatrix() {
-        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeightAllow) {
+        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && GuiIngameForge.renderBossHealth && PatcherConfig.tabHeightAllow) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, PatcherConfig.tabHeight, 0);
         }
     }
 
     public static void moveTabDownPopMatrix() {
-        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && PatcherConfig.tabHeightAllow) {
+        if (BossStatus.bossName != null && BossStatus.statusBarTime > 0 && GuiIngameForge.renderBossHealth && PatcherConfig.tabHeightAllow) {
             GlStateManager.popMatrix();
         }
     }
