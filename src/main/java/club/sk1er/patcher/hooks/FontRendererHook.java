@@ -152,6 +152,7 @@ public final class FontRendererHook {
             colorState.blue = cachedString.getLastBlue();
             colorState.alpha = cachedString.getLastAlpha();
             GlStateManager.translate(-posX, -posY, 0.0f);
+            GlStateManager.resetColor();
             GlStateManager.color(1, 1, 1, 1);
 
             this.fontRenderer.posX = posX + cachedString.getWidth();
@@ -299,29 +300,26 @@ public final class FontRendererHook {
         if (hasStyle) {
             GlStateManager.disableTexture2D();
             GL11.glBegin(GL11.GL_QUADS);
-        }
 
-        for (final RenderPair renderPair : strikethrough) {
-            GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
-            GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 4.0f);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 4.0f);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 3.0f);
-            GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 3.0f);
-        }
+            for (final RenderPair renderPair : strikethrough) {
+                GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
+                GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 4.0f);
+                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 4.0f);
+                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 3.0f);
+                GL11.glVertex2f(renderPair.posX, this.fontRenderer.posY + 3.0f);
+            }
 
-        for (final RenderPair renderPair : underline) {
-            GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
-            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9);
-            GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9 - 1.0F);
-            GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9 - 1.0F);
-        }
+            for (final RenderPair renderPair : underline) {
+                GlStateManager.color(renderPair.red, renderPair.green, renderPair.blue, renderPair.alpha);
+                GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9);
+                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9);
+                GL11.glVertex2f(renderPair.posX + renderPair.width, this.fontRenderer.posY + 9 - 1.0F);
+                GL11.glVertex2f(renderPair.posX - 1.0f, this.fontRenderer.posY + 9 - 1.0F);
+            }
 
-        if (hasStyle) {
             GL11.glEnd();
+            GlStateManager.enableTexture2D();
         }
-
-        GlStateManager.enableTexture2D();
 
         if (PatcherConfig.cacheFontData) {
             GL11.glEndList();
