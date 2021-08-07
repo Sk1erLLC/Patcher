@@ -118,6 +118,14 @@ public final class FontRendererHook {
             create();
         }
 
+        while (text.startsWith('\u00a7' + "r")) {
+            text = text.substring(2);
+        }
+
+        while (text.endsWith('\u00a7' + "r")) {
+            text = text.substring(0, text.length() - 2);
+        }
+
         final float posX = this.fontRenderer.posX;
         final float posY = this.fontRenderer.posY;
         this.fontRenderer.posY = 0.0f;
