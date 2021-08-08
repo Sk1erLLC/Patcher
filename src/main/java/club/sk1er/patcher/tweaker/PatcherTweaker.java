@@ -50,8 +50,8 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
     public PatcherTweaker() {
         // I need this for mixins to work in dev. why? who knows!
         // breaks shit in prod though, keep it uncommented when pushing
-        MixinBootstrap.init();
-        Mixins.addConfiguration("patcher.mixins.json");
+//        MixinBootstrap.init();
+//        Mixins.addConfiguration("patcher.mixins.json");
 
         clientLoadTime = System.currentTimeMillis();
         try {
