@@ -23,6 +23,8 @@ import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.mixin.Mixins;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -48,8 +50,8 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
     public PatcherTweaker() {
         // I need this for mixins to work in dev. why? who knows!
         // breaks shit in prod though, keep it uncommented when pushing
-        //MixinBootstrap.init();
-        //Mixins.addConfiguration("patcher.mixins.json");
+        MixinBootstrap.init();
+        Mixins.addConfiguration("patcher.mixins.json");
 
         clientLoadTime = System.currentTimeMillis();
         try {

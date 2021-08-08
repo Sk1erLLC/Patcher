@@ -7,11 +7,12 @@
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_FpsLimit",
+    "RendererLivingEntityMixin_NametagRendering",
+    "ServerListEntryNormalMixin_ResolveCrash",
     "hudcaching.EntityRendererMixin_HUDCaching",
     "hudcaching.FramebufferMixin_HUDCaching",
     "hudcaching.GlStateManagerMixin_HUDCaching",
     "hudcaching.GuiIngameForgeMixin_HUDCaching",
-    "hudcaching.GuiIngameMixin_HUDCaching",
-    "RendererLivingEntityMixin_NametagRendering"
+    "hudcaching.GuiIngameMixin_HUDCaching"
   ]
 }
