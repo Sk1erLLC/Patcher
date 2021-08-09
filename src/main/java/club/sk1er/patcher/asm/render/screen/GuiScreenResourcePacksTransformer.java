@@ -16,13 +16,9 @@ import net.minecraftforge.fml.common.Loader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
@@ -83,43 +79,7 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            } else if (methodName.equals("initGui") || methodName.equals("func_73866_w_")) {
-                final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode next = iterator.next();
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                        final String methodInsnName = mapMethodNameFromNode(next);
-                        if (methodInsnName.equals("getRepositoryEntriesAll") || methodInsnName.equals("func_110609_b")) {
-                            next = next.getPrevious();
-
-                            for (int i = 0; i < 14; i++) {
-                                methodNode.instructions.remove(next.getNext());
-                            }
-
-                            methodNode.instructions.insertBefore(next, replaceList());
-                            methodNode.instructions.remove(next);
-                        }
-                    }
-                }
             }
         }
-    }
-
-    private InsnList replaceList() {
-        InsnList list = new InsnList();
-        list.add(new TypeInsnNode(Opcodes.NEW, "java/util/HashSet"));
-        list.add(new InsnNode(Opcodes.DUP));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/resources/ResourcePackRepository", "func_110609_b", "()Ljava/util/List;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/util/HashSet", "<init>", "(Ljava/util/Collection;)V", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 50));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 50));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/resources/ResourcePackRepository", "func_110613_c", "()Ljava/util/List;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/util/HashSet", "removeAll", "(Ljava/util/Collection;)Z", false));
-        list.add(new InsnNode(Opcodes.POP));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 50));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/util/HashSet", "iterator", "()Ljava/util/Iterator;", false));
-        return list;
     }
 }
