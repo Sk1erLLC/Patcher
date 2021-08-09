@@ -51,8 +51,9 @@ public class FallbackResourceManagerHook {
     }
 
     public static IResource getCachedResource(final FallbackResourceManager manager, final ResourceLocation location) throws IOException {
-        if (negativeResourceCache.contains(location.toString())) {
-            throw new FileNotFoundException(location.toString());
+        final String locationString = location.toString();
+        if (negativeResourceCache.contains(locationString)) {
+            throw new FileNotFoundException(locationString);
         }
 
         ResourceLocation mcMetaLocation = FallbackResourceManager.getLocationMcmeta(location);
@@ -90,9 +91,8 @@ public class FallbackResourceManagerHook {
             }
         }
 
-        negativeResourceCache.add(location.getResourcePath());
-        //negativeResourceCache.add(location.toString());
-        throw new FileNotFoundException(location.toString());
+        negativeResourceCache.add(locationString);
+        throw new FileNotFoundException(locationString);
     }
 
     /*public static void mapResource(ResourceLocation location, String name) {
