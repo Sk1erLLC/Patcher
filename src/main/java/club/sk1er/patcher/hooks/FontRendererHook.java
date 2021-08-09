@@ -118,12 +118,22 @@ public final class FontRendererHook {
             create();
         }
 
+        // todo: optimize this
         while (text.startsWith('\u00a7' + "r")) {
             text = text.substring(2);
         }
 
         while (text.endsWith('\u00a7' + "r")) {
             text = text.substring(0, text.length() - 2);
+        }
+
+        if (text.isEmpty()) {
+            if (glTextureId != -1) {
+                GlStateManager.deleteTexture(glTextureId);
+                glTextureId = -1;
+            }
+
+            return false;
         }
 
         final float posX = this.fontRenderer.posX;
