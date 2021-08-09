@@ -12,6 +12,7 @@
 package club.sk1er.patcher.screen
 
 import club.sk1er.patcher.Patcher
+import club.sk1er.patcher.screen.PatcherGuiScale.Companion.scaleForScreenSize
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import com.google.gson.JsonParser
@@ -19,7 +20,6 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.mojang.Model
-import gg.essential.api.utils.mojang.MojangAPI
 import gg.essential.api.utils.mojang.Profile
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
@@ -47,7 +47,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
+) : WindowScreen(newGuiScale = scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
@@ -106,6 +106,7 @@ class ScreenHistory @JvmOverloads constructor(
         color = VigilancePalette.getBrightText().toConstraint()
     } childOf playerHolder
 
+    // todo: replace this with the essential player object
     private val player by UIPlayer().constrain {
         y = CenterConstraint()
         x = CenterConstraint()
@@ -200,7 +201,8 @@ class ScreenHistory @JvmOverloads constructor(
 
     private fun Profile.isAlex(): Boolean {
         try {
-            val decodedJson = JsonParser().parse(String(Base64.getDecoder().decode(properties?.get(0)?.value))).asJsonObject
+            val decodedJson =
+                JsonParser().parse(String(Base64.getDecoder().decode(properties?.get(0)?.value))).asJsonObject
             val skin = decodedJson["textures"]!!.asJsonObject["SKIN"]!!.asJsonObject
             if (skin.has("metadata")) {
                 val metadataElement = skin["metadata"]
@@ -415,7 +417,8 @@ class ScreenHistory @JvmOverloads constructor(
         init {
             BigButton(true, "Yes, I'm sure!") {
                 try {
-                    EssentialAPI.getMojangAPI().changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
+                    EssentialAPI.getMojangAPI()
+                        .changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
                 } catch (e: Exception) {
                     ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
                     Patcher.instance.logger.error("Failed to change players skin through name history.", e)
@@ -523,5 +526,31 @@ class ScreenHistory @JvmOverloads constructor(
             Model.STEVE
         )
         private var lastSkinChange: Long = 0L
+    }
+}
+
+// essential needs to be deployed, i need to deploy a patcher beta, we're going with this lol
+enum class PatcherGuiScale {
+    Auto,
+    Small,
+    Medium,
+    Large,
+    VeryLarge;
+
+    companion object {
+        private val guiScaleOverride = System.getProperty("essential.guiScaleOverride", "-1").toInt()
+
+        @JvmStatic
+        fun fromNumber(number: Int): PatcherGuiScale = values()[number]
+
+        @JvmOverloads
+        @JvmStatic
+        fun scaleForScreenSize(step: Int = 650): PatcherGuiScale {
+            if (guiScaleOverride != -1) return fromNumber(guiScaleOverride.coerceIn(0, 4))
+
+            val width = UResolution.windowWidth
+            val height = UResolution.windowHeight
+            return fromNumber(kotlin.math.min((width / step).coerceIn(1, 4), (height / (step / 16 * 9)).coerceIn(1, 4)))
+        }
     }
 }
