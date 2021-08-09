@@ -16,6 +16,7 @@ import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
+import gg.essential.api.config.EssentialConfig;
 import gg.essential.elementa.components.UIImage;
 import gg.essential.elementa.components.Window;
 import gg.essential.elementa.dsl.ComponentsKt;
@@ -94,12 +95,14 @@ public class PatcherMenuEditor {
                 mcButtonList.add(new GuiButton(refreshSkin, 2, height - 22, 100, 20, "Refresh Skin"));
             }
 
-            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
+            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
+                final EssentialConfig config = EssentialAPI.getConfig();
+                int buttonWidth = config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS() ? 98 : 200;
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
                 mcButtonList.add(new GuiButton(serverList,
                     (width >> 1) - 100, (height >> 2) + 56,
-                    EssentialAPI.getConfig().getOpenToFriends() ? 98 : 200, 20,
+                    buttonWidth, 20,
                     "Server List"
                 ));
             }

@@ -103,14 +103,17 @@ public final class FontRendererHook {
         glTextureId = new DynamicTexture(bufferedImage).getGlTextureId();
     }
 
+    private void deleteTextureId() {
+        if (glTextureId != -1) {
+            GlStateManager.deleteTexture(glTextureId);
+            glTextureId = -1;
+        }
+    }
+
     @SuppressWarnings({"SuspiciousNameCombination", "unused"})
     public boolean renderStringAtPos(String text, boolean shadow) {
         if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) {
-            if (glTextureId != -1) {
-                GlStateManager.deleteTexture(glTextureId);
-                glTextureId = -1;
-            }
-
+            this.deleteTextureId();
             return false;
         }
 
@@ -128,11 +131,7 @@ public final class FontRendererHook {
         }
 
         if (text.isEmpty()) {
-            if (glTextureId != -1) {
-                GlStateManager.deleteTexture(glTextureId);
-                glTextureId = -1;
-            }
-
+            this.deleteTextureId();
             return false;
         }
 
