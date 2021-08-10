@@ -12,7 +12,7 @@ public class FontRendererMixin_EmptyString {
     private String patcher$replaceWithNullIfEmpty(String original) {
         if (original == null) return null;
 
-        FontRendererHook.clearColorReset(original);
+        original = FontRendererHook.clearColorReset(original);
         if (original.isEmpty()) return null;
         return original;
     }

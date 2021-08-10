@@ -123,6 +123,8 @@ public final class FontRendererHook {
             endIndex -= 2;
         }
 
+        if (endIndex < startIndex) endIndex = startIndex;
+
         return text.substring(startIndex, endIndex);
     }
 
