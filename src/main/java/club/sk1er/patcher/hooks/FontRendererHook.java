@@ -48,6 +48,7 @@ public final class FontRendererHook {
     private float fontTexWidth = 16 * texSheetDim;
     private int regularCharDim = 128;
     private boolean drawing = false;
+    private final String COLOR_RESET_PHRASE = '\u00a7' + "r";
 
     public FontRendererHook(FontRenderer fontRenderer) {
         this.fontRenderer = fontRenderer;
@@ -110,6 +111,7 @@ public final class FontRendererHook {
         }
     }
 
+
     @SuppressWarnings({"SuspiciousNameCombination", "unused"})
     public boolean renderStringAtPos(String text, boolean shadow) {
         if (this.fontRenderer.renderEngine == null || !PatcherConfig.optimizedFontRenderer) {
@@ -121,14 +123,15 @@ public final class FontRendererHook {
             create();
         }
 
-        // todo: optimize this
-        while (text.startsWith('\u00a7' + "r")) {
-            text = text.substring(2);
+        int startIndex = 0;
+        int endIndex = text.length();
+        while (text.indexOf(COLOR_RESET_PHRASE, startIndex) == startIndex) {
+            startIndex += 2;
         }
-
-        while (text.endsWith('\u00a7' + "r")) {
-            text = text.substring(0, text.length() - 2);
+        while (text.lastIndexOf(COLOR_RESET_PHRASE, endIndex - 1) == endIndex - 2) {
+            endIndex -= 2;
         }
+        text = text.substring(startIndex, endIndex);
 
         if (text.isEmpty()) {
             this.deleteTextureId();
@@ -194,7 +197,7 @@ public final class FontRendererHook {
             char letter = text.charAt(messageChar);
 
             if (letter == 167 && messageChar + 1 < text.length()) {
-                int styleIndex =  "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
+                int styleIndex = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(messageChar + 1));
 
                 if (styleIndex < 16) {
                     this.fontRenderer.strikethroughStyle = false;
