@@ -118,8 +118,8 @@ public final class FontRendererHook {
         while (text.indexOf(COLOR_RESET_PHRASE, startIndex) == startIndex) {
             startIndex += 2;
         }
-
-        while (text.lastIndexOf(COLOR_RESET_PHRASE, endIndex - 1) == endIndex - 2) {
+        int e;
+        while ((e = text.lastIndexOf(COLOR_RESET_PHRASE, endIndex - 1)) == endIndex - 2 && e !=-1) {
             endIndex -= 2;
         }
 
