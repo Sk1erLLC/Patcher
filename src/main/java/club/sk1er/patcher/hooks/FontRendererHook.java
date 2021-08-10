@@ -48,7 +48,7 @@ public final class FontRendererHook {
     private float fontTexWidth = 16 * texSheetDim;
     private int regularCharDim = 128;
     private boolean drawing = false;
-    private final String COLOR_RESET_PHRASE = '\u00a7' + "r";
+    private static final String COLOR_RESET_PHRASE = '\u00a7' + "r";
 
     public FontRendererHook(FontRenderer fontRenderer) {
         this.fontRenderer = fontRenderer;
@@ -111,6 +111,20 @@ public final class FontRendererHook {
         }
     }
 
+    public static String clearColorReset(String text) {
+        int startIndex = 0;
+        int endIndex = text.length();
+
+        while (text.indexOf(COLOR_RESET_PHRASE, startIndex) == startIndex) {
+            startIndex += 2;
+        }
+
+        while (text.lastIndexOf(COLOR_RESET_PHRASE, endIndex - 1) == endIndex - 2) {
+            endIndex -= 2;
+        }
+
+        return text.substring(startIndex, endIndex);
+    }
 
     @SuppressWarnings({"SuspiciousNameCombination", "unused"})
     public boolean renderStringAtPos(String text, boolean shadow) {
@@ -123,18 +137,9 @@ public final class FontRendererHook {
             create();
         }
 
-        int startIndex = 0;
-        int endIndex = text.length();
-        while (text.indexOf(COLOR_RESET_PHRASE, startIndex) == startIndex) {
-            startIndex += 2;
-        }
-        while (text.lastIndexOf(COLOR_RESET_PHRASE, endIndex - 1) == endIndex - 2) {
-            endIndex -= 2;
-        }
-        text = text.substring(startIndex, endIndex);
+        text = clearColorReset(text);
 
         if (text.isEmpty()) {
-            this.deleteTextureId();
             return false;
         }
 

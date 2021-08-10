@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Used for stopping entities from rendering if they are not visible to the player
+ * <p>
  * Subsequent entity on entity occlusion derived from https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
  */
 public class EntityCulling {
