@@ -48,9 +48,8 @@ public class MinecraftHook {
     public static void updateKeyBindState() {
         for (KeyBinding keybinding : KeyBinding.keybindArray) {
             try {
-                KeyBinding.setKeyBindState(
-                    keybinding.getKeyCode(),
-                    keybinding.getKeyCode() < 256 && Keyboard.isKeyDown(keybinding.getKeyCode()));
+                final int keyCode = keybinding.getKeyCode();
+                KeyBinding.setKeyBindState(keyCode, keyCode < 256 && Keyboard.isKeyDown(keyCode));
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
