@@ -198,8 +198,8 @@ public class AsyncScreenshots implements Runnable {
             try {
                 UDesktop.open(new File("./screenshots"));
             } catch (Exception e) {
-                ChatUtilities.sendNotification("Screenshot Manager",
-                    "Unfortunately, we were unable to open the screenshots folder. Please report this to us at https://discord.gg/sk1er.");
+                ChatUtilities.sendMessage("Unfortunately, we were unable to open the screenshots folder. " +
+                    "Contact the support Discord at https://sk1er.club/support if this issue persists.");
             }
         }
     }

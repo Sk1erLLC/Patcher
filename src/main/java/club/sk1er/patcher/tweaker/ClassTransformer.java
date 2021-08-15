@@ -97,7 +97,6 @@ import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
 import club.sk1er.patcher.asm.resources.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
-import club.sk1er.patcher.asm.resources.ThreadDownloadImageDataTransformer;
 import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.asm.world.BlockPosTransformer;
 import club.sk1er.patcher.asm.world.ChunkCoordIntPairTransformer;
@@ -298,7 +297,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockFluidRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
-        registerTransformer(new ThreadDownloadImageDataTransformer());
         registerTransformer(new ChunkRenderDispatcherTransformer());
         registerTransformer(new ContainerTransformer());
         registerTransformer(new ScaledResolutionTransformer());

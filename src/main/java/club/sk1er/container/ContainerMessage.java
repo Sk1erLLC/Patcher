@@ -26,7 +26,7 @@ public class ContainerMessage {
         JOptionPane.showMessageDialog(null,
             "This is a Forge mod, not an application. Please put this in your mods folder, located inside your Minecraft folder."
                 + "\nIf you don't know how to install a Forge mod, search 'Forge Mod Installation Tutorials' online."
-                + "\nIf you are still lost, join us at discord.gg/sk1er.",
+                + "\nIf you're still lost, contact the support Discord at https://sk1er.club/support.",
             "This is not the proper installation method.", JOptionPane.INFORMATION_MESSAGE);
 
         System.exit(0);
