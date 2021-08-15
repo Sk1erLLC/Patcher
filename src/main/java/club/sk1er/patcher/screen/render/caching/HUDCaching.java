@@ -2,6 +2,7 @@ package club.sk1er.patcher.screen.render.caching;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.accessors.IGuiIngameForge;
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -30,7 +31,9 @@ public class HUDCaching {
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && PatcherConfig.hudCaching) {
             if (!OpenGlHelper.isFramebufferEnabled() && mc.thePlayer != null) {
-                ChatUtilities.sendMessage("Framebuffers disabled, HUDCaching will not work, disabling.\n&cPlease disable ESC > Options > Video Settings > Performance > Fast Render.");
+                String statement = (!ClassTransformer.optifineVersion.equals("NONE") ?
+                    "\n&cTry to disable OptiFine's Fast Render option." : "") + "\n&aAre Framebuffers supported?: &6" + OpenGlHelper.framebufferSupported;
+                ChatUtilities.sendMessage("Framebuffers appear to be disabled, automatically disabling HUDCaching." + statement);
                 PatcherConfig.hudCaching = false;
             } else {
                 dirty = true;
@@ -46,8 +49,6 @@ public class HUDCaching {
             final ScaledResolution resolution = new ScaledResolution(mc);
             final int width = resolution.getScaledWidth();
             final int height = resolution.getScaledHeight();
-            final double widthD = resolution.getScaledWidth_double();
-            final double heightD = resolution.getScaledHeight_double();
             renderer.setupOverlayRendering();
             GlStateManager.enableBlend();
             if (framebuffer != null) {
@@ -66,7 +67,7 @@ public class HUDCaching {
                 GlStateManager.tryBlendFuncSeparate(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GlStateManager.color(1, 1, 1, 1);
                 framebuffer.bindFramebufferTexture();
-                drawTexturedRect(0, 0, (float) widthD, (float) heightD);
+                drawTexturedRect((float) resolution.getScaledWidth_double(), (float) resolution.getScaledHeight_double());
                 GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
             }
 
@@ -105,17 +106,17 @@ public class HUDCaching {
         return framebuffer;
     }
 
-    private static void drawTexturedRect(int x, int y, float width, float height) {
+    private static void drawTexturedRect(float width, float height) {
         GlStateManager.enableTexture2D();
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         final Tessellator tessellator = Tessellator.getInstance();
         final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos(x, y + height, 0.0).tex(0, 0).endVertex();
-        worldrenderer.pos(x + width, y + height, 0.0).tex(1, 0).endVertex();
-        worldrenderer.pos(x + width, y, 0.0).tex(1, 1).endVertex();
-        worldrenderer.pos(x, y, 0.0).tex(0, 1).endVertex();
+        worldrenderer.pos(0, height, 0.0).tex(0, 0).endVertex();
+        worldrenderer.pos(width, height, 0.0).tex(1, 0).endVertex();
+        worldrenderer.pos(width, 0, 0.0).tex(1, 1).endVertex();
+        worldrenderer.pos(0, 0, 0.0).tex(0, 1).endVertex();
         tessellator.draw();
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
