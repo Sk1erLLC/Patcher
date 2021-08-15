@@ -169,7 +169,7 @@ public class AsyncScreenshots implements Runnable {
 
         final GuiNewChat chat = mc.ingameGUI.getChatGUI();
         chat.printChatMessage(chatComponent);
-        chat.printChatMessageWithOptionalDeletion(controlsMessage, 32251);
+        chat.printChatMessageWithOptionalDeletion(controlsMessage, 33000);
     }
 
     private void processPixelValues(int[] pixels, int displayWidth, int displayHeight) {
