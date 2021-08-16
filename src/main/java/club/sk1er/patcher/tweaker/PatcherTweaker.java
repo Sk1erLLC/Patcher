@@ -23,8 +23,6 @@ import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -44,7 +42,6 @@ import java.util.zip.ZipFile;
 public class PatcherTweaker implements IFMLLoadingPlugin {
 
     public static long clientLoadTime;
-    public static boolean resourcepackManagerDetected;
 
     @SuppressWarnings("unchecked")
     public PatcherTweaker() {
@@ -129,11 +126,6 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             try {
                 try (ZipFile zipFile = new ZipFile(file)) {
                     ZipEntry entry = zipFile.getEntry("mcmod.info");
-
-                    if (zipFile.getEntry("me/aycy/resourcepackmanager/ResourcePackManager.class") != null) {
-                        resourcepackManagerDetected = true;
-                        System.out.println("ResourcePackManager detected, clearing asset cache before final Forge refresh.");
-                    }
 
                     if (zipFile.getEntry("io/framesplus/FramesPlus.class") != null) {
                         halt("Patcher is no longer compatible with Frames+ as of 1.3. The Frames+ enhancements have been rewritten for even greater performance and compatibility, and are now included in Patcher.");
