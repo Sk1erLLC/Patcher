@@ -44,35 +44,6 @@ public class ResourcePackRepositoryTransformer implements PatcherTransformer {
                 case "func_183028_i":
                     methodNode.instructions.insert(createDirectory());
                     break;
-                case "setResourcePackInstance":
-                case "func_177319_a":
-                    methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKESTATIC,
-                        getHookClass("FallbackResourceManagerHook"),
-                        "clearCache",
-                        "()V",
-                        false));
-                    break;
-                case "func_148529_f":
-                case "clearResourcePack": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String mappedMethodName = mapMethodNameFromNode(next);
-                            if (mappedMethodName.equals("scheduleResourcesRefresh") || mappedMethodName.equals("func_175603_A")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC,
-                                    getHookClass("FallbackResourceManagerHook"),
-                                    "clearCache",
-                                    "()V",
-                                    false
-                                ));
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
 
                 case "func_110611_a":
                 case "updateRepositoryEntriesAll": {

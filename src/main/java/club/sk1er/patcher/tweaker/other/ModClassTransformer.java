@@ -11,13 +11,8 @@
 
 package club.sk1er.patcher.tweaker.other;
 
-import club.sk1er.patcher.asm.external.mods.sidebarmod.GuiSidebarTransformer;
-import club.sk1er.patcher.asm.external.optifine.WorldVertexBufferUploaderTransformer;
-import club.sk1er.patcher.optifine.OptiFineGenerations;
-import club.sk1er.patcher.tweaker.ClassTransformer;
-import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
-import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.asm.external.mods.essential.EssentialModelRendererTransformer;
+import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.*;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
@@ -31,9 +26,13 @@ import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTrans
 import club.sk1er.patcher.asm.external.mods.optifine.xpfix.GuiIngameForgeTransformer;
 import club.sk1er.patcher.asm.external.mods.pingtag.TagRendererListenerTransformer;
 import club.sk1er.patcher.asm.external.mods.pingtag.TagRendererTransformer;
-import club.sk1er.patcher.asm.external.mods.rporganizer.GuiCustomResourcePacks;
+import club.sk1er.patcher.asm.external.mods.sidebarmod.GuiSidebarTransformer;
 import club.sk1er.patcher.asm.external.mods.tnttime.TNTTimeTransformer;
 import club.sk1er.patcher.asm.external.mods.ve.BetterChatTransformer;
+import club.sk1er.patcher.asm.external.optifine.WorldVertexBufferUploaderTransformer;
+import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
+import club.sk1er.patcher.optifine.OptiFineGenerations;
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -69,9 +68,6 @@ public class ModClassTransformer implements IClassTransformer {
 
         // TNT Timer by Sk1er LLC
         registerTransformer(new TNTTimeTransformer());
-
-        // ResourcePackOrganizer by chylex & ResourcePackManager by aycy (shares similar method)
-        registerTransformer(new GuiCustomResourcePacks());
 
         // Vanilla Enhancements by OrangeMarshall
         registerTransformer(new BetterChatTransformer());

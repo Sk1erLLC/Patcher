@@ -43,7 +43,6 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-
             if ((methodName.equals("drawScreen") || methodName.equals("func_73863_a")) && !Loader.isModLoaded("ResourcePackOrganizer")) {
                 ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
@@ -59,24 +58,10 @@ public class GuiScreenResourcePacksTransformer implements PatcherTransformer {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {
                     final AbstractInsnNode next = iterator.next();
-                    if (next instanceof MethodInsnNode) {
-                        if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("saveOptions") || methodInsnName.equals("func_74303_b")) {
-                                methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC,
-                                    getHookClass("FallbackResourceManagerHook"),
-                                    "clearCache",
-                                    "()V",
-                                    false));
-                                break;
-                            }
-                        } else if (next.getOpcode() == Opcodes.INVOKESTATIC) {
-                            if (((MethodInsnNode) next).name.equals("reverse")) {
-                                methodNode.instructions.insertBefore(next.getPrevious(), new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC, getHookClass("GuiScreenResourcePacksHook"), "clearHandles", "()V", false)
-                                );
-                            }
-                        }
+                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) next).name.equals("reverse")) {
+                        methodNode.instructions.insertBefore(next.getPrevious(), new MethodInsnNode(
+                            Opcodes.INVOKESTATIC, getHookClass("GuiScreenResourcePacksHook"), "clearHandles", "()V", false)
+                        );
                     }
                 }
             }

@@ -141,26 +141,12 @@ public class MinecraftTransformer implements PatcherTransformer {
                         } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                             MethodInsnNode methodInsnNode = (MethodInsnNode) node;
                             String methodInsnName = mapMethodNameFromNode(methodInsnNode);
-                            switch (methodInsnName) {
-                                case "loadEntityShader":
-                                case "func_175066_a":
-                                    if (!foundFirst) {
-                                        foundFirst = true;
-                                    } else {
-                                        methodNode.instructions.insert(node, ifne);
-                                    }
-                                    break;
-
-                                case "refreshResources":
-                                case "func_110436_a":
-                                    methodNode.instructions.insertBefore(methodInsnNode.getPrevious().getPrevious(), new MethodInsnNode(
-                                        Opcodes.INVOKESTATIC,
-                                        getHookClass("FallbackResourceManagerHook"),
-                                        "clearCache",
-                                        "()V",
-                                        false
-                                    ));
-                                    break;
+                            if ("loadEntityShader".equals(methodInsnName) || "func_175066_a".equals(methodInsnName)) {
+                                if (!foundFirst) {
+                                    foundFirst = true;
+                                } else {
+                                    methodNode.instructions.insert(node, ifne);
+                                }
                             }
                         } else if (node instanceof IntInsnNode && node.getOpcode() == Opcodes.BIPUSH) {
                             final int operand = ((IntInsnNode) node).operand;
