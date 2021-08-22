@@ -250,7 +250,11 @@ public class Patcher {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
         if (PatcherConfig.logOptimizer) {
-            for (File file : Objects.requireNonNull(logsDirectory.listFiles())) {
+            if (!logsDirectory.exists()) return;
+            File[] files = logsDirectory.listFiles();
+            if (files == null) return;
+
+            for (File file : files) {
                 if (file.getName().endsWith("log.gz") && file.lastModified() <= (System.currentTimeMillis() - PatcherConfig.logOptimizerLength * 86400000L)) {
                     file.delete();
                 }
