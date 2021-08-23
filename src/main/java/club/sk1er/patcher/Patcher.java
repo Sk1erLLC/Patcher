@@ -281,7 +281,9 @@ public class Patcher {
     }
 
     private boolean isServerBlacklisted(String ip) {
-        return ip != null && !ip.isEmpty() && !ip.trim().isEmpty() && blacklistedServers.contains(ip.trim());
+        if (ip == null) return false;
+        String trim = ip.trim();
+        return !trim.isEmpty() && blacklistedServers.contains(trim);
     }
 
     public boolean addOrRemoveBlacklist(String input) {
@@ -302,7 +304,8 @@ public class Patcher {
 
     public void saveBlacklistedServers() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(blacklistedServersFile))) {
-            if (!blacklistedServersFile.getParentFile().exists() && !blacklistedServersFile.getParentFile().mkdirs()) {
+            File parentFile = blacklistedServersFile.getParentFile();
+            if (!parentFile.exists() && !parentFile.mkdirs()) {
                 return;
             }
 

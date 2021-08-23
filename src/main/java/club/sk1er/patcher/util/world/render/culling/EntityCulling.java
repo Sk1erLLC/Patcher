@@ -151,7 +151,7 @@ public class EntityCulling {
             PatcherConfig.entityCulling = false;
             Patcher.instance.forceSaveConfig();
 
-            EssentialAPI.getInstance().notifications().push("Patcher",
+            EssentialAPI.getNotifications().push("Patcher",
                 "Entity Culling has forcefully been disabled as your computer is too old and does not support the technology behind it.\n" +
                     "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message", () -> {
                     try {
@@ -177,13 +177,13 @@ public class EntityCulling {
         if (query.refresh) {
             query.nextQuery = getQuery();
             query.refresh = false;
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ);
             final int mode = SUPPORT_NEW_GL ? GL33.GL_ANY_SAMPLES_PASSED : GL15.GL_SAMPLES_PASSED;
             GL15.glBeginQuery(mode, query.nextQuery);
-            drawSelectionBoundingBox(entity.getEntityBoundingBox().expand(.2, .2, .2));
+            drawSelectionBoundingBox(entity.getEntityBoundingBox()
+                .expand(.2, .2, .2)
+                .offset(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ)
+            );
             GL15.glEndQuery(mode);
-            GlStateManager.popMatrix();
         }
 
         return query.occluded;

@@ -12,6 +12,7 @@
 package club.sk1er.patcher.asm.world;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import com.google.common.collect.Sets;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 public class WorldTransformer implements PatcherTransformer {
 
@@ -40,7 +42,7 @@ public class WorldTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        List<String> brightness = Arrays.asList(
+        Set<String> brightness = Sets.newHashSet(
             "checkLightFor", "func_180500_c",
             "getLightFromNeighborsFor", "func_175671_l",
             "getLightFromNeighbors", "func_175705_a",
