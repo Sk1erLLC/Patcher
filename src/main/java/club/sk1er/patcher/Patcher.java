@@ -131,7 +131,7 @@ public class Patcher {
     private boolean loadedGalacticFontRenderer;
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void onInit(FMLInitializationEvent event) {
         registerKeybinds(
             nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
             chatPeek = new KeybindChatPeek(), hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
@@ -171,7 +171,7 @@ public class Patcher {
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void onPostInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
             loadedGalacticFontRenderer = true;
             Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
@@ -179,7 +179,7 @@ public class Patcher {
     }
 
     @EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) {
+    public void onLoadComplete(FMLLoadCompleteEvent event) {
         final List<ModContainer> activeModList = Loader.instance().getActiveModList();
         final Notifications notifications = EssentialAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
@@ -400,37 +400,36 @@ public class Patcher {
     }
 
     private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
-        if (PatcherConfig.replacedModsWarning) {
-            Multithreading.runAsync(() -> {
-                JsonObject replacedMods;
-                try {
-                    final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
-                    replacedMods = new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject();
-                } catch (Exception e) {
-                    logger.error("Failed to fetch list of replaced mods.", e);
-                    return;
-                }
+        Multithreading.runAsync(() -> {
+            JsonObject replacedMods;
+            try {
+                final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
+                replacedMods = new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject();
+            } catch (Exception e) {
+                logger.error("Failed to fetch list of replaced mods.", e);
+                return;
+            }
 
-                final Set<String> replacements = new HashSet<>();
-                for (ModContainer modContainer : activeModList) {
-                    for (String modid : keySet(replacedMods)) {
-                        if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
-                            replacements.add(modContainer.getName());
-                        }
+            final Set<String> replacements = new HashSet<>();
+            for (ModContainer modContainer : activeModList) {
+                for (String modid : keySet(replacedMods)) {
+                    if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
+                        replacements.add(modContainer.getName());
                     }
                 }
+            }
 
-                if (!replacements.isEmpty()) {
-                    for (String replacement : replacements) {
-                        notifications.push(
-                            "Patcher",
-                            "The mod " + replacement + " can be removed as it is replaced by Patcher." +
-                                "\nThis message can be disabled in the Patcher settings."
-                        );
-                    }
+            if (!replacements.isEmpty()) {
+                for (String replacement : replacements) {
+                    notifications.push(
+                        "Patcher",
+                        "The mod " + replacement + " can be removed as it is replaced by Patcher." +
+                            "\nThis message can be disabled in the Patcher settings.",
+                        8f
+                    );
                 }
-            });
-        }
+            }
+        });
     }
 
 

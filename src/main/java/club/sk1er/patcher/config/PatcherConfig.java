@@ -1010,13 +1010,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean safeChatClicks;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Replaced Mods Warning",
-        description = "Display on startup what mods you may have that are replaced by Patcher.",
-        category = "Screens", subcategory = "General"
-    )
-    public static boolean replacedModsWarning = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Smart Disconnect",
         description = "Choose between disconnecting or relogging when clicking the disconnect button.\n§eOnly works on Multiplayer servers.",
         category = "Screens", subcategory = "General"

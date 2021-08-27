@@ -14,17 +14,14 @@ package club.sk1er.patcher.screen.render.overlay;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
 
 public class OverlayHandler {
 
@@ -48,7 +45,6 @@ public class OverlayHandler {
 
         final ScaledResolution resolution = new ScaledResolution(mc);
         final int scaledWidth = resolution.getScaledWidth();
-        final int scaledHeight = resolution.getScaledHeight();
 
         final Scoreboard scoreboard = mc.theWorld.getScoreboard();
         final ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);

@@ -12,13 +12,9 @@
 package club.sk1er.patcher.util.world.render.entity;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.NameTagRenderingHooks;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class NameFetcher {
     private final List<String> names = new ArrayList<>();
@@ -42,7 +43,9 @@ public class NameFetcher {
                 name = username;
                 uuid = null;
                 try {
-                    uuid = EssentialAPI.getMojangAPI().getUUID(username).get();
+                    CompletableFuture<UUID> uuid = EssentialAPI.getMojangAPI().getUUID(username);
+                    if (uuid == null) return;
+                    this.uuid = uuid.get();
                 } catch (Exception e) {
                     Patcher.instance.getLogger().warn("Failed fetching UUID.", e);
                     return;
@@ -51,10 +54,12 @@ public class NameFetcher {
                 names.clear();
                 if (uuid != null) {
                     List<Name> nameHistory = EssentialAPI.getMojangAPI().getNameHistory(uuid);
-                    if (!nameHistory.isEmpty()) name = nameHistory.get(nameHistory.size() - 1).getName();
+                    if (nameHistory == null || nameHistory.isEmpty()) return;
+                    name = nameHistory.get(nameHistory.size() - 1).getName();
 
                     for (final Name history : nameHistory) {
                         final String name = history.getName();
+                        //noinspection ConstantConditions
                         if (history.getChangedToAt() == 0) {
                             names.add(name);
                         } else {
