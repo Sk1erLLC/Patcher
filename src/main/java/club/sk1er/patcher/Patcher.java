@@ -423,8 +423,7 @@ public class Patcher {
                 for (String replacement : replacements) {
                     notifications.push(
                         "Patcher",
-                        "The mod " + replacement + " can be removed as it is replaced by Patcher." +
-                            "\nThis message can be disabled in the Patcher settings.",
+                        "The mod " + replacement + " can be removed as it is replaced by Patcher.",
                         8f
                     );
                 }
