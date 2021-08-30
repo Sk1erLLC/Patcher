@@ -112,23 +112,20 @@ public class ScoreboardTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "func_96512_b":
                 case "removePlayerFromTeam": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("getPlayersTeam") || methodInsnName.equals("func_96509_i")) {
-                                next = iterator.previous().getPrevious();
-
-                                for (int i = 0; i < 22; i++) {
-                                    methodNode.instructions.remove(next.getNext());
-                                }
-
-                                methodNode.instructions.remove(next);
-                                break;
+                        if (next instanceof TypeInsnNode && next.getOpcode() == Opcodes.NEW && ((TypeInsnNode) next).desc.equals("java/lang/IllegalStateException")) {
+                            for (int i = 0; i < 14; i++) {
+                                methodNode.instructions.remove(next.getNext());
                             }
+
+                            InsnList list = new InsnList();
+                            list.add(new InsnNode(Opcodes.RETURN));
+                            methodNode.instructions.insertBefore(next, list);
+                            methodNode.instructions.remove(next);
+                            break;
                         }
                     }
 
