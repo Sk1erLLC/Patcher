@@ -56,7 +56,7 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
             LaunchClassLoader classLoader = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, launchHandler, "classLoader");
             Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null, new String[]{"loadCoreMod"}, LaunchClassLoader.class, String.class, File.class);
-            URL path = Patcher.class.getProtectionDomain().getCodeSource().getLocation();
+            URL path = PatcherTweaker.class.getProtectionDomain().getCodeSource().getLocation();
             File mod = new File(path.toURI().getSchemeSpecificPart().split("!")[0]);
             ITweaker coreMod = (ITweaker) loadCoreMod.invoke(null, classLoader, "club.sk1er.patcher.tweaker.other.ModTweaker", mod);
             if (!((List<String>) Launch.blackboard.get("TweakClasses")).contains("net.minecraftforge.fml.common.launcher.FMLInjectionAndSortingTweaker")) {
