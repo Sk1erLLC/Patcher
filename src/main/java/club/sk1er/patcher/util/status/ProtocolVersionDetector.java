@@ -32,33 +32,29 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProtocolVersionDetector {
 
     public static final ProtocolVersionDetector instance = new ProtocolVersionDetector();
-    private final Map<Pair<String, Integer>, CompletableFuture<Boolean>> futures = new ConcurrentHashMap<>();
+    private final Map<Pair<String, Integer>, CompletableFuture<Boolean>> cachedStatus = new ConcurrentHashMap<>();
 
     public CompletableFuture<Boolean> isCompatibleWithVersion(String ip, int version) {
-        CompletableFuture<Boolean> cached = futures.get(new Pair<>(ip, version));
+        CompletableFuture<Boolean> cached = cachedStatus.get(new Pair<>(ip, version));
         if (cached != null) return cached;
+
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        Pair<String, Integer> tuple = new Pair<>(ip, version);
-        futures.put(tuple, future);
+        Pair<String, Integer> serverInformation = new Pair<>(ip, version);
+        cachedStatus.put(serverInformation, future);
+
         Multithreading.runAsync(() -> {
             try {
                 ServerAddress address = ServerAddress.fromString(ip);
-                NetworkManager nm = NetworkManager.createNetworkManagerAndConnect(
-                    InetAddress.getByName(address.getIP()),
-                    address.getPort(),
-                    false
-                );
-                nm.setNetHandler(new VersionCompatibilityStatusState(future, version, nm, () -> futures.remove(tuple)));
-                nm.sendPacket(new C00Handshake(
-                    version,
-                    address.getIP(),
-                    address.getPort(),
-                    EnumConnectionState.STATUS
-                ));
+                String addressIp = address.getIP();
+                int addressPort = address.getPort();
+
+                NetworkManager nm = NetworkManager.createNetworkManagerAndConnect(InetAddress.getByName(addressIp), addressPort, false);
+                nm.setNetHandler(new VersionCompatibilityStatusState(future, version, nm, () -> cachedStatus.remove(serverInformation)));
+                nm.sendPacket(new C00Handshake(version, addressIp, addressPort, EnumConnectionState.STATUS));
                 nm.sendPacket(new C00PacketServerQuery());
             } catch (Exception e) {
                 future.completeExceptionally(e);
-                futures.remove(tuple);
+                cachedStatus.remove(serverInformation);
             }
         });
 

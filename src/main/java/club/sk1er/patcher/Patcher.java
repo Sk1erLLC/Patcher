@@ -129,6 +129,7 @@ public class Patcher {
     private PatcherSoundConfig patcherSoundConfig;
 
     private boolean loadedGalacticFontRenderer;
+    private boolean alreadyDispatched;
 
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
@@ -186,8 +187,6 @@ public class Patcher {
         this.detectReplacements(activeModList, notifications);
     }
 
-    private boolean alreadyDispatched;
-
     @SubscribeEvent
     public void dispatchStartupTime(GuiScreenEvent.InitGuiEvent event) {
         if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
@@ -222,24 +221,22 @@ public class Patcher {
             return;
         }
 
-        final String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
+        String serverIP = Minecraft.getMinecraft().getCurrentServerData().serverIP;
         if (serverIP == null || blacklistedServers.contains(serverIP)) {
             GuiChatTransformer.maxChatLength = 100;
             return;
         }
 
-        final CompletableFuture<Boolean> future = ProtocolVersionDetector.instance.isCompatibleWithVersion(
+        CompletableFuture<Boolean> compatibilityStatus = ProtocolVersionDetector.instance.isCompatibleWithVersion(
             serverIP,
             315 // 1.11
         );
 
-        Multithreading.runAsync(() -> {
-            try {
-                GuiChatTransformer.maxChatLength = future.get() ? 256 : 100;
-            } catch (Exception e) {
-                this.logger.error("Failed to extend max chat length.", e);
-            }
-        });
+        try {
+            GuiChatTransformer.maxChatLength = compatibilityStatus.get() ? 256 : 100;
+        } catch (Exception e) {
+            this.logger.error("Failed to extend max chat length.", e);
+        }
     }
 
     @SubscribeEvent
@@ -249,8 +246,7 @@ public class Patcher {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void checkLogs() {
-        if (PatcherConfig.logOptimizer) {
-            if (!logsDirectory.exists()) return;
+        if (PatcherConfig.logOptimizer && logsDirectory.exists()) {
             File[] files = logsDirectory.listFiles();
             if (files == null) return;
 
@@ -263,19 +259,19 @@ public class Patcher {
     }
 
     private void registerKeybinds(KeyBinding... keybinds) {
-        for (final KeyBinding keybind : keybinds) {
+        for (KeyBinding keybind : keybinds) {
             ClientRegistry.registerKeyBinding(keybind);
         }
     }
 
     private void registerEvents(Object... events) {
-        for (final Object event : events) {
+        for (Object event : events) {
             MinecraftForge.EVENT_BUS.register(event);
         }
     }
 
     private void registerCommands(Command... commands) {
-        for (final Command command : commands) {
+        for (Command command : commands) {
             EssentialAPI.getCommandRegistry().registerCommand(command);
         }
     }
@@ -337,16 +333,6 @@ public class Patcher {
         }
     }
 
-    public Set<String> keySet(JsonObject json) throws NullPointerException {
-        Set<String> keySet = new HashSet<>();
-
-        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            keySet.add(entry.getKey());
-        }
-
-        return keySet;
-    }
-
     private void fixSettings() {
         if (PatcherConfig.customZoomSensitivity > 1.0F) PatcherConfig.customZoomSensitivity = 1.0F;
         if (PatcherConfig.tabOpacity > 1.0F) PatcherConfig.tabOpacity = 1.0F;
@@ -361,42 +347,33 @@ public class Patcher {
 
     private void detectIncompatibilities(List<ModContainer> activeModList, Notifications notifications) {
         for (ModContainer container : activeModList) {
-            final String modId = container.getModId();
-            final String modName = container.getName();
+            String modId = container.getModId();
+            String modName = container.getName();
+            String baseMessage = modName + " has been detected. ";
             if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
-                notifications.push(
-                    "Patcher",
-                    modName + " has been detected. Entity Culling is now disabled.");
+                notifications.push("Patcher", baseMessage + "Entity Culling is now disabled.");
                 PatcherConfig.entityCulling = false;
             }
 
             if ((modId.equals("labymod") || modId.equals("enhancements")) || modId.equals("hychat")) {
                 if (PatcherConfig.compactChat) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Compact Chat is now disabled.");
+                    notifications.push("Patcher", baseMessage + "Compact Chat is now disabled.");
                     PatcherConfig.compactChat = false;
                 }
 
                 if (PatcherConfig.chatPosition) {
-                    notifications.push(
-                        "Patcher",
-                        modName + " has been detected. Chat Position is now disabled.");
+                    notifications.push("Patcher", baseMessage + "Chat Position is now disabled.");
                     PatcherConfig.chatPosition = false;
                 }
             }
 
             if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
-                notifications.push(
-                    "Patcher",
-                    "Patcher has identified Smooth Font and as such, Patcher's Font Renderer " +
-                        "has been automatically disabled.\nRestart your game for Smooth Font to work again."
-                );
+                notifications.push("Patcher", baseMessage + "Optimized Font Renderer is now disabled.");
                 PatcherConfig.optimizedFontRenderer = false;
             }
-
-            this.forceSaveConfig();
         }
+
+        this.forceSaveConfig();
     }
 
     private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
@@ -436,6 +413,16 @@ public class Patcher {
                 logger.error("Failed to fetch {}: {}", url, error);
                 return null;
             });
+    }
+
+    private Set<String> keySet(JsonObject json) throws NullPointerException {
+        Set<String> keySet = new HashSet<>();
+
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            keySet.add(entry.getKey());
+        }
+
+        return keySet;
     }
 
     public PatcherConfig getPatcherConfig() {
