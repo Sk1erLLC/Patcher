@@ -400,37 +400,43 @@ public class Patcher {
     }
 
     private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
-        Multithreading.runAsync(() -> {
-            JsonObject replacedMods;
-            try {
-                final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
-                replacedMods = new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject();
-            } catch (Exception e) {
-                logger.error("Failed to fetch list of replaced mods.", e);
-                return;
-            }
+        JsonObject replacedMods;
+        try {
+            replacedMods = this.readDuplicateModsJson().get();
+        } catch (Exception e) {
+            logger.error("Failed to fetch list of replaced mods.", e);
+            return;
+        }
 
-            final Set<String> replacements = new HashSet<>();
-            for (ModContainer modContainer : activeModList) {
-                for (String modid : keySet(replacedMods)) {
-                    if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
-                        replacements.add(modContainer.getName());
-                    }
+        Set<String> replacements = new HashSet<>();
+        Set<String> jsonKey = keySet(replacedMods);
+        for (ModContainer modContainer : activeModList) {
+            for (String modid : jsonKey) {
+                if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
+                    replacements.add(modContainer.getName());
                 }
             }
+        }
 
-            if (!replacements.isEmpty()) {
-                for (String replacement : replacements) {
-                    notifications.push(
-                        "Patcher",
-                        "The mod " + replacement + " can be removed as it is replaced by Patcher.",
-                        8f
-                    );
-                }
+        if (!replacements.isEmpty()) {
+            for (String replacement : replacements) {
+                notifications.push(
+                    "Patcher",
+                    "The mod " + replacement + " can be removed as it is replaced by Patcher.",
+                    8f
+                );
             }
-        });
+        }
     }
 
+    private CompletableFuture<JsonObject> readDuplicateModsJson() {
+        final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
+        return CompletableFuture.supplyAsync(() -> new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject(), Multithreading.getPool())
+            .exceptionally((error) -> {
+                logger.error("Failed to fetch {}: {}", url, error);
+                return null;
+            });
+    }
 
     public PatcherConfig getPatcherConfig() {
         return patcherConfig;
