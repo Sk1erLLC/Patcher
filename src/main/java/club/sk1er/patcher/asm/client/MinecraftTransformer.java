@@ -65,13 +65,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                             break;
                         }
                     }
-                    InsnList insnList = new InsnList();
-                    LabelNode ifeq = new LabelNode();
-                    insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("MinecraftHook"), "fullscreen", "()Z", false));
-                    insnList.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-                    insnList.add(new InsnNode(Opcodes.RETURN));
-                    insnList.add(ifeq);
-                    methodNode.instructions.insert(insnList);
+
                     break;
                 }
 

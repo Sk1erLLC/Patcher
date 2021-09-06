@@ -20,7 +20,6 @@ import club.sk1er.patcher.commands.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.hooks.EntityRendererHook;
-import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
@@ -51,7 +50,6 @@ import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gg.essential.api.EssentialAPI;
@@ -93,6 +91,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION, clientSideOnly = true)
 public class Patcher {
@@ -142,9 +141,9 @@ public class Patcher {
         patcherConfig = PatcherConfig.INSTANCE;
         patcherSoundConfig = new PatcherSoundConfig();
 
-        SoundHandler target = new SoundHandler();
+        SoundHandler soundHandler = new SoundHandler();
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-        resourceManager.registerReloadListener(target);
+        resourceManager.registerReloadListener(soundHandler);
         resourceManager.registerReloadListener(new ReloadListener());
 
         registerCommands(
@@ -155,13 +154,13 @@ public class Patcher {
         );
 
         registerEvents(
-            this, target, debugPerformanceRenderer, cloudHandler, dropModifier,
+            this, soundHandler, debugPerformanceRenderer, cloudHandler, dropModifier,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new HUDCaching(), new EntityRendererHook(),
-            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE
+            ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE
         );
 
         checkLogs();
@@ -348,8 +347,7 @@ public class Patcher {
     private void detectIncompatibilities(List<ModContainer> activeModList, Notifications notifications) {
         for (ModContainer container : activeModList) {
             String modId = container.getModId();
-            String modName = container.getName();
-            String baseMessage = modName + " has been detected. ";
+            String baseMessage = container.getName() + " has been detected. ";
             if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
                 notifications.push("Patcher", baseMessage + "Entity Culling is now disabled.");
                 PatcherConfig.entityCulling = false;
@@ -386,7 +384,7 @@ public class Patcher {
         }
 
         Set<String> replacements = new HashSet<>();
-        Set<String> jsonKey = keySet(replacedMods);
+        Set<String> jsonKey = replacedMods.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
         for (ModContainer modContainer : activeModList) {
             for (String modid : jsonKey) {
                 if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
@@ -397,11 +395,7 @@ public class Patcher {
 
         if (!replacements.isEmpty()) {
             for (String replacement : replacements) {
-                notifications.push(
-                    "Patcher",
-                    "The mod " + replacement + " can be removed as it is replaced by Patcher.",
-                    8f
-                );
+                notifications.push("Patcher", replacement + " can be removed as it is replaced by Patcher.", 6f);
             }
         }
     }
@@ -413,16 +407,6 @@ public class Patcher {
                 logger.error("Failed to fetch {}: {}", url, error);
                 return null;
             });
-    }
-
-    private Set<String> keySet(JsonObject json) throws NullPointerException {
-        Set<String> keySet = new HashSet<>();
-
-        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            keySet.add(entry.getKey());
-        }
-
-        return keySet;
     }
 
     public PatcherConfig getPatcherConfig() {
