@@ -3,7 +3,6 @@ package club.sk1er.patcher.asm.render.screen;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -33,7 +32,7 @@ public class LoadingScreenRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ILOAD, 1));
         LabelNode label = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFGE, label));
-        list.add(getPatcherSetting("instantWorldSwapping", "Z"));
+        list.add(getPatcherSetting("optimizedWorldSwapping", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFEQ, label));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(label);

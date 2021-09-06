@@ -460,11 +460,11 @@ public class PatcherConfig extends Vigilant {
     // PERFORMANCE
 
     @Property(
-        type = PropertyType.SWITCH, name = "Instant World Swapping",
-        description = "Remove the dirt screen and waiting time when switching a world.",
+        type = PropertyType.SWITCH, name = "Optimized World Swapping",
+        description = "Remove unnecessary garbage collection & screen displaying to make world swapping feel nearly instant.",
         category = "Performance", subcategory = "World"
     )
-    public static boolean instantWorldSwapping = true;
+    public static boolean optimizedWorldSwapping = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Limit Chunk Updates",

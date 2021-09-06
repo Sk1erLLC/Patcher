@@ -334,7 +334,7 @@ public class MinecraftTransformer implements PatcherTransformer {
 
     private InsnList setSystemTime() {
         InsnList list = new InsnList();
-        list.add(getPatcherSetting("instantWorldSwapping", "Z"));
+        list.add(getPatcherSetting("optimizedWorldSwapping", "Z"));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
