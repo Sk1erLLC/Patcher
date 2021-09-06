@@ -966,11 +966,12 @@ public class PatcherConfig extends Vigilant {
     public static boolean skinRefresher;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Replace Open to Lan",
-        description = "Remove the Open to Lan button when in a multiplayer server with a button to quickly open your server list.",
-        category = "Screens", subcategory = "General"
+        type = PropertyType.SELECTOR, name = "Open to LAN Replacement",
+        description = "Replace the Open to LAN button while on a server as it's useless.",
+        category = "Screens", subcategory = "General",
+        options = {"Default", "Server List", "Remove"}
     )
-    public static boolean replaceOpenToLan;
+    public static int openToLanReplacement = 0;
 
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",

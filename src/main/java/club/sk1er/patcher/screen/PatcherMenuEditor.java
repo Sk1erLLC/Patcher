@@ -37,7 +37,7 @@ public class PatcherMenuEditor {
     private boolean tripped = false;
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private final int[] sequence = new int[] {
+    private final int[] sequence = new int[]{
         50, // up
         100, // up
         156, // down
@@ -95,16 +95,18 @@ public class PatcherMenuEditor {
                 mcButtonList.add(new GuiButton(refreshSkin, 2, height - 22, 100, 20, "Refresh Skin"));
             }
 
-            if (!mc.isSingleplayer() && PatcherConfig.replaceOpenToLan) {
-                final EssentialConfig config = EssentialAPI.getConfig();
+            if (!mc.isSingleplayer() && PatcherConfig.openToLanReplacement > 0) {
+                EssentialConfig config = EssentialAPI.getConfig();
                 int buttonWidth = config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS() ? 98 : 200;
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
-                mcButtonList.add(new GuiButton(serverList,
-                    (width >> 1) - 100, (height >> 2) + 56,
-                    buttonWidth, 20,
-                    "Server List"
-                ));
+                if (PatcherConfig.openToLanReplacement == 1) {
+                    mcButtonList.add(new GuiButton(serverList,
+                        (width >> 1) - 100, (height >> 2) + 56,
+                        buttonWidth, 20,
+                        "Server List"
+                    ));
+                }
             }
         } else if (gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
             mcButtonList.add(new GuiButton(refreshSkin,
@@ -146,6 +148,19 @@ public class PatcherMenuEditor {
             if (realmsButton != null) {
                 realmsButton.visible = false;
                 realmsButton.enabled = false;
+            }
+        }
+
+        if (PatcherConfig.openToLanReplacement == 2) {
+            EssentialConfig config = EssentialAPI.getConfig();
+            if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
+                for (GuiButton button : mcButtonList) {
+                    if (button != null && button.displayString.equals("Invite Friends")) {
+                        button.width = 200;
+                        button.xPosition = (event.gui.width / 2) - 100;
+                        break;
+                    }
+                }
             }
         }
     }
