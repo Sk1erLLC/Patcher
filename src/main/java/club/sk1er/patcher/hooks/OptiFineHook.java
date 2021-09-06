@@ -13,9 +13,9 @@ package club.sk1er.patcher.hooks;
 
 import net.minecraft.client.gui.FontRenderer;
 
-public class OptifineHook {
+public class OptiFineHook {
 
-    public float getCharWidth(FontRenderer renderer, char c) {//Remapped by FontRendererHookTransformer to Optifine if needed
+    public float getCharWidth(FontRenderer renderer, char c) {//Remapped by OptiFineHookTransformer to Optifine if needed
         return renderer.getCharWidth(c);
     }
 

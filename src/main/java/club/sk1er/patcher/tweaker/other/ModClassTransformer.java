@@ -125,7 +125,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new LagometerTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new OptifineFontRendererTransformer());
-        registerTransformer(new FontRendererHookTransformer());
+        registerTransformer(new OptiFineHookTransformer());
         registerTransformer(new FullbrightTickerTransformer());
         registerTransformer(new EntityCullingTransformer());
         registerTransformer(new WorldVertexBufferUploaderTransformer());

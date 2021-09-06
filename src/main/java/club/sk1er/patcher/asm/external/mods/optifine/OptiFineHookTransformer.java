@@ -16,10 +16,10 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-public class FontRendererHookTransformer implements PatcherTransformer {
+public class OptiFineHookTransformer implements PatcherTransformer {
     @Override
     public String[] getClassName() {
-        return new String[]{"club.sk1er.patcher.hooks.OptifineHook"};
+        return new String[]{"club.sk1er.patcher.hooks.OptiFineHook"};
     }
 
     @Override

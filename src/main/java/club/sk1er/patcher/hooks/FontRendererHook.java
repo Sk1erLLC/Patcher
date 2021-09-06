@@ -41,7 +41,7 @@ public final class FontRendererHook {
     private final EnhancedFontRenderer enhancedFontRenderer = EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class);
     private final FontRenderer fontRenderer;
     private final Minecraft mc = Minecraft.getMinecraft();
-    private OptifineHook hook = new OptifineHook();
+    private OptiFineHook hook = new OptiFineHook();
     public int glTextureId = -1;
     private int texSheetDim = 256;
     private float fontTexHeight = 16 * texSheetDim + 128;
@@ -80,7 +80,7 @@ public final class FontRendererHook {
 
     private void create() {
         establishSize();
-        hook = new OptifineHook();
+        hook = new OptiFineHook();
         forceRefresh = false;
 
         if (glTextureId != -1) {
