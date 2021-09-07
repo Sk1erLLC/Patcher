@@ -2,7 +2,6 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.asm.external.mods.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -50,12 +49,10 @@ public class EntityRendererHook {
     public static float getHandFOVModifier(float original) {
         if (PatcherConfig.renderHandWhenZoomed && (EntityRendererTransformer.zoomed || (PatcherConfig.smoothZoomAnimation && EntityRendererTransformer.smoothZoomProgress > 0))) {
             float f = 70f;
-            if (!PatcherConfig.removeWaterFov) {
-                Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer, partialTicks);
+            Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer, partialTicks);
 
-                if (block.getMaterial() == Material.water) {
-                    f = f * 60.0F / 70.0F;
-                }
+            if (block.getMaterial() == Material.water) {
+                f = f * 60.0F / 70.0F;
             }
             return f;
         }

@@ -173,13 +173,6 @@ public class PatcherConfig extends Vigilant {
     public static float slownessFovModifierFloat = 1;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Remove Water FOV",
-        description = "Remove the change of FOV when underwater.",
-        category = "Miscellaneous", subcategory = "Field of View"
-    )
-    public static boolean removeWaterFov;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Toggle Tab",
         description = "Hold tab open without needing to hold down the tab key.",
         category = "Miscellaneous", subcategory = "Tab"
@@ -334,13 +327,6 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean romanNumerals = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Remove Water Overlay",
-        description = "Remove the water texture overlay when underwater.",
-        category = "Miscellaneous", subcategory = "Overlays"
-    )
-    public static boolean removeWaterOverlay;
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean View",

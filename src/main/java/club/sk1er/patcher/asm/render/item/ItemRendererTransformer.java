@@ -36,28 +36,16 @@ public class ItemRendererTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-
-            if (methodName.equals("renderWaterOverlayTexture") || methodName.equals("func_78448_c")) {
-                methodNode.instructions.insert(removeOverlay());
-            } else if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
+            if (methodName.equals("renderFireInFirstPerson") || methodName.equals("func_78442_d")) {
                 methodNode.instructions.insert(changeHeightAndFixOverlay());
                 methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC,
                     "net/minecraft/client/renderer/GlStateManager",
                     "func_179121_F",
                     "()V",
                     false));
+                break;
             }
         }
-    }
-
-    private InsnList removeOverlay() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("removeWaterOverlay", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
     }
 
     private InsnList changeHeightAndFixOverlay() {

@@ -81,16 +81,12 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             methodNode.instructions.remove(node);
                         } else if (checkDivNode(node)) {
                             methodNode.instructions.remove(node.getPrevious());
-                            methodNode.instructions.insertBefore(node, getDivisor());
+                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "getModifier", "()F", false));
                         } else if (checkZoomActiveNode(node, zoomActiveIndex)) {
                             methodNode.instructions.insertBefore(node, setZoomed(zoomActiveIndex));
                         } else if (node instanceof MethodInsnNode) {
                             final String methodInsnName = mapMethodNameFromNode(node);
-                            if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                                if (methodInsnName.equals("getMaterial") || methodInsnName.equals("func_149688_o")) {
-                                    methodNode.instructions.insertBefore(node.getPrevious(), createLabel(ifne));
-                                }
-                            } else if (node.getOpcode() == Opcodes.INVOKESTATIC) {
+                            if (node.getOpcode() == Opcodes.INVOKESTATIC) {
                                 if (methodInsnName.equals("isKeyDown") || methodInsnName.equals("func_100015_a")) {
                                     methodNode.instructions.insert(node, modifyKeyDownIfToggleToZoom());
                                 }
@@ -341,32 +337,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
                         }
                     }
                 }
-
-                // todo: causes rain to spawn a few blocks above instead of on the ground
-                /*case "func_78484_h":
-                case "addRainParticles": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
-                            final String fieldInsnName = mapFieldNameFromNode(next);
-                            if (fieldInsnName.equals("lava") || fieldInsnName.equals("field_151587_i")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious(), createBoundingBox());
-                            }
-                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("getBlockBoundsMinY") || methodInsnName.equals("func_149665_z")) {
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "minY" : "field_72338_b"));
-                                methodNode.instructions.remove(next);
-                            } else if (methodInsnName.equals("getBlockBoundsMaxY") || methodInsnName.equals("func_149669_A")) {
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.insertBefore(next, fetchYBox(dev ? "maxY" : "field_72337_e"));
-                                methodNode.instructions.remove(next);
-                            }
-                        }
-                    }
-                }*/
             }
         }
     }
@@ -521,10 +491,7 @@ public class EntityRendererTransformer implements PatcherTransformer {
     private InsnList getStoreCameraInsn(int var) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, var));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC,
-            "club/sk1er/patcher/util/world/render/culling/ParticleCulling",
-            "camera",
-            "Lnet/minecraft/client/renderer/culling/ICamera;"));
+        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/render/culling/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
         return list;
     }
 
@@ -551,13 +518,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifDisabled));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "getZoomState", "(Z)Z", false));
         list.add(ifDisabled);
-        return list;
-    }
-
-    private InsnList createLabel(LabelNode ifne) {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("removeWaterFov", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         return list;
     }
 
@@ -631,33 +591,10 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return false;
     }
 
-    private InsnList getDivisor() {
-        InsnList list = new InsnList();
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer",
-                "getModifier",
-                "()F",
-                false)); // Call my method
-        return list;
-    }
-
     private InsnList callResetAndSensChange() {
         InsnList list = new InsnList();
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer",
-                "resetCurrent",
-                "()V",
-                false));
-        list.add(new MethodInsnNode(
-            Opcodes.INVOKESTATIC,
-            getHookClass("EntityRendererHook"),
-            "reduceSensitivity",
-            "()V",
-            false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "resetCurrent", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "reduceSensitivity", "()V", false));
         return list;
     }
 
