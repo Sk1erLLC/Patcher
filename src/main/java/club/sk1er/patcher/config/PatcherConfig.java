@@ -837,7 +837,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Compact Chat",
-        description = "Clean up chat by stacking duplicate messages.\n§cDoes not work with Labymod.",
+        description = "Clean up chat by stacking duplicate messages.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean compactChat = true;
@@ -967,7 +967,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SELECTOR, name = "Open to LAN Replacement",
-        description = "Replace the Open to LAN button while on a server as it's useless.",
+        description = "Modify the Open to LAN button to either redirect to the server list, or be removed.",
         category = "Screens", subcategory = "General",
         options = {"Default", "Server List", "Remove"}
     )
@@ -975,8 +975,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Image Preview",
-        description = "Preview image links when hovering over a supported URL.\nPress Shift to use fullscreen and Control to render in native image resolution.\n" +
-            "§eCurrently supported: Imgur, Discord, Reddit, Twitter, Badlion Screenshots.",
+        description = "Preview image links when hovering over a supported URL." +
+            "\nPress Shift to use fullscreen and Control to render in native image resolution.",
         category = "Screens", subcategory = "Image Preview"
     )
     public static boolean imagePreview = true;

@@ -13,7 +13,9 @@ package club.sk1er.patcher.screen.render.overlay;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import gg.essential.api.EssentialAPI;
 import gg.essential.api.utils.Multithreading;
+import gg.essential.api.utils.TrustedHostsUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,15 +40,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ImagePreview {
-
-    private final String[] ALLOWED_HOSTS = {
-        "cdn.discordapp.com", "media.discordapp.net",
-        "i.badlion.net",
-        "i.imgur.com", "imgur.com",
-        "sk1er.exposed", "inv.wtf", "i.inv.wtf",
-        "i.redd.it",
-        "pbs.twimg.com"
-    };
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private BufferedImage image;
@@ -74,10 +67,12 @@ public class ImagePreview {
             final String host = url.getHost();
             boolean found = false;
 
-            for (String allowed_host : ALLOWED_HOSTS) {
-                if (host.equalsIgnoreCase(allowed_host)) {
-                    found = true;
-                    break;
+            for (TrustedHostsUtil.TrustedHost trustedHost : EssentialAPI.getTrustedHostsUtil().getTrustedHosts()) {
+                for (String domain : trustedHost.getDomains()) {
+                    if (host.equalsIgnoreCase(domain)) {
+                        found = true;
+                        break;
+                    }
                 }
             }
 
