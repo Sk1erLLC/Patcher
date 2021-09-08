@@ -24,7 +24,7 @@ public class WorldMixin_Optimization {
 
     @ModifyVariable(method = "updateEntityWithOptionalForce", at = @At("STORE"), ordinal = 1)
     private boolean patcher$checkIfWorldIsRemoteBeforeForceUpdating(boolean isForced) {
-        return isForced && this.isRemote;
+        return isForced && !this.isRemote;
     }
 
     @Inject(method = "getCollidingBoundingBoxes", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
