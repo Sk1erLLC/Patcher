@@ -763,6 +763,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeContainerBackground = false;
 
     @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Container Opacity",
+        description = "Change the opacity of supported containers.\nIncludes Chests & Survival Inventory.",
+        category = "Screens", subcategory = "General"
+    )
+    public static float containerOpacity = 1.0f;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Custom Tab Opacity",
         description = "Allow for customizing tab opacity.",
         category = "Screens", subcategory = "Tab"

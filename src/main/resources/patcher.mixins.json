@@ -9,6 +9,8 @@
     "MinecraftMixin_FpsLimit",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
+    "containeropacity.GuiChestMixin_ContainerOpacity",
+    "containeropacity.GuiInventoryMixin_ContainerOpacity",
     "hudcaching.EntityRendererMixin_HUDCaching",
     "hudcaching.FramebufferMixin_HUDCaching",
     "hudcaching.GlStateManagerMixin_HUDCaching",

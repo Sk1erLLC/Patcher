@@ -49,7 +49,7 @@ public class EntityRendererHook {
     public static float getHandFOVModifier(float original) {
         if (PatcherConfig.renderHandWhenZoomed && (EntityRendererTransformer.zoomed || (PatcherConfig.smoothZoomAnimation && EntityRendererTransformer.smoothZoomProgress > 0))) {
             float f = 70f;
-            Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer, partialTicks);
+            Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(mc.theWorld, mc.thePlayer, partialTicks);
 
             if (block.getMaterial() == Material.water) {
                 f = f * 60.0F / 70.0F;
