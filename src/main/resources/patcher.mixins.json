@@ -8,6 +8,7 @@
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_FpsLimit",
+    "MinecraftMixin_SeparateResources",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
     "containeropacity.GuiChestMixin_ContainerOpacity",

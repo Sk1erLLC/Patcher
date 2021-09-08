@@ -90,6 +90,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean newKeybindHandling = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Separate Sound & Texture Reloading",
+        description = "Separate reloading resources into reloading sounds (F3+S) and reloading textures (F3+T).",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean separateResourceLoading;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Fullbright",
         description = "Remove lighting updates, increasing visibility.\n§eCan positively impact performance.\n§cMay conflict with minimaps.",
         category = "Miscellaneous", subcategory = "Rendering", triggerActionOnInitialization = false

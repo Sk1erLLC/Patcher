@@ -133,8 +133,7 @@ public class MinecraftTransformer implements PatcherTransformer {
                                 }
                             }
                         } else if (node.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            MethodInsnNode methodInsnNode = (MethodInsnNode) node;
-                            String methodInsnName = mapMethodNameFromNode(methodInsnNode);
+                            String methodInsnName = mapMethodNameFromNode(node);
                             if ("loadEntityShader".equals(methodInsnName) || "func_175066_a".equals(methodInsnName)) {
                                 if (!foundFirst) {
                                     foundFirst = true;
