@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GuiChest.class)
 public class GuiChestMixin_ContainerOpacity {
     @Inject(method = "drawGuiContainerBackgroundLayer", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/client/gui/inventory/GuiChest;drawTexturedModalRect(IIIIII)V", ordinal = 0, shift = At.Shift.BEFORE))
+        target = "Lnet/minecraft/client/gui/inventory/GuiChest;drawTexturedModalRect(IIIIII)V", ordinal = 0))
     private void patcher$beginContainerOpacity(CallbackInfo ci) {
         ContainerOpacityHook.beginTransparency();
     }

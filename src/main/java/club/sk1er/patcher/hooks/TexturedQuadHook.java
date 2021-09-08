@@ -22,6 +22,7 @@ import org.lwjgl.opengl.GL11;
 
 public class TexturedQuadHook {
 
+    // todo: convert into a better hook instead of overwriting
     public static void draw(TexturedQuad parent, WorldRenderer renderer, float scale) {
         Vec3 xVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[0].vector3D);
         Vec3 zVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[2].vector3D);

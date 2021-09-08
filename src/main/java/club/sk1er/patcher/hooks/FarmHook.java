@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 @SuppressWarnings("unused")
 public class FarmHook {
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();//KoinJavaComponent.get(MinecraftUtils.class);
+    private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();
 
     public static final AxisAlignedBB[] CARROT_POTATO_BOX = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
