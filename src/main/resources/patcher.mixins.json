@@ -12,6 +12,7 @@
     "MinecraftMixin_SeparateResources",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
+    "WorldClientMixin_AnimationTick",
     "WorldMixin_Fullbright",
     "WorldMixin_SkyColor",
     "WorldMixin_SkyHeight",

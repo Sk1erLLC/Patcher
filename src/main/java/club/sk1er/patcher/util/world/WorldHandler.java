@@ -11,7 +11,6 @@
 
 package club.sk1er.patcher.util.world;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.MathHelper;
@@ -19,9 +18,6 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-/**
- * TODO: More Documentation
- */
 public class WorldHandler {
 
     public static Vec3 skyColorVector = new Vec3(0.472549021244049, 0.652941197156906, 1);
@@ -37,10 +33,5 @@ public class WorldHandler {
                 skyColorVector = new Vec3(0.472549021244049 * modifiedAngle, 0.652941197156906 * modifiedAngle, 1 * modifiedAngle);
             }
         }
-    }
-
-    @SuppressWarnings("unused")
-    public static int getAnimationTickCount() {
-        return PatcherConfig.lowAnimationTick ? 100 : 1000;
     }
 }

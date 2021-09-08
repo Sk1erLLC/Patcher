@@ -100,7 +100,6 @@ import club.sk1er.patcher.asm.world.ChunkTransformer;
 import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
 import club.sk1er.patcher.asm.world.ScoreboardTransformer;
 import club.sk1er.patcher.asm.world.StatBaseTransformer;
-import club.sk1er.patcher.asm.world.WorldClientTransformer;
 import club.sk1er.patcher.asm.world.WorldTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityItemTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityLivingBaseTransformer;
@@ -253,7 +252,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
-        registerTransformer(new WorldClientTransformer());
         registerTransformer(new EntityFXTransformer());
         registerTransformer(new LongHashMapTransformer());
         registerTransformer(new ChunkCoordIntPairTransformer());
