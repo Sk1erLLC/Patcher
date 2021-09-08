@@ -20,7 +20,6 @@ import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
 import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer;
-import club.sk1er.patcher.asm.client.block.BlockRedstoneTorchTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
@@ -247,7 +246,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
-        registerTransformer(new BlockRedstoneTorchTransformer());
         registerTransformer(new RenderItemTransformer());
         registerTransformer(new LayerArmorBaseTransformer());
         registerTransformer(new GameRulesValueTransformer());

@@ -18,5 +18,8 @@
     "hudcaching.GlStateManagerMixin_HUDCaching",
     "hudcaching.GuiIngameForgeMixin_HUDCaching",
     "hudcaching.GuiIngameMixin_HUDCaching"
+  ],
+  "mixins": [
+    "BlockRedstoneTorchMixin_MemoryLeak"
   ]
 }
