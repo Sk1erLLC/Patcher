@@ -63,7 +63,6 @@ import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.BlockCactusTransformer;
 import club.sk1er.patcher.asm.render.block.BlockFluidRendererTransformer;
-import club.sk1er.patcher.asm.render.block.BlockRendererDispatcherTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
 import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
@@ -212,7 +211,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockNetherWartTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new NBTTagStringTransformer());
-        registerTransformer(new BlockRendererDispatcherTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());
         registerTransformer(new WorldRendererTransformer());
         registerTransformer(new GameSettingsTransformer());

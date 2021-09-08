@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "BlockRedstoneTorchMixin_MemoryLeak",
+    "BlockRendererDispatcherMixin_RemoveFoliage",
     "ChunkRenderDispatcherMixin_LimitUpdates",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
