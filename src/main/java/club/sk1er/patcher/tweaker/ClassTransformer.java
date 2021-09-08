@@ -72,7 +72,6 @@ import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
 import club.sk1er.patcher.asm.render.particle.EntityFXTransformer;
 import club.sk1er.patcher.asm.render.screen.*;
-import club.sk1er.patcher.asm.render.world.ChunkRenderDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
@@ -287,7 +286,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockFluidRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
-        registerTransformer(new ChunkRenderDispatcherTransformer());
         registerTransformer(new ContainerTransformer());
         registerTransformer(new ScaledResolutionTransformer());
         registerTransformer(new TileEntityBannerRendererTransformer());

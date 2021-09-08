@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "BlockRedstoneTorchMixin_MemoryLeak",
+    "ChunkRenderDispatcherMixin_LimitUpdates",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
