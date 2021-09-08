@@ -19,7 +19,6 @@ import club.sk1er.patcher.asm.client.block.BlockBrewingStandTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
-import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
@@ -222,7 +221,7 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
         registerTransformer(new LayerArrowTransformer());
-        registerTransformer(new CommandHandlerTransformer());
+//        registerTransformer(new CommandHandlerTransformer());
         registerTransformer(new TileEntityRendererDispatcherTransformer());
         registerTransformer(new ResourcePackRepositoryTransformer());
         registerTransformer(new ServerListTransformer());
