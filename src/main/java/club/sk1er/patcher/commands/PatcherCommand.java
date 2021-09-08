@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -253,10 +254,13 @@ public class PatcherCommand extends Command {
         Patcher.instance.forceSaveConfig();
     }
 
-    @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat.")
-    public void sendCoords() {
-        final EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ);
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat. Anything after 'sendcoords' will be put at the end of the message.")
+    public void sendCoords(@DisplayName("additional information") Optional<String> message) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ +
+            // might be an issue if they provide a long message?
+            " " + message.orElse(""));
     }
 
     @SubCommand(value = "sounds", description = "Open the Sound Configuration GUI.")
