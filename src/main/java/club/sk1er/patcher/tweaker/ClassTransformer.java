@@ -21,7 +21,6 @@ import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
-import club.sk1er.patcher.asm.external.forge.command.ClientCommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FluidRegistryTransformer;
@@ -221,7 +220,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
         registerTransformer(new LayerArrowTransformer());
-//        registerTransformer(new CommandHandlerTransformer());
         registerTransformer(new TileEntityRendererDispatcherTransformer());
         registerTransformer(new ResourcePackRepositoryTransformer());
         registerTransformer(new ServerListTransformer());
@@ -292,7 +290,6 @@ public class ClassTransformer implements IClassTransformer {
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
-        registerTransformer(new ClientCommandHandlerTransformer());
         registerTransformer(new FMLClientHandlerTransformer());
         registerTransformer(new ForgeHooksClientTransformer());
         registerTransformer(new GuiModListTransformer());

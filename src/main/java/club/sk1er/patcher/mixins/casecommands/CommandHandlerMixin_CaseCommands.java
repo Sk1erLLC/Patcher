@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.casecommands;
 
 import net.minecraft.command.CommandHandler;
 import org.spongepowered.asm.mixin.Mixin;
