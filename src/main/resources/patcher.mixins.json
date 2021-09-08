@@ -4,6 +4,7 @@
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "BlockFluidRendererMixin_FixStitching",
     "BlockRedstoneTorchMixin_MemoryLeak",
     "BlockRendererDispatcherMixin_RemoveFoliage",
     "ChunkRenderDispatcherMixin_LimitUpdates",

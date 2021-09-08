@@ -61,7 +61,6 @@ import club.sk1er.patcher.asm.network.packet.S2EPacketCloseWindowTransformer;
 import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
-import club.sk1er.patcher.asm.render.block.BlockFluidRendererTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
 import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
@@ -279,7 +278,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new LazyLoadBaseTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
-        registerTransformer(new BlockFluidRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
         registerTransformer(new ContainerTransformer());
