@@ -4,6 +4,7 @@
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "BlockRedstoneTorchMixin_MemoryLeak",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
@@ -11,13 +12,15 @@
     "MinecraftMixin_SeparateResources",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
+    "WorldMixin_Fullbright",
+    "WorldMixin_SkyColor",
+    "WorldMixin_SkyHeight",
     "containeropacity.GuiChestMixin_ContainerOpacity",
     "containeropacity.GuiInventoryMixin_ContainerOpacity",
     "hudcaching.EntityRendererMixin_HUDCaching",
     "hudcaching.FramebufferMixin_HUDCaching",
     "hudcaching.GlStateManagerMixin_HUDCaching",
     "hudcaching.GuiIngameForgeMixin_HUDCaching",
-    "hudcaching.GuiIngameMixin_HUDCaching",
-    "BlockRedstoneTorchMixin_MemoryLeak"
+    "hudcaching.GuiIngameMixin_HUDCaching"
   ]
 }

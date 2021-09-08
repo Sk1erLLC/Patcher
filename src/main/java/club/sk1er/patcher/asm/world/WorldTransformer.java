@@ -12,15 +12,11 @@
 package club.sk1er.patcher.asm.world;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import com.google.common.collect.Sets;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
 public class WorldTransformer implements PatcherTransformer {
 
@@ -42,28 +38,11 @@ public class WorldTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        Set<String> brightness = Sets.newHashSet(
-            "checkLightFor", "func_180500_c",
-            "getLightFromNeighborsFor", "func_175671_l",
-            "getLightFromNeighbors", "func_175705_a",
-            "getRawLight", "func_175638_a",
-            "getLight", "func_175699_k", "func_175721_c"
-        );
-
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (brightness.contains(methodName)) {
-                methodNode.instructions.insert(setLightLevel());
-            }
-
+            // todo: how should we convert these into a mixin?
             switch (methodName) {
-                case "getHorizon":
-                case "func_72919_O":
-                    clearInstructions(methodNode);
-                    methodNode.instructions.insert(setSkyHeight());
-                    break;
-
                 case "updateEntityWithOptionalForce":
                 case "func_72866_a": {
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -85,26 +64,6 @@ public class WorldTransformer implements PatcherTransformer {
                     }
                     break;
                 }
-
-                case "updateEntities":
-                case "func_72939_s": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals("blockEntities")) {
-                            methodNode.instructions.insertBefore(next.getNext().getNext(), removeTileEntities());
-                            break;
-                        }
-                    }
-                    break;
-                }
-
-                case "getSkyColor":
-                case "func_72833_a":
-                    methodNode.instructions.insert(getFasterSkyColor());
-                    break;
 
                 case "func_72945_a":
                 case "getCollidingBoundingBoxes": {
@@ -145,90 +104,6 @@ public class WorldTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 3));
         list.add(new InsnNode(Opcodes.ARETURN));
         list.add(ifeq);
-        return list;
-    }
-
-    private InsnList getFasterSkyColor() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/util/world/WorldHandler", "skyColorVector", "Lnet/minecraft/util/Vec3;"));
-        list.add(new InsnNode(Opcodes.ARETURN));
-        return list;
-    }
-
-    private InsnList removeTileEntities() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_147483_b", // tileEntitiesToBeRemoved
-            "Ljava/util/List;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "isEmpty", "()Z", true));
-        LabelNode labelNode = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_175730_i", // tickableTileEntities
-            "Ljava/util/List;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_147483_b", // tileEntitiesToBeRemoved
-            "Ljava/util/List;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "removeAll", "(Ljava/util/Collection;)Z", true));
-        list.add(new InsnNode(Opcodes.POP));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_147482_g", // loadedTileEntityList
-            "Ljava/util/List;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_147483_b", // tileEntitiesToBeRemoved
-            "Ljava/util/List;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "removeAll", "(Ljava/util/Collection;)Z", true));
-        list.add(new InsnNode(Opcodes.POP));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD,
-            "net/minecraft/world/World",
-            "field_147483_b", // tileEntitiesToBeRemoved
-            "Ljava/util/List;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/List", "clear", "()V", true));
-        list.add(labelNode);
-        return list;
-    }
-
-    private InsnList setLightLevel() {
-        InsnList insns = new InsnList();
-        insns.add(
-            new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
-                "net/minecraft/client/Minecraft",
-                "func_71410_x", // getMinecraft
-                "()Lnet/minecraft/client/Minecraft;",
-                false));
-        insns.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL,
-                "net/minecraft/client/Minecraft",
-                "func_152345_ab", // isCallingFromMinecraftThread
-                "()Z",
-                false));
-        LabelNode ifeq = new LabelNode();
-        insns.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/FullbrightTicker", "isFullbright", "()Z", false));
-        insns.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        insns.add(new IntInsnNode(Opcodes.BIPUSH, 15));
-        insns.add(new InsnNode(Opcodes.IRETURN));
-        insns.add(ifeq);
-        return insns;
-    }
-
-    private InsnList setSkyHeight() {
-        InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.DCONST_0));
-        list.add(new InsnNode(Opcodes.DRETURN));
         return list;
     }
 }
