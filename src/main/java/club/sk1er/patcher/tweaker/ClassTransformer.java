@@ -18,8 +18,6 @@ import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockBrewingStandTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
-import club.sk1er.patcher.asm.client.block.BlockPistonBaseTransformer;
-import club.sk1er.patcher.asm.client.block.BlockPistonStructureHelperTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.client.command.CommandHandlerTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
@@ -264,8 +262,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelRendererTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new BlockPosTransformer());
-        registerTransformer(new BlockPistonBaseTransformer());
-        registerTransformer(new BlockPistonStructureHelperTransformer());
         registerTransformer(new GuiMultiplayerTransformer());
         registerTransformer(new ServerSelectionListTransformer());
         registerTransformer(new GuiOverlayDebugTransformer());
