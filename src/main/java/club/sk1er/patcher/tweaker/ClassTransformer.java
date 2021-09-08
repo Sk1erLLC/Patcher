@@ -23,7 +23,6 @@ import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.FMLClientHandlerTransformer;
-import club.sk1er.patcher.asm.external.forge.loader.FluidRegistryTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ModClassLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ModContainerFactoryTransformer;
@@ -296,7 +295,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModClassLoaderTransformer());
         registerTransformer(new ModelLoaderTransformer());
         registerTransformer(new ForgeChunkManagerTransformer());
-        registerTransformer(new FluidRegistryTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new MinecraftForgeClientTransformer());
         registerTransformer(new BlockInfoTransformer());
