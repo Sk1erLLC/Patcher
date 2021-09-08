@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins.casecommands;
+package club.sk1er.patcher.mixins.forge;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.client.ClientCommandHandler;
