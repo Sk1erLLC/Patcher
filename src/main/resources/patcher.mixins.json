@@ -18,6 +18,7 @@
     "ServerListEntryNormalMixin_ResolveCrash",
     "WorldClientMixin_AnimationTick",
     "WorldMixin_Fullbright",
+    "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
     "WorldMixin_SkyHeight",
     "containeropacity.GuiChestMixin_ContainerOpacity",
