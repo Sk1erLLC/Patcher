@@ -4,6 +4,7 @@
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_FpsLimit",

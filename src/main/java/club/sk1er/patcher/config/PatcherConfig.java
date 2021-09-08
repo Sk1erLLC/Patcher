@@ -784,6 +784,14 @@ public class PatcherConfig extends Vigilant {
     public static float tabOpacity = 1.0F;
 
     @Property(
+        type = PropertyType.SLIDER, name = "Tab Player Count",
+        description = "Change how many players can display on tab.",
+        category = "Screens", subcategory = "Tab",
+        min = 10, max = 120
+    )
+    public static int tabPlayerCount = 80;
+
+    @Property(
         type = PropertyType.SWITCH, name = "GUI Crosshair",
         description = "Stop rendering the crosshair when in a GUI.",
         category = "Screens", subcategory = "General"
