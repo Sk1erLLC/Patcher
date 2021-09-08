@@ -67,7 +67,6 @@ import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
 import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
-import club.sk1er.patcher.asm.render.particle.EntityFXTransformer;
 import club.sk1er.patcher.asm.render.screen.*;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
@@ -247,7 +246,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
-        registerTransformer(new EntityFXTransformer());
         registerTransformer(new LongHashMapTransformer());
         registerTransformer(new ChunkCoordIntPairTransformer());
         registerTransformer(new BakedQuadTransformer());

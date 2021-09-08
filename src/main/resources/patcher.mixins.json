@@ -8,6 +8,7 @@
     "BlockRedstoneTorchMixin_MemoryLeak",
     "BlockRendererDispatcherMixin_RemoveFoliage",
     "ChunkRenderDispatcherMixin_LimitUpdates",
+    "EntityFXMixin_StaticParticleColor",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
