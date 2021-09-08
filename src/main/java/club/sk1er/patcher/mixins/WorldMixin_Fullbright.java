@@ -14,7 +14,7 @@ public class WorldMixin_Fullbright {
 
     @Inject(method = "checkLightFor", at = @At("HEAD"), cancellable = true)
     private void patcher$checkLightFor_fullbright(CallbackInfoReturnable<Boolean> cir) {
-        if (this.checkFullbright()) {
+        if (this.patcher$checkFullbright()) {
             cir.setReturnValue(true);
         }
     }
@@ -24,13 +24,13 @@ public class WorldMixin_Fullbright {
         "getLight(Lnet/minecraft/util/BlockPos;)I", "getLight(Lnet/minecraft/util/BlockPos;Z)I"
     }, at = @At("HEAD"), cancellable = true)
     private void patcher$getLight_fullbright(CallbackInfoReturnable<Integer> cir) {
-        if (this.checkFullbright()) {
+        if (this.patcher$checkFullbright()) {
             cir.setReturnValue(15);
         }
     }
 
     @Unique
-    private boolean checkFullbright() {
+    private boolean patcher$checkFullbright() {
         return Minecraft.getMinecraft().isCallingFromMinecraftThread() && FullbrightTicker.isFullbright();
     }
 }
