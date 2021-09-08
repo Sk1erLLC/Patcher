@@ -21,22 +21,17 @@ import java.util.Set;
 public class BlockRendererDispatcherMixin_RemoveFoliage {
 
     @Unique
-    private static final Set<Block> patcher$foliageBlocks;
+    private static final Set<Block> patcher$foliageBlocks = Sets.newHashSet(
+        Blocks.tallgrass,
+        Blocks.double_plant,
+        Blocks.red_flower,
+        Blocks.yellow_flower
+    );
 
     @Inject(method = "renderBlock", at = @At("HEAD"), cancellable = true)
     private void patcher$cancelFoliage(IBlockState state, BlockPos pos, IBlockAccess blockAccess, WorldRenderer worldRendererIn, CallbackInfoReturnable<Boolean> cir) {
         if (PatcherConfig.removeGroundFoliage && patcher$foliageBlocks.contains(state.getBlock())) {
             cir.setReturnValue(false);
         }
-    }
-
-    // cringe mixin issue, can't make arrays normally
-    static {
-        patcher$foliageBlocks = Sets.newHashSet(
-            Blocks.tallgrass,
-            Blocks.double_plant,
-            Blocks.red_flower,
-            Blocks.yellow_flower
-        );
     }
 }
