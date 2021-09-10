@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins.network;
+package club.sk1er.patcher.mixins.network.packet;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayServer;

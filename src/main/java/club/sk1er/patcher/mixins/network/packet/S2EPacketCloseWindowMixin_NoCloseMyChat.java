@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins.network;
+package club.sk1er.patcher.mixins.network.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;

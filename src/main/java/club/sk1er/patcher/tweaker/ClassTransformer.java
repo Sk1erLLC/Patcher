@@ -41,7 +41,6 @@ import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
-import club.sk1er.patcher.asm.network.LazyLoadBaseTransformer;
 import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
@@ -257,7 +256,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S3FPacketCustomPayloadTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
-        registerTransformer(new LazyLoadBaseTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
