@@ -47,15 +47,7 @@ import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.ServerAddressTransformer;
 import club.sk1er.patcher.asm.network.ServerListTransformer;
-import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
-import club.sk1er.patcher.asm.network.packet.C17PacketCustomPayloadTransformer;
-import club.sk1er.patcher.asm.network.packet.S0EPacketSpawnObjectTransformer;
-import club.sk1er.patcher.asm.network.packet.S14PacketEntityTransformer;
-import club.sk1er.patcher.asm.network.packet.S19PacketEntityHeadLookTransformer;
-import club.sk1er.patcher.asm.network.packet.S19PacketEntityStatusTransformer;
-import club.sk1er.patcher.asm.network.packet.S2EPacketCloseWindowTransformer;
-import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
-import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
+import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
@@ -179,7 +171,6 @@ public class ClassTransformer implements IClassTransformer {
         } catch (IOException ignored) {
         }
 
-        registerTransformer(new S2EPacketCloseWindowTransformer());
         registerTransformer(new EntityItemTransformer());
         registerTransformer(new MinecraftTransformer());
         registerTransformer(new GuiGameOverTransformer());
@@ -265,7 +256,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderSnowballTransformer());
         registerTransformer(new S3FPacketCustomPayloadTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
-        registerTransformer(new C17PacketCustomPayloadTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new LazyLoadBaseTransformer());
         registerTransformer(new ArmorStandRendererTransformer());

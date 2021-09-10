@@ -18,6 +18,8 @@
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_FpsLimit",
     "MinecraftMixin_SeparateResources",
+    "network.C17PacketCustomPayloadMixin_MemoryLeak",
+    "network.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
     "WorldClientMixin_AnimationTick",
