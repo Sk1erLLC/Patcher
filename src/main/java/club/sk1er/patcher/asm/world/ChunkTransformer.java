@@ -12,12 +12,16 @@
 package club.sk1er.patcher.asm.world;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import com.google.common.collect.Sets;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
-import java.util.Set;
 
 public class ChunkTransformer implements PatcherTransformer {
     /**
@@ -38,17 +42,8 @@ public class ChunkTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        Set<String> brightness = Sets.newHashSet(
-            "getLightFor", "func_177413_a",
-            "getLightSubtracted", "func_177443_a"
-        );
-
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
-            if (brightness.contains(methodName)) {
-                methodNode.instructions.insert(setLightLevel());
-            }
-
             switch (methodName) {
                 case "setBlockState":
                 case "func_177436_a":
@@ -87,17 +82,6 @@ public class ChunkTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("ChunkHook"), "getBlockState",
             "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/block/state/IBlockState;", false));
         list.add(new InsnNode(Opcodes.ARETURN));
-        return list;
-    }
-
-    private InsnList setLightLevel() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/FullbrightTicker", "isFullbright", "()Z", false));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 15));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(ifeq);
         return list;
     }
 }

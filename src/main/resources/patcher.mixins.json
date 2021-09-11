@@ -22,7 +22,7 @@
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
     "WorldClientMixin_AnimationTick",
-    "WorldMixin_Fullbright",
+    "fullbright.WorldMixin_Fullbright",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
     "WorldMixin_SkyHeight",
@@ -45,5 +45,8 @@
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "render.item.ItemModelMesherMixin_ResolveCrash",
     "render.item.ItemRendererMixin_FireRendering"
+  ],
+  "mixins": [
+    "fullbright.ChunkMixin_Fullbright"
   ]
 }

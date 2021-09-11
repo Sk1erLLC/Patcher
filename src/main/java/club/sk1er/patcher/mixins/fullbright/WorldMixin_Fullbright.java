@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.fullbright;
 
 import club.sk1er.patcher.util.world.render.FullbrightTicker;
 import net.minecraft.client.Minecraft;
