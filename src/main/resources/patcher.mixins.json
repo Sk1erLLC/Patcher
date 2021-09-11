@@ -24,6 +24,8 @@
     "WorldMixin_SkyHeight",
     "containeropacity.GuiChestMixin_ContainerOpacity",
     "containeropacity.GuiInventoryMixin_ContainerOpacity",
+    "disableenchantglint.LayerArmorBaseMixin_DisableEnchantGlint",
+    "disableenchantglint.RenderItemMixin_DisableEnchantGlint",
     "forge.ClientCommandHandlerMixin_CaseCommands",
     "forge.FluidRegistryMixin_Optimization",
     "forge.FMLClientHandlerMixin_Optimization",

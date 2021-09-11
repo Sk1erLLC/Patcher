@@ -48,7 +48,6 @@ import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
-import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
 import club.sk1er.patcher.asm.render.screen.*;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
@@ -214,8 +213,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
-        registerTransformer(new RenderItemTransformer());
-        registerTransformer(new LayerArmorBaseTransformer());
         registerTransformer(new GameRulesValueTransformer());
         registerTransformer(new EntityOtherPlayerMPTransformer());
         registerTransformer(new S0EPacketSpawnObjectTransformer());
