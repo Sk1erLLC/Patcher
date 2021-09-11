@@ -34,6 +34,7 @@
     "hudcaching.GuiIngameMixin_HUDCaching",
     "network.LazyLoadBaseMixin_RaceCondition",
     "network.ServerAddressMixin_ResolveCrash",
+    "network.ServerListMixin_ResolveNpe",
     "network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat"
   ]

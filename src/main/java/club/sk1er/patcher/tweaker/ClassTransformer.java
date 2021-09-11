@@ -44,7 +44,6 @@ import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
-import club.sk1er.patcher.asm.network.ServerListTransformer;
 import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
@@ -209,7 +208,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerArrowTransformer());
         registerTransformer(new TileEntityRendererDispatcherTransformer());
         registerTransformer(new ResourcePackRepositoryTransformer());
-        registerTransformer(new ServerListTransformer());
         registerTransformer(new S14PacketEntityTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
