@@ -12,7 +12,7 @@ import java.util.Locale;
 
 @Mixin(ClientCommandHandler.class)
 public class ClientCommandHandlerMixin_CaseCommands {
-    @ModifyArg(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"))
+    @ModifyArg(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
     private Object patcher$makeLowerCaseForGet(Object s) {
         if (s instanceof String) {
             return ((String) s).toLowerCase(Locale.ENGLISH);

@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @Mixin(CommandHandler.class)
 public class CommandHandlerMixin_CaseCommands {
-    @ModifyArg(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"))
+    @ModifyArg(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
     private Object patcher$makeLowerCaseForGet(Object s) {
         if (s instanceof String) {
             return ((String) s).toLowerCase(Locale.ENGLISH);
@@ -17,7 +17,7 @@ public class CommandHandlerMixin_CaseCommands {
         return s;
     }
 
-    @ModifyArg(method = "registerCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), index = 0)
+    @ModifyArg(method = "registerCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false), index = 0)
     private Object patcher$makeLowerCaseForPut(Object s) {
         if (s instanceof String) {
             return ((String) s).toLowerCase(Locale.ENGLISH);

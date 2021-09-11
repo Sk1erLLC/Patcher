@@ -11,13 +11,13 @@ import java.util.Set;
 
 @Mixin(FluidRegistry.class)
 public class FluidRegistryMixin_Optimization {
-    @Shadow static Set<Fluid> bucketFluids;
+    @Shadow(remap = false) static Set<Fluid> bucketFluids;
 
     /**
      * @author LlamaLad7
      * @reason Avoid making a copy of the set.
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public static Set<Fluid> getBucketFluids() {
         return Collections.unmodifiableSet(bucketFluids);
     }
