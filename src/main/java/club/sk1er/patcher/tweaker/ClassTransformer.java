@@ -47,7 +47,6 @@ import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
-import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
 import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
@@ -179,7 +178,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ScoreboardTransformer());
         registerTransformer(new GuiAchievementTransformer());
         registerTransformer(new GuiScreenTransformer());
-        registerTransformer(new ItemRendererTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new RenderEntityItemTransformer());
