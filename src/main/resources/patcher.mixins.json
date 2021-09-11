@@ -36,6 +36,7 @@
     "network.ServerAddressMixin_ResolveCrash",
     "network.ServerListMixin_ResolveNpe",
     "network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
-    "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat"
+    "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
+    "render.item.ItemModelMesherMixin_ResolveCrash"
   ]
 }

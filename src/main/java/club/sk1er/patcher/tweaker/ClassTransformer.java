@@ -47,7 +47,6 @@ import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
-import club.sk1er.patcher.asm.render.item.ItemModelMesherTransformer;
 import club.sk1er.patcher.asm.render.item.ItemRendererTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
 import club.sk1er.patcher.asm.render.item.RenderItemTransformer;
@@ -263,7 +262,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ModelSkeletonTransformer());
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new EntityPlayerTransformer());
-        registerTransformer(new ItemModelMesherTransformer());
         registerTransformer(new RenderWitherTransformer());
         registerTransformer(new GuiScreenOptionsSoundsTransformer());
         registerTransformer(new LoadingScreenRendererTransformer());
