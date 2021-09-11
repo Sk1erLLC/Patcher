@@ -22,7 +22,6 @@
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
     "WorldClientMixin_AnimationTick",
-    "fullbright.WorldMixin_Fullbright",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
     "WorldMixin_SkyHeight",
@@ -33,6 +32,8 @@
     "forge.ClientCommandHandlerMixin_CaseCommands",
     "forge.FluidRegistryMixin_Optimization",
     "forge.FMLClientHandlerMixin_Optimization",
+    "fullbright.ChunkMixin_Fullbright",
+    "fullbright.WorldMixin_Fullbright",
     "hudcaching.EntityRendererMixin_HUDCaching",
     "hudcaching.FramebufferMixin_HUDCaching",
     "hudcaching.GlStateManagerMixin_HUDCaching",
@@ -45,8 +46,5 @@
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "render.item.ItemModelMesherMixin_ResolveCrash",
     "render.item.ItemRendererMixin_FireRendering"
-  ],
-  "mixins": [
-    "fullbright.ChunkMixin_Fullbright"
   ]
 }
