@@ -44,7 +44,6 @@ import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
-import club.sk1er.patcher.asm.network.ServerAddressTransformer;
 import club.sk1er.patcher.asm.network.ServerListTransformer;
 import club.sk1er.patcher.asm.network.packet.*;
 import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
@@ -244,7 +243,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new StatBaseTransformer());
         registerTransformer(new ItemStackTransformer());
         registerTransformer(new ModelPlayerTransformer());
-        registerTransformer(new ServerAddressTransformer());
         registerTransformer(new LayerSpiderEyesTransformer());
         registerTransformer(new LayerCreeperChargeTransformer());
         registerTransformer(new LayerWitherAuraTransformer());
