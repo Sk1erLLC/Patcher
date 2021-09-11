@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Entity.class)
 public class EntityMixin_Capability {
 
-    @Shadow private CapabilityDispatcher capabilities;
+    @Shadow(remap = false) private CapabilityDispatcher capabilities;
 
     /**
      * @author asbyth
      * @reason Faster capability check
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public boolean hasCapability(Capability<?> capability, EnumFacing direction) {
         return this.capabilities != null && this.capabilities.hasCapability(capability, direction);
     }
