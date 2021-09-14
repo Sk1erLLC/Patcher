@@ -22,6 +22,7 @@
     "GuiOptionsMixin_SaveSettings",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
+    "LoadingScreenRendererMixin_SkipProgress",
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_FpsLimit",
     "MinecraftMixin_SeparateResources",
