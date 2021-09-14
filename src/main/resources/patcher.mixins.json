@@ -9,6 +9,7 @@
     "BlockRendererDispatcherMixin_RemoveFoliage",
     "ChunkRenderDispatcherMixin_LimitUpdates",
     "CommandHandlerMixin_CaseCommands",
+    "ContainerMixin_PlaySound",
     "EntityFXMixin_StaticParticleColor",
     "EntityMixin_Capability",
     "EntityMixin_FixedBrightness",
