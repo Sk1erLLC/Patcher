@@ -15,6 +15,7 @@
     "EntityMixin_FixedBrightness",
     "EntityMixin_SprintParticles",
     "EntityPlayerSPMixin_NauseaEffect",
+    "GuiAchievementMixin_CancelRender",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
