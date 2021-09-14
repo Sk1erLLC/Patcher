@@ -18,6 +18,7 @@
     "GuiAchievementMixin_CancelRender",
     "GuiGameOverMixin_ResolveButtonClick",
     "GuiLanguageMixin_ResetUnicodeFont",
+    "GuiMultiplayerMixin_FastServerJoin",
     "GuiPlayerTabOverlayMixin_PlayerCount",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "MinecraftMixin_CustomF3",
