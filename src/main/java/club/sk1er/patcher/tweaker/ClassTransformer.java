@@ -247,7 +247,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
-        registerTransformer(new GuiOptionsTransformer());
         registerTransformer(new EntityWitherTransformer());
         registerTransformer(new ScaledResolutionTransformer());
         registerTransformer(new TileEntityBannerRendererTransformer());
