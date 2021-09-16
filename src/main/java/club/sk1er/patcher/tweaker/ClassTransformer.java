@@ -211,7 +211,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new ScreenShotHelperTransformer());
-        registerTransformer(new GuiScreenResourcePacksTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
         registerTransformer(new GameRulesValueTransformer());

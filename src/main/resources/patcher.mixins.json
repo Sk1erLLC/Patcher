@@ -24,6 +24,8 @@
     "GuiScreenMixin_BackgroundRendering",
     "GuiScreenMixin_FixWindowsIME",
     "GuiScreenMixin_ResolveCrash",
+    "GuiScreenResourcePacksMixin_ChangeTextPosition",
+    "GuiScreenResourcePacksMixin_ClearHandles",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
     "LoadingScreenRendererMixin_SkipProgress",
     "MinecraftMixin_CustomF3",
