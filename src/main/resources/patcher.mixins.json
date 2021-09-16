@@ -21,6 +21,7 @@
     "GuiMultiplayerMixin_FastServerJoin",
     "GuiOptionsMixin_SaveSettings",
     "GuiPlayerTabOverlayMixin_PlayerCount",
+    "GuiScreenBookMixin_ResolveRenderLayer",
     "GuiScreenMixin_BackgroundRendering",
     "GuiScreenMixin_FixWindowsIME",
     "GuiScreenMixin_ResolveCrash",
