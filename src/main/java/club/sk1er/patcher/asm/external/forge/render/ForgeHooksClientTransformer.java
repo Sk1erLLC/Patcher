@@ -15,16 +15,12 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ListIterator;
 
 public class ForgeHooksClientTransformer implements PatcherTransformer {
-
-    private final String hooksClass = getHookClass("ForgeHooksClientHook");
 
     /**
      * The class name that's being transformed
@@ -58,30 +54,7 @@ public class ForgeHooksClientTransformer implements PatcherTransformer {
                         }
                     }
                 }
-            } else if (methodName.equals("drawScreen")) {
-                methodNode.instructions.insert(redirectMouse());
-                methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), addReturn());
             }
         }
-    }
-
-    private InsnList addReturn() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, hooksClass, "drawScreenReturn", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
-        return list;
-    }
-
-    private InsnList redirectMouse() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, hooksClass, "drawScreenHead", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, hooksClass, "drawScreenMouseX", "(I)I", false));
-        list.add(new VarInsnNode(Opcodes.ISTORE, 1));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 2));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, hooksClass, "drawScreenMouseY", "(I)I", false));
-        list.add(new VarInsnNode(Opcodes.ISTORE, 2));
-        return list;
     }
 }

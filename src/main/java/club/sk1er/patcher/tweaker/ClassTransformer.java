@@ -247,7 +247,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new EntityWitherTransformer());
-        registerTransformer(new ScaledResolutionTransformer());
         registerTransformer(new TileEntityBannerRendererTransformer());
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new RenderTNTPrimedTransformer());
