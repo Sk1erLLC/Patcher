@@ -36,6 +36,7 @@
     "MinecraftMixin_FpsLimit",
     "MinecraftMixin_SeparateResources",
     "MinecraftMixin_ToggleGLErrorChecking",
+    "ModelPlayerMixin_FixedTransformations",
     "RendererLivingEntityMixin_NametagRendering",
     "ServerListEntryNormalMixin_ResolveCrash",
     "ServerSelectionListMixin_ResolveIndex",
