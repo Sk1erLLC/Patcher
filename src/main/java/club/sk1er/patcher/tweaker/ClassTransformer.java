@@ -178,7 +178,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiUtilsTransformer());
         registerTransformer(new ChatStyleTransformer());
         registerTransformer(new ScoreboardTransformer());
-        registerTransformer(new GuiScreenTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new RenderEntityItemTransformer());
