@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.modelfixes;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.model.ModelBiped;
