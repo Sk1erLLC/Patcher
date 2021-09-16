@@ -29,4 +29,11 @@ public class MinecraftMixin_FpsLimit {
             cir.setReturnValue(PatcherConfig.customFpsLimit);
         }
     }
+
+    @Inject(method = "isFramerateLimitBelowMax", at = @At("HEAD"), cancellable = true)
+    private void patcher$useCustomFrameLimit(CallbackInfoReturnable<Boolean> cir) {
+        if (PatcherConfig.customFpsLimit > 0) {
+            cir.setReturnValue(true);
+        }
+    }
 }
