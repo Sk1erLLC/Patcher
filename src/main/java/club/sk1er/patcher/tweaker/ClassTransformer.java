@@ -61,7 +61,6 @@ import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
-import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityPistonRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
@@ -182,7 +181,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
         registerTransformer(new TileEntitySkullRendererTransformer());
-        registerTransformer(new TileEntityEndPortalRendererTransformer());
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());

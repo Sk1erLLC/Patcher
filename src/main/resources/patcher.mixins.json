@@ -43,6 +43,7 @@
     "TileEntityBannerRendererMixin_BannerAnimation",
     "TileEntityBannerRendererMixin_ChestDisplay",
     "TileEntityEnchantmentTableRendererMixin_CancelRender",
+    "TileEntityEndPortalRendererMixins_CancelRender",
     "WorldClientMixin_AnimationTick",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
