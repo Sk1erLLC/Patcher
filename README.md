@@ -30,13 +30,13 @@
 - **Bow FOV** - Modify your FOV when pulling back a bow.
 - **Speed FOV** - Modify your FOV when having the speed effect.
 - **Slowness FOV** - Modify Your FOV when having the slowness effect.
-- **Better Keybind Handling** - Makes keys re-register when closing a GUI, like in 1.12+. (Does not work on macOS due to LWJGL issues.) *default
+- **Better Keybind Handling** - Makes keys re-register when closing a GUI, like in 1.12+. (Does not work on macOS due to LWJGL issues) *default
 - **Disable Hotbar Scrolling** - Remove the ability to scroll through your hotbar.
 - **Crosshair Perspective** - Remove the crosshair when in third person.
 - **Unfocused Sounds** - Change the volume of sounds when you're not tabbed into the window.
 - **Unfocused FPS** - Toggle changing your FPS to whatever Unfocused FPS is set to when not tabbed into the window.**
 - **Unfocused FPS Amount** - Change the maximum FPS when you're not tabbed into the window, saving resources.
-- **Log Optimizer** - Delete all files in the logs folder, as these can usually take up a lot of space. (These files are not recoverable once deleted.)
+- **Log Optimizer** - Delete all files in the logs folder, as these can usually take up a lot of space. (These files are not recoverable once deleted)
 - **Log Optimizer Amount** - Choose how many days old a file must be before being deleted.
 - **Better Camera** - Stop tall grass, plants, reeds, etc. from affecting your FOV as done in 1.14+. *default
 - **Better F1** - Hide nametags when in F1 mode. *default
@@ -58,9 +58,11 @@
 - **Disable Achievements** - Remove achievement notification.
 - **Fire Overlay Height** - Change the height of the fire overlay.
 - **Remove Inverted Colors from Crosshair** - Remove the inverted color effect on the crosshair.
-- **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps.) *default
-- **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright.) *default
-- **Ridden Horse Opacity** - Change the opacity of the horse you're currently riding for visibility.
+- **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps) *default
+- **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright) *default
+- **Show Own Nametag** - See your own nametag in third person.
+- **Clean Projectiles** - Show projectiles 2 ticks after they're shot up to stop them from obstructing your view.
+ - **Ridden Horse Opacity** - Change the opacity of the horse you're currently riding for visibility.
 - **Numerical Enchantments** - Use readable numbers instead of Roman numerals on enchants. *default
 - **Clean View** - Stop rendering your own potion effect particles.
 - **Disable Breaking Particles** - Remove block breaking particles for visibility.
@@ -83,9 +85,9 @@
 - **Don't Cull Entity Nametags** - Render nametags even when the entity and nametag are occluded.
 - **Don't Cull Armorstand Nametags** - Render nametags even when the armour stand is occluded.
 - **Check Armorstand Rules** - Don't cull armorstands that have a marker set in their entity rules. This will result in a lot of unculled armorstands in places like Hypixel Skyblock, but will provide better entity visibility while losing out on some performance improvements.
-- **Entity Bakc-face Culling** - Stop rendering sides of entities that you cannot see. Being inside an entity will cause that body part to be invisible. (Some models may have a transparent face and will cause the back face to not show, such as Wither Skeletons.)
+- **Entity Bakc-face Culling** - Stop rendering sides of entities that you cannot see. Being inside an entity will cause that body part to be invisible. (Some models may have a transparent face and will cause the back face to not show, such as Wither Skeletons)
 - **Player Back-face Culling** - Stop rendering sides of players that you cannot see. Being inside a player will cause that body part to be invisible.
-- **Disable Armorstands** - Stop armorstands from rendering. (Armorstands are commonly used for NPC nametag rendering. Enabling this will stop those from rendering as well.)
+- **Disable Armorstands** - Stop armorstands from rendering. (Armorstands are commonly used for NPC nametag rendering. Enabling this will stop those from rendering as well)
 - **Disable Semitransparent Players** - Stop semitransparent players from rendering.
 - **Disable Enchantment Books** - Stop enchantment table books from rendering.
 - **Disable Item Frames** - Stop item frames from rendering.
@@ -121,15 +123,15 @@
   <summary>Screens</summary>
 
 # Screens
-- **1.11 Chat Length** - Extend the amount of characters you can type from 100 to 256 on supported servers. (Supported servers are servers that support 1.11 or above. Some servers may kick you for this despite supporting 1.11 or above.) *default
+- **1.11 Chat Length** - Extend the amount of characters you can type from 100 to 256 on supported servers. (Supported servers are servers that support 1.11 or above. Some servers may kick you for this despite supporting 1.11 or above) *default
 - **Transparent Chat** - Remove the background from chat. (Can positively impact performance).
 - **Transparent Chat input field** - Remove the background from chat's input field. (Can positively impact performance).
-- **Compact Chat** - Clean up chat by stacking duplicate messages (Does not work with Labymod.) *default
+- **Compact Chat** - Clean up chat by stacking duplicate messages (Does not work with Labymod) *default
 - **Consecutive Compact Chat** - Only compact messages if they're consecutive.
-- **Compact Chat time** - Change the amount of time old messages take to stop being compacted. (Measured in seconds.)
+- **Compact Chat time** - Change the amount of time old messages take to stop being compacted. (Measured in seconds)
 - **Remove Blank Messages** - Remove blank messages from chat.
 - **Shift Chat** - Holding shift while pressing enter will keep chat open.
-- **Chat Delay** - Delay chat messages if they're sent within the selected timeframe after the previous message. (Measured in seconds.)
+- **Chat Delay** - Delay chat messages if they're sent within the selected timeframe after the previous message. (Measured in seconds)
 - **Chat Position** - Move the chat up 12 pixels to stop it from overlapping the health bar, as done in 1.12+. *default
 - **Chat Timestamps** - Add timestamps before a message.
 - **Chat Timestamps Style** - Choose how Chat Timestamps should appear.
@@ -145,11 +147,11 @@
 - **GUI Crosshair** - Stop rendering the crosshair when in a GUI.
 - **Startup Notification** - Notify how long the game took to start. *default
 - **Clean Main Menu** - Remove the Realms button on the main menu as it's useless on 1.8.9. *default
-- **Skin Refresher** - Add a button to the escape menu to refresh your current skin without needing to leave the server. (Also accessible with the command “/refreshskin”.)
+- **Skin Refresher** - Add a button to the escape menu to refresh your current skin without needing to leave the server. (Also accessible with the command “/refreshskin”)
 - **Replace Open to Lan** - Remove the Open to Lan button when in multiplayer server with a button to quickly open your server list. (Will be reworked in the future to not kick you from the server).
 - **Replaced Mods Warning** - Display on startup what mods you may have that are replaced by Patcher. *default
 - **Smart Disconnect -** Choose between disconnecting or relogging when clicking the disconnect button. (Only works on multiplayer servers)
-- **Image Preview** - Preview image links when hovering over a supported URL. Press shift to use fullscreen and Control to render in native image resolution. (Currently supported: Imgur, Discord, Badlion screenshots.)
+- **Image Preview** - Preview image links when hovering over a supported URL. Press shift to use fullscreen and Control to render in native image resolution. (Currently supported: Imgur, Discord, Badlion screenshots)
 - **Image Preview Width** - The % of screen width to be used for image preview.
 - **Inventory Position** - Stop potion effects from shifting your inventory to the right. *default
 - **Click Out of Containers** - Click outside of a container to close the menu.
