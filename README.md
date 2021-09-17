@@ -85,7 +85,7 @@
 - **Don't Cull Entity Nametags** - Render nametags even when the entity and nametag are occluded.
 - **Don't Cull Armorstand Nametags** - Render nametags even when the armour stand is occluded.
 - **Check Armorstand Rules** - Don't cull armorstands that have a marker set in their entity rules. This will result in a lot of unculled armorstands in places like Hypixel Skyblock, but will provide better entity visibility while losing out on some performance improvements.
-- **Entity Bakc-face Culling** - Stop rendering sides of entities that you cannot see. Being inside an entity will cause that body part to be invisible. (Some models may have a transparent face and will cause the back face to not show, such as Wither Skeletons)
+- **Entity Back-face Culling** - Stop rendering sides of entities that you cannot see. Being inside an entity will cause that body part to be invisible. (Some models may have a transparent face and will cause the back face to not show, such as Wither Skeletons)
 - **Player Back-face Culling** - Stop rendering sides of players that you cannot see. Being inside a player will cause that body part to be invisible.
 - **Disable Armorstands** - Stop armorstands from rendering. (Armorstands are commonly used for NPC nametag rendering. Enabling this will stop those from rendering as well)
 - **Disable Semitransparent Players** - Stop semitransparent players from rendering.
