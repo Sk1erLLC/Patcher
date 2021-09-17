@@ -71,7 +71,6 @@ import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
 import club.sk1er.patcher.asm.world.ScoreboardTransformer;
 import club.sk1er.patcher.asm.world.StatBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityItemTransformer;
-import club.sk1er.patcher.asm.world.entity.EntityLivingBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
 import club.sk1er.patcher.asm.world.entity.data.NodeProcessorTransformer;
@@ -158,7 +157,6 @@ public class ClassTransformer implements IClassTransformer {
 
         registerTransformer(new EntityItemTransformer());
         registerTransformer(new MinecraftTransformer());
-        registerTransformer(new EntityLivingBaseTransformer());
         registerTransformer(new RenderPlayerTransformer());
         registerTransformer(new ChunkTransformer());
         registerTransformer(new GuiUtilsTransformer());
