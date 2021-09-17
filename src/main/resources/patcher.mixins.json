@@ -44,6 +44,7 @@
     "MinecraftMixin_FpsLimit",
     "MinecraftMixin_SeparateResources",
     "MinecraftMixin_ToggleGLErrorChecking",
+    "NodeProcessorMixin_MemoryLeak",
     "RenderEntityItemMixin_EntityCulling",
     "RenderEntityItemMixin_StaticItems",
     "RenderEntityItemMixin_UnstackedItems",

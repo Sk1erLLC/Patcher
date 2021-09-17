@@ -73,7 +73,6 @@ import club.sk1er.patcher.asm.world.StatBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityItemTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
-import club.sk1er.patcher.asm.world.entity.data.NodeProcessorTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagStringTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
@@ -184,7 +183,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S14PacketEntityTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
-        registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new EntityTransformer());
         registerTransformer(new GameRulesValueTransformer());
