@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "AbstractResourcePackMixin_DownscaleImages",
+    "ArmorStandRendererMixin_HideNametag",
     "BlockFluidRendererMixin_FixStitching",
     "BlockModelRendererMixin_SmoothLighting",
     "BlockRedstoneTorchMixin_MemoryLeak",

@@ -220,7 +220,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S3FPacketCustomPayloadTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new BlockBrewingStandTransformer());
-        registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new EntityWitherTransformer());
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new RenderTNTPrimedTransformer());
