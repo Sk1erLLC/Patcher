@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.crashes;
 
 import club.sk1er.patcher.Patcher;
 import net.minecraft.client.gui.ServerListEntryNormal;

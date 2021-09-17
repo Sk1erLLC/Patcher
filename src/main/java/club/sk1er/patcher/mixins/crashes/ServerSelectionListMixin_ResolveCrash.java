@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.crashes;
 
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.ServerListEntryNormal;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(ServerSelectionList.class)
-public class ServerSelectionListMixin_ResolveIndex {
+public class ServerSelectionListMixin_ResolveCrash {
 
     @Shadow @Final private List<ServerListEntryNormal> serverListInternet;
     @Shadow @Final private GuiListExtended.IGuiListEntry lanScanEntry;

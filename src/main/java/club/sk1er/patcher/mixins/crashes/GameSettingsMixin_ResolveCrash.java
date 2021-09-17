@@ -1,4 +1,4 @@
-package club.sk1er.patcher.mixins;
+package club.sk1er.patcher.mixins.crashes;
 
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
