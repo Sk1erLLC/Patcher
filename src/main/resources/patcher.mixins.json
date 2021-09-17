@@ -40,6 +40,8 @@
     "MinecraftMixin_SeparateResources",
     "MinecraftMixin_ToggleGLErrorChecking",
     "RendererLivingEntityMixin_NametagRendering",
+    "ResourcePackRepositoryMixin_FasterSearching",
+    "ResourcePackRepositoryMixin_ResolveCrash",
     "ServerListEntryNormalMixin_ResolveCrash",
     "ServerSelectionListMixin_ResolveIndex",
     "WorldClientMixin_AnimationTick",
