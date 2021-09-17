@@ -189,6 +189,11 @@ public final class FontRendererHook {
         final Deque<RenderPair> underline = new LinkedList<>();
         final Deque<RenderPair> strikethrough = new LinkedList<>();
 
+        value.setLastRed(red);
+        value.setLastGreen(green);
+        value.setLastBlue(blue);
+        value.setLastAlpha(alpha);
+
         for (int messageChar = 0; messageChar < text.length(); ++messageChar) {
             char letter = text.charAt(messageChar);
 
@@ -306,7 +311,8 @@ public final class FontRendererHook {
                     adjustOrAppend(underline, this.fontRenderer.posX, effectiveWidth, value.getLastRed(), value.getLastGreen(), value.getLastBlue(), value.getLastAlpha());
                 }
 
-                this.fontRenderer.posX += effectiveWidth;
+                // Intentional cast to int to round down, see FontRenderer#doDraw
+                this.fontRenderer.posX += (int) effectiveWidth;
             }
         }
 
