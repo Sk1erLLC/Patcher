@@ -51,6 +51,7 @@
     "crashes.ResourcePackRepositoryMixin_ResolveCrash",
     "crashes.ServerListEntryNormalMixin_ResolveCrash",
     "crashes.ServerSelectionListMixin_ResolveCrash",
+    "crashes.WorldRendererMixin_ResolveCrash",
     "disableenchantglint.LayerArmorBaseMixin_DisableEnchantGlint",
     "disableenchantglint.RenderItemMixin_DisableEnchantGlint",
     "forge.ClientCommandHandlerMixin_CaseCommands",

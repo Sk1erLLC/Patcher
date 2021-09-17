@@ -59,7 +59,6 @@ import club.sk1er.patcher.asm.render.screen.*;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
-import club.sk1er.patcher.asm.render.world.WorldRendererTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityBannerRendererTransformer;
@@ -181,7 +180,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new NBTTagStringTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());
-        registerTransformer(new WorldRendererTransformer());
         registerTransformer(new GameSettingsTransformer());
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
