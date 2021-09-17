@@ -45,6 +45,8 @@
     "TileEntityEnchantmentTableRendererMixin_CancelRender",
     "TileEntityEndPortalRendererMixins_CancelRender",
     "TileEntityRendererDispatcherMixin_EnableLighting",
+    "TileEntitySkullRendererMixin_CancelRender",
+    "TileEntitySkullRendererMixin_EnableBlending",
     "WorldClientMixin_AnimationTick",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",

@@ -61,7 +61,6 @@ import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
-import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
 import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
@@ -178,7 +177,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GameSettingsTransformer());
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
-        registerTransformer(new TileEntitySkullRendererTransformer());
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
