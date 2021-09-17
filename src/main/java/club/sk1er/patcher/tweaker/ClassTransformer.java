@@ -61,7 +61,6 @@ import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
-import club.sk1er.patcher.asm.render.world.tileentity.TileEntityBannerRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEnchantmentTableRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEndPortalRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityPistonRendererTransformer;
@@ -233,7 +232,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new ArmorStandRendererTransformer());
         registerTransformer(new EntityWitherTransformer());
-        registerTransformer(new TileEntityBannerRendererTransformer());
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new RenderTNTPrimedTransformer());
         registerTransformer(new S34PacketMapsTransformer());

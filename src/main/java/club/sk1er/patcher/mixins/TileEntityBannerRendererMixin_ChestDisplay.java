@@ -1,4 +1,4 @@
-package club.sk1er.patcher.hooks;
+package club.sk1er.patcher.mixins;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
@@ -7,30 +7,38 @@ import net.minecraft.client.renderer.tileentity.TileEntityBannerRenderer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unused")
-public class TileEntityBannerRendererHook {
+@Mixin(TileEntityBannerRenderer.class)
+public class TileEntityBannerRendererMixin_ChestDisplay {
 
-    public static ResourceLocation getPatternResourceLocation(TileEntityBanner banner) {
-        final String texture = banner.getPatternResourceLocation();
+    /**
+     * @author asbyth
+     * @reason Resolve banners in chests not displaying once cache is full
+     */
+    @Overwrite
+    private ResourceLocation func_178463_a(TileEntityBanner banner) {
+        String texture = banner.getPatternResourceLocation();
 
         if (texture.isEmpty()) {
             return null;
         } else {
-            final Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
+            Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
             TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(texture);
             if (timedTexture == null) {
-                if (designs.size() >= 256 && !freeCacheSlot()) {
+                if (designs.size() >= 256 && !this.patcher$freeCacheSlot()) {
                     return TileEntityBannerRenderer.BANNERTEXTURES;
                 }
 
-                final List<TileEntityBanner.EnumBannerPattern> patternList = banner.getPatternList();
-                final List<EnumDyeColor> colorList = banner.getColorList();
-                final List<String> patternPath = Lists.newArrayList();
+                List<TileEntityBanner.EnumBannerPattern> patternList = banner.getPatternList();
+                List<EnumDyeColor> colorList = banner.getColorList();
+                List<String> patternPath = Lists.newArrayList();
 
                 for (TileEntityBanner.EnumBannerPattern pattern : patternList) {
                     patternPath.add("textures/entity/banner/" + pattern.getPatternName() + ".png");
@@ -47,14 +55,15 @@ public class TileEntityBannerRendererHook {
         }
     }
 
-    private static boolean freeCacheSlot() {
-        final long start = System.currentTimeMillis();
-        final Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
-        final Iterator<String> iterator = designs.keySet().iterator();
+    @Unique
+    private boolean patcher$freeCacheSlot() {
+        long start = System.currentTimeMillis();
+        Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
+        Iterator<String> iterator = designs.keySet().iterator();
 
         while (iterator.hasNext()) {
-            final String next = iterator.next();
-            final TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(next);
+            String next = iterator.next();
+            TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(next);
 
             if ((start - timedTexture.systemTime) > 5000L) {
                 Minecraft.getMinecraft().getTextureManager().deleteTexture(timedTexture.bannerTexture);

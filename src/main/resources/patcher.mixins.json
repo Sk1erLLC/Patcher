@@ -40,6 +40,8 @@
     "RendererLivingEntityMixin_NametagRendering",
     "ResourcePackRepositoryMixin_FasterSearching",
     "ScreenShotHelperMixin_ScreenshotManager",
+    "TileEntityBannerRendererMixin_BannerAnimation",
+    "TileEntityBannerRendererMixin_ChestDisplay",
     "WorldClientMixin_AnimationTick",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
