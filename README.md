@@ -62,7 +62,7 @@
 - **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright) *default
 - **Show Own Nametag** - See your own nametag in third person.
 - **Clean Projectiles** - Show projectiles 2 ticks after they're shot up to stop them from obstructing your view.
- - **Ridden Horse Opacity** - Change the opacity of the horse you're currently riding for visibility.
+- **Ridden Horse Opacity** - Change the opacity of the horse you're currently riding for visibility.
 - **Numerical Enchantments** - Use readable numbers instead of Roman numerals on enchants. *default
 - **Clean View** - Stop rendering your own potion effect particles.
 - **Disable Breaking Particles** - Remove block breaking particles for visibility.
