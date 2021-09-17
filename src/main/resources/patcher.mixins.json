@@ -42,6 +42,7 @@
     "ScreenShotHelperMixin_ScreenshotManager",
     "TileEntityBannerRendererMixin_BannerAnimation",
     "TileEntityBannerRendererMixin_ChestDisplay",
+    "TileEntityEnchantmentTableRendererMixin_CancelRender",
     "WorldClientMixin_AnimationTick",
     "WorldMixin_Optimization",
     "WorldMixin_SkyColor",
