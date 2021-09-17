@@ -16,6 +16,7 @@
     "EntityMixin_FixedBrightness",
     "EntityMixin_SprintParticles",
     "EntityPlayerSPMixin_NauseaEffect",
+    "GameSettingsMixin_ResolveCrash",
     "GuiAchievementMixin_CancelRender",
     "GuiGameOverMixin_ResolveButtonClick",
     "GuiLanguageMixin_ResetUnicodeFont",
