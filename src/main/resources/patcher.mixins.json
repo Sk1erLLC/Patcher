@@ -85,5 +85,8 @@
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "render.item.ItemModelMesherMixin_ResolveCrash",
     "render.item.ItemRendererMixin_FireRendering"
+  ],
+  "mixins": [
+    "EntityXPOrbMixin_AdjustHeight"
   ]
 }

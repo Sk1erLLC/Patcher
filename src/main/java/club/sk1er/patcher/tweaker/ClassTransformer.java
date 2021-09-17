@@ -196,7 +196,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new EntityOtherPlayerMPTransformer());
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
-        registerTransformer(new EntityXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
         registerTransformer(new LongHashMapTransformer());
