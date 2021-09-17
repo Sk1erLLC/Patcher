@@ -103,7 +103,7 @@ public class Patcher {
     // betas will be "1.x.x+beta-y" / "1.x.x+branch_beta-y"
     // rcs will be 1.x.x+rc-y
     // extra branches will be 1.x.x+branch-y
-    public static final String VERSION = "1.6.1";
+    public static final String VERSION = "1.7-beta+1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "logs" + File.separator);
@@ -209,7 +209,7 @@ public class Patcher {
      * chat messages, and was manually blacklisted by the player.
      * <p>
      * If the server is not local nor blacklisted, check the servers protocol and see if it supports 315, aka 1.11.
-     * If it does, then set the message length max to 256, otherwise return back to 100.
+     * If it does, then set the message length max to 256, otherwise return to 100.
      *
      * @param event {@link FMLNetworkEvent.ClientConnectedToServerEvent}
      */
@@ -230,6 +230,10 @@ public class Patcher {
             serverIP,
             315 // 1.11
         );
+
+        if (compatibilityStatus == null) {
+            return;
+        }
 
         try {
             GuiChatTransformer.maxChatLength = compatibilityStatus.get() ? 256 : 100;

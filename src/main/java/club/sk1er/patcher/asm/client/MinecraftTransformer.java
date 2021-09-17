@@ -45,30 +45,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), createMetricsData());
                     break;
 
-                case "startGame":
-                case "func_71384_a":
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), toggleGLErrorChecking());
-                    break;
-
-                case "func_147107_h":
-                case "isFramerateLimitBelowMax":
-                    methodNode.instructions.insert(useCustomFrameLimit());
-                    break;
-
-                case "toggleFullscreen":
-                case "func_71352_k": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode node = iterator.next();
-                        if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("setFullscreen")) {
-                            methodNode.instructions.insertBefore(node.getPrevious().getPrevious(), resetScreenState());
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-
                 case "loadWorld":
                 case "func_71353_a":
                     if (methodDesc.equals("(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")) {
@@ -179,23 +155,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "dispatchKeypresses":
-                case "func_152348_aa": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESTATIC && next.getNext().getOpcode() == Opcodes.GOTO) {
-                            if (((MethodInsnNode) next).name.equals("getEventCharacter")) {
-                                methodNode.instructions.insert(next, keybindFixer());
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-
                 case "runGameLoop":
                 case "func_71411_J": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -225,28 +184,6 @@ public class MinecraftTransformer implements PatcherTransformer {
 
                     break;
                 }
-
-                case "func_71371_a":
-                case "launchIntegratedServer": {
-                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    while (iterator.hasNext()) {
-                        AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL && next.getPrevious().getOpcode() == Opcodes.CHECKCAST) {
-                            String methodInsnName = mapMethodNameFromNode(next);
-
-                            if (methodInsnName.equals("displayGuiScreen") || methodInsnName.equals("func_147108_a")) {
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.remove(next.getPrevious());
-                                methodNode.instructions.insertBefore(next, displayWorkingScreen());
-                                break;
-                            }
-                        }
-                    }
-
-                    break;
-                }
             }
         }
     }
@@ -263,17 +200,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/EntityRenderer", "func_147701_i", "()Lnet/minecraft/client/gui/MapItemRenderer;", false));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/MapItemRenderer", "func_148249_a", "()V", false));
         list.add(ifacmpeq);
-        return list;
-    }
-
-    private InsnList useCustomFrameLimit() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("customFpsLimit", "I"));
-        LabelNode ifle = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFLE, ifle));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new InsnNode(Opcodes.IRETURN));
-        list.add(ifle);
         return list;
     }
 
@@ -305,32 +231,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList displayWorkingScreen() {
-        InsnList list = new InsnList();
-        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/client/gui/GuiScreenWorking"));
-        list.add(new InsnNode(Opcodes.DUP));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/client/gui/GuiScreenWorking", "<init>", "()V", false));
-        return list;
-    }
-
-    private InsnList keybindFixer() {
-        InsnList list = new InsnList();
-        list.add(new IntInsnNode(Opcodes.SIPUSH, 256));
-        list.add(new InsnNode(Opcodes.IADD));
-        return list;
-    }
-
-    private InsnList toggleGLErrorChecking() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD,
-            "net/minecraft/client/Minecraft",
-            "field_175619_R", // enableGLErrorChecking
-            "Z"));
-        return list;
-    }
-
     private InsnList setSystemTime() {
         InsnList list = new InsnList();
         list.add(getPatcherSetting("optimizedWorldSwapping", "Z"));
@@ -342,24 +242,6 @@ public class MinecraftTransformer implements PatcherTransformer {
             "field_71423_H", // systemTime
             "J"));
         list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
-    }
-
-    private InsnList resetScreenState() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71431_Q", "Z"));
-        LabelNode ifne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "org/apache/commons/lang3/SystemUtils", "IS_OS_WINDOWS", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(ifne);
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
         list.add(ifeq);
         return list;
     }
