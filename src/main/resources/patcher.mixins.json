@@ -4,6 +4,7 @@
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "AbstractResourcePackMixin_DownscaleImages",
     "BlockFluidRendererMixin_FixStitching",
     "BlockModelRendererMixin_SmoothLighting",
     "BlockRedstoneTorchMixin_MemoryLeak",

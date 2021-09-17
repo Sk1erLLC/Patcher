@@ -68,7 +68,6 @@ import club.sk1er.patcher.asm.render.world.tileentity.TileEntityEndPortalRendere
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityPistonRendererTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
-import club.sk1er.patcher.asm.resources.AbstractResourcePackTransformer;
 import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
 import club.sk1er.patcher.asm.resources.ResourcePackRepositoryTransformer;
 import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
@@ -178,7 +177,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new RenderEntityItemTransformer());
-        registerTransformer(new AbstractResourcePackTransformer());
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new BlockCropsTransformer());
         registerTransformer(new BlockNetherWartTransformer());
