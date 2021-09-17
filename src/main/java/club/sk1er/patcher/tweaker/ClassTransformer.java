@@ -69,7 +69,6 @@ import club.sk1er.patcher.asm.render.world.tileentity.TileEntityPistonRendererTr
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntityRendererDispatcherTransformer;
 import club.sk1er.patcher.asm.render.world.tileentity.TileEntitySkullRendererTransformer;
 import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
-import club.sk1er.patcher.asm.resources.ScreenShotHelperTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
 import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.asm.world.BlockPosTransformer;
@@ -203,7 +202,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S19PacketEntityStatusTransformer());
         registerTransformer(new NodeProcessorTransformer());
         registerTransformer(new RenderGlobalTransformer());
-        registerTransformer(new ScreenShotHelperTransformer());
         registerTransformer(new TileEntityEnchantmentTableRendererTransformer());
         registerTransformer(new EntityTransformer());
         registerTransformer(new GameRulesValueTransformer());
