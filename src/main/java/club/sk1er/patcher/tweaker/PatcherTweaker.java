@@ -1,6 +1,5 @@
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.Patcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.MalformedJsonException;
@@ -34,11 +33,6 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
     @SuppressWarnings("unchecked")
     public PatcherTweaker() {
-        // I need this for mixins to work in dev. why? who knows!
-        // breaks shit in prod though, keep it uncommented when pushing
-//        MixinBootstrap.init();
-//        Mixins.addConfiguration("patcher.mixins.json");
-
         clientLoadTime = System.currentTimeMillis();
         try {
             // Create a second internal tweaker, creating after OptiFine does its thing.

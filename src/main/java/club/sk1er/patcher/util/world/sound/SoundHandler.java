@@ -49,7 +49,8 @@ public class SoundHandler implements IResourceManagerReloadListener {
                 ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
                     WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
                     "Sounds", getName(location), "Sound Multiplier for " + getName(location),
-                    100, 0, 200, __ -> {}
+                    100, 0, 200, __ -> {
+                    }
                 )
             );
         }
