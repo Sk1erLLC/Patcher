@@ -51,7 +51,7 @@
 - **Smooth Zoom Animation** - Add a smooth animation when you zoom in and out. - **Suggested by Pug#5853**
 - **Smooth Scroll-to-Zoom Animation** - Add a smooth animation when you scroll in and out while zoomed.
 - **Smooth Zoom Function** - Change the smoothing function used in the smooth zooming animation.
-- **Toggle to Zoom** - Make OptiFine's zoom key a toggle instead of requiring you to hold it. - **Suggested by [Microcontrollers#6733](https://canary.discord.com/channels/411619823445999637/411620521382510592/727392685563838475) / [Twens#9340](https://canary.discord.com/channels/411619823445999637/411620521382510592/768100485210177556) / [me](https://inv.wtf/firedotexe)**
+- **Toggle to Zoom** - Make OptiFine's zoom key a toggle instead of requiring you to hold it. - **Suggested by [Microcontrollers#6733](https://github.com/MicrocontrollersDev/) / Twens#9340 / [Lizzy](https://github.com/LizzyMaybeDev/)**
 - **Simplify FPS Counter** - Remove the additions OptiFine L5 and above makes to the debug screen fps counter. *default
 - **Use Vanilla Metrics Renderer** - Replace Optifine's ALT+F3 metrics renderer with the Vanilla renderer. *default
 - **Nausea Effect** - Remove the nether portal effect appearing when clearing nausea.
@@ -60,15 +60,15 @@
 - **Remove Water Overlay** - Remove the water texture overlay when underwater.
 - **Remove Inverted Colors from Crosshair** - Remove the inverted color effect on the crosshair.
 - **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps.) *default
-- **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright.) *default - Suggested by [jacob#9999](https://canary.discord.com/channels/411619823445999637/411620521382510592/761567628388335626)
+- **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright.) *default - **Suggested by jacob#9999**
 - **Show Own Nametag** - See your own nametag in third person.
 - **Clean Projectiles** - Show projectiles 2 ticks after they're shot up to stop them from obstructing your view.
-- **Ridden Horse Opacity** - change the opacity of the horse you're currently riding for visibility. - **Suggest by [Microcontrollers](https://canary.discord.com/channels/411619823445999637/411620521382510592/803357278459265054)**
+- **Ridden Horse Opacity** - change the opacity of the horse you're currently riding for visibility. - **Suggest by [Microcontrollers#6733](https://github.com/MicrocontrollersDev/)**
 - **Numerical Enchantments** - Use readable numbers instead of Roman numerals on enchants. *default
 - **Clean View** - Stop rendering your own potion effect particles. (Integration by LianMI)
 - **Disable Breaking Particles** - Remove block breaking particles for visibility.
-- **Alternate Text Shadow** - Change the text shadow to only move down rather than moving to the side. - **Suggested by [Aktimoose#3001](https://canary.discord.com/channels/411619823445999637/411620521382510592/762279014303662090) with a [visual example](https://media.discordapp.net/attachments/411620521382510592/762279100915908629/unknown.png)**
-- **Add Text Shadow to Nametags** - Render nametag with shadowed text. - **Suggested by [Twens#9340](https://canary.discord.com/channels/411619823445999637/411620521382510592/705408054920871966) / [4Fluffin#2181](https://canary.discord.com/channels/411619823445999637/411620521382510592/712753614497644634) / [LRX#6974](https://canary.discord.com/channels/411619823445999637/411620521382510592/743866604088983563)**
+- **Alternate Text Shadow** - Change the text shadow to only move down rather than moving to the side. - **Suggested by Aktimoose#3001 with a [visual example](https://media.discordapp.net/attachments/411620521382510592/762279100915908629/unknown.png)**
+- **Add Text Shadow to Nametags** - Render nametag with shadowed text. - **Suggested by Twens#9340 / 4Fluffin#2181 / LRX#6974**
 - **Add Text Shadow to Actionbar** - Render actionbar messages with shadowed text.
 - **Disable Text shadow** - Remove shadows from text. (Can positively impact performance).
 - **Toggle Tab** - Hold tab open without needing to hold down the tab key.
@@ -83,7 +83,7 @@
 # Performance
 - **Entity Culling** - Stop entities that aren't visible to the player from rendering. *default
 - **Entity Culling Interval** - The amount of time in ms between occlusion checks for entities. Shorter periods are more costly toward performance but provide the most accurate information. Lower values recommended in competitive environments.
-- **Smart Entity Culling** - Stop entity culling effect when using OptiFine shaders. (Due to the way OptiFine shaders work, we are unable to make Entity Culling compatible at this time). *Default - **Suggested by [Twens#9340](https://canary.discord.com/channels/411619823445999637/411620521382510592/761634374361546763) / Already planned when [Microcontrollers#6733](https://canary.discord.com/channels/411619823445999637/411620521382510592/762373914167869440) Suggested it**
+- **Smart Entity Culling** - Stop entity culling effect when using OptiFine shaders. (Due to the way OptiFine shaders work, we are unable to make Entity Culling compatible at this time). *Default - **Suggested by Twens#9340**
 - **Don't Cull Player Nametags** - Render nametags even when the player and nametag are occluded.
 - **Don't Cull Entity Nametags** - Render nametags even when the entity and nametag are occluded.
 - **Don't Cull Armorstand Nametags** - Render nametags even when the armour stand is occluded.
@@ -94,7 +94,7 @@
 - **Disable Semitransparent Players** - Stop semitransparent players from rendering.
 - **Disable Enchantment Books** - Stop enchantment table books from rendering.
 - **Disable Item Frames** - Stop item frames from rendering.
-- **Disable Mapped Item frames** - Stop item frames only with maps as their item from rendering. - **Suggested by [Duel#0969](https://canary.discord.com/channels/411619823445999637/411620457754787841/765679834118357034) / [DJtheRedstoner#6408](https://canary.discord.com/channels/411619823445999637/411620521382510592/766016290938683415)**
+- **Disable Mapped Item frames** - Stop item frames only with maps as their item from rendering. - **Suggested by Duel#0969 / [DJtheRedstoner](https://github.com/djtheredstoner)#6408**
 - **Disable Grounded Arrows** - Stop arrows that are in the ground from rendering.
 - **Disable Attached Arrows** - Stop arrows that are attached to a player from Rendering. 
 - **Disable Skulls** - Stop skulls from rendering. 
@@ -110,15 +110,15 @@
 - **Static Particle Color** - Disable particle lighting checks each frame. *default
 - **Max Particle Limit** - Stop additional particles from appearing when there's too many at once.
 - **Downscale Pack Images** - Change all pack icons to 64x64 to reduce memory usage. *default
-- **Optimized Font Renderer** - Use modern rendering techniques to improve font renderer performance. *default ([Optimization Test](https://streamable.com/0oype9 "tony reindeer is FAST fr fr"))
-- **Cache Font Data** - Cache font data allowing for it to be reused multiple times before needing recalculation. *default ([Optimization Test](https://streamable.com/0oype9 "this da uhhh optimization test"))
+- **Optimized Font Renderer** - Use modern rendering techniques to improve font renderer performance. *default ([Optimization Test](https://streamable.com/0oype9))
+- **Cache Font Data** - Cache font data allowing for it to be reused multiple times before needing recalculation. *default ([Optimization Test](https://streamable.com/0oype9))
 - **Instant World Swapping** - Remove the dirt screen and waiting time when switching a world. *default
-- **Limit Chunk Updates** - Limit the amount of chunk updates that happen a second. - **Was planned, wasn't able to implement until [Moulberry](https://github.com/moulberry/) presented a way, first suggester is [jackson#0003](https://canary.discord.com/channels/411619823445999637/411620521382510592/461306071626285077) / [Darkr#4233](https://canary.discord.com/channels/411619823445999637/411620521382510592/776726232162893844) [and](https://canary.discord.com/channels/411619823445999637/411620457754787841/776865329086464040) [and](https://canary.discord.com/channels/411619823445999637/411620521382510592/783764217869369376) / Geek#8405 (?)**
+- **Limit Chunk Updates** - Limit the amount of chunk updates that happen a second. - **Was planned, wasn't able to implement until [Moulberry](https://github.com/moulberry/) presented a way, first suggester is [jackson](https://github.com/asbyth)#0003 / Geek#8405 (?)**
 - **Chunk Update Limit** - Specify the amount of updates that can happen a second.  
 - **Static Fog Color** - Simplify fog color creation with a static fog color. *default
 - **Low Animation Tick** - Lowers the amount of animations that happen a second from 1000 to 500. *default
 - **Batch Model Rendering** - Render models in a single draw call, reducing the amount of OpenGL instructions performed a second. *default
-- **Optimized Cloud Renderer** - Use modern rendering techniques to improve cloud renderer performance. *default - Alternative explanation: **[Upload cloud geometry to the GPU, resulting in much faster cloud rendering](https://twitter.com/asbythh/status/1249024695846023168).**
+- **Optimized Cloud Renderer** - Use modern rendering techniques to improve cloud renderer performance. *default - Alternative explanation: **[Upload cloud geometry to the GPU, resulting in much faster cloud rendering]**
 - **Remove Cloud Transparency** - Remove transparency from clouds.
   
 </details>
@@ -153,7 +153,7 @@
 - **Skin Refresher** - Add a button to the escape menu to refresh your current skin without needing to leave the server. (Also accessible with the command “/refreshskin”.)
 - **Replace Open to Lan** - Remove the Open to Lan button when in multiplayer server with a button to quickly open your server list. (Will be reworked in the future to not kick you from the server).
 - **Replaced Mods Warning** - Display on startup what mods you may have that are replaced by Patcher. *default
-- **Smart Disconnect -** Choose between disconnecting or relogging when clicking the disconnect button. (Only works on multiplayer servers.) - **Suggested by [Pug#5853](https://canary.discord.com/channels/411619823445999637/411620521382510592/705222390338158682)**
+- **Smart Disconnect -** Choose between disconnecting or relogging when clicking the disconnect button. (Only works on multiplayer servers.) - **Suggested by Pug#5853**
 - **Image Preview** - Preview image links when hovering over a supported URL. Press shift to use fullscreen and Control to render in native image resolution. (Currently supported: Imgur, Discord, Badlion screenshots.)
 - **Image Preview Width** - The % of screen width to be used for image preview.
 - **Inventory Position** - Stop potion effects from shifting your inventory to the right. *default
@@ -176,7 +176,7 @@
 - **Copy Screenshot** - Show a text component that allows you to copy a screenshot. *default
 - **Open Screenshots Folder** - Show a text component that allows you to open the screenshots folder. *default
 - **Screenshot Manager** - Change the way screenshotting works as a whole, creating a whole new process to screenshotting such as uploading to imgur, copying to clipboard, etc. *default
-- **Auto Copy Screenshot** - Automatically copy screenshots to the clipboard when taken - **Suggested by [mdash#0001](https://canary.discord.com/channels/411619823445999637/411620521382510592/772087167488622603) / DJtheRedstoner#6408 had a [similar suggestion](https://canary.discord.com/channels/411619823445999637/411620521382510592/770318489012928552) so dont get confused with both**
+- **Auto Copy Screenshot** - Automatically copy screenshots to the clipboard when taken - **Suggested by [mdash](https://github.com/mdashlw/)#0001**
 - **Screenshot Preview** - Preview the look of your screenshot when taken in the bottom right corner.
 - **Preview Time** - Adjust how long the preview should stay on screen before sliding out. time is measured in seconds.
 - **Preview Animation** - Select an animation style for the screenshot preview.
