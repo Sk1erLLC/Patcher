@@ -30,6 +30,8 @@
     "GuiScreenResourcePacksMixin_ChangeTextPosition",
     "GuiScreenResourcePacksMixin_ClearHandles",
     "GuiScreenServerListMixin_FakeServerListDirectConnect",
+    "LayerArrowMixin_CancelRender",
+    "LayerArrowMixin_FixedBrightness",
     "LoadingScreenRendererMixin_SkipProgress",
     "MinecraftMixin_CustomF3",
     "MinecraftMixin_DisplayScreen",

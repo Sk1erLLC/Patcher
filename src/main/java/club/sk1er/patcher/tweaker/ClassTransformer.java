@@ -185,7 +185,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());
         registerTransformer(new C01PacketChatMessageTransformer());
-        registerTransformer(new LayerArrowTransformer());
         registerTransformer(new S14PacketEntityTransformer());
         registerTransformer(new S19PacketEntityHeadLookTransformer());
         registerTransformer(new S19PacketEntityStatusTransformer());
