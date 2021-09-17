@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderEntityItem.class)
 public class RenderEntityItemMixin_StaticItems {
-    @Inject(method = "shouldBob", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "shouldBob", at = @At("HEAD"), cancellable = true, remap = false)
     private void patcher$checkOption(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(!PatcherConfig.staticItems);
     }
