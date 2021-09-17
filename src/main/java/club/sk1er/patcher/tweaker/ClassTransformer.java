@@ -167,7 +167,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ScoreboardTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
-        registerTransformer(new RenderEntityItemTransformer());
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new BlockCropsTransformer());
         registerTransformer(new BlockNetherWartTransformer());

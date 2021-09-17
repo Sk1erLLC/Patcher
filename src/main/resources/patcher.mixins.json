@@ -18,6 +18,7 @@
     "EntityMixin_FixedBrightness",
     "EntityMixin_SprintParticles",
     "EntityPlayerSPMixin_NauseaEffect",
+    "EntityXPOrbMixin_AdjustHeight",
     "GuiAchievementMixin_CancelRender",
     "GuiGameOverMixin_ResolveButtonClick",
     "GuiLanguageMixin_ResetUnicodeFont",
@@ -40,6 +41,9 @@
     "MinecraftMixin_FpsLimit",
     "MinecraftMixin_SeparateResources",
     "MinecraftMixin_ToggleGLErrorChecking",
+    "RenderEntityItemMixin_EntityCulling",
+    "RenderEntityItemMixin_StaticItems",
+    "RenderEntityItemMixin_UnstackedItems",
     "RendererLivingEntityMixin_NametagRendering",
     "ResourcePackRepositoryMixin_FasterSearching",
     "ScreenShotHelperMixin_ScreenshotManager",
@@ -87,8 +91,5 @@
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "render.item.ItemModelMesherMixin_ResolveCrash",
     "render.item.ItemRendererMixin_FireRendering"
-  ],
-  "mixins": [
-    "EntityXPOrbMixin_AdjustHeight"
   ]
 }
