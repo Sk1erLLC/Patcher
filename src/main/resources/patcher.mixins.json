@@ -17,6 +17,7 @@
     "EntityMixin_Capability",
     "EntityMixin_FixedBrightness",
     "EntityMixin_SprintParticles",
+    "EntityOtherPlayerMPMixin_UselessAnimations",
     "EntityPlayerSPMixin_NauseaEffect",
     "EntityXPOrbMixin_AdjustHeight",
     "GuiAchievementMixin_CancelRender",

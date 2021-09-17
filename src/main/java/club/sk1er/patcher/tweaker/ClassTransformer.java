@@ -72,7 +72,6 @@ import club.sk1er.patcher.asm.world.ScoreboardTransformer;
 import club.sk1er.patcher.asm.world.StatBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityItemTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityLivingBaseTransformer;
-import club.sk1er.patcher.asm.world.entity.EntityOtherPlayerMPTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
 import club.sk1er.patcher.asm.world.entity.data.NodeProcessorTransformer;
@@ -191,7 +190,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new EntityTransformer());
         registerTransformer(new GameRulesValueTransformer());
-        registerTransformer(new EntityOtherPlayerMPTransformer());
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
