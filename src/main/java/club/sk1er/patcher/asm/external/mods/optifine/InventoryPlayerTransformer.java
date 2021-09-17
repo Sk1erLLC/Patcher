@@ -1,14 +1,3 @@
-/*
- * Copyright © 2020 by Sk1er LLC
- *
- * All rights reserved.
- *
- * Sk1er LLC
- * 444 S Fulton Ave
- * Mount Vernon, NY
- * sk1er.club
- */
-
 package club.sk1er.patcher.asm.external.mods.optifine;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
@@ -21,7 +10,6 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 
-// By LlamaLad7
 public class InventoryPlayerTransformer implements PatcherTransformer {
 
     /**

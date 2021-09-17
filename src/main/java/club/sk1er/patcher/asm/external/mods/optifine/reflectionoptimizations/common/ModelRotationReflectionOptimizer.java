@@ -1,14 +1,3 @@
-/*
- * Copyright © 2020 by Sk1er LLC
- *
- * All rights reserved.
- *
- * Sk1er LLC
- * 444 S Fulton Ave
- * Mount Vernon, NY
- * sk1er.club
- */
-
 package club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
