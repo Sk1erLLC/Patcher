@@ -23,6 +23,7 @@
     "EntityPlayerSPMixin_NauseaEffect",
     "EntityXPOrbMixin_AdjustHeight",
     "GuiAchievementMixin_CancelRender",
+    "GuiContainerMixin_MouseBindFix",
     "GuiGameOverMixin_ResolveButtonClick",
     "GuiLanguageMixin_ResetUnicodeFont",
     "GuiMultiplayerMixin_FastServerJoin",

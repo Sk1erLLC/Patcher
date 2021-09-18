@@ -53,8 +53,6 @@ public class GuiContainerTransformer implements PatcherTransformer {
                             }
                         }
                     }
-
-                    method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkHotbarKeys());
                     break;
                 }
                 case "updateDragSplitting":
@@ -144,18 +142,6 @@ public class GuiContainerTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "field_146996_I", "I"));
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
         list.add(ificmpne);
-        return list;
-    }
-
-    private InsnList checkHotbarKeys() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
-        list.add(new VarInsnNode(Opcodes.BIPUSH, 100));
-        list.add(new InsnNode(Opcodes.ISUB));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/inventory/GuiContainer", "func_146983_a", "(I)Z", false));
-        list.add(new InsnNode(Opcodes.POP));
-        list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }
 }
