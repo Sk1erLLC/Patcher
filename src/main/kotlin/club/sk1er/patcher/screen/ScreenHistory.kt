@@ -12,7 +12,6 @@
 package club.sk1er.patcher.screen
 
 import club.sk1er.patcher.Patcher
-import club.sk1er.patcher.screen.PatcherGuiScale.Companion.scaleForScreenSize
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import com.google.gson.JsonParser
@@ -47,7 +46,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = scaleForScreenSize().ordinal) {
+) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
@@ -152,7 +151,7 @@ class ScreenHistory @JvmOverloads constructor(
             val uuid = uuid
             if (uuid == null) {
                 // set blank
-                player.player = FakePlayer(downloadPatcher)
+                player.player = FakePlayer(defaultProfile)
             } else {
                 // uuid is the only thing that matters here
                 player.player = FakePlayer(GameProfile(uuid, name))
@@ -230,7 +229,7 @@ class ScreenHistory @JvmOverloads constructor(
             EssentialAPI.getNotifications().push("Name History", "Failed to fetch UUID.")
             null
         }
-        var player: FakePlayer = FakePlayer(GameProfile(uuid ?: downloadPatcher.id, name))
+        var player: FakePlayer = FakePlayer(GameProfile(uuid ?: defaultProfile.id, name))
 
         override fun draw() {
             UGraphics.pushMatrix()
@@ -518,7 +517,7 @@ class ScreenHistory @JvmOverloads constructor(
     }
 
     companion object {
-        private val downloadPatcher: GameProfile =
+        private val defaultProfile: GameProfile =
             GameProfile(UUID.fromString("8667ba71-b85a-4004-af54-457a9734eed7"), "Steve")
         private val initialSkin: SelectableSkin = SelectableSkin(
             DefaultPlayerSkin.getDefaultSkinLegacy(),
@@ -526,31 +525,5 @@ class ScreenHistory @JvmOverloads constructor(
             Model.STEVE
         )
         private var lastSkinChange: Long = 0L
-    }
-}
-
-// essential needs to be deployed, i need to deploy a patcher beta, we're going with this lol
-enum class PatcherGuiScale {
-    Auto,
-    Small,
-    Medium,
-    Large,
-    VeryLarge;
-
-    companion object {
-        private val guiScaleOverride = System.getProperty("essential.guiScaleOverride", "-1").toInt()
-
-        @JvmStatic
-        fun fromNumber(number: Int): PatcherGuiScale = values()[number]
-
-        @JvmOverloads
-        @JvmStatic
-        fun scaleForScreenSize(step: Int = 650): PatcherGuiScale {
-            if (guiScaleOverride != -1) return fromNumber(guiScaleOverride.coerceIn(0, 4))
-
-            val width = UResolution.windowWidth
-            val height = UResolution.windowHeight
-            return fromNumber(kotlin.math.min((width / step).coerceIn(1, 4), (height / (step / 16 * 9)).coerceIn(1, 4)))
-        }
     }
 }

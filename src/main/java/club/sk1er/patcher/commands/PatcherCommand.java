@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class PatcherCommand extends Command {
 
     private final Map<String, AbstractBenchmark> benchmarkMap = new HashMap<>();
@@ -70,30 +71,34 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
-    public void names(@Nullable @DisplayName("name") String name) {
-        final boolean invalidName = name == null || name.isEmpty();
+    public void names(@DisplayName("name") Optional<String> name) {
+        boolean emptyName = !name.isPresent();
 
         if (PatcherConfig.nameHistoryStyle == 0) {
-            GuiUtil.open(name != null ? new ScreenHistory(name, false) : new ScreenHistory());
+            GuiUtil.open(name
+                .map(username -> new ScreenHistory(username, false))
+                .orElseGet(() -> new ScreenHistory(mc.getSession().getUsername(), false))
+            );
         } else if (PatcherConfig.nameHistoryStyle == 1) {
-            if (invalidName) {
+            if (emptyName) {
                 ChatUtilities.sendNotification("Name History", "Username cannot be null.");
                 return;
             }
 
-            final NameFetcher nameFetcher = new NameFetcher();
+            NameFetcher nameFetcher = new NameFetcher();
             ChatUtilities.sendNotification("Name History", "Fetching usernames...");
-            nameFetcher.execute(name);
+            nameFetcher.execute(name.get());
 
             Multithreading.schedule(() -> {
                 ChatComponentText message = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------" + ChatColor.RESET + '\n');
                 for (String usernames : nameFetcher.getNames()) {
                     message.appendText(ChatColor.GRAY + usernames + '\n');
                 }
+
                 message.appendText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------");
 
-                final ChatComponentText deleteMessage = new ChatComponentText('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
-                final ChatStyle style = deleteMessage.getChatStyle();
+                ChatComponentText deleteMessage = new ChatComponentText('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
+                ChatStyle style = deleteMessage.getChatStyle();
                 style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY + "This will only delete the most recent name history message.")));
                 style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$deletenamehistory"));
                 message.appendSibling(deleteMessage);
@@ -103,12 +108,12 @@ public class PatcherCommand extends Command {
                 nameFetcher.getNames().clear();
             }, 2, TimeUnit.SECONDS);
         } else if (PatcherConfig.nameHistoryStyle == 2) {
-            if (invalidName) {
+            if (emptyName) {
                 ChatUtilities.sendNotification("Name History", "Username cannot be null.");
                 return;
             }
 
-            HistoryPopUp.INSTANCE.addPopUp(name);
+            HistoryPopUp.INSTANCE.addPopUp(name.get());
         }
     }
 
@@ -243,7 +248,6 @@ public class PatcherCommand extends Command {
         Patcher.instance.forceSaveConfig();
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat. Anything after 'sendcoords' will be put at the end of the message.")
     public void sendCoords(@DisplayName("additional information") Optional<String> message) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
