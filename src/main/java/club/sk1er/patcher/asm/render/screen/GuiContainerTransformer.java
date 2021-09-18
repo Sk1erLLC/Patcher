@@ -54,6 +54,7 @@ public class GuiContainerTransformer implements PatcherTransformer {
                         }
                     }
 
+                    method.instructions.insert(method.instructions.getFirst().getNext().getNext().getNext(), checkCloseWindow());
                     method.instructions.insertBefore(method.instructions.getLast().getPrevious(), checkHotbarKeys());
                     break;
                 }
@@ -156,6 +157,26 @@ public class GuiContainerTransformer implements PatcherTransformer {
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/inventory/GuiContainer", "func_146983_a", "(I)Z", false));
         list.add(new InsnNode(Opcodes.POP));
         list.add(new InsnNode(Opcodes.RETURN));
+        return list;
+    }
+
+    private InsnList checkCloseWindow() {
+        InsnList list = new InsnList();
+        LabelNode labelNode = new LabelNode();
+        list.add(new VarInsnNode(Opcodes.ILOAD, 3));
+        list.add(new VarInsnNode(Opcodes.BIPUSH, 100));
+        list.add(new InsnNode(Opcodes.ISUB));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71474_y", "Lnet/minecraft/client/settings/GameSettings;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/settings/GameSettings", "field_151445_Q", "Lnet/minecraft/client/settings/KeyBinding;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "func_151463_i", "()I", false));
+        list.add(new JumpInsnNode(Opcodes.IF_ICMPNE, labelNode));
+        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/inventory/GuiContainer", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71439_g", "Lnet/minecraft/client/entity/EntityPlayerSP;"));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", "func_71053_j", "()V", false));
+        list.add(labelNode);
         return list;
     }
 }
