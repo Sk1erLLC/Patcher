@@ -752,6 +752,18 @@ public class PatcherConfig extends Vigilant {
     public static boolean clickOutOfContainers;
 
     @Property(
+        type = PropertyType.SELECTOR, name = "Inventory Scale",
+        description = "Change the scale of your inventory independent of your GUI scale.",
+        category = "Screens", subcategory = "Inventory",
+        options = {"Off", "1 (Small)", "2 (Normal)", "3 (Large)", "4", "5 (Auto)"}
+    )
+    public static int inventoryScale = 0;
+
+    public static int getInventoryScale() {
+        return inventoryScale == 0 ? -1 : inventoryScale;
+    }
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Container Background",
         description = "Remove the dark background inside of a container.",
         category = "Screens", subcategory = "General"
@@ -1113,12 +1125,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean hudCaching;
 
     // HIDDEN
-
-    @Property(
-        type = PropertyType.SLIDER, name = "Desired Scale Override",
-        category = "hidden", hidden = true
-    )
-    public static int desiredScaleOverride = -1;
 
     @Property(
         type = PropertyType.NUMBER, name = "Custom FPS Limit",

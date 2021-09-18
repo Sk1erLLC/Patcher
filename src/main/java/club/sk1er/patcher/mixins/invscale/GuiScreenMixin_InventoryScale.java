@@ -19,7 +19,7 @@ public class GuiScreenMixin_InventoryScale {
     @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 0)
     private int patcher$modifyScreenWidth(int width) {
         if (Minecraft.getMinecraft().thePlayer != null && ((Object) this) instanceof GuiContainer) {
-            int desiredScale = PatcherConfig.desiredScaleOverride;
+            int desiredScale = PatcherConfig.getInventoryScale();
             ResolutionHelper.setCurrentScaleOverride(desiredScale);
             ResolutionHelper.setScaleOverride(desiredScale);
             ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
@@ -33,7 +33,7 @@ public class GuiScreenMixin_InventoryScale {
     @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 1)
     private int patcher$modifyScreenHeight(int height) {
         if (Minecraft.getMinecraft().thePlayer != null && ((Object) this) instanceof GuiContainer) {
-            int desiredScale = PatcherConfig.desiredScaleOverride;
+            int desiredScale = PatcherConfig.getInventoryScale();
             ResolutionHelper.setCurrentScaleOverride(desiredScale);
             ResolutionHelper.setScaleOverride(desiredScale);
             ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
