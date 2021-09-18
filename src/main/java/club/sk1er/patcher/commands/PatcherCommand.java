@@ -205,7 +205,7 @@ public class PatcherCommand extends Command {
 
         if (argument.equalsIgnoreCase("off") || argument.equalsIgnoreCase("none")) {
             ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
-            PatcherConfig.desiredScaleOverride = -1;
+            PatcherConfig.inventoryScale = 0;
             Patcher.instance.forceSaveConfig();
             return;
         }
@@ -230,7 +230,7 @@ public class PatcherCommand extends Command {
 
         if (scaling < 1) {
             ChatUtilities.sendNotification("Inventory Scale", "Disabled inventory scaling.");
-            PatcherConfig.desiredScaleOverride = -1;
+            PatcherConfig.inventoryScale = 0;
             Patcher.instance.forceSaveConfig();
             return;
         } else if (scaling > 5) {
@@ -239,7 +239,7 @@ public class PatcherCommand extends Command {
         }
 
         ChatUtilities.sendNotification("Inventory Scale", "Set inventory scaling to " + scaling);
-        PatcherConfig.desiredScaleOverride = scaling;
+        PatcherConfig.inventoryScale = scaling;
         Patcher.instance.forceSaveConfig();
     }
 
