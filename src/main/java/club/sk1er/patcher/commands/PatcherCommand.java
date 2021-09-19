@@ -11,8 +11,6 @@ import club.sk1er.patcher.util.enhancement.benchmark.BenchmarkResult;
 import club.sk1er.patcher.util.enhancement.benchmark.impl.TextBenchmark;
 import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import club.sk1er.patcher.util.name.NameFetcher;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import gg.essential.api.commands.Command;
 import gg.essential.api.commands.DefaultHandler;
 import gg.essential.api.commands.DisplayName;
@@ -24,9 +22,6 @@ import gg.essential.api.utils.Multithreading;
 import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.resources.SkinManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -190,13 +185,6 @@ public class PatcherCommand extends Command {
         mc.gameSettings.saveOptions();
     }
 
-    // todo: redo this and make it actually functional
-    // currently skins reset once joining a new world
-    @SubCommand(value = "refresh", aliases = "refreshskin", description = "Automatically refresh your skin without needing to relog.")
-    public void refresh() {
-        refreshSkin();
-    }
-
     @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independent of your GUI scale.")
     public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "0", "1", "2", "3", "4", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
@@ -276,29 +264,6 @@ public class PatcherCommand extends Command {
 
         final String message = amount == 0 ? "Custom framerate was reset." : "Custom framerate set to " + amount + ".";
         ChatUtilities.sendNotification("Custom FPS Limiter", message);
-    }
-
-    public static void refreshSkin() {
-        try {
-            final SkinManager skinManager = Minecraft.getMinecraft().getSkinManager();
-            final GameProfile gameProfile = Minecraft.getMinecraft().getSession().getProfile();
-            skinManager.loadProfileTextures(gameProfile, (type, location, profile) -> {
-                if (type == MinecraftProfileTexture.Type.SKIN) {
-                    final NetworkPlayerInfo info = Minecraft.getMinecraft().getNetHandler().getPlayerInfo(EntityPlayer.getUUID(gameProfile));
-                    info.locationSkin = location;
-                    info.skinType = profile.getMetadata("model");
-
-                    if (info.skinType == null) {
-                        info.skinType = "default";
-                    }
-                }
-            }, true);
-
-            ChatUtilities.sendNotification("Skin Cache", "Successfully refreshed skin cache.");
-        } catch (Exception e) {
-            ChatUtilities.sendNotification("Skin Cache", "Failed to refresh skin cache.");
-            Patcher.instance.getLogger().error("Failed to refresh skin cache.", e);
-        }
     }
 
     private long runBenchmark(String benchmarkName, String[] args, AbstractBenchmark benchmark) {

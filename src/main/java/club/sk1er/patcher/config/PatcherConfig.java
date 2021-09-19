@@ -968,13 +968,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean cleanMainMenu = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Skin Refresher",
-        description = "Add a button to the escape menu to refresh your current skin without needing to leave the server.\n§eAlso accessible with the command \"/patcher refresh\".",
-        category = "Screens", subcategory = "General"
-    )
-    public static boolean skinRefresher;
-
-    @Property(
         type = PropertyType.SELECTOR, name = "Open to LAN Replacement",
         description = "Modify the Open to LAN button to either redirect to the server list, or be removed.",
         category = "Screens", subcategory = "General",

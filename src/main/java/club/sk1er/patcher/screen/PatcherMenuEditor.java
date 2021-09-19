@@ -1,7 +1,6 @@
 package club.sk1er.patcher.screen;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
@@ -13,7 +12,6 @@ import gg.essential.elementa.dsl.UtilitiesKt;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiCustomizeSkin;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -52,7 +50,6 @@ public class PatcherMenuEditor {
     }));
 
     // button ids
-    private final int refreshSkin = 435762;
     private final int serverList = 231423;
     private final int allSounds = 85348;
 
@@ -86,10 +83,6 @@ public class PatcherMenuEditor {
                 }
             }
         } else if (gui instanceof GuiIngameMenu) {
-            if (PatcherConfig.skinRefresher) {
-                mcButtonList.add(new GuiButton(refreshSkin, 2, height - 22, 100, 20, "Refresh Skin"));
-            }
-
             if (!mc.isSingleplayer() && PatcherConfig.openToLanReplacement > 0) {
                 EssentialConfig config = EssentialAPI.getConfig();
                 int buttonWidth = config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS() ? 98 : 200;
@@ -103,12 +96,6 @@ public class PatcherMenuEditor {
                     ));
                 }
             }
-        } else if (gui instanceof GuiCustomizeSkin && mc.theWorld != null) {
-            mcButtonList.add(new GuiButton(refreshSkin,
-                (width >> 1) - 155 + 160, height / 6 + 72,
-                150, 20,
-                "Refresh Skin"
-            ));
         } else if (gui instanceof GuiScreenOptionsSounds) {
             mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 200, 20, "All Sounds"));
         }
@@ -126,13 +113,11 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
-        final int id = event.button.id;
-        final GuiScreen gui = event.gui;
-        if (id == refreshSkin && (gui instanceof GuiIngameMenu || gui instanceof GuiCustomizeSkin)) {
-            PatcherCommand.refreshSkin();
-        } else if (gui instanceof GuiIngameMenu && id == serverList) {
+        int buttonId = event.button.id;
+        GuiScreen gui = event.gui;
+        if (gui instanceof GuiIngameMenu && buttonId == serverList) {
             mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
-        } else if (gui instanceof GuiScreenOptionsSounds && id == allSounds) {
+        } else if (gui instanceof GuiScreenOptionsSounds && buttonId == allSounds) {
             mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
         }
     }
