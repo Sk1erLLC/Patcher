@@ -60,8 +60,8 @@ dependencies {
         exclude module: "kotlin-stdlib"
     }
 
-    embed "gg.essential:loader-launchwrapper:1.1.0"
-    implementation "gg.essential:essential-${mcVersionStr}-forge:1359"
+    embed "gg.essential:loader-launchwrapper:1.1.1"
+    implementation "gg.essential:essential-${mcVersionStr}-forge:1448+release-launch"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
