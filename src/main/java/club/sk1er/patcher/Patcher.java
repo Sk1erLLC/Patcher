@@ -92,7 +92,7 @@ public class Patcher {
     // betas will be "1.x.x+beta-y" / "1.x.x+branch_beta-y"
     // rcs will be 1.x.x+rc-y
     // extra branches will be 1.x.x+branch-y
-    public static final String VERSION = "1.7.0-beta+1";
+    public static final String VERSION = "1.7.0+beta-1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "logs" + File.separator);
@@ -169,8 +169,8 @@ public class Patcher {
 
     @EventHandler
     public void onLoadComplete(FMLLoadCompleteEvent event) {
-        final List<ModContainer> activeModList = Loader.instance().getActiveModList();
-        final Notifications notifications = EssentialAPI.getNotifications();
+        List<ModContainer> activeModList = Loader.instance().getActiveModList();
+        Notifications notifications = EssentialAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
     }
@@ -178,7 +178,7 @@ public class Patcher {
     @SubscribeEvent
     public void dispatchStartupTime(GuiScreenEvent.InitGuiEvent event) {
         if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
-        final long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
+        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
             EssentialAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
@@ -394,7 +394,7 @@ public class Patcher {
     }
 
     private CompletableFuture<JsonObject> readDuplicateModsJson() {
-        final String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
+        String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
         return CompletableFuture.supplyAsync(() -> new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject(), Multithreading.getPool())
             .exceptionally((error) -> {
                 logger.error("Failed to fetch {}: {}", url, error);
