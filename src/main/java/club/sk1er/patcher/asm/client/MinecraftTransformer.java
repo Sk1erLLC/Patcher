@@ -106,18 +106,6 @@ public class MinecraftTransformer implements PatcherTransformer {
                                     methodNode.instructions.insert(node, ifne);
                                 }
                             }
-                        } else if (node instanceof IntInsnNode && node.getOpcode() == Opcodes.BIPUSH) {
-                            final int operand = ((IntInsnNode) node).operand;
-                            if (operand == 62) {
-                                methodNode.instructions.insertBefore(node, getKeybind("getClearShaders"));
-                                methodNode.instructions.remove(node);
-                            } else if (operand == 59) {
-                                methodNode.instructions.insertBefore(node, getKeybind("getHideScreen"));
-                                methodNode.instructions.remove(node);
-                            } else if (operand == 61 && !(node.getNext() instanceof MethodInsnNode)) {
-                                methodNode.instructions.insertBefore(node, getKeybind("getCustomDebug"));
-                                methodNode.instructions.remove(node);
-                            }
                         }
                     }
                     break;
@@ -209,14 +197,6 @@ public class MinecraftTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.DUP));
         list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "club/sk1er/patcher/screen/render/overlay/metrics/MetricsData", "<init>", "()V", false));
         list.add(new FieldInsnNode(Opcodes.PUTSTATIC, getHookClass("MinecraftHook"), "metricsData", "Lclub/sk1er/patcher/screen/render/overlay/metrics/MetricsData;"));
-        return list;
-    }
-
-    private InsnList getKeybind(String keybindName) {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/Patcher", "instance", "Lclub/sk1er/patcher/Patcher;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "club/sk1er/patcher/Patcher", keybindName, "()Lnet/minecraft/client/settings/KeyBinding;", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/settings/KeyBinding", "func_151463_i", "()I", false));
         return list;
     }
 

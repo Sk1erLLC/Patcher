@@ -38,7 +38,7 @@
     "LayerArrowMixin_CancelRender",
     "LayerArrowMixin_FixedBrightness",
     "LoadingScreenRendererMixin_SkipProgress",
-    "MinecraftMixin_CustomF3",
+    "MinecraftMixin_CustomDebugKeys",
     "MinecraftMixin_DisplayScreen",
     "MinecraftMixin_FixScreenState",
     "MinecraftMixin_ForeignKeyboards",
