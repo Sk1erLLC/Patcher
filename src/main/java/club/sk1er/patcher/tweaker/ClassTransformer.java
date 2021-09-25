@@ -1,7 +1,6 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.client.EnchantmentTransformer;
-import club.sk1er.patcher.asm.client.LongHashMapTransformer;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockBrewingStandTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
@@ -53,7 +52,6 @@ import club.sk1er.patcher.asm.resources.GameSettingsTransformer;
 import club.sk1er.patcher.asm.resources.SoundManagerTransformer;
 import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.asm.world.BlockPosTransformer;
-import club.sk1er.patcher.asm.world.ChunkCoordIntPairTransformer;
 import club.sk1er.patcher.asm.world.ChunkTransformer;
 import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
 import club.sk1er.patcher.asm.world.ScoreboardTransformer;
@@ -178,8 +176,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
-        registerTransformer(new LongHashMapTransformer());
-        registerTransformer(new ChunkCoordIntPairTransformer());
         registerTransformer(new BakedQuadTransformer());
         registerTransformer(new TexturedQuadTransformer());
         registerTransformer(new ModelRendererTransformer());
