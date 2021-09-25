@@ -101,6 +101,7 @@ public class ScoreboardTransformer implements PatcherTransformer {
                     break;
                 }
 
+                case "func_96512_b":
                 case "removePlayerFromTeam": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
