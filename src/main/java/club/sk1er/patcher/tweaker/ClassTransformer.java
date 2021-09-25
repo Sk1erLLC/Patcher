@@ -1,6 +1,5 @@
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.client.EnchantmentTransformer;
 import club.sk1er.patcher.asm.client.LongHashMapTransformer;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
@@ -274,7 +273,7 @@ public class ClassTransformer implements IClassTransformer {
                 try (FileOutputStream os = new FileOutputStream(bytecodeOutput)) {
                     os.write(classWriter.toByteArray());
                 } catch (IOException e) {
-                    Patcher.instance.getLogger().error("Failed to create bytecode output for {}.", transformedName, e);
+                    logger.error("Failed to create bytecode output for {}.", transformedName, e);
                 }
             } catch (Exception ignored) {
             }
