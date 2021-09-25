@@ -55,7 +55,6 @@ import club.sk1er.patcher.asm.world.BlockPosTransformer;
 import club.sk1er.patcher.asm.world.ChunkTransformer;
 import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
 import club.sk1er.patcher.asm.world.ScoreboardTransformer;
-import club.sk1er.patcher.asm.world.StatBaseTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
@@ -182,7 +181,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
         registerTransformer(new LayerHeldItemTransformer());
-        registerTransformer(new StatBaseTransformer());
         registerTransformer(new ItemStackTransformer());
         registerTransformer(new LayerSpiderEyesTransformer());
         registerTransformer(new LayerCreeperChargeTransformer());
