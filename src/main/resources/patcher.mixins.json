@@ -99,6 +99,8 @@
     "render.item.ItemRendererMixin_FireRendering"
   ],
   "mixins": [
-    "EnchantmentMixin_TranslateEnchantments"
+    "EnchantmentMixin_TranslateEnchantments",
+    "cropheight.BlockCropsMixin_CropHeight",
+    "cropheight.BlockNetherWartMixin_CropHeight"
   ]
 }

@@ -1,8 +1,6 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
-import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
-import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
@@ -145,8 +143,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new GuiIngameTransformer());
-        registerTransformer(new BlockCropsTransformer());
-        registerTransformer(new BlockNetherWartTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new NBTTagStringTransformer());
         registerTransformer(new GuiVideoSettingsTransformer());

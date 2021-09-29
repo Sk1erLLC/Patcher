@@ -15,7 +15,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 @SuppressWarnings("unused")
-public class FarmHook {
+public class CropUtilities {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();
 
