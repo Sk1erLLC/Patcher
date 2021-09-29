@@ -1,6 +1,5 @@
 package club.sk1er.patcher.tweaker;
 
-import club.sk1er.patcher.asm.client.EnchantmentTransformer;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
@@ -155,7 +154,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
         registerTransformer(new GuiContainerTransformer());
-        registerTransformer(new EnchantmentTransformer());
         registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
