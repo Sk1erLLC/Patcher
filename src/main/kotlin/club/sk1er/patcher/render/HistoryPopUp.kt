@@ -5,6 +5,7 @@ import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.Multithreading
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.*
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
@@ -24,13 +25,14 @@ import java.net.URL
 import java.util.concurrent.ConcurrentLinkedQueue
 
 object HistoryPopUp {
-    private val window = Window()
+    private val window = Window(ElementaVersion.V1)
     private val fetchers = ConcurrentLinkedQueue<NameFetcher>()
 
     init {
         UIContainer() childOf window
     }
 
+    @Suppress("DEPRECATION")
     @SubscribeEvent
     fun render(event: RenderGameOverlayEvent.Post) {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT && Minecraft.getMinecraft().currentScreen !is ScreenHistory) {
@@ -59,7 +61,7 @@ object HistoryPopUp {
     }
 
     fun addPopUp(player: String) {
-        Multithreading.runAsync(Runnable {
+        Multithreading.runAsync {
             val nf = NameFetcher()
             nf.execute(player, false)
             if (nf.uuid != null) {
@@ -67,7 +69,7 @@ object HistoryPopUp {
             } else {
                 ChatUtilities.sendMessage("&cFailed to get name history of $player... is this a real player?")
             }
-        })
+        }
     }
 
     private class PopUp(val fetcher: NameFetcher) : UIBlock(VigilancePalette.getDarkBackground()) {
@@ -105,7 +107,6 @@ object HistoryPopUp {
                     width = 200.pixels()
                 }
 
-                // todo when new-infra modcore branch is merged, cache this image.
                 img childOf this
 
                 onMouseClick {

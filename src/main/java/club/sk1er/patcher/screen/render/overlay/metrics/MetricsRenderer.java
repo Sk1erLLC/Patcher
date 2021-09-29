@@ -41,7 +41,7 @@ public class MetricsRenderer extends Gui {
         final int sampleAverage = samples.length - maxSamples;
         int modifiedX = x;
         int startWrap = data.wrapIndex(startIndex + maxSamples);
-        long o = 0L; // todo what is this
+        long o = 0L;
         int maxValue = Integer.MAX_VALUE;
         int minValue = Integer.MIN_VALUE;
 

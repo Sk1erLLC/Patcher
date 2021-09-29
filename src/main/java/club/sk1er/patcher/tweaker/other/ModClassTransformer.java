@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
- * Used for editing other mods (OptiFine, LevelHead, TNT Timer, etc) after they've loaded.
+ * Used for editing other mods (OptiFine, LevelHead, TNT Timer, etc.) after they've loaded.
  */
 public class ModClassTransformer implements IClassTransformer {
 
@@ -52,7 +52,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new TagRendererTransformer());
         registerTransformer(new TagRendererListenerTransformer());
 
-        // LevelHead by Sk1er LLC (i know that guy!)
+        // LevelHead by Sk1er LLC (I know that guy!)
         registerTransformer(new LevelheadAboveHeadRenderTransformer());
 
         // TNT Timer by Sk1er LLC

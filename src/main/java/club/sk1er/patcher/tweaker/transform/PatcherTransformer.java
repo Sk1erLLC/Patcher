@@ -31,7 +31,7 @@ public interface PatcherTransformer {
      * Map the method name from notch names
      *
      * @param classNode  the transformed class node
-     * @param methodNode the transformed classes method node
+     * @param methodNode the transformed classes' method node
      * @return a mapped method name
      */
     default String mapMethodName(ClassNode classNode, MethodNode methodNode) {

@@ -38,7 +38,7 @@ public class KeyboardTransformer implements PatcherTransformer {
         }
     }
 
-    private InsnList getKeyName() { // if LWJGL doesnt find name for key, it'll ask KeycodeHelper
+    private InsnList getKeyName() { // if LWJGL doesn't find name for key, it'll ask KeycodeHelper
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ASTORE, 1));
 

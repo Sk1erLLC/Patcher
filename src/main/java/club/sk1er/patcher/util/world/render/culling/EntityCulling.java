@@ -54,7 +54,7 @@ public class EntityCulling {
     private int destroyTimer;
 
     /**
-     * Used for checking if the entities nametag can be rendered if the user still wants
+     * Used for checking if the entities' nametag can be rendered if the user still wants
      * to see nametags despite the entity being culled.
      * <p>
      * Mirrored from {@link RendererLivingEntity} as it's originally protected.

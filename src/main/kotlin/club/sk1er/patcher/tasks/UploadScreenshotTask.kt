@@ -5,18 +5,13 @@ import club.sk1er.patcher.coroutines.MCDispatchers
 import club.sk1er.patcher.imgur.Imgur
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots
-import gg.essential.api.EssentialAPI
-import gg.essential.universal.ChatColor
-import gg.essential.universal.UDesktop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.EnumChatFormatting
-import java.awt.Toolkit
 import java.io.File
-import java.net.URI
 
 object UploadScreenshotTask {
     private val client = Imgur("649f2fb48e59767")

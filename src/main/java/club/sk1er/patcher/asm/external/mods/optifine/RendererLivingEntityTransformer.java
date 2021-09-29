@@ -57,7 +57,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
 
                 /*
                 Find if (shouldSit && entity.ridingEntity instanceof EntityLivingBase)
-                    go forward until we find the label we jump to if that statement if false, retract 1 insn, then read f2 = f1 -f
+                    go forward until we find the label we jump to if that statement is false, retract 1 insn, then read f2 = f1 -f
                  */
 
                 while (iterator.hasNext()) {

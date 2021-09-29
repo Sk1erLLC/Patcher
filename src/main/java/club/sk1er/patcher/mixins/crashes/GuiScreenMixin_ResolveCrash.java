@@ -18,9 +18,6 @@ public class GuiScreenMixin_ResolveCrash {
     @Inject(method = "handleInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"), cancellable = true)
     private void patcher$checkScreen(CallbackInfo ci) {
         if ((GuiScreen) (Object) this != this.mc.currentScreen) {
-            // todo: make GuiScreenMixin_InventoryScale automatically inject this
-            //  i'm unsure as to how to make it so that mixin can apply to this, as changing it's value to RETURN
-            //  does not make it do that (though it should inject at any return?)
             ResolutionHelper.setScaleOverride(-1);
             ci.cancel();
         }

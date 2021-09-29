@@ -1,6 +1,7 @@
 package club.sk1er.patcher.render
 
 import club.sk1er.patcher.config.PatcherConfig
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.Window
@@ -24,7 +25,7 @@ object ScreenshotPreview {
     }
 
     fun newCapture(image: BufferedImage) {
-        this.currentWindow = Window()
+        this.currentWindow = Window(ElementaVersion.V1)
         this.instantiateComponents(image)
     }
 

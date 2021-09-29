@@ -9,9 +9,11 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.mojang.Model
 import gg.essential.api.utils.mojang.Profile
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
+import gg.essential.elementa.components.UIRoundedRectangle.Companion.drawRoundedRectangle
 import gg.essential.elementa.components.input.UITextInput
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
@@ -35,7 +37,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
+) : WindowScreen(ElementaVersion.V1, newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin
@@ -133,7 +135,7 @@ class ScreenHistory @JvmOverloads constructor(
         } childOf historyScroller
     }
 
-    override fun onDrawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun onDrawScreen(matrixStack: UMatrixStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
         if (uuid != nameFetcher.uuid) {
             uuid = nameFetcher.uuid
             // update gui info
@@ -165,7 +167,7 @@ class ScreenHistory @JvmOverloads constructor(
                 }
             }
         }
-        super.onDrawScreen(mouseX, mouseY, partialTicks)
+        super.onDrawScreen(matrixStack, mouseX, mouseY, partialTicks)
     }
 
     override fun onTick() {
@@ -220,13 +222,13 @@ class ScreenHistory @JvmOverloads constructor(
         }
         var player: FakePlayer = FakePlayer(GameProfile(uuid ?: defaultProfile.id, name))
 
-        override fun draw() {
-            UGraphics.pushMatrix()
+        override fun draw(matrixStack: UMatrixStack) {
+            UGraphics.GL.pushMatrix()
             UGraphics.enableLighting()
             UGraphics.enableAlpha()
             UGraphics.shadeModel(GL11.GL_FLAT)
             UGraphics.enableDepth()
-            UGraphics.translate(0f, 0f, 200f)
+            UGraphics.GL.translate(0f, 0f, 200f)
 
             val posX = getLeft().toInt()
             val posY = getTop().toInt()
@@ -250,23 +252,22 @@ class ScreenHistory @JvmOverloads constructor(
             )
 
             UGraphics.depthFunc(GL11.GL_LEQUAL)
-            UGraphics.popMatrix()
+            UGraphics.GL.popMatrix()
 
-            super.draw()
+            super.draw(matrixStack)
         }
     }
 
     private inner class HistoryComponent : UIComponent() {
-        override fun draw() {
-            UGraphics.pushMatrix()
+        override fun draw(matrixStack: UMatrixStack) {
+            UGraphics.GL.pushMatrix()
 
             val i = 12f + (nameFetcher.names.size * 10)
             if (getHeight() != i) {
                 setHeight(i.pixels())
             }
 
-            UIRoundedRectangle.drawRoundedRectangle(
-                getLeft(),
+            drawRoundedRectangle(matrixStack, getLeft(),
                 getTop(),
                 getRight(),
                 getTop() + i,
@@ -288,8 +289,8 @@ class ScreenHistory @JvmOverloads constructor(
                 )
             }
 
-            UGraphics.popMatrix()
-            super.draw()
+            UGraphics.GL.popMatrix()
+            super.draw(matrixStack)
         }
     }
 
@@ -476,12 +477,12 @@ class ScreenHistory @JvmOverloads constructor(
             super.afterInitialization()
         }
 
-        override fun draw() {
-            // i hate this.
-            UGraphics.pushMatrix()
-            UGraphics.translate(0f, 0f, 500f)
-            super.draw()
-            UGraphics.popMatrix()
+        override fun draw(matrixStack: UMatrixStack) {
+            // I hate this.
+            UGraphics.GL.pushMatrix()
+            UGraphics.GL.translate(0f, 0f, 500f)
+            super.draw(matrixStack)
+            UGraphics.GL.popMatrix()
         }
     }
 

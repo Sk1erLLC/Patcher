@@ -37,8 +37,7 @@ public class ArmorStatusRenderer {
             return null;
         }
 
-
-        // man dont even try and make me understand what this is doing
+        // man don't even try and make me understand what this is doing
         if (!PatcherConfig.protectionPercentage || !PatcherConfig.projectileProtectionPercentage) {
             if (PatcherConfig.protectionPercentage) {
                 return protectionPotential + "%";

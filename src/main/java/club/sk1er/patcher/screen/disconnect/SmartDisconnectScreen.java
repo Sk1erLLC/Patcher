@@ -17,7 +17,7 @@ public class SmartDisconnectScreen extends GuiScreen {
     public void initGui() {
         this.buttonList.add(new GuiButton(0, (width >> 1) - 100, (height >> 1), 100, 20, "Disconnect"));
         this.buttonList.add(new GuiButton(1, (width >> 1) + 5, (height >> 1), 100, 20, "Relog"));
-        // this will never be centered and it makes me so upset
+        // this will never be centered, and it makes me so upset
         this.buttonList.add(new GuiButton(2, (width >> 1) - 100, (height >> 1) + 24, 206, 20, "Return"));
     }
 
@@ -40,7 +40,7 @@ public class SmartDisconnectScreen extends GuiScreen {
                 break;
 
             case 1:
-                // store ip to login with
+                // store ip to log in with
                 final String ip = mc.getCurrentServerData().serverIP;
                 final String name = mc.getCurrentServerData().serverName;
                 final GuiMultiplayer multiplayer = new GuiMultiplayer(new GuiMainMenu());
@@ -73,10 +73,5 @@ public class SmartDisconnectScreen extends GuiScreen {
         }
 
         super.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
     }
 }

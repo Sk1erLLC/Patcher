@@ -13,12 +13,11 @@ class EnchantmentTransformer : PatcherTransformer {
             val methodName = mapMethodName(classNode, it)
             methodName == "getTranslatedName" || methodName == "func_77316_c"
         }?.apply {
-            instructions.insertBefore(instructions.first, `get Numerical Name`())
+            instructions.insertBefore(instructions.first, getNumericalName())
         }
     }
 
-    // oooooh spooky space in function name ooooh
-    private fun `get Numerical Name`() = assembleBlock {
+    private fun getNumericalName() = assembleBlock {
         getstatic("club/sk1er/patcher/config/PatcherConfig", "romanNumerals", boolean)
         ifeq(L["1"])
         new(StringBuilder::class)
