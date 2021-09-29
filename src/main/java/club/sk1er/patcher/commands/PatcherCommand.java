@@ -5,11 +5,6 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.enhancement.EnhancementManager;
-import club.sk1er.patcher.util.enhancement.benchmark.AbstractBenchmark;
-import club.sk1er.patcher.util.enhancement.benchmark.BenchmarkResult;
-import club.sk1er.patcher.util.enhancement.benchmark.impl.TextBenchmark;
-import club.sk1er.patcher.util.enhancement.text.EnhancedFontRenderer;
 import club.sk1er.patcher.util.name.NameFetcher;
 import gg.essential.api.commands.Command;
 import gg.essential.api.commands.DefaultHandler;
@@ -26,10 +21,7 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -38,31 +30,17 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class PatcherCommand extends Command {
 
-    private final Map<String, AbstractBenchmark> benchmarkMap = new HashMap<>();
     private final Minecraft mc = Minecraft.getMinecraft();
     private final int randomBound = 85673;
     public static int randomChatMessageId;
 
     public PatcherCommand() {
         super("patcher");
-        benchmarkMap.put("text", new TextBenchmark());
     }
 
     @DefaultHandler
     public void handle() {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
-    }
-
-    @SubCommand(value = "resetcache", description = "Clears enhancement cache. Typically should not be used.")
-    public void resetCache() {
-        EnhancementManager.getInstance().getEnhancement(EnhancedFontRenderer.class).invalidateAll();
-        ChatUtilities.sendNotification("Enhancement Cache", "&aCleared enhancement cache.");
-    }
-
-    @SubCommand(value = "debugfps", description = "Made for debugging purposes. Typically should not be used.")
-    public void debugFPS() {
-        Patcher.instance.getDebugPerformanceRenderer().toggleFPS();
-        ChatUtilities.sendNotification("Debug Renderer", "&aToggled the debug renderer.");
     }
 
     @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
@@ -114,57 +92,12 @@ public class PatcherCommand extends Command {
 
     @SubCommand(value = "blacklist", description = "Tell the client that you don't want to use the 1.11+ chat length on the specified server IP.")
     public void blacklist(@Greedy @DisplayName("ip") String ip) {
-        final String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
+        String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
         ChatUtilities.sendNotification(
             "Server Blacklist",
             "Server &e\"" + ip + "\" &ris " + status + " &rblacklisted from chat length extension."
         );
         Patcher.instance.saveBlacklistedServers();
-    }
-
-    @SubCommand(value = "benchmark", description = "Made for debugging purposes. This should typically not be used.")
-    public void benchmark(@Options({"all", "text", "item"}) String type, @Nullable @Greedy @DisplayName("extra") String extra) {
-        if (type.equals("all")) {
-            long totalMillis = 0;
-
-            for (Map.Entry<String, AbstractBenchmark> benchmarkEntry : benchmarkMap.entrySet()) {
-                long millis = runBenchmark(benchmarkEntry.getKey(), new String[0], benchmarkEntry.getValue());
-                totalMillis += millis;
-            }
-
-            float seconds = totalMillis / 1000F;
-            ChatUtilities.sendNotification(
-                "Performance Benchmark",
-                "&3All of the benchmarks completed in " + seconds + "s."
-            );
-            return;
-        }
-
-        final AbstractBenchmark benchmark = benchmarkMap.get(type);
-
-        if (benchmark == null) {
-            ChatUtilities.sendNotification(
-                "Performance Benchmark",
-                "&cCan't find a benchmark by the name of \"" + type + "\"."
-            );
-            return;
-        }
-
-        //noinspection ConstantConditions
-        runBenchmark(type, extra.split(" "), benchmark);
-    }
-
-    @SubCommand(value = "mode", description = "Made for debugging purposes. This should typically not be used.")
-    public void mode(@Options({"vanilla", "optimized"}) String mode) {
-        if (mode.equals("vanilla")) {
-            toggleOptions(false);
-            Patcher.instance.getDebugPerformanceRenderer().setMode("Vanilla");
-            ChatUtilities.sendNotification("Debug Mode", "&aSet mode: &cVanilla&a.");
-        } else {
-            toggleOptions(true);
-            Patcher.instance.getDebugPerformanceRenderer().setMode("Optimized");
-            ChatUtilities.sendNotification("Debug Mode", "&aSet mode: &eOptimized&a.");
-        }
     }
 
     @SubCommand(value = "fov", description = "Change your FOV to a custom value.")
@@ -262,57 +195,7 @@ public class PatcherCommand extends Command {
         PatcherConfig.customFpsLimit = amount;
         Patcher.instance.forceSaveConfig();
 
-        final String message = amount == 0 ? "Custom framerate was reset." : "Custom framerate set to " + amount + ".";
+        String message = amount == 0 ? "Custom framerate was reset." : "Custom framerate set to " + amount + ".";
         ChatUtilities.sendNotification("Custom FPS Limiter", message);
-    }
-
-    private long runBenchmark(String benchmarkName, String[] args, AbstractBenchmark benchmark) {
-        sendMessage("&3Beginning benchmark with the name " + benchmarkName + ".");
-
-        benchmark.setup();
-        benchmark.warmUp();
-        BenchmarkResult[] results = benchmark.benchmark(args);
-        benchmark.tearDown();
-
-        long totalMillis = 0;
-
-        for (BenchmarkResult result : results) {
-            sendMessage("&9&m--------------------------------------");
-            sendMessage("&6" + result.getName());
-
-            float millis = result.getDeltaTime() / (float) 1_000_000;
-            float nanosPerIteration = result.getDeltaTime() / (float) result.getIterations();
-
-            sendMessage("&6Benchmark took a total time of " + millis + "ms.");
-            sendMessage("&6Each iteration took an average of " + nanosPerIteration + "ns.");
-
-            sendMessage("&9&m--------------------------------------");
-
-            totalMillis += millis;
-        }
-
-        sendMessage("&3Completed the " + benchmarkName + " benchmark.");
-        return totalMillis;
-    }
-
-    private void sendMessage(String message) {
-        ChatUtilities.sendMessage(message, false);
-    }
-
-    private void toggleOptions(boolean status) {
-        PatcherConfig.entityCulling = status;
-        PatcherConfig.fullbright = status;
-        PatcherConfig.lowAnimationTick = status;
-        PatcherConfig.staticParticleColor = status;
-        PatcherConfig.optimizedFontRenderer = status;
-        PatcherConfig.cacheFontData = status;
-        PatcherConfig.removeCloudTransparency = status;
-        PatcherConfig.gpuCloudRenderer = status;
-        PatcherConfig.limitChunks = status;
-        PatcherConfig.playerBackFaceCulling = status;
-        PatcherConfig.entityBackFaceCulling = status;
-
-        // fullbright requires a chunk reload once toggled, perform automatically
-        Minecraft.getMinecraft().renderGlobal.loadRenderers();
     }
 }

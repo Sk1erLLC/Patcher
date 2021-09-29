@@ -14,7 +14,6 @@ import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.caching.HUDCaching;
 import club.sk1er.patcher.screen.render.overlay.ArmorStatusRenderer;
-import club.sk1er.patcher.screen.render.overlay.DebugPerformanceRenderer;
 import club.sk1er.patcher.screen.render.overlay.GlanceRenderer;
 import club.sk1er.patcher.screen.render.overlay.ImagePreview;
 import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
@@ -106,7 +105,6 @@ public class Patcher {
 
     private final CloudHandler cloudHandler = new CloudHandler();
     private final SavesWatcher savesWatcher = new SavesWatcher();
-    private final DebugPerformanceRenderer debugPerformanceRenderer = new DebugPerformanceRenderer();
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
@@ -143,7 +141,7 @@ public class Patcher {
         );
 
         registerEvents(
-            this, soundHandler, debugPerformanceRenderer, cloudHandler, dropModifier,
+            this, soundHandler, cloudHandler, dropModifier,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
@@ -430,10 +428,6 @@ public class Patcher {
     @SuppressWarnings("unused")
     public KeyBinding getDropModifier() {
         return dropModifier;
-    }
-
-    public DebugPerformanceRenderer getDebugPerformanceRenderer() {
-        return debugPerformanceRenderer;
     }
 
     @SuppressWarnings("unused")
