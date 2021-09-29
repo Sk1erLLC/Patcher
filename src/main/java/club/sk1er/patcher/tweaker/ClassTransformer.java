@@ -2,7 +2,6 @@ package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.client.EnchantmentTransformer;
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
-import club.sk1er.patcher.asm.client.block.BlockBrewingStandTransformer;
 import club.sk1er.patcher.asm.client.block.BlockCropsTransformer;
 import club.sk1er.patcher.asm.client.block.BlockNetherWartTransformer;
 import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
@@ -190,7 +189,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderSnowballTransformer());
         registerTransformer(new S3FPacketCustomPayloadTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
-        registerTransformer(new BlockBrewingStandTransformer());
         registerTransformer(new EntityWitherTransformer());
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new S34PacketMapsTransformer());
