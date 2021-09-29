@@ -33,7 +33,6 @@ import club.sk1er.patcher.asm.network.packet.S19PacketEntityHeadLookTransformer;
 import club.sk1er.patcher.asm.network.packet.S19PacketEntityStatusTransformer;
 import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.network.packet.S3FPacketCustomPayloadTransformer;
-import club.sk1er.patcher.asm.render.block.BakedQuadTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.item.ItemStackTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
@@ -164,7 +163,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new SoundManagerTransformer());
         registerTransformer(new VisGraphTransformer());
-        registerTransformer(new BakedQuadTransformer());
         registerTransformer(new TexturedQuadTransformer());
         registerTransformer(new ModelRendererTransformer());
         registerTransformer(new EffectRendererTransformer());
