@@ -9,7 +9,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.mojang.Model
 import gg.essential.api.utils.mojang.Profile
-import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
@@ -37,7 +36,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(ElementaVersion.V1, newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
+) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
     private val nameFetcher = NameFetcher()
     private var uuid: UUID? = null
     private val skin = initialSkin

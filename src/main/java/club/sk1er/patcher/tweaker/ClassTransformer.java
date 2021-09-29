@@ -1,7 +1,6 @@
 package club.sk1er.patcher.tweaker;
 
 import club.sk1er.patcher.asm.client.MinecraftTransformer;
-import club.sk1er.patcher.asm.client.chat.ChatStyleTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
@@ -138,7 +137,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new RenderPlayerTransformer());
         registerTransformer(new ChunkTransformer());
         registerTransformer(new GuiUtilsTransformer());
-        registerTransformer(new ChatStyleTransformer());
         registerTransformer(new ScoreboardTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());

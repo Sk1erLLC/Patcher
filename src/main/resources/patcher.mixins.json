@@ -10,9 +10,11 @@
     "BlockModelRendererMixin_SmoothLighting",
     "BlockRedstoneTorchMixin_MemoryLeak",
     "BlockRendererDispatcherMixin_RemoveFoliage",
+    "ChatStyleMixin_ModifyHoverEvent",
     "ChunkRenderDispatcherMixin_LimitUpdates",
     "CommandHandlerMixin_CaseCommands",
     "ContainerMixin_PlaySound",
+    "EnchantmentMixin_TranslateEnchantments",
     "EntityFXMixin_StaticParticleColor",
     "EntityLivingBaseMixin_CleanView",
     "EntityLivingBaseMixin_MouseDelayFix",
@@ -72,6 +74,8 @@
     "crashes.ServerListEntryNormalMixin_ResolveCrash",
     "crashes.ServerSelectionListMixin_ResolveCrash",
     "crashes.WorldRendererMixin_ResolveCrash",
+    "cropheight.BlockCropsMixin_CropHeight",
+    "cropheight.BlockNetherWartMixin_CropHeight",
     "disableenchantglint.LayerArmorBaseMixin_DisableEnchantGlint",
     "disableenchantglint.RenderItemMixin_DisableEnchantGlint",
     "forge.ClientCommandHandlerMixin_CaseCommands",
@@ -97,10 +101,5 @@
     "network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "render.item.ItemModelMesherMixin_ResolveCrash",
     "render.item.ItemRendererMixin_FireRendering"
-  ],
-  "mixins": [
-    "EnchantmentMixin_TranslateEnchantments",
-    "cropheight.BlockCropsMixin_CropHeight",
-    "cropheight.BlockNetherWartMixin_CropHeight"
   ]
 }
