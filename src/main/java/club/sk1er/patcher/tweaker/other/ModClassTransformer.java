@@ -9,6 +9,7 @@ import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.com
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
+import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.modern.RenderChunkReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.signfix.GuiEditSignTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.signfix.TileEntitySignRendererTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
@@ -126,6 +127,7 @@ public class ModClassTransformer implements IClassTransformer {
 
     private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
+        registerTransformer(new RenderChunkReflectionOptimizer());
         registerTransformer(new GuiDetailSettingsOFTransformer());
     }
 
