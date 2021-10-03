@@ -26,10 +26,12 @@ public class RenderChunkReflectionOptimizer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, method);
             if (methodName.equals("rebuildChunk") || methodName.equals("func_178581_b")) {
                 int enumWorldBlockLayerIndex = -1;
+                int blockIndex = -1;
                 for (LocalVariableNode localVar : method.localVariables) {
                     if (localVar.name.equals("enumworldblocklayer1")) {
                         enumWorldBlockLayerIndex = localVar.index;
-                        break;
+                    } else if (localVar.name.equals("block")) {
+                        blockIndex = localVar.index;
                     }
                 }
 
@@ -41,16 +43,23 @@ public class RenderChunkReflectionOptimizer implements PatcherTransformer {
                 ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode next = iterator.next();
-                    if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("exists") && next.getPrevious() instanceof FieldInsnNode) {
-                        FieldInsnNode previous = (FieldInsnNode) next.getPrevious();
-                        String fieldName = previous.name;
-                        if (fieldName.equals("ForgeBlock_canRenderInLayer")) {
-                            method.instructions.remove(previous);
-                            method.instructions.insertBefore(next, new InsnNode(Opcodes.ICONST_1));
-                            method.instructions.remove(next);
-                        } else if (fieldName.equals("ForgeHooksClient_setRenderLayer")) {
-                            method.instructions.remove(previous);
-                            method.instructions.insertBefore(next, new InsnNode(Opcodes.ICONST_1));
+                    if (next instanceof MethodInsnNode) {
+                        if (((MethodInsnNode) next).name.equals("exists") && next.getPrevious() instanceof FieldInsnNode) {
+                            FieldInsnNode previous = (FieldInsnNode) next.getPrevious();
+                            String fieldName = previous.name;
+                            if (fieldName.equals("ForgeBlock_canRenderInLayer")) {
+                                method.instructions.remove(previous);
+                                method.instructions.insertBefore(next, new InsnNode(Opcodes.ICONST_1));
+                                method.instructions.remove(next);
+                            } else if (fieldName.equals("ForgeHooksClient_setRenderLayer")) {
+                                method.instructions.remove(previous);
+                                method.instructions.insertBefore(next, new InsnNode(Opcodes.ICONST_1));
+                                method.instructions.remove(next);
+                            }
+                        } else if (((MethodInsnNode) next).name.equals("blockHasTileEntity")) {
+                            method.instructions.insertBefore(next.getPrevious(), new VarInsnNode(Opcodes.ALOAD, blockIndex));
+                            method.instructions.insertBefore(next, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/block/Block",
+                                "hasTileEntity", "(Lnet/minecraft/block/state/IBlockState;)Z", false));
                             method.instructions.remove(next);
                         }
                     } else if (next instanceof FieldInsnNode) {
