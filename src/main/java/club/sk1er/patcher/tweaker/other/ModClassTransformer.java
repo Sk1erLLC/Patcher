@@ -8,6 +8,7 @@ import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.com
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.FaceBakeryReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.ModelRotationReflectionOptimizer;
+import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.modern.CustomColorsReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.modern.ItemModelMesherReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.modern.RenderChunkReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.signfix.GuiEditSignTransformer;
@@ -127,6 +128,7 @@ public class ModClassTransformer implements IClassTransformer {
 
     private void registerLSeriesTransformers() {
         registerTransformer(new ItemModelMesherReflectionOptimizer());
+        registerTransformer(new CustomColorsReflectionOptimizer());
         registerTransformer(new RenderChunkReflectionOptimizer());
         registerTransformer(new GuiDetailSettingsOFTransformer());
     }
