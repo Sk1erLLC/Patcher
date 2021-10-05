@@ -45,11 +45,14 @@ import gg.essential.api.commands.Command;
 import gg.essential.api.gui.Notifications;
 import gg.essential.api.utils.Multithreading;
 import gg.essential.api.utils.WebUtil;
+import gg.essential.universal.UDesktop;
+import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -66,12 +69,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -171,6 +177,27 @@ public class Patcher {
         Notifications notifications = EssentialAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
+
+        if (ForgeVersion.getVersion().contains("2318")) return;
+        notifications.push("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
+            "Click to open the Forge website to download the latest version.", 30, () -> {
+            String updateLink = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html";
+            try {
+                UDesktop.browse(URI.create(updateLink));
+            } catch (Exception openException) {
+                this.logger.error("Failed to open Forge website.", openException);
+                notifications.push("Patcher", "Failed to open Forge website. Link is now copied to your clipboard.");
+                try {
+                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(updateLink), null);
+                } catch (Exception clipboardException) {
+                    // there is no hope
+                    this.logger.error("Failed to copy Forge website to clipboard.", clipboardException);
+                    notifications.push("Patcher", "Failed to copy Forge website to clipboard.");
+                }
+            }
+
+            return Unit.INSTANCE;
+        });
     }
 
     @SubscribeEvent

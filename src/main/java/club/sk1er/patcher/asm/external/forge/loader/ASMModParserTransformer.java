@@ -1,6 +1,7 @@
 package club.sk1er.patcher.asm.external.forge.loader;
 
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
+import net.minecraftforge.common.ForgeVersion;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -17,6 +18,11 @@ public class ASMModParserTransformer implements PatcherTransformer {
 
     @Override
     public void transform(ClassNode classNode, String name) {
+        // 1722 crashes cause of this
+        if (!ForgeVersion.getVersion().contains("2318")) {
+            return;
+        }
+
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("toString")) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
