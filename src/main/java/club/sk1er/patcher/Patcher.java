@@ -48,10 +48,8 @@ import gg.essential.api.utils.WebUtil;
 import gg.essential.universal.UDesktop;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -121,7 +119,6 @@ public class Patcher {
     private PatcherSoundConfig patcherSoundConfig;
 
     private boolean loadedGalacticFontRenderer;
-    private boolean alreadyDispatched;
 
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
@@ -178,6 +175,13 @@ public class Patcher {
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
 
+        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
+        if (PatcherConfig.startupNotification) {
+            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+        }
+
+        logger.info("Minecraft started in {} seconds.", time);
+
         if (ForgeVersion.getVersion().contains("2318")) return;
         notifications.push("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
             "Click to open the Forge website to download the latest version.", 30, () -> {
@@ -198,18 +202,6 @@ public class Patcher {
 
             return Unit.INSTANCE;
         });
-    }
-
-    @SubscribeEvent
-    public void dispatchStartupTime(GuiScreenEvent.InitGuiEvent event) {
-        if (!(event.gui instanceof GuiMainMenu) || alreadyDispatched) return;
-        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
-        if (PatcherConfig.startupNotification) {
-            EssentialAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
-        }
-
-        logger.info("Minecraft started in {} seconds.", time);
-        alreadyDispatched = true;
     }
 
     /**
