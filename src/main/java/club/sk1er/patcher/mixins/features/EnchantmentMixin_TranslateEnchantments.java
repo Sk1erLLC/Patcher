@@ -18,7 +18,7 @@ public abstract class EnchantmentMixin_TranslateEnchantments {
     @Inject(method = "getTranslatedName", at = @At("HEAD"), cancellable = true)
     private void patcher$translateToEnglish(int level, CallbackInfoReturnable<String> cir) {
         if (PatcherConfig.romanNumerals) {
-            cir.setReturnValue(StatCollector.translateToLocal(this.getName() + " " + level));
+            cir.setReturnValue(StatCollector.translateToLocal(this.getName()) + " " + level);
         }
     }
 }

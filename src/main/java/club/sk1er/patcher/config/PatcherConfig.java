@@ -322,7 +322,7 @@ public class PatcherConfig extends Vigilant {
         description = "Use readable numbers instead of Roman numerals on enchants.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
-    public static boolean romanNumerals = true;
+    public static boolean romanNumerals;
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean View",
