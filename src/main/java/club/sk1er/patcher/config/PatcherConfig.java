@@ -8,6 +8,7 @@ import gg.essential.vigilance.data.Property;
 import gg.essential.vigilance.data.PropertyType;
 import kotlin.jvm.functions.Function0;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -330,6 +331,20 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean cleanView;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Windowed Fullscreen",
+        description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window.",
+        category = "Miscellaneous", subcategory = "Window"
+    )
+    public static boolean windowedFullscreen;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Instant Fullscreen",
+        description = "Instant switching between full screen and non fullscreen modes.",
+        category = "Miscellaneous", subcategory = "Window"
+    )
+    public static boolean instantFullscreen;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Breaking Particles",
@@ -1145,6 +1160,7 @@ public class PatcherConfig extends Vigilant {
         try {
             addDependency("smartFullbright", "fullbright");
             addDependency("unfocusedFPSAmount", "unfocusedFPS");
+            addDependency("instantFullscreen", "windowedFullscreen");
             addDependency("tabOpacity", "customTabOpacity");
             addDependency("tabHeight", "tabHeightAllow");
             addDependency("consecutiveCompactChat", "compactChat");
@@ -1196,6 +1212,8 @@ public class PatcherConfig extends Vigilant {
                 "copyScreenshot",
                 "openScreenshotsFolder"
             ).forEach(property -> addDependency(property, "screenshotManager"));
+
+            hidePropertyIf("instantFullscreen", () -> !SystemUtils.IS_OS_WINDOWS);
 
             Arrays.asList(
                 "scrollToZoom",

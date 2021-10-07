@@ -64,6 +64,7 @@
     "features.MinecraftMixin_CustomDebugKeys",
     "features.MinecraftMixin_FpsLimit",
     "features.MinecraftMixin_SeparateResources",
+    "features.MinecraftMixin_WindowedFullscreen",
     "features.RenderEntityItemMixin_StaticItems",
     "features.RenderEntityItemMixin_UnstackedItems",
     "features.RendererLivingEntityMixin_NametagRendering",
