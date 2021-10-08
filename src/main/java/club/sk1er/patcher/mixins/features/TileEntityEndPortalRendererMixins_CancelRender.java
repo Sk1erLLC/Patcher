@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TileEntityEndPortalRenderer.class)
 public class TileEntityEndPortalRendererMixins_CancelRender {
-    @Inject(method = "renderTileEntityAt", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntityEndPortal;DDDFI)V", at = @At("HEAD"), cancellable = true)
     private void patcher$cancelRendering(CallbackInfo ci) {
         if (PatcherConfig.disableEndPortals) {
             ci.cancel();

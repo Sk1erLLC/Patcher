@@ -54,7 +54,7 @@ public class PatcherCommand extends Command {
             );
         } else if (PatcherConfig.nameHistoryStyle == 1) {
             if (emptyName) {
-                ChatUtilities.sendNotification("Name History", "Username cannot be null.");
+                ChatUtilities.sendNotification("Name History", "Username cannot be empty.");
                 return;
             }
 
@@ -82,7 +82,7 @@ public class PatcherCommand extends Command {
             }, 2, TimeUnit.SECONDS);
         } else if (PatcherConfig.nameHistoryStyle == 2) {
             if (emptyName) {
-                ChatUtilities.sendNotification("Name History", "Username cannot be null.");
+                ChatUtilities.sendNotification("Name History", "Username cannot be empty.");
                 return;
             }
 

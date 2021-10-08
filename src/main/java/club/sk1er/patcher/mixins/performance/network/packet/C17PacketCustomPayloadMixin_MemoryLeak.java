@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class C17PacketCustomPayloadMixin_MemoryLeak {
     @Shadow private PacketBuffer data;
 
-    @Inject(method = "processPacket", at = @At("TAIL"))
+    @Inject(method = "processPacket(Lnet/minecraft/network/play/INetHandlerPlayServer;)V", at = @At("TAIL"))
     private void patcher$releaseData(INetHandlerPlayServer handler, CallbackInfo ci) {
         if (this.data != null) {
             this.data.release();

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderEntityItem.class)
 public class RenderEntityItemMixin_EntityCulling {
-    @Inject(method = "doRender", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doRender(Lnet/minecraft/entity/item/EntityItem;DDDFF)V", at = @At("HEAD"), cancellable = true)
     private void patcher$checkRenderState(EntityItem entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo ci) {
         if (EntityCulling.renderItem(entity)) {
             ci.cancel();

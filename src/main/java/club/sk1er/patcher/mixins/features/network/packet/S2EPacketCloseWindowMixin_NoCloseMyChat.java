@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(S2EPacketCloseWindow.class)
 public class S2EPacketCloseWindowMixin_NoCloseMyChat {
-    @Inject(method = "processPacket", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "processPacket(Lnet/minecraft/network/play/INetHandlerPlayClient;)V", at = @At("HEAD"), cancellable = true)
     private void patcher$noCloseMyChat(INetHandlerPlayClient handler, CallbackInfo ci) {
         if (Minecraft.getMinecraft().currentScreen instanceof GuiChat) {
             ci.cancel();

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ArmorStandRenderer.class)
 public class ArmorStandRendererMixin_HideNametag {
-    @Inject(method = "canRenderName", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canRenderName(Lnet/minecraft/entity/item/EntityArmorStand;)Z", at = @At("HEAD"), cancellable = true)
     private void patcher$hideNametag(CallbackInfoReturnable<Boolean> cir) {
         if (PatcherConfig.betterHideGui && Minecraft.getMinecraft().gameSettings.hideGUI) {
             cir.setReturnValue(false);
