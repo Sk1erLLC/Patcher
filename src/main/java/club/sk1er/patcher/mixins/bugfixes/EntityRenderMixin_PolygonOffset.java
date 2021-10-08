@@ -5,24 +5,34 @@ import net.minecraft.client.renderer.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRenderMixin_PolygonOffset {
-
     @Inject(
-        method = "renderWorldPass", at = @At(
-        value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;renderBlockLayer(Lnet/minecraft/util/EnumWorldBlockLayer;DILnet/minecraft/entity/Entity;)I",
-        ordinal = 3)
+        method = "renderWorldPass",
+        slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/util/EnumWorldBlockLayer;TRANSLUCENT:Lnet/minecraft/util/EnumWorldBlockLayer;")),
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/RenderGlobal;renderBlockLayer(Lnet/minecraft/util/EnumWorldBlockLayer;DILnet/minecraft/entity/Entity;)I",
+            ordinal = 0
+        )
     )
     private void patcher$enablePolygonOffset(CallbackInfo ci) {
         GlStateManager.enablePolygonOffset();
         GlStateManager.doPolygonOffset(-0.725F, -0.725F);
     }
 
-    @Inject(method = "renderWorldPass", at = @At(
-        value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;renderBlockLayer(Lnet/minecraft/util/EnumWorldBlockLayer;DILnet/minecraft/entity/Entity;)I",
-        ordinal = 3, shift = At.Shift.AFTER)
+    @Inject(
+        method = "renderWorldPass",
+        slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/util/EnumWorldBlockLayer;TRANSLUCENT:Lnet/minecraft/util/EnumWorldBlockLayer;")),
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/RenderGlobal;renderBlockLayer(Lnet/minecraft/util/EnumWorldBlockLayer;DILnet/minecraft/entity/Entity;)I",
+            ordinal = 0,
+            shift = At.Shift.AFTER
+        )
     )
     private void patcher$disablePolygonOffset(CallbackInfo ci) {
         GlStateManager.disablePolygonOffset();
