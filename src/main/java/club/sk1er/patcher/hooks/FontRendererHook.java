@@ -140,8 +140,9 @@ public final class FontRendererHook {
         this.fontRenderer.posX = 0.0f;
 
         final float red = this.fontRenderer.red;
-        final float green = this.fontRenderer.green;
-        final float blue = this.fontRenderer.blue;
+        // Blue and green mappings are mixed up
+        final float green = this.fontRenderer.blue;
+        final float blue = this.fontRenderer.green;
         final float alpha = this.fontRenderer.alpha;
 
         GlStateManager.bindTexture(glTextureId);
@@ -154,7 +155,7 @@ public final class FontRendererHook {
         final CachedString cachedString = PatcherConfig.cacheFontData ? this.enhancedFontRenderer.get(hash) : null;
 
         if (cachedString != null) {
-            GlStateManager.color(red, blue, green, alpha);
+            GlStateManager.color(red, green, blue, alpha);
             GlStateManager.callList(cachedString.getListId());
 
             // Call so states in game know the texture was changed.
@@ -245,7 +246,7 @@ public final class FontRendererHook {
                     this.fontRenderer.strikethroughStyle = false;
                     this.fontRenderer.underlineStyle = false;
                     this.fontRenderer.italicStyle = false;
-                    GlStateManager.color(red, blue, green, alpha);
+                    GlStateManager.color(red, green, blue, alpha);
 
                     value.setLastGreen(green);
                     value.setLastAlpha(alpha);
