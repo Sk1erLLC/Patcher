@@ -212,20 +212,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
                                 methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
                             }
-                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETSTATIC) {
-                            final String fieldInsnName = mapFieldNameFromNode(next);
-                            if (fieldInsnName.equals("TRANSLUCENT")) {
-                                methodNode.instructions.insertBefore(next.getPrevious(), enablePolygonOffset());
-
-                                AbstractInsnNode nextInsn = next;
-                                for (int i = 0; i < 7; i++) {
-                                    nextInsn = nextInsn.getNext();
-                                }
-
-                                methodNode.instructions.insertBefore(nextInsn.getNext(), new MethodInsnNode(
-                                    Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "disablePolygonOffset" : "func_179113_r", "()V", false
-                                ));
-                            }
                         }
 
                         switch (ClassTransformer.optifineVersion) {
@@ -351,15 +337,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "hasMap", "()Z", false));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        return list;
-    }
-
-    private InsnList enablePolygonOffset() {
-        InsnList list = new InsnList();
-        list.add(new LdcInsnNode(-1.0F));
-        list.add(new LdcInsnNode(-1.0F));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "doPolygonOffset" : "func_179136_a", "(FF)V", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", dev ? "enablePolygonOffset" : "func_179088_q", "()V", false));
         return list;
     }
 

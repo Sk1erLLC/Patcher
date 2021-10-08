@@ -11,6 +11,7 @@
     "bugfixes.EntityLivingBaseMixin_MouseDelayFix",
     "bugfixes.EntityMixin_FixedBrightness",
     "bugfixes.EntityMixin_SprintParticles",
+    "bugfixes.EntityRenderMixin_PolygonOffset",
     "bugfixes.EntityXPOrbMixin_AdjustHeight",
     "bugfixes.GuiGameOverMixin_ResolveButtonClick",
     "bugfixes.GuiLanguageMixin_ResetUnicodeFont",
