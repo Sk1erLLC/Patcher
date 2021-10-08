@@ -12,7 +12,8 @@ import java.util.Locale;
 
 @Mixin(ClientCommandHandler.class)
 public class ClientCommandHandlerMixin_CaseCommands {
-    @ModifyArg(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
+    @SuppressWarnings("UnresolvedMixinReference")
+    @ModifyArg(method = {"executeCommand", "func_71556_a"}, at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false), remap = false)
     private Object patcher$makeLowerCaseForGet(Object s) {
         if (s instanceof String) {
             return ((String) s).toLowerCase(Locale.ENGLISH);
@@ -20,7 +21,8 @@ public class ClientCommandHandlerMixin_CaseCommands {
         return s;
     }
 
-    @Inject(method = "executeCommand", at = @At("HEAD"), cancellable = true)
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = {"executeCommand", "func_71556_a"}, at = @At("HEAD"), cancellable = true, remap = false)
     private void patcher$checkForSlash(ICommandSender sender, String message, CallbackInfoReturnable<Integer> cir) {
         if (!message.trim().startsWith("/")) {
             cir.setReturnValue(0);
