@@ -1,7 +1,6 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.asm.client.MinecraftTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsData;
 import net.minecraft.client.Minecraft;
@@ -14,15 +13,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.objectweb.asm.tree.ClassNode;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-/**
- * Used in {@link MinecraftTransformer#transform(ClassNode, String)}
- */
-@SuppressWarnings("unused")
 public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
     private static final Minecraft mc = Minecraft.getMinecraft();
