@@ -23,7 +23,6 @@ import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
-import club.sk1er.patcher.asm.network.MinecraftServerTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
@@ -143,7 +142,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
         registerTransformer(new GuiContainerTransformer());
-        registerTransformer(new MinecraftServerTransformer());
         registerTransformer(new FontRendererTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
