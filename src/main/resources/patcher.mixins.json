@@ -26,6 +26,8 @@
     "bugfixes.MinecraftMixin_DisplayScreen",
     "bugfixes.MinecraftMixin_FixScreenState",
     "bugfixes.MinecraftMixin_ForeignKeyboards",
+    "bugfixes.SoundManagerMixin_DuplicatedSounds",
+    "bugfixes.SoundManagerMixin_LogSpam",
     "bugfixes.TileEntityBannerRendererMixin_BannerAnimation",
     "bugfixes.TileEntityBannerRendererMixin_ChestDisplay",
     "bugfixes.TileEntityRendererDispatcherMixin_EnableLighting",
