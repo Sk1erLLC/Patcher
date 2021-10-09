@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
+import club.sk1er.patcher.mixins.accessors.TileEntityBannerRendererAccessor;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.LayeredColorMaskTexture;
@@ -29,11 +30,11 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
         if (texture.isEmpty()) {
             return null;
         } else {
-            Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
+            Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRendererAccessor.getDesigns();
             TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(texture);
             if (timedTexture == null) {
                 if (designs.size() >= 256 && !this.patcher$freeCacheSlot()) {
-                    return TileEntityBannerRenderer.BANNERTEXTURES;
+                    return TileEntityBannerRendererAccessor.getBannerTextures();
                 }
 
                 List<TileEntityBanner.EnumBannerPattern> patternList = banner.getPatternList();
@@ -46,8 +47,8 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
 
                 timedTexture = new TileEntityBannerRenderer.TimedBannerTexture();
                 timedTexture.bannerTexture = new ResourceLocation(texture);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(timedTexture.bannerTexture, new LayeredColorMaskTexture(TileEntityBannerRenderer.BANNERTEXTURES, patternPath, colorList));
-                TileEntityBannerRenderer.DESIGNS.put(texture, timedTexture);
+                Minecraft.getMinecraft().getTextureManager().loadTexture(timedTexture.bannerTexture, new LayeredColorMaskTexture(TileEntityBannerRendererAccessor.getBannerTextures(), patternPath, colorList));
+                TileEntityBannerRendererAccessor.getDesigns().put(texture, timedTexture);
             }
 
             timedTexture.systemTime = System.currentTimeMillis();
@@ -58,7 +59,7 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
     @Unique
     private boolean patcher$freeCacheSlot() {
         long start = System.currentTimeMillis();
-        Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRenderer.DESIGNS;
+        Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRendererAccessor.getDesigns();
         Iterator<String> iterator = designs.keySet().iterator();
 
         while (iterator.hasNext()) {

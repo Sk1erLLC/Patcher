@@ -1,6 +1,8 @@
 package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.TexturedQuadAccessor;
+import club.sk1er.patcher.mixins.accessors.WorldRendererAccessor;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,6 +15,8 @@ public class TexturedQuadHook {
 
     // todo: convert into a better hook instead of overwriting
     public static void draw(TexturedQuad parent, WorldRenderer renderer, float scale) {
+        TexturedQuadAccessor parentAccessor = (TexturedQuadAccessor) parent;
+        WorldRendererAccessor worldRendererAccessor = (WorldRendererAccessor) renderer;
         Vec3 xVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[0].vector3D);
         Vec3 zVertex = parent.vertexPositions[1].vector3D.subtractReverse(parent.vertexPositions[2].vector3D);
         Vec3 crossVertex = zVertex.crossProduct(xVertex).normalize();
@@ -20,13 +24,13 @@ public class TexturedQuadHook {
         float yCoord = (float) crossVertex.yCoord;
         float zCoord = (float) crossVertex.zCoord;
 
-        if (parent.invertNormal) {
+        if (parentAccessor.isInvertNormal()) {
             xCoord = -xCoord;
             yCoord = -yCoord;
             zCoord = -zCoord;
         }
 
-        boolean drawOnSelf = !renderer.isDrawing;
+        boolean drawOnSelf = !worldRendererAccessor.isDrawing();
         if (drawOnSelf || !PatcherConfig.batchModelRendering) {
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         }

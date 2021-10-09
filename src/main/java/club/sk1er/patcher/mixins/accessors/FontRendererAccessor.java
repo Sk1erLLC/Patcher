@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(FontRenderer.class)
 public interface FontRendererAccessor {
@@ -63,7 +64,7 @@ public interface FontRendererAccessor {
 
     @Accessor
     boolean isBoldStyle();
-    
+
     @Accessor
     boolean isStrikethroughStyle();
 
@@ -78,4 +79,7 @@ public interface FontRendererAccessor {
 
     @Accessor
     int[] getColorCode();
+
+    @Invoker
+    int callRenderString(String text, float x, float y, int color, boolean dropShadow);
 }

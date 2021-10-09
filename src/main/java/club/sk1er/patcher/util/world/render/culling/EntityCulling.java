@@ -2,6 +2,7 @@ package club.sk1er.patcher.util.world.render.culling;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.RenderManagerAccessor;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import gg.essential.api.EssentialAPI;
 import gg.essential.universal.UDesktop;
@@ -48,6 +49,7 @@ public class EntityCulling {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final RenderManager renderManager = mc.getRenderManager();
+    private static final RenderManagerAccessor renderManagerAccessor = (RenderManagerAccessor) renderManager;
     private static final ConcurrentHashMap<UUID, OcclusionQuery> queries = new ConcurrentHashMap<>();
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean shouldPerformCulling = false;
@@ -172,7 +174,7 @@ public class EntityCulling {
             GL15.glBeginQuery(mode, query.nextQuery);
             drawSelectionBoundingBox(entity.getEntityBoundingBox()
                 .expand(.2, .2, .2)
-                .offset(-renderManager.renderPosX, -renderManager.renderPosY, -renderManager.renderPosZ)
+                .offset(-renderManagerAccessor.getRenderPosX(), -renderManagerAccessor.getRenderPosY(), -renderManagerAccessor.getRenderPosZ())
             );
             GL15.glEndQuery(mode);
         }

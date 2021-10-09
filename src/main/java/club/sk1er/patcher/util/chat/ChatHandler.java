@@ -1,6 +1,7 @@
 package club.sk1er.patcher.util.chat;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.GuiNewChatAccessor;
 import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
@@ -19,13 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class ChatHandler {
@@ -159,7 +154,7 @@ public class ChatHandler {
 
         boolean removedMessage = false;
         {
-            final List<ChatLine> chatLines = mc.ingameGUI.getChatGUI().chatLines;
+            List<ChatLine> chatLines = ((GuiNewChatAccessor) mc.ingameGUI.getChatGUI()).getChatLines();
             for (int index = 0; index < chatLines.size() && index < normalSearchLength; index++) {
                 final ChatLine chatLine = chatLines.get(index);
 
@@ -183,7 +178,7 @@ public class ChatHandler {
             return false;
         }
 
-        final List<ChatLine> chatLinesWrapped = mc.ingameGUI.getChatGUI().drawnChatLines;
+        final List<ChatLine> chatLinesWrapped = ((GuiNewChatAccessor) mc.ingameGUI.getChatGUI()).getDrawnChatLines();
         for (int index = 0; index < chatLinesWrapped.size() && index < wrappedSearchLength; index++) {
             final ChatLine chatLine = chatLinesWrapped.get(index);
             if (toRemove.contains(chatLine)) {
