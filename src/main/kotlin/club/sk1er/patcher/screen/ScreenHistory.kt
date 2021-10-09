@@ -1,6 +1,8 @@
 package club.sk1er.patcher.screen
 
 import club.sk1er.patcher.Patcher
+import club.sk1er.patcher.mixins.accessors.AbstractClientPlayerAccessor
+import club.sk1er.patcher.mixins.accessors.NetworkPlayerInfoAccessor
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import com.google.gson.JsonParser
@@ -134,6 +136,7 @@ class ScreenHistory @JvmOverloads constructor(
         } childOf historyScroller
     }
 
+    @Suppress("CAST_NEVER_SUCCEEDS")
     override fun onDrawScreen(matrixStack: UMatrixStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
         if (uuid != nameFetcher.uuid) {
             uuid = nameFetcher.uuid
@@ -145,7 +148,7 @@ class ScreenHistory @JvmOverloads constructor(
             } else {
                 // uuid is the only thing that matters here
                 player.player = FakePlayer(GameProfile(uuid, name))
-                val info = player.player.playerInfo
+                val info = (player.player as AbstractClientPlayerAccessor).playerInfo
                 if (info != null) {
                     val profile = EssentialAPI.getMojangAPI().getProfile(uuid)
                     if (profile != null) {
@@ -158,7 +161,7 @@ class ScreenHistory @JvmOverloads constructor(
                                     if (alex) mapOf("model" to "slim") else null
                                 ), MinecraftProfileTexture.Type.SKIN
                             )
-                            player.player.playerInfo.locationSkin = rl
+                            ((player.player as AbstractClientPlayerAccessor).playerInfo as NetworkPlayerInfoAccessor).setLocationSkin(rl)
                             skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
                             skinText.setText("Skin of ${nameFetcher.name}")
                         }
@@ -487,10 +490,9 @@ class ScreenHistory @JvmOverloads constructor(
 
     private class FakePlayer(gameProfile: GameProfile) : AbstractClientPlayer(UMinecraft.getWorld(), gameProfile) {
         init {
-            playerInfo = NetworkPlayerInfo(gameProfile)
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            (this as AbstractClientPlayerAccessor).playerInfo = NetworkPlayerInfo(gameProfile)
         }
-
-        override fun getPlayerInfo(): NetworkPlayerInfo = playerInfo
     }
 
     private data class SelectableSkin(

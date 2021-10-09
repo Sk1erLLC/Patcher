@@ -2,6 +2,9 @@ package club.sk1er.patcher.util.world.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.PositionedSoundAccessor;
+import club.sk1er.patcher.mixins.accessors.SoundHandlerAccessor;
+import club.sk1er.patcher.mixins.accessors.SoundRegistryAccessor;
 import gg.essential.vigilance.data.PropertyData;
 import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
@@ -26,9 +29,14 @@ public class SoundHandler implements IResourceManagerReloadListener {
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
         if (event.result instanceof PositionedSound) {
-            final PositionedSound result = (PositionedSound) event.result;
-            if (!Display.isActive()) result.volume *= PatcherConfig.unfocusedSounds;
-            result.volume *= getVolumeMultiplier(event.result.getSoundLocation());
+            PositionedSound result = (PositionedSound) event.result;
+            PositionedSoundAccessor accessor = (PositionedSoundAccessor) result;
+
+            if (!Display.isActive()) {
+                accessor.setVolume(result.getVolume() * PatcherConfig.unfocusedSounds);
+            }
+
+            accessor.setVolume(result.getVolume() * getVolumeMultiplier(event.result.getSoundLocation()));
         }
     }
 
@@ -43,7 +51,7 @@ public class SoundHandler implements IResourceManagerReloadListener {
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {
-        Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = Minecraft.getMinecraft().getSoundHandler().sndRegistry.soundRegistry;
+        Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = ((SoundRegistryAccessor) ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndRegistry()).getSoundRegistry();
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
             data.computeIfAbsent(entry.getKey(), location ->
                 ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
