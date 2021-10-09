@@ -1,7 +1,7 @@
 package club.sk1er.patcher.screen.render.caching;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.accessors.IGuiIngameForge;
+import club.sk1er.patcher.mixins.accessors.GuiIngameForgeAccessor;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
@@ -53,7 +53,7 @@ public class HUDCaching {
             GlStateManager.enableBlend();
             if (framebuffer != null) {
                 if (ingame instanceof GuiIngameForge) {
-                    ((IGuiIngameForge) ingame).renderCrosshairs(width, height);
+                    ((GuiIngameForgeAccessor) ingame).callRenderCrosshairs(width, height);
                 } else if (ingame.showCrosshair() && GuiIngameForge.renderCrosshairs) {
                     mc.getTextureManager().bindTexture(Gui.icons);
                     GlStateManager.enableBlend();
