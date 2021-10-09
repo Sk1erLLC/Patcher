@@ -50,6 +50,7 @@
     "bugfixes.network.NetHandlerPlayClientMixin_SignChatSpam",
     "bugfixes.network.ServerAddressMixin_ResolveCrash",
     "bugfixes.network.ServerListMixin_ResolveNpe",
+    "bugfixes.network.packet.EntityPacketsMixin_ResolveNpe",
     "bugfixes.render.item.ItemModelMesherMixin_ResolveCrash",
     "features.AbstractResourcePackMixin_DownscaleImages",
     "features.ArmorStandRendererMixin_HideNametag",
@@ -114,7 +115,8 @@
     "performance.hudcaching.GlStateManagerMixin_HUDCaching",
     "performance.hudcaching.GuiIngameForgeMixin_HUDCaching",
     "performance.hudcaching.GuiIngameMixin_HUDCaching",
-    "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak"
+    "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
+    "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak"
   ],
   "plugin": "club.sk1er.patcher.mixins.plugin.PatcherMixinPlugin"
 }
