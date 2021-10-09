@@ -233,26 +233,12 @@ public class Patcher {
             return;
         }
 
-        // this code sucks. it's a mix of multithreading & futures, which can be async already.
-        // needs to be looked over again and thought of to be better, but for now it works, I guess.
-        CompletableFuture<Boolean> compatibilityStatus = ProtocolVersionDetector.instance.isCompatibleWithVersion(
+        boolean compatible = ProtocolVersionDetector.instance.isCompatibleWithVersion(
             serverIP,
             315 // 1.11
         );
 
-        if (compatibilityStatus == null) {
-            return;
-        }
-
-        // without this async block, it'll deadlock a majority of the time.
-        // refer to the comment above, likely relevant here.
-        Multithreading.runAsync(() -> {
-            try {
-                GuiChatTransformer.maxChatLength = compatibilityStatus.get() ? 256 : 100;
-            } catch (Exception e) {
-                this.logger.error("Failed to extend max chat length.", e);
-            }
-        });
+        GuiChatTransformer.maxChatLength = compatible ? 256 : 100;
     }
 
     @SubscribeEvent
