@@ -404,6 +404,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean shadowedActionbarText;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Add Background to Actionbar",
+        description = "Render a background behind the actionbar.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean actionbarBackground;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Text Shadow",
         description = "Remove shadows from text.\n§eCan positively impact performance.",
         category = "Miscellaneous", subcategory = "Rendering"
@@ -1153,7 +1160,7 @@ public class PatcherConfig extends Vigilant {
         super(new File("./config/patcher.toml"), "Patcher");
         initialize();
 
-        final Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
+        Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
 
