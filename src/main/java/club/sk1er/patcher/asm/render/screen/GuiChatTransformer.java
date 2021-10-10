@@ -1,20 +1,8 @@
 package club.sk1er.patcher.asm.render.screen;
 
-import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
@@ -72,7 +60,6 @@ public class GuiChatTransformer implements PatcherTransformer {
                         }
                     }
 
-                    C01PacketChatMessageTransformer.extendChatLength(methodNode);
                     methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setText());
                     break;
                 }

@@ -1,6 +1,5 @@
 package club.sk1er.patcher;
 
-import club.sk1er.patcher.asm.network.packet.C01PacketChatMessageTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
 import club.sk1er.patcher.commands.DeleteNameHistoryCommand;
 import club.sk1er.patcher.commands.InventoryScaleCommand;
@@ -10,6 +9,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
+import club.sk1er.patcher.mixins.features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
@@ -66,7 +66,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.tree.ClassNode;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -210,7 +209,7 @@ public class Patcher {
      * Goes through the process of checking the current state of the server.
      * <p>
      * If the server is local, return and set the chat length to 256, as we modify the client to allow for
-     * 256 message length in singleplayer through ASM in {@link C01PacketChatMessageTransformer#transform(ClassNode, String)}.
+     * 256 message length in singleplayer through Mixins in {@link C01PacketChatMessageMixin_ExtendedChatLength}.
      * <p>
      * If the server is blacklisted, return and set the chat length to 100, as that server does not support 256 long
      * chat messages, and was manually blacklisted by the player.

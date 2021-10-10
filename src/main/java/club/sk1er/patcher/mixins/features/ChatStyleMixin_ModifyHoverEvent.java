@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ChatStyle.class)
 public abstract class ChatStyleMixin_ModifyHoverEvent {
 
-    @Shadow public HoverEvent chatHoverEvent;
-    @Shadow public abstract ChatStyle getParent();
-    @Shadow public ClickEvent chatClickEvent;
+    @Shadow private HoverEvent chatHoverEvent;
+    @Shadow protected abstract ChatStyle getParent();
+    @Shadow private ClickEvent chatClickEvent;
 
     /**
      * @author asbyth

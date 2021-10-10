@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin_FixScreenState {
 
-    @Shadow public boolean fullscreen;
+    @Shadow
+    private boolean fullscreen;
 
     @Inject(method = "toggleFullscreen", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setFullscreen(Z)V", remap = false))
     private void patcher$resolveScreenState(CallbackInfo ci) {
