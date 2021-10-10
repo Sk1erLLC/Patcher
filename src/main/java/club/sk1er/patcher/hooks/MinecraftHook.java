@@ -19,7 +19,6 @@ import org.lwjgl.opengl.DisplayMode;
 import java.awt.*;
 
 @SuppressWarnings("unused")
-public class    MinecraftHook {
 public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
     private static final Minecraft mc = Minecraft.getMinecraft();

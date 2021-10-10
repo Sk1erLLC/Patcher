@@ -12,17 +12,17 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class ResourcePackRepositoryHook {
-    public static void updateRepositoryEntriesAll(ResourcePackRepository r) {
-        ResourcePackRepositoryAccessor repository = (ResourcePackRepositoryAccessor) r;
+    public static void updateRepositoryEntriesAll(ResourcePackRepository repository) {
+        ResourcePackRepositoryAccessor accessor = (ResourcePackRepositoryAccessor) repository;
 
         final Map<Integer, ResourcePackRepository.Entry> all = new HashMap<>();
-        for (ResourcePackRepository.Entry entry : r.getRepositoryEntriesAll()) {
+        for (ResourcePackRepository.Entry entry : repository.getRepositoryEntriesAll()) {
             all.put(entry.hashCode(), entry);
         }
 
         final Set<ResourcePackRepository.Entry> newSet = new LinkedHashSet<>();
-        for (File file : repository.callGetResourcePackFiles()) {
-            final ResourcePackRepository.Entry entry = r.new Entry(file);
+        for (File file : accessor.callGetResourcePackFiles()) {
+            final ResourcePackRepository.Entry entry = repository.new Entry(file);
             final int entryHash = entry.hashCode();
             if (!all.containsKey(entryHash)) {
                 try {
@@ -42,6 +42,6 @@ public class ResourcePackRepositoryHook {
             }
         }
 
-        repository.setRepositoryEntriesAll(new ArrayList<>(newSet));
+        accessor.setRepositoryEntriesAll(new ArrayList<>(newSet));
     }
 }
