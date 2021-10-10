@@ -128,6 +128,7 @@
     "features.render.item.ItemRendererMixin_FireRendering",
     "performance.AnvilChunkLoaderMixin_UnclosedStream",
     "performance.BlockRedstoneTorchMixin_MemoryLeak",
+    "performance.ChunkMixin_Optimization",
     "performance.EntityMixin_Capability",
     "performance.EntityOtherPlayerMPMixin_UselessAnimations",
     "performance.LoadingScreenRendererMixin_SkipProgress",
