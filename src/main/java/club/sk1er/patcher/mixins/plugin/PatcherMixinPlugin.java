@@ -11,11 +11,13 @@ import java.util.Set;
 
 public class PatcherMixinPlugin implements IMixinConfigPlugin {
     private static final String LABYMOD_CLASS = "net/labymod/main/LabyMod.class";
+    private static final String SMOOTHFONT_CLASS = "bre/smoothfont/mod_SmoothFont.class";
 
     private static final ArrayListMultimap<String, String> CONFLICTING_CLASSES = ArrayListMultimap.create();
 
     static {
         CONFLICTING_CLASSES.put("GuiContainerMixin_MouseBindFixThatLabyBreaks", LABYMOD_CLASS);
+        CONFLICTING_CLASSES.put("FontRendererMixin_Optimization", SMOOTHFONT_CLASS);
     }
 
     @Override
