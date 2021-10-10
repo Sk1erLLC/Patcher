@@ -28,7 +28,6 @@ import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.render.block.TexturedQuadTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiContainerTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiIngameTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiNewChatTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiOverlayDebugTransformer;
@@ -134,7 +133,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new NBTTagStringTransformer());
         registerTransformer(new RenderArrowTransformer());
-        registerTransformer(new GuiContainerTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());
