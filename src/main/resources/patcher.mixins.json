@@ -131,6 +131,7 @@
     "performance.ChunkMixin_Optimization",
     "performance.EntityMixin_Capability",
     "performance.EntityOtherPlayerMPMixin_UselessAnimations",
+    "performance.GameRulesValueMixin_Optimization",
     "performance.LoadingScreenRendererMixin_SkipProgress",
     "performance.MinecraftMixin_MemoryIssues",
     "performance.MinecraftMixin_OptimizedWorldSwapping",
