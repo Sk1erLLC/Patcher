@@ -32,17 +32,12 @@ public class GuiNewChatTransformer implements CommonTransformer {
             switch (methodName) {
                 case "setChatLine":
                 case "func_146237_a": {
-                    methodNode.instructions.insert(setChatLineHead());
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), setChatLineReturn());
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
 
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
 
-                        if (node instanceof IntInsnNode && ((IntInsnNode) node).operand == 100) {
-                            methodNode.instructions.insertBefore(node, new IntInsnNode(Opcodes.SIPUSH, 32767));
-                            methodNode.instructions.remove(node);
-                        } else if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESPECIAL &&
+                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESPECIAL &&
                             mapClassName(((MethodInsnNode) node).owner).equals("net/minecraft/client/gui/ChatLine")) {
                             InsnList list = new InsnList();
                             list.add(new InsnNode(Opcodes.DUP));
@@ -56,28 +51,10 @@ public class GuiNewChatTransformer implements CommonTransformer {
 
                 case "drawChat":
                 case "func_146230_a": {
-                    methodNode.instructions.insert(forceChatDraw());
                     Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode node = iterator.next();
-                        if (node.getOpcode() == Opcodes.INVOKEVIRTUAL && node instanceof MethodInsnNode) {
-                            final String methodInsnName = mapMethodNameFromNode(node);
-                            if (methodInsnName.equals("getLineCount") || methodInsnName.equals("func_146232_i")) {
-                                methodNode.instructions.insertBefore(node.getPrevious(),
-                                    new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("GuiNewChatHook"), "processMessageQueue", "()V", false));
-                            }
-                        } else if (node.getOpcode() == Opcodes.INVOKESTATIC && node.getPrevious().getOpcode() == Opcodes.ISHL) {
-                            LabelNode ifeq = new LabelNode();
-                            methodNode.instructions.insert(node, ifeq);
-                            AbstractInsnNode prevNode = node;
-
-                            for (int i = 0; i < 15; i++) {
-                                prevNode = prevNode.getPrevious();
-                            }
-
-                            methodNode.instructions.insertBefore(prevNode, getPatcherSetting("transparentChat", "Z"));
-                            methodNode.instructions.insertBefore(prevNode, new JumpInsnNode(Opcodes.IFNE, ifeq));
-                        } else if (node instanceof JumpInsnNode && node.getOpcode() == Opcodes.IFEQ) {
+                        if (node instanceof JumpInsnNode && node.getOpcode() == Opcodes.IFEQ) {
                             AbstractInsnNode prevNode = node;
 
                             for (int i = 0; i < 7; i++) {
@@ -100,47 +77,7 @@ public class GuiNewChatTransformer implements CommonTransformer {
                     this.changeChatComponentHeight(methodNode);
                     break;
                 }
-
-                case "func_146231_a":
-                case "clearChatMessages":
-                    methodNode.instructions.insert(clearMessageQueue());
             }
         }
-    }
-
-    private InsnList forceChatDraw() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, "club/sk1er/patcher/screen/render/overlay/OverlayHandler", "toggledChat", "Z"));
-        LabelNode end = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, end));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new VarInsnNode(Opcodes.ISTORE, 1));
-        list.add(end);
-        return list;
-    }
-
-    private InsnList clearMessageQueue() {
-        InsnList list = new InsnList();
-        list.add(new FieldInsnNode(Opcodes.GETSTATIC, getHookClass("GuiNewChatHook"), "messageQueue", "Ljava/util/Deque;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Deque", "clear", "()V", true));
-        return list;
-    }
-
-    private InsnList setChatLineReturn() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLineReturn", "()V", false));
-        return list;
-    }
-
-    private InsnList setChatLineHead() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-        list.add(new VarInsnNode(Opcodes.ILOAD, 4));
-        LabelNode ifne = new LabelNode();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/chat/ChatHandler", "setChatLineHead", "(Lnet/minecraft/util/IChatComponent;Z)Z", false));
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifne);
-        return list;
     }
 }

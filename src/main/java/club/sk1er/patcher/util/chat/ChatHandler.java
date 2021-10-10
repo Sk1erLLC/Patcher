@@ -105,7 +105,7 @@ public class ChatHandler {
         ticks = 0;
     }
 
-    public static boolean setChatLineHead(IChatComponent chatComponent, boolean refresh) {
+    public static boolean appendMessageCounter(IChatComponent chatComponent, boolean refresh) {
         if ((Loader.isModLoaded("hychat") || Loader.isModLoaded("labymod")) || !PatcherConfig.compactChat) {
             return true;
         }
@@ -149,7 +149,7 @@ public class ChatHandler {
         }
     }
 
-    public static void setChatLineReturn() {
+    public static void resetMessageHash() {
         currentMessageHash = -1;
     }
 
