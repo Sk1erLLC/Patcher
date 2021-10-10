@@ -9,7 +9,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EffectRenderer.class)
 public class EffectRendererMixin_BlockParticles {
-    @Inject(method = {"addBlockDestroyEffects", "addBlockHitEffects*"}, at = @At("HEAD"), cancellable = true)
+    @Inject(method = {
+        "addBlockDestroyEffects",
+        "addBlockHitEffects(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;)V",
+        "addBlockHitEffects(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/MovingObjectPosition;)V"},
+        at = @At("HEAD"), cancellable = true)
     private void patcher$removeBlockBreakingParticles(CallbackInfo ci) {
         if (PatcherConfig.disableBlockBreakParticles) {
             ci.cancel();
