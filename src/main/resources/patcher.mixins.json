@@ -79,6 +79,7 @@
     "bugfixes.network.ServerListMixin_ResolveNpe",
     "bugfixes.network.packet.EntityPacketsMixin_ResolveNpe",
     "bugfixes.render.item.ItemModelMesherMixin_ResolveCrash",
+    "bugfixes.render.item.ItemStackMixin_HexColorTooltip",
     "features.AbstractResourcePackMixin_DownscaleImages",
     "features.ArmorStandRendererMixin_HideNametag",
     "features.BlockRendererDispatcherMixin_RemoveFoliage",
@@ -148,7 +149,8 @@
     "performance.hudcaching.GuiIngameForgeMixin_HUDCaching",
     "performance.hudcaching.GuiIngameMixin_HUDCaching",
     "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
-    "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak"
+    "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak",
+    "performance.render.item.ItemStackMixin_CacheDisplayName"
   ],
   "plugin": "club.sk1er.patcher.mixins.plugin.PatcherMixinPlugin"
 }
