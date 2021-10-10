@@ -34,7 +34,6 @@ import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
 import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
-import club.sk1er.patcher.asm.world.AnvilChunkLoaderTransformer;
 import club.sk1er.patcher.asm.world.BlockPosTransformer;
 import club.sk1er.patcher.asm.world.ChunkTransformer;
 import club.sk1er.patcher.asm.world.GameRulesValueTransformer;
@@ -131,7 +130,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new NBTTagStringTransformer());
-        registerTransformer(new AnvilChunkLoaderTransformer());
         registerTransformer(new RenderArrowTransformer());
         registerTransformer(new GuiContainerTransformer());
         registerTransformer(new FontRendererTransformer());

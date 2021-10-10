@@ -126,6 +126,7 @@
     "features.network.NetHandlerPlayClientMixin_ChatDelay",
     "features.network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "features.render.item.ItemRendererMixin_FireRendering",
+    "performance.AnvilChunkLoaderMixin_UnclosedStream",
     "performance.BlockRedstoneTorchMixin_MemoryLeak",
     "performance.EntityMixin_Capability",
     "performance.EntityOtherPlayerMPMixin_UselessAnimations",
