@@ -2,6 +2,7 @@ package club.sk1er.patcher.screen;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
@@ -67,7 +68,7 @@ public class PatcherMenuEditor {
 
         if (gui instanceof GuiMainMenu) {
             if (PatcherConfig.cleanMainMenu) {
-                realmsButton = ((GuiMainMenu) gui).realmsButton;
+                realmsButton = ((GuiMainMenuAccessor) gui).getRealmsButton();
                 for (GuiButton button : mcButtonList) {
                     if (button.displayString.equals(I18n.format("fml.menu.mods"))) {
                         button.width = 200;

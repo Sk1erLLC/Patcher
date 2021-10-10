@@ -1,6 +1,7 @@
 package club.sk1er.patcher.screen.render.overlay;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.ItemAccessor;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -203,7 +204,7 @@ public class GlanceRenderer {
                     final AttributeModifier modifier = entry.getValue();
                     double damage = modifier.getAmount();
 
-                    if (modifier.getID() == Item.itemModifierUUID) {
+                    if (modifier.getID() == ItemAccessor.getItemModifierUUID()) {
                         damage += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
                     }
 

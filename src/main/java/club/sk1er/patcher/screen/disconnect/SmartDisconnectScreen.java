@@ -1,11 +1,8 @@
 package club.sk1er.patcher.screen.disconnect;
 
+import club.sk1er.patcher.mixins.accessors.GuiMultiplayerAccessor;
 import gg.essential.universal.ChatColor;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.multiplayer.ServerData;
 import org.lwjgl.input.Keyboard;
 
@@ -29,6 +26,7 @@ public class SmartDisconnectScreen extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         switch (button.id) {
@@ -41,9 +39,9 @@ public class SmartDisconnectScreen extends GuiScreen {
 
             case 1:
                 // store ip to log in with
-                final String ip = mc.getCurrentServerData().serverIP;
-                final String name = mc.getCurrentServerData().serverName;
-                final GuiMultiplayer multiplayer = new GuiMultiplayer(new GuiMainMenu());
+                String ip = mc.getCurrentServerData().serverIP;
+                String name = mc.getCurrentServerData().serverName;
+                GuiMultiplayer multiplayer = new GuiMultiplayer(new GuiMainMenu());
 
                 // disconnect
                 button.enabled = false;
@@ -53,8 +51,9 @@ public class SmartDisconnectScreen extends GuiScreen {
 
                 // reconnect
                 multiplayer.setWorldAndResolution(mc, width, height);
-                multiplayer.directConnect = true;
-                multiplayer.selectedServer = new ServerData(name, ip, false);
+                GuiMultiplayerAccessor accessor = (GuiMultiplayerAccessor) multiplayer;
+                accessor.setDirectConnect(true);
+                accessor.setSelectedServer(new ServerData(name, ip, false));
                 multiplayer.confirmClicked(true, 0);
                 break;
 

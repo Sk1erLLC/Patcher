@@ -1,5 +1,6 @@
 package club.sk1er.patcher.screen;
 
+import club.sk1er.patcher.mixins.accessors.GuiMultiplayerAccessor;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
@@ -20,7 +21,7 @@ public class FakeMultiplayerMenu extends GuiMultiplayer {
             this.mc.theWorld.sendQuittingDisconnectingPacket();
             this.mc.loadWorld(null);
             this.mc.displayGuiScreen(null);
-            this.parentScreen = new GuiMultiplayer(new GuiMainMenu());
+            ((GuiMultiplayerAccessor) this).setParentScreen(new GuiMultiplayer(new GuiMainMenu()));
         }
     }
 }

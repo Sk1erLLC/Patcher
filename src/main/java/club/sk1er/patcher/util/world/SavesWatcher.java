@@ -1,6 +1,7 @@
 package club.sk1er.patcher.util.world;
 
 import club.sk1er.patcher.Patcher;
+import club.sk1er.patcher.mixins.accessors.GuiSelectWorldAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiSelectWorld;
 
@@ -21,6 +22,7 @@ public class SavesWatcher {
     private final Path savesFolder = new File(mc.mcDataDir, "saves").toPath();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    @SuppressWarnings("ConstantConditions")
     public void watch() {
         this.executor.execute(() -> {
             try {
@@ -36,7 +38,7 @@ public class SavesWatcher {
                         if (this.mc.currentScreen instanceof GuiSelectWorld) {
                             this.mc.addScheduledTask(() -> {
                                 if (this.mc.currentScreen instanceof GuiSelectWorld) {
-                                    this.mc.displayGuiScreen(new GuiSelectWorld(((GuiSelectWorld) mc.currentScreen).parentScreen));
+                                    this.mc.displayGuiScreen(((GuiSelectWorldAccessor) new GuiSelectWorld(mc.currentScreen)).getParentScreen());
                                 }
                             });
                         }

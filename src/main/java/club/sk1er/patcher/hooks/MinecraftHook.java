@@ -2,6 +2,8 @@ package club.sk1er.patcher.hooks;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.KeyBindingAccessor;
+import club.sk1er.patcher.mixins.accessors.MinecraftAccessor;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -14,12 +16,13 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 
+@SuppressWarnings("unused")
 public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final MinecraftAccessor mcAccesor = (MinecraftAccessor) mc;
     private boolean lastFullscreen = false;
     public static MetricsData metricsData;
 
@@ -28,7 +31,7 @@ public class MinecraftHook {
     }
 
     public static void updateKeyBindState() {
-        for (KeyBinding keybinding : KeyBinding.keybindArray) {
+        for (KeyBinding keybinding : KeyBindingAccessor.getKeybindArray()) {
             try {
                 final int keyCode = keybinding.getKeyCode();
                 KeyBinding.setKeyBindState(keyCode, keyCode < 256 && Keyboard.isKeyDown(keyCode));
@@ -42,20 +45,20 @@ public class MinecraftHook {
             return false;
         }
 
-        mc.fullscreen = !mc.fullscreen;
+        mcAccesor.setFullScreen(!mc.isFullScreen());
 
         boolean grabbed = Mouse.isGrabbed();
         if (grabbed)
             Mouse.setGrabbed(false);
         try {
             DisplayMode displayMode = Display.getDesktopDisplayMode();
-            if (mc.fullscreen) {
+            if (mc.isFullScreen()) {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
                 Display.setDisplayMode(displayMode);
                 Display.setLocation(0, 0);
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
-                displayMode = new DisplayMode(mc.tempDisplayWidth, mc.tempDisplayHeight);
+                displayMode = new DisplayMode(mcAccesor.getTempDisplayWidth(), mcAccesor.getTempDisplayHeight());
                 Display.setDisplayMode(displayMode);
                 displayCommon();
             }
@@ -66,9 +69,9 @@ public class MinecraftHook {
             if (mc.currentScreen != null) {
                 mc.resize(mc.displayWidth, mc.displayHeight);
             } else {
-                mc.updateFramebufferSize();
+                mcAccesor.callUpdateFramebufferSize();
             }
-            INSTANCE.lastFullscreen = mc.fullscreen; //Forward so both behavior isn't ran
+            INSTANCE.lastFullscreen = mc.isFullScreen(); //Forward so both behavior isn't ran
             mc.updateDisplay();
             Mouse.setCursorPosition((Display.getX() + Display.getWidth()) >> 1, (Display.getY() + Display.getHeight()) >> 1);
             if (grabbed)
