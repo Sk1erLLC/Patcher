@@ -24,7 +24,6 @@
     "accessors.ResourcePackRepositoryAccessor",
     "accessors.SoundHandlerAccessor",
     "accessors.SoundRegistryAccessor",
-    "accessors.TileEntityBannerRendererAccessor",
     "accessors.WorldRendererAccessor",
     "accessors.TexturedQuadAccessor",
     "accessors.BlockAccessor",

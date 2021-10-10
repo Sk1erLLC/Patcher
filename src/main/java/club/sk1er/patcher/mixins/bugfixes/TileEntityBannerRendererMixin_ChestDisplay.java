@@ -1,6 +1,5 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
-import club.sk1er.patcher.mixins.accessors.TileEntityBannerRendererAccessor;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.LayeredColorMaskTexture;
@@ -8,9 +7,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityBannerRenderer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +15,10 @@ import java.util.Map;
 
 @Mixin(TileEntityBannerRenderer.class)
 public class TileEntityBannerRendererMixin_ChestDisplay {
+
+    @Shadow @Final private static Map<String, TileEntityBannerRenderer.TimedBannerTexture> DESIGNS;
+
+    @Shadow @Final private static ResourceLocation BANNERTEXTURES;
 
     /**
      * @author asbyth
@@ -30,11 +31,10 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
         if (texture.isEmpty()) {
             return null;
         } else {
-            Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRendererAccessor.getDesigns();
-            TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(texture);
+            TileEntityBannerRenderer.TimedBannerTexture timedTexture = DESIGNS.get(texture);
             if (timedTexture == null) {
-                if (designs.size() >= 256 && !this.patcher$freeCacheSlot()) {
-                    return TileEntityBannerRendererAccessor.getBannerTextures();
+                if (DESIGNS.size() >= 256 && !this.patcher$freeCacheSlot()) {
+                    return BANNERTEXTURES;
                 }
 
                 List<TileEntityBanner.EnumBannerPattern> patternList = banner.getPatternList();
@@ -47,8 +47,8 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
 
                 timedTexture = new TileEntityBannerRenderer.TimedBannerTexture();
                 timedTexture.bannerTexture = new ResourceLocation(texture);
-                Minecraft.getMinecraft().getTextureManager().loadTexture(timedTexture.bannerTexture, new LayeredColorMaskTexture(TileEntityBannerRendererAccessor.getBannerTextures(), patternPath, colorList));
-                TileEntityBannerRendererAccessor.getDesigns().put(texture, timedTexture);
+                Minecraft.getMinecraft().getTextureManager().loadTexture(timedTexture.bannerTexture, new LayeredColorMaskTexture(BANNERTEXTURES, patternPath, colorList));
+                DESIGNS.put(texture, timedTexture);
             }
 
             timedTexture.systemTime = System.currentTimeMillis();
@@ -59,12 +59,11 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
     @Unique
     private boolean patcher$freeCacheSlot() {
         long start = System.currentTimeMillis();
-        Map<String, TileEntityBannerRenderer.TimedBannerTexture> designs = TileEntityBannerRendererAccessor.getDesigns();
-        Iterator<String> iterator = designs.keySet().iterator();
+        Iterator<String> iterator = DESIGNS.keySet().iterator();
 
         while (iterator.hasNext()) {
             String next = iterator.next();
-            TileEntityBannerRenderer.TimedBannerTexture timedTexture = designs.get(next);
+            TileEntityBannerRenderer.TimedBannerTexture timedTexture = DESIGNS.get(next);
 
             if ((start - timedTexture.systemTime) > 5000L) {
                 Minecraft.getMinecraft().getTextureManager().deleteTexture(timedTexture.bannerTexture);
@@ -73,6 +72,6 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
             }
         }
 
-        return designs.size() < 256;
+        return DESIGNS.size() < 256;
     }
 }
