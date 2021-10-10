@@ -51,14 +51,26 @@ public class ChatHandler {
                 component.appendSibling(event.message);
                 event.message = component;
             } else if (PatcherConfig.timestampsStyle == 1) {
-                if (event.message.getChatStyle().getChatHoverEvent() == null) {
-                    event.message.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
-                } else {
-                    // todo: expand to append upon siblings, cant figure out how to do so
-                    final IChatComponent value = event.message.getChatStyle().getChatHoverEvent().getValue();
-                    value.appendText("\n");
-                    value.appendText(ChatUtilities.translate("&7Sent at &e" + time + "&7."));
+                LinkedList<IChatComponent> queue = new LinkedList<>();
+                queue.add(event.message);
+
+                while (!queue.isEmpty()) {
+                    IChatComponent component = queue.remove();
+                    List<IChatComponent> siblings = component.getSiblings();
+
+                    if (siblings.isEmpty()) {
+                        HoverEvent hoverEvent = component.getChatStyle().getChatHoverEvent();
+                        if (hoverEvent == null) {
+                            component.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
+                        } else {
+                            IChatComponent value = hoverEvent.getValue();
+                            value.appendText("\n");
+                            value.appendText(ChatUtilities.translate("&7Sent at &e" + time + "&7."));
+                        }
+                    } else {
+                        queue.addAll(component.getSiblings());
+                    }
                 }
             }
         }
@@ -201,7 +213,7 @@ public class ChatHandler {
     private static int getMessageIndex(List<ChatLine> chatMessageList, int index, ChatLine chatLine) {
         final ChatLine prevLine = chatMessageList.get(index);
         if (isDivider(cleanColor(prevLine.getChatComponent().getUnformattedText())) &&
-            Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
+                Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
 
@@ -211,7 +223,7 @@ public class ChatHandler {
 
         final ChatLine nextLine = chatMessageList.get(index);
         if (isDivider(cleanColor(nextLine.getChatComponent().getUnformattedText())) &&
-            Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
+                Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
 
@@ -231,14 +243,14 @@ public class ChatHandler {
         }
 
         return Objects.hash(style.getColor(),
-            style.getBold(),
-            style.getItalic(),
-            style.getUnderlined(),
-            style.getStrikethrough(),
-            style.getObfuscated(),
-            hoverAction, hoverChatHash,
-            style.getChatClickEvent(),
-            style.getInsertion());
+                style.getBold(),
+                style.getItalic(),
+                style.getUnderlined(),
+                style.getStrikethrough(),
+                style.getObfuscated(),
+                hoverAction, hoverChatHash,
+                style.getChatClickEvent(),
+                style.getInsertion());
     }
 
     private static int getChatComponentHash(IChatComponent chatComponent) {
