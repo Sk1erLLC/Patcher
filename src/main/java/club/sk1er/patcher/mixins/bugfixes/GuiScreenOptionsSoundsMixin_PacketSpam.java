@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiScreenOptionsSoundsMixin_PacketSpam {
 
     // don't send a packet for every frame the slider is dragged, instead save that for when the slider is released
-    @Redirect(method = "mouseDragged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/settings/GameSettings;saveOptions()V"))
+    @Redirect(method = "mouseDragged(Lnet/minecraft/client/Minecraft;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/settings/GameSettings;saveOptions()V"))
     private void patcher$cancelSaving(GameSettings instance) {
         // no-op
     }
 
-    @Inject(method = "mouseReleased", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/audio/SoundHandler;playSound(Lnet/minecraft/client/audio/ISound;)V"))
+    @Inject(method = "mouseReleased(II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/audio/SoundHandler;playSound(Lnet/minecraft/client/audio/ISound;)V"))
     private void patcher$save(int mouseX, int mouseY, CallbackInfo ci) {
         Minecraft.getMinecraft().gameSettings.saveOptions();
     }
