@@ -32,7 +32,6 @@ import club.sk1er.patcher.asm.render.screen.GuiIngameTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiNewChatTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiOverlayDebugTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiPlayerTabOverlayTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiScreenOptionsSoundsTransformer;
 import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
@@ -160,7 +159,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new EntityPlayerTransformer());
         registerTransformer(new RenderWitherTransformer());
-        registerTransformer(new GuiScreenOptionsSoundsTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

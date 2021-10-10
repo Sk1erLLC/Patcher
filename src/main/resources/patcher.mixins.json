@@ -45,6 +45,7 @@
     "bugfixes.GuiOptionsMixin_SaveSettings",
     "bugfixes.GuiScreenBookMixin_ResolveRenderLayer",
     "bugfixes.GuiScreenMixin_FixWindowsIME",
+    "bugfixes.GuiScreenOptionsSoundsMixin_PacketSpam",
     "bugfixes.GuiScreenResourcePacksMixin_ChangeTextPosition",
     "bugfixes.GuiScreenResourcePacksMixin_ClearHandles",
     "bugfixes.GuiVideoSettingsMixin_MipmapSlider",
