@@ -62,7 +62,7 @@ public class ChatHandler {
                         HoverEvent hoverEvent = component.getChatStyle().getChatHoverEvent();
                         if (hoverEvent == null) {
                             component.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
+                                new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
                         } else {
                             IChatComponent value = hoverEvent.getValue();
                             value.appendText("\n");
@@ -213,7 +213,7 @@ public class ChatHandler {
     private static int getMessageIndex(List<ChatLine> chatMessageList, int index, ChatLine chatLine) {
         final ChatLine prevLine = chatMessageList.get(index);
         if (isDivider(cleanColor(prevLine.getChatComponent().getUnformattedText())) &&
-                Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
+            Math.abs(chatLine.getUpdatedCounter() - prevLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
 
@@ -223,7 +223,7 @@ public class ChatHandler {
 
         final ChatLine nextLine = chatMessageList.get(index);
         if (isDivider(cleanColor(nextLine.getChatComponent().getUnformattedText())) &&
-                Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
+            Math.abs(chatLine.getUpdatedCounter() - nextLine.getUpdatedCounter()) <= 2) {
             chatMessageList.remove(index);
         }
 
@@ -243,14 +243,14 @@ public class ChatHandler {
         }
 
         return Objects.hash(style.getColor(),
-                style.getBold(),
-                style.getItalic(),
-                style.getUnderlined(),
-                style.getStrikethrough(),
-                style.getObfuscated(),
-                hoverAction, hoverChatHash,
-                style.getChatClickEvent(),
-                style.getInsertion());
+            style.getBold(),
+            style.getItalic(),
+            style.getUnderlined(),
+            style.getStrikethrough(),
+            style.getObfuscated(),
+            hoverAction, hoverChatHash,
+            style.getChatClickEvent(),
+            style.getInsertion());
     }
 
     private static int getChatComponentHash(IChatComponent chatComponent) {
