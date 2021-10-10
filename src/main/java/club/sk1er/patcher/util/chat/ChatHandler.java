@@ -51,14 +51,26 @@ public class ChatHandler {
                 component.appendSibling(event.message);
                 event.message = component;
             } else if (PatcherConfig.timestampsStyle == 1) {
-                if (event.message.getChatStyle().getChatHoverEvent() == null) {
-                    event.message.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
-                } else {
-                    // todo: expand to append upon siblings, cant figure out how to do so
-                    final IChatComponent value = event.message.getChatStyle().getChatHoverEvent().getValue();
-                    value.appendText("\n");
-                    value.appendText(ChatUtilities.translate("&7Sent at &e" + time + "&7."));
+                LinkedList<IChatComponent> queue = new LinkedList<>();
+                queue.add(event.message);
+
+                while (!queue.isEmpty()) {
+                    IChatComponent component = queue.remove();
+                    List<IChatComponent> siblings = component.getSiblings();
+
+                    if (siblings.isEmpty()) {
+                        HoverEvent hoverEvent = component.getChatStyle().getChatHoverEvent();
+                        if (hoverEvent == null) {
+                            component.getChatStyle().setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new ChatComponentIgnored(ChatUtilities.translate("&7Sent at &e" + time + "&7."))));
+                        } else {
+                            IChatComponent value = hoverEvent.getValue();
+                            value.appendText("\n");
+                            value.appendText(ChatUtilities.translate("&7Sent at &e" + time + "&7."));
+                        }
+                    } else {
+                        queue.addAll(component.getSiblings());
+                    }
                 }
             }
         }
