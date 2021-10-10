@@ -102,27 +102,6 @@ public class EffectRendererTransformer implements PatcherTransformer {
 
                     break;
                 }
-
-                case "func_180533_a":
-                case "addBlockDestroyEffects":
-                case "func_180532_a":
-                case "addBlockHitEffects":
-                    methodNode.instructions.insert(cancelParticles());
-                    break;
-
-                case "func_78873_a":
-                case "addEffect": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-                        if (next instanceof IntInsnNode && ((IntInsnNode) next).operand == 4000) {
-                            methodNode.instructions.set(next, getPatcherSetting("maxParticleLimit", "I"));
-                            break;
-                        }
-                    }
-
-                    break;
-                }
             }
         }
     }
@@ -143,16 +122,6 @@ public class EffectRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.FSTORE, 7));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178809_c", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 8));
-        return list;
-    }
-
-    private InsnList cancelParticles() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("disableBlockBreakParticles", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
         return list;
     }
 

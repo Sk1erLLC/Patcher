@@ -85,6 +85,8 @@
     "features.BlockRendererDispatcherMixin_RemoveFoliage",
     "features.ChatStyleMixin_ModifyHoverEvent",
     "features.ChunkRenderDispatcherMixin_LimitUpdates",
+    "features.EffectRendererMixin_BlockParticles",
+    "features.EffectRendererMixin_ChangeParticleLimit",
     "features.EnchantmentMixin_TranslateEnchantments",
     "features.EntityFXMixin_StaticParticleColor",
     "features.EntityLivingBaseMixin_CleanView",
