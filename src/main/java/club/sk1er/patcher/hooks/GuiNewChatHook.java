@@ -49,7 +49,7 @@ public class GuiNewChatHook {
         if (!messageQueue.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 50);
-            Gui.drawRect(0, 0, chatWidth + 4, 9, 2130706432);
+            if (!PatcherConfig.transparentChat) Gui.drawRect(0, 0, chatWidth + 4, 9, 2130706432);
             GlStateManager.enableBlend();
             GlStateManager.translate(0, 0, 50);
             mc.fontRendererObj.drawStringWithShadow(ChatColor.GRAY + "[+" + messageQueue.size() + " pending lines]", 0, 1, -1);
