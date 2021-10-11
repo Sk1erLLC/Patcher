@@ -1157,7 +1157,7 @@ public class PatcherConfig extends Vigilant {
     public static PatcherConfig INSTANCE = new PatcherConfig(); // Needs to be at the bottom or the default values take priority
 
     public PatcherConfig() {
-        super(new File("./config/patcher.toml"), "Patcher");
+        super(new File("./config/patcher.toml"), "Patcher (" + Patcher.VERSION + ")");
         initialize();
 
         Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
