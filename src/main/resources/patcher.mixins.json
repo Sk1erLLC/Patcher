@@ -142,6 +142,7 @@
     "features.network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
     "features.render.item.ItemRendererMixin_FireRendering",
     "performance.AnvilChunkLoaderMixin_UnclosedStream",
+    "performance.BlockPosMixin_ReduceAllocations",
     "performance.BlockRedstoneTorchMixin_MemoryLeak",
     "performance.ChunkMixin_Optimization",
     "performance.EntityMixin_Capability",
