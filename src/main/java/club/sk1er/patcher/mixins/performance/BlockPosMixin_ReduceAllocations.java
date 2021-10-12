@@ -127,59 +127,6 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos offset(EnumFacing direction) {
-        switch (direction) {
-            case UP:
-                return new BlockPos(this.getX(), this.getY() + 1, this.getZ());
-            case DOWN:
-                return new BlockPos(this.getX(), this.getY() - 1, this.getZ());
-
-            case NORTH:
-                return new BlockPos(this.getX(), this.getY(), this.getZ() - 1);
-            case SOUTH:
-                return new BlockPos(this.getX(), this.getY(), this.getZ() + 1);
-
-            case WEST:
-                return new BlockPos(this.getX() - 1, this.getY(), this.getZ());
-            case EAST:
-                return new BlockPos(this.getX() + 1, this.getY(), this.getZ());
-
-            default:
-                return new BlockPos(
-                    this.getX() + direction.getFrontOffsetX(),
-                    this.getY() + direction.getFrontOffsetY(),
-                    this.getZ() + direction.getFrontOffsetZ()
-                );
-        }
-    }
-
-    /**
-     * @author asbyth
-     * @reason Inline method to reduce allocations
-     */
-    @Overwrite
-    public BlockPos offset(EnumFacing direction, int offset) {
-        switch (direction) {
-            case UP:
-                return new BlockPos(this.getX(), this.getY() + offset, this.getZ());
-            case DOWN:
-                return new BlockPos(this.getX(), this.getY() - offset, this.getZ());
-
-            case NORTH:
-                return new BlockPos(this.getX(), this.getY(), this.getZ() - offset);
-            case SOUTH:
-                return new BlockPos(this.getX(), this.getY(), this.getZ() + offset);
-
-            case WEST:
-                return new BlockPos(this.getX() - offset, this.getY(), this.getZ());
-            case EAST:
-                return new BlockPos(this.getX() + offset, this.getY(), this.getZ());
-
-            default:
-                return new BlockPos(
-                    this.getX() + direction.getFrontOffsetX() * offset,
-                    this.getY() + direction.getFrontOffsetY() * offset,
-                    this.getZ() + direction.getFrontOffsetZ() * offset
-                );
-        }
+        return new BlockPos(this.getX() + direction.getFrontOffsetX(), this.getY() + direction.getFrontOffsetY(), this.getZ() + direction.getFrontOffsetZ());
     }
 }
