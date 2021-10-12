@@ -42,7 +42,6 @@ import club.sk1er.patcher.asm.world.ScoreboardTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityPlayerTransformer;
 import club.sk1er.patcher.asm.world.entity.EntityTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
-import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagStringTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -129,7 +128,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new GuiIngameTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
-        registerTransformer(new NBTTagStringTransformer());
         registerTransformer(new RenderArrowTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());

@@ -154,6 +154,7 @@
     "performance.MinecraftMixin_SkipTwitchStuff",
     "performance.MinecraftMixin_ToggleGLErrorChecking",
     "performance.MinecraftServerMixin_MemoryLeak",
+    "performance.NBTTagStringMixin_DataCache",
     "performance.NetHandlerPlayClientMixin_InstantDimensionSwapping",
     "performance.NodeProcessorMixin_MemoryLeak",
     "performance.RenderEntityItemMixin_EntityCulling",
