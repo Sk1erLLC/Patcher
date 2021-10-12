@@ -53,6 +53,7 @@ public class PatcherMenuEditor {
     // button ids
     private final int serverList = 231423;
     private final int allSounds = 85348;
+    private final int refreshSounds = 85634;
 
     private List<GuiButton> mcButtonList;
     private GuiButton realmsButton;
@@ -98,7 +99,8 @@ public class PatcherMenuEditor {
                 }
             }
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 200, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 100, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(refreshSounds, (width >> 1), height / 6 + 146, 100, 20, "Refresh Sounds"));
         }
     }
 
@@ -118,8 +120,12 @@ public class PatcherMenuEditor {
         GuiScreen gui = event.gui;
         if (gui instanceof GuiIngameMenu && buttonId == serverList) {
             mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
-        } else if (gui instanceof GuiScreenOptionsSounds && buttonId == allSounds) {
-            mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
+        } else if (gui instanceof GuiScreenOptionsSounds) {
+            if (buttonId == allSounds) {
+                mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
+            } else if (buttonId == refreshSounds) {
+                mc.getSoundHandler().onResourceManagerReload(mc.getResourceManager());
+            }
         }
     }
 
