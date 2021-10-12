@@ -64,6 +64,7 @@
     "bugfixes.crashes.EntityLivingBaseMixin_ResolveCrash",
     "bugfixes.crashes.GameSettingsMixin_ResolveCrash",
     "bugfixes.crashes.GuiScreenMixin_ResolveCrash",
+    "bugfixes.crashes.NBTTagCompoundMixin_FailFast",
     "bugfixes.crashes.ResourcePackRepositoryMixin_ResolveCrash",
     "bugfixes.crashes.ServerListEntryNormalMixin_ResolveCrash",
     "bugfixes.crashes.ServerSelectionListMixin_ResolveCrash",
