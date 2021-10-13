@@ -121,7 +121,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
-        registerTransformer(new RenderArrowTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());

@@ -6,6 +6,7 @@
   "client": [
     "accessors.AbstractClientPlayerAccessor",
     "accessors.BlockAccessor",
+    "accessors.EntityArrowAccessor",
     "accessors.FontRendererAccessor",
     "accessors.GlStateManagerAccessor",
     "accessors.GuiIngameAccessor",
@@ -125,6 +126,7 @@
     "features.MinecraftMixin_SeparateResources",
     "features.MinecraftMixin_WindowedFullscreen",
     "features.MinecraftServerMixin_Metrics",
+    "features.RenderArrowMixin_CancelRender",
     "features.RenderEntityItemMixin_StaticItems",
     "features.RenderEntityItemMixin_UnstackedItems",
     "features.RendererLivingEntityMixin_NametagRendering",
