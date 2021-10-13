@@ -3,6 +3,10 @@
   "refmap": "patcher.mixins.refmap.json",
   "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "club.sk1er.patcher.mixins.plugin.PatcherMixinPlugin",
+  "overwrites": {
+    "conformVisibility": true
+  },
   "client": [
     "accessors.AbstractClientPlayerAccessor",
     "accessors.BlockAccessor",
@@ -183,6 +187,5 @@
     "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
     "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak",
     "performance.render.item.ItemStackMixin_CacheDisplayName"
-  ],
-  "plugin": "club.sk1er.patcher.mixins.plugin.PatcherMixinPlugin"
+  ]
 }
