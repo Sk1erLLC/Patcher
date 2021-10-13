@@ -9,13 +9,8 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(GuiPlayerTabOverlay.class)
 public class GuiPlayerTabOverlayMixin_TabOpacity {
 
-    @ModifyConstant(method = "renderPlayerlist", constant = @Constant(intValue = -2147483648))
+    @ModifyConstant(method = "renderPlayerlist", constant = {@Constant(intValue = -2147483648), @Constant(intValue = 553648127)})
     private int patcher$modifyColor(int original) {
-        return this.patcher$modifiedColor(original);
-    }
-
-    @ModifyConstant(method = "renderPlayerlist", constant = @Constant(intValue = 553648127))
-    private int patcher$modifyColor2(int original) {
         return this.patcher$modifiedColor(original);
     }
 
