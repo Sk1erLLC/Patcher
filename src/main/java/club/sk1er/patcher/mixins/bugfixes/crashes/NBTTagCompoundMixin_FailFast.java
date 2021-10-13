@@ -7,13 +7,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
-
 @Mixin(NBTTagCompound.class)
 public class NBTTagCompoundMixin_FailFast {
 
     @Inject(method = "setTag", at = @At("HEAD"))
     private void patcher$failFast(String key, NBTBase value, CallbackInfo ci) {
-        Objects.requireNonNull(value, "Invalid null NBT value with key " + key);
+        if (value == null) throw new IllegalArgumentException("Invalid null NBT value with key " + key);
     }
 }
