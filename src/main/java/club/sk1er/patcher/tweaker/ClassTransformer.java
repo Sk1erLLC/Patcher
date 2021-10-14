@@ -35,7 +35,6 @@ import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
 import club.sk1er.patcher.asm.render.world.entity.*;
-import club.sk1er.patcher.asm.render.world.entity.model.ModelRendererTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
@@ -128,7 +127,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new VisGraphTransformer());
-        registerTransformer(new ModelRendererTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
