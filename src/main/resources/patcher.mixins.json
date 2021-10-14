@@ -157,6 +157,7 @@
     "performance.BlockPosMixin_ReduceAllocations",
     "performance.BlockRedstoneTorchMixin_MemoryLeak",
     "performance.ChunkMixin_Optimization",
+    "performance.EffectRendererMixin_ParticleCulling",
     "performance.EntityMixin_Capability",
     "performance.EntityMixin_DisplayNames",
     "performance.EntityOtherPlayerMPMixin_UselessAnimations",
