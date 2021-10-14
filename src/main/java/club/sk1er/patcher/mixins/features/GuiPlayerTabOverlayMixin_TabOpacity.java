@@ -11,13 +11,9 @@ public class GuiPlayerTabOverlayMixin_TabOpacity {
 
     @ModifyConstant(method = "renderPlayerlist", constant = {@Constant(intValue = -2147483648), @Constant(intValue = 553648127)})
     private int patcher$modifyColor(int original) {
-        return this.patcher$modifiedColor(original);
-    }
-
-    private int patcher$modifiedColor(int color) {
-        if (!PatcherConfig.customTabOpacity) return color;
-        int prevOpacity = Math.abs(color >> 24);
+        if (PatcherConfig.tabOpacity >= 1.0F) return original;
+        int prevOpacity = Math.abs(original >> 24);
         int opacity = (int) (prevOpacity * PatcherConfig.tabOpacity);
-        return (opacity << 24) | (color & 0xFFFFFF);
+        return (opacity << 24) | (original & 0xFFFFFF);
     }
 }

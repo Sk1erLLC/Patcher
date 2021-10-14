@@ -800,13 +800,6 @@ public class PatcherConfig extends Vigilant {
     public static float containerOpacity = 1.0f;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Custom Tab Opacity",
-        description = "Allow for customizing tab opacity.",
-        category = "Screens", subcategory = "Tab"
-    )
-    public static boolean customTabOpacity = false;
-
-    @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Tab Opacity",
         description = "Change the tab list opacity.",
         category = "Screens", subcategory = "Tab"
@@ -1168,7 +1161,6 @@ public class PatcherConfig extends Vigilant {
             addDependency("smartFullbright", "fullbright");
             addDependency("unfocusedFPSAmount", "unfocusedFPS");
             addDependency("instantFullscreen", "windowedFullscreen");
-            addDependency("tabOpacity", "customTabOpacity");
             addDependency("tabHeight", "tabHeightAllow");
             addDependency("consecutiveCompactChat", "compactChat");
             addDependency("compactChatTime", "compactChat");
