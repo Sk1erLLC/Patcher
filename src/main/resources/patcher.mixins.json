@@ -37,7 +37,7 @@
     "bugfixes.EntityLivingBaseMixin_MouseDelayFix",
     "bugfixes.EntityMixin_FixedBrightness",
     "bugfixes.EntityMixin_SprintParticles",
-    "bugfixes.EntityRenderMixin_PolygonOffset",
+    "bugfixes.EntityRendererMixin_PolygonOffset",
     "bugfixes.EntityXPOrbMixin_AdjustHeight",
     "bugfixes.FontRendererMixin_ResetStyles",
     "bugfixes.GameSettingsMixin_MipmapSlider",

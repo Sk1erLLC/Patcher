@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
-public class EntityRenderMixin_PolygonOffset {
+public class EntityRendererMixin_PolygonOffset {
     @Inject(
         method = "renderWorldPass",
         slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/util/EnumWorldBlockLayer;TRANSLUCENT:Lnet/minecraft/util/EnumWorldBlockLayer;")),
@@ -21,7 +21,7 @@ public class EntityRenderMixin_PolygonOffset {
     )
     private void patcher$enablePolygonOffset(CallbackInfo ci) {
         GlStateManager.enablePolygonOffset();
-        GlStateManager.doPolygonOffset(-0.725F, -0.725F);
+        GlStateManager.doPolygonOffset(-0.325F, -0.325F);
     }
 
     @Inject(
