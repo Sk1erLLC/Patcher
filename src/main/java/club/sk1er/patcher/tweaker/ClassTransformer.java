@@ -131,9 +131,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
         registerTransformer(new LayerHeldItemTransformer());
-        registerTransformer(new LayerSpiderEyesTransformer());
-        registerTransformer(new LayerCreeperChargeTransformer());
-        registerTransformer(new LayerWitherAuraTransformer());
         registerTransformer(new RenderFireballTransformer());
         registerTransformer(new RenderFishTransformer());
         registerTransformer(new RenderSnowballTransformer());
