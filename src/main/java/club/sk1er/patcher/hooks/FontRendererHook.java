@@ -71,7 +71,7 @@ public final class FontRendererHook {
         fontTexWidth = 16 * texSheetDim;
     }
 
-    private void create() {
+    public void create() {
         establishSize();
         hook = new OptiFineHook();
         forceRefresh = false;

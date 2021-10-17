@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.performance;
 
+import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FontRenderer.class)
-public class FontRendererMixin_Optimization {
+public class FontRendererMixin_Optimization implements FontRendererExt {
 
     @Unique
     private final FontRendererHook patcher$fontRendererHook = new FontRendererHook((FontRenderer) (Object) this);
@@ -29,5 +30,10 @@ public class FontRendererMixin_Optimization {
         if (this.patcher$fontRendererHook.renderStringAtPos(text, shadow)) {
             ci.cancel();
         }
+    }
+
+    @Override
+    public FontRendererHook patcher$getFontRendererHook() {
+        return patcher$fontRendererHook;
     }
 }

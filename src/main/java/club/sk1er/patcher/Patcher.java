@@ -7,6 +7,7 @@ import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.commands.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
+import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.mixins.features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength;
@@ -164,7 +165,7 @@ public class Patcher {
     public void onPostInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
             loadedGalacticFontRenderer = true;
-            Minecraft.getMinecraft().standardGalacticFontRenderer.drawString("Force Load", 0, 0, 0);
+            ((FontRendererExt) Minecraft.getMinecraft().standardGalacticFontRenderer).patcher$getFontRendererHook().create();
         }
     }
 
