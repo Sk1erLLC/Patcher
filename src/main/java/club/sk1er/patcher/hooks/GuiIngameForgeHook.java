@@ -12,7 +12,7 @@ public class GuiIngameForgeHook {
 
     public static void drawActionbarText(String recordPlaying, int color) {
         int stringWidth = mc.fontRendererObj.getStringWidth(recordPlaying);
-        if (PatcherConfig.actionbarBackground) {
+        if (PatcherConfig.actionbarBackground && !recordPlaying.trim().isEmpty()) {
             Gui.drawRect((-stringWidth >> 1) - 6, 8, (stringWidth >> 1) + 6, -8, Integer.MIN_VALUE);
         }
 
