@@ -241,6 +241,13 @@ public class PatcherConfig extends Vigilant {
     public static float riddenHorseOpacity = 1.0F;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Hide Aura on Invisible Withers",
+        description = "Don't render the aura around a wither when it is invisible.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean hideAuraOnInvisibleWither;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Zoom Adjustment",
         description = "Scroll when using OptiFine's zoom to adjust the zoom level.",
         category = "Miscellaneous", subcategory = "OptiFine"

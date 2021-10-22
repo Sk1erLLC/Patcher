@@ -125,6 +125,7 @@
     "features.GuiScreenMixin_BackgroundRendering",
     "features.GuiScreenServerListMixin_FakeServerListDirectConnect",
     "features.LayerArrowMixin_CancelRender",
+    "features.LayerWitherAuraMixin_DisableWhenInvisible",
     "features.MinecraftMixin_BetterKeybindHandling",
     "features.MinecraftMixin_CustomDebugKeys",
     "features.MinecraftMixin_FpsLimit",
