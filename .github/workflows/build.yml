@@ -6,6 +6,12 @@ on:
       - "**"
   pull_request:
 
+concurrency:
+  # Maximum of one running workflow per pull request source branch
+  # or branch and run number combination (cancels old run if action is rerun)
+  group: ${{ github.head_ref || format('{0}-{1}', github.ref, github.run_number) }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: "Build"
