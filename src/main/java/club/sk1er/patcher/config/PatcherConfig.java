@@ -330,7 +330,7 @@ public class PatcherConfig extends Vigilant {
         description = "Use readable numbers instead of Roman numerals on enchants.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
-    public static boolean romanNumerals;
+    public static boolean numericalEnchants;
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean View",
@@ -467,6 +467,13 @@ public class PatcherConfig extends Vigilant {
     public static void modifyEverySound() {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Translate Unknown Roman Numerals",
+        description = "Generate Roman numeral from enchantment level instead of using language file",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean betterRomanNumerals = true;
 
     // PERFORMANCE
 

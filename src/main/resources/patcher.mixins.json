@@ -100,7 +100,7 @@
     "features.ChunkRenderDispatcherMixin_LimitUpdates",
     "features.EffectRendererMixin_BlockParticles",
     "features.EffectRendererMixin_ChangeParticleLimit",
-    "features.EnchantmentMixin_TranslateEnchantments",
+    "features.EnchantmentMixin_RomanNumerals",
     "features.EntityFXMixin_StaticParticleColor",
     "features.EntityLivingBaseMixin_CleanView",
     "features.EntityPlayerSPMixin_NauseaEffect",
