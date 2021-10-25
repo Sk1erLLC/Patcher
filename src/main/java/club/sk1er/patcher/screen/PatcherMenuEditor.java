@@ -138,7 +138,7 @@ public class PatcherMenuEditor {
             }
         }
 
-        if (PatcherConfig.openToLanReplacement == 2) {
+        if (PatcherConfig.openToLanReplacement == 2 && event.gui instanceof GuiIngameMenu) {
             EssentialConfig config = EssentialAPI.getConfig();
             if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
                 for (GuiButton button : mcButtonList) {
