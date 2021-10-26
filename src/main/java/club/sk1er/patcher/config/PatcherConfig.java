@@ -354,6 +354,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean instantFullscreen;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Remove Water Overlay",
+        description = "Remove the water texture overlay when underwater.",
+        category = "Miscellaneous", subcategory = "Overlays"
+    )
+    public static boolean removeWaterOverlay;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Disable Breaking Particles",
         description = "Remove block breaking particles for visibility.",
         category = "Miscellaneous", subcategory = "Rendering"
