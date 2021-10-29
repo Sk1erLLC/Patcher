@@ -18,7 +18,6 @@ import club.sk1er.patcher.asm.external.forge.render.screen.GuiUtilsTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.KeyboardTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
-import club.sk1er.patcher.asm.external.mods.optifine.InventoryPlayerTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
 import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
@@ -157,7 +156,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
         //registerTransformer(new JarDiscovererTransformer());
-        registerTransformer(new InventoryPlayerTransformer());
 
         // lwjgl
         registerTransformer(new WindowsDisplayTransformer());

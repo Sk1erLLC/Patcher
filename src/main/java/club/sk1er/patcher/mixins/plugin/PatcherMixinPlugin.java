@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.plugin;
 
+import club.sk1er.patcher.tweaker.ClassTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import kotlin.text.StringsKt;
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -31,6 +32,11 @@ public class PatcherMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        String mixinPackage = StringsKt.substringBeforeLast(mixinClassName, '.', mixinClassName);
+        if (mixinPackage.endsWith("optifine") && "NONE".equals(ClassTransformer.optifineVersion)) {
+            // OptiFine isn't present, let's not apply this
+            return false;
+        }
         for (String conflictingClass : CONFLICTING_CLASSES.get(StringsKt.substringAfterLast(mixinClassName, '.', mixinClassName))) {
             if (this.getClass().getClassLoader().getResource(conflictingClass) != null) {
                 // Conflicting class is present, let's not apply this

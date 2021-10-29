@@ -156,6 +156,8 @@
     "features.network.NetHandlerPlayClientMixin_ChatDelay",
     "features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength",
     "features.network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
+    "features.optifine.EntityRendererMixin_ZoomTweaks",
+    "features.InventoryPlayerTransformer_HotbarScrolling",
     "features.render.item.ItemRendererMixin_FireRendering",
     "features.render.item.ItemRendererMixin_RemoveWaterOverlay",
     "performance.AnvilChunkLoaderMixin_UnclosedStream",

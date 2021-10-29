@@ -47,7 +47,7 @@ public class EntityRendererHook {
     }
 
     public static float getHandFOVModifier(float original) {
-        if (PatcherConfig.renderHandWhenZoomed && (EntityRendererTransformer.zoomed || (PatcherConfig.smoothZoomAnimation && EntityRendererTransformer.smoothZoomProgress > 0))) {
+        if (PatcherConfig.renderHandWhenZoomed && (ZoomHook.zoomed || (PatcherConfig.smoothZoomAnimation && ZoomHook.smoothZoomProgress > 0))) {
             float f = 70f;
             Block block = ActiveRenderInfo.getBlockAtEntityViewpoint(mc.theWorld, mc.thePlayer, partialTicks);
 

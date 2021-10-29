@@ -1,28 +1,15 @@
 package club.sk1er.patcher.asm.external.mods.optifine;
 
-import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import gg.essential.elementa.constraints.animation.Animations;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import org.lwjgl.input.Mouse;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import java.util.Iterator;
 import java.util.ListIterator;
 
 @SuppressWarnings("unused")
 public class EntityRendererTransformer implements PatcherTransformer {
-
-    private static final float normalModifier = 4f;
-    private static float currentModifier = normalModifier;
-    public static boolean zoomed = false;
-    private static boolean hasScrolledYet = false;
-    private static long lastMillis = System.currentTimeMillis();
-    public static float smoothZoomProgress = 0f;
-    private static float desiredModifier = currentModifier;
     private final boolean dev = isDevelopment();
 
     /**
@@ -47,48 +34,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
 
         for (MethodNode methodNode : classNode.methods) {
             switch (mapMethodName(classNode, methodNode)) {
-                case "getFOVModifier":
-                case "func_78481_a": {
-                    int zoomActiveIndex = -1;
-
-                    for (LocalVariableNode var : methodNode.localVariables) {
-                        if (var.name.equals("zoomActive")) {
-                            zoomActiveIndex = var.index;
-                            break;
-                        }
-                    }
-
-                    final Iterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    final LabelNode ifne = new LabelNode();
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode node = iterator.next();
-                        if (checkNode(node)) {
-                            methodNode.instructions.insertBefore(node, getPatcherSetting("normalZoomSensitivity", "Z"));
-                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.ICONST_1));
-                            methodNode.instructions.insertBefore(node, new InsnNode(Opcodes.IXOR));
-                            methodNode.instructions.insert(node, callResetAndSensChange());
-                            methodNode.instructions.remove(node);
-                        } else if (checkDivNode(node)) {
-                            methodNode.instructions.remove(node.getPrevious());
-                            methodNode.instructions.insertBefore(node, new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "getModifier", "()F", false));
-                        } else if (checkZoomActiveNode(node, zoomActiveIndex)) {
-                            methodNode.instructions.insertBefore(node, setZoomed(zoomActiveIndex));
-                        } else if (node instanceof MethodInsnNode) {
-                            final String methodInsnName = mapMethodNameFromNode(node);
-                            if (node.getOpcode() == Opcodes.INVOKESTATIC) {
-                                if (methodInsnName.equals("isKeyDown") || methodInsnName.equals("func_100015_a")) {
-                                    methodNode.instructions.insert(node, modifyKeyDownIfToggleToZoom());
-                                }
-                            }
-                        } else if (node instanceof LdcInsnNode && ((LdcInsnNode) node).cst.equals(70.0f) && node.getPrevious().getOpcode() == Opcodes.FMUL) {
-                            methodNode.instructions.insert(node.getNext().getNext().getNext(), setFOVLabelAndUpdateSmoothZoom(ifne));
-                        } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTSTATIC && ((FieldInsnNode) node).owner.equals("Config") && ((FieldInsnNode) node).name.equals("zoomMode") && node.getPrevious().getOpcode() == Opcodes.ICONST_0) {
-                            methodNode.instructions.insert(node, new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "resetSensitivity", "()V", false));
-                        }
-                    }
-
-                    break;
-                }
                 case "orientCamera":
                 case "func_78467_g": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -461,32 +406,6 @@ public class EntityRendererTransformer implements PatcherTransformer {
         return list;
     }
 
-    private InsnList setFOVLabelAndUpdateSmoothZoom(LabelNode ifne) {
-        InsnList list = new InsnList();
-        list.add(ifne);
-        if (!ClassTransformer.optifineVersion.equals("NONE")) {
-            list.add(getPatcherSetting("smoothZoomAnimation", "Z"));
-            LabelNode ifeq = new LabelNode();
-            list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-            list.add(new VarInsnNode(Opcodes.FLOAD, 4));
-            list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "getSmoothModifier", "()F", false));
-            list.add(new InsnNode(Opcodes.FMUL));
-            list.add(new VarInsnNode(Opcodes.FSTORE, 4));
-            list.add(ifeq);
-        }
-        return list;
-    }
-
-    private InsnList modifyKeyDownIfToggleToZoom() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("toggleToZoom", "Z"));
-        LabelNode ifDisabled = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifDisabled));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "getZoomState", "(Z)Z", false));
-        list.add(ifDisabled);
-        return list;
-    }
-
     private InsnList assignCreatedLightmap() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -520,151 +439,5 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new LdcInsnNode(-0.10000000149011612F));
         list.add(gotoInsn);
         return list;
-    }
-
-    private boolean checkNode(AbstractInsnNode node) {
-        if (node.getNext() == null) return false;
-        if (node.getOpcode() == Opcodes.ICONST_1) {
-            AbstractInsnNode next = node.getNext();
-            if (next.getOpcode() == Opcodes.PUTFIELD) {
-                FieldInsnNode fieldInsn = (FieldInsnNode) next;
-                return fieldInsn.name.equals("smoothCamera") || fieldInsn.name.equals("field_74326_T");
-            }
-        }
-        return false;
-    }
-
-    private boolean checkDivNode(AbstractInsnNode node) {
-        if (node.getOpcode() == Opcodes.FDIV) {
-            if (node.getPrevious().getOpcode() == Opcodes.LDC) {
-                LdcInsnNode prev = (LdcInsnNode) node.getPrevious();
-                if (prev.cst instanceof Float) {
-                    Float f = (Float) prev.cst;
-                    return f.equals(4f);
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean checkZoomActiveNode(AbstractInsnNode node, int zoomActiveIndex) {
-        if (node.getOpcode() == Opcodes.ILOAD) {
-            VarInsnNode n = (VarInsnNode) node;
-            if (n.var == zoomActiveIndex) {
-                return node.getNext().getOpcode() == Opcodes.IFEQ;
-            }
-        }
-        return false;
-    }
-
-    private InsnList callResetAndSensChange() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "resetCurrent", "()V", false));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "reduceSensitivity", "()V", false));
-        return list;
-    }
-
-    private InsnList setZoomed(int zoomActiveIndex) {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ILOAD, zoomActiveIndex));
-        list.add(new FieldInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/asm/external/mods/optifine/EntityRendererTransformer", "setZoomedHook", "(Z)V"));
-        return list;
-    }
-
-    public static float getModifier() {
-        if (!PatcherConfig.scrollToZoom) {
-            return normalModifier;
-        }
-        long time = System.currentTimeMillis();
-        long timeSinceLastChange = time - lastMillis;
-        if (!zoomed) lastMillis = time;
-
-        int moved = Mouse.getDWheel();
-
-        if (moved > 0) {
-            smoothZoomProgress = 0f;
-            hasScrolledYet = true;
-            desiredModifier += 0.25f * desiredModifier;
-        } else if (moved < 0) {
-            smoothZoomProgress = 0f;
-            hasScrolledYet = true;
-            desiredModifier -= 0.25f * desiredModifier;
-            EntityRendererHook.fixMissingChunks();
-        }
-
-        if (desiredModifier < 1f) {
-            desiredModifier = 1f;
-        }
-
-        if (desiredModifier > 600) {
-            desiredModifier = 600f;
-        }
-        if (PatcherConfig.smoothZoomAnimationWhenScrolling) {
-            if (hasScrolledYet && smoothZoomProgress < 1) {
-                EntityRendererHook.fixMissingChunks();
-                smoothZoomProgress += 0.004F * timeSinceLastChange;
-                smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
-                return currentModifier += (desiredModifier - currentModifier) * calculateEasing(smoothZoomProgress);
-            }
-        } else currentModifier = desiredModifier;
-        return desiredModifier;
-    }
-
-    public static float getSmoothModifier() {
-        long time = System.currentTimeMillis();
-        long timeSinceLastChange = time - lastMillis;
-        lastMillis = time;
-        if (zoomed) {
-            if (hasScrolledYet) return 1f;
-            if (smoothZoomProgress < 1) {
-                smoothZoomProgress += 0.005F * timeSinceLastChange;
-                smoothZoomProgress = smoothZoomProgress > 1 ? 1 : smoothZoomProgress;
-                return 4f - 3f * calculateEasing(smoothZoomProgress);
-            }
-        } else {
-            if (hasScrolledYet) {
-                hasScrolledYet = false;
-                smoothZoomProgress = 1f;
-            }
-            if (smoothZoomProgress > 0) {
-                smoothZoomProgress -= 0.005F * timeSinceLastChange;
-                smoothZoomProgress = smoothZoomProgress < 0 ? 0 : smoothZoomProgress;
-                EntityRendererHook.fixMissingChunks();
-                float progress = 1 - smoothZoomProgress;
-                float diff = PatcherConfig.scrollToZoom ? 1f / currentModifier : 0.25f;
-                return diff + (1 - diff) * calculateEasing(progress);
-            }
-        }
-        return 1f;
-    }
-
-    private static float calculateEasing(float x) {
-        switch (PatcherConfig.smoothZoomAlgorithm) {
-            case 0:
-                return Animations.IN_OUT_QUAD.getValue(x);
-
-            case 1:
-                return Animations.IN_OUT_CIRCULAR.getValue(x);
-
-            case 2:
-                return Animations.OUT_QUINT.getValue(x);
-        }
-
-        // fallback
-        return Animations.IN_OUT_QUAD.getValue(x);
-    }
-
-    public static void resetCurrent() {
-        hasScrolledYet = false;
-        currentModifier = normalModifier;
-        desiredModifier = normalModifier;
-        smoothZoomProgress = 0f;
-    }
-
-    public static void setZoomedHook(boolean newZoomed) {
-        if (newZoomed && !zoomed) {
-            Mouse.getDWheel();
-        }
-        zoomed = newZoomed;
     }
 }
