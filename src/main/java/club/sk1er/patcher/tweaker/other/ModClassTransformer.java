@@ -3,6 +3,7 @@ package club.sk1er.patcher.tweaker.other;
 import club.sk1er.patcher.asm.external.mods.essential.EssentialModelRendererTransformer;
 import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.*;
+import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.automatic.ReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;
@@ -111,11 +112,12 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerCommonTransformers() {
-        registerTransformer(new BakedQuadReflectionOptimizer());
-        registerTransformer(new FaceBakeryReflectionOptimizer());
-        registerTransformer(new ModelRotationReflectionOptimizer());
-        registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
-        registerTransformer(new EntityRendererReflectionOptimizer());
+        registerTransformer(new ReflectionOptimizer());
+//        registerTransformer(new BakedQuadReflectionOptimizer());
+//        registerTransformer(new FaceBakeryReflectionOptimizer());
+//        registerTransformer(new ModelRotationReflectionOptimizer());
+//        registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
+//        registerTransformer(new EntityRendererReflectionOptimizer());
 
         registerTransformer(new LagometerTransformer());
         registerTransformer(new GuiIngameForgeTransformer());

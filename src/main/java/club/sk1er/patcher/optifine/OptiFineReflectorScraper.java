@@ -1,6 +1,7 @@
 package club.sk1er.patcher.optifine;
 
 import club.sk1er.patcher.commands.OptiFineReflectionDumpCommand;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Bytes;
 import com.google.gson.Gson;
 import gg.essential.api.EssentialAPI;
@@ -8,7 +9,7 @@ import kotlin.io.FilesKt;
 import net.minecraft.client.Minecraft;
 import org.objectweb.asm.Type;
 
-import java.io.File;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,6 +22,7 @@ public class OptiFineReflectorScraper {
     private static final boolean isEnabled = "true".equals(System.getProperty("patcher.scrapeOptiFineReflectionData"));
     private static final ReflectionData data = new ReflectionData();
     private static final Gson gson = new Gson();
+    private static final Set<String> knownBrokenReflectors = ImmutableSet.of("ForgeBlock_isBed", "ForgeBlock_getBedDirection", "FMLCommonHandler_handleServerStarting");
 
     public static class ReflectionData {
         private Set<String> classesToTransform = new HashSet<>();
@@ -31,11 +33,21 @@ public class OptiFineReflectorScraper {
         }
 
         public void addReflectorMethodData(String fieldName, String targetClass, String name, String descriptor) {
+            if (knownBrokenReflectors.contains(fieldName)) return;
             reflectorMethodData.put(fieldName, new MethodData(targetClass, name, descriptor));
+        }
+
+        public Set<String> getClassesToTransform() {
+            return classesToTransform;
+        }
+
+        public MethodData getReflectorMethodData(String fieldName) {
+            return reflectorMethodData.get(fieldName);
         }
     }
 
     public static class MethodData {
+
         private final String targetClass;
         private final String name;
         private final String descriptor;
@@ -44,6 +56,18 @@ public class OptiFineReflectorScraper {
             this.targetClass = targetClass;
             this.name = name;
             this.descriptor = descriptor;
+        }
+
+        public String getTargetClass() {
+            return targetClass;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
         }
     }
 
@@ -65,6 +89,15 @@ public class OptiFineReflectorScraper {
         File output = new File(Minecraft.getMinecraft().mcDataDir, "optifine_reflection_data.json");
         output.delete();
         FilesKt.writeText(output, gson.toJson(data), StandardCharsets.UTF_8);
+    }
+
+    public static ReflectionData readData() {
+        try (Reader reader = new InputStreamReader(OptiFineReflectorScraper.class.getClassLoader().getResourceAsStream("optifine_reflection_data.json"))) {
+            return gson.fromJson(reader, ReflectionData.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static void gatherReflectorData() {
