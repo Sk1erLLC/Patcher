@@ -35,18 +35,6 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                         break;
                     }
                 }
-            } else if (methodName.equals("renderDebugInfo") || methodName.equals("func_175237_a")) {
-                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
-                while (iterator.hasNext()) {
-                    final AbstractInsnNode next = iterator.next();
-                    if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                        final String methodInsnName = mapMethodNameFromNode(next);
-                        if (methodInsnName.equals("renderLagometer") || methodInsnName.equals("func_181554_e")) {
-                            method.instructions.insertBefore(next.getPrevious(), renderMetricsData());
-                            break;
-                        }
-                    }
-                }
             } else if (methodName.equals("call") && compatibleVersion) {
                 final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
@@ -61,16 +49,6 @@ public class GuiOverlayDebugTransformer implements PatcherTransformer {
                 }
             }
         }
-    }
-
-    private InsnList renderMetricsData() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("useVanillaMetricsRenderer", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
     }
 
     private InsnList insertPatcher() {
