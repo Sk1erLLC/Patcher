@@ -55,6 +55,7 @@ public class OptiFineReflectorScraper {
     }
 
     public static void registerCommand() {
+        if (!isEnabled) return;
         EssentialAPI.getInstance().commandRegistry().registerCommand(new OptiFineReflectionDumpCommand());
     }
 
