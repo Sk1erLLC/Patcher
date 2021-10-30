@@ -11,6 +11,7 @@ import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.mixins.features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength;
+import club.sk1er.patcher.optifine.OptiFineReflectorScraper;
 import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
@@ -143,6 +144,7 @@ public class Patcher {
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
             new AsyncScreenshots.ScreenshotsFolder(), new DeleteNameHistoryCommand()
         );
+        OptiFineReflectorScraper.registerCommand();
 
         registerEvents(
             this, soundHandler, cloudHandler, dropModifier,

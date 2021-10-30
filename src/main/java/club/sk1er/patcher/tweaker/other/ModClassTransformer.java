@@ -23,6 +23,7 @@ import club.sk1er.patcher.asm.external.mods.ve.BetterChatTransformer;
 import club.sk1er.patcher.asm.external.optifine.WorldVertexBufferUploaderTransformer;
 import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
+import club.sk1er.patcher.optifine.OptiFineReflectorScraper;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
@@ -103,6 +104,9 @@ public class ModClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
+        if (transformedName.startsWith("net.minecraft")) {
+            OptiFineReflectorScraper.scanClassBytesForReflector(bytes, transformedName);
+        }
         return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, logger);
     }
 
