@@ -131,6 +131,14 @@ public class PatcherConfig extends Vigilant {
     public static float fireOverlayHeight;
 
     @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Opacity",
+        description = "Change the opacity of the fire overlay.",
+        category = "Miscellaneous", subcategory = "Overlays",
+        minF = 0.0F, maxF = 1.0F
+    )
+    public static float fireOverlayOpacity = 1.0F;
+
+    @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",
         description = "Allow for modifying FOV change states.",
         category = "Miscellaneous", subcategory = "Field of View"
