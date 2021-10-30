@@ -8,7 +8,6 @@ import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
 
-@SuppressWarnings("unused")
 public class EntityRendererTransformer implements PatcherTransformer {
     private final boolean dev = isDevelopment();
 
@@ -30,99 +29,16 @@ public class EntityRendererTransformer implements PatcherTransformer {
      */
     @Override
     public void transform(ClassNode classNode, String name) {
-        classNode.fields.add(new FieldNode(Opcodes.ACC_PRIVATE, "createdLightmap", "Z", null, null));
-
         for (MethodNode methodNode : classNode.methods) {
             switch (mapMethodName(classNode, methodNode)) {
-                case "orientCamera":
-                case "func_78467_g": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    int movingobjectpositionIndex = -1,
-                        d0Index = -1,
-                        f3Index = -1,
-                        d1Index = -1,
-                        f4Index = -1,
-                        d2Index = -1,
-                        f5Index = -1,
-                        d6Index = -1,
-                        d4Index = -1,
-                        d5Index = -1;
-
-                    for (final LocalVariableNode variable : methodNode.localVariables) {
-                        switch (variable.name) {
-                            case "movingobjectposition":
-                                movingobjectpositionIndex = variable.index;
-                                break;
-
-                            case "d0":
-                                d0Index = variable.index;
-                                break;
-
-                            case "f3":
-                                f3Index = variable.index;
-                                break;
-
-                            case "d1":
-                                d1Index = variable.index;
-                                break;
-
-                            case "f4":
-                                f4Index = variable.index;
-                                break;
-
-                            case "d2":
-                                d2Index = variable.index;
-                                break;
-
-                            case "f5":
-                                f5Index = variable.index;
-                                break;
-
-                            case "d4":
-                                d4Index = variable.index;
-                                break;
-
-                            case "d6":
-                                d6Index = variable.index;
-                                break;
-
-                            case "d5":
-                                d5Index = variable.index;
-                                break;
-                        }
-                    }
-
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(-0.10000000149011612F)) {
-                            methodNode.instructions.insertBefore(next, fixParallax());
-                            methodNode.instructions.remove(next);
-                        } else if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            final String methodDesc = mapMethodDescFromNode(next);
-                            if ((methodInsnName.equals("rayTraceBlocks") || methodInsnName.equals("func_72933_a")) && methodDesc.equals("(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;")) {
-                                methodNode.instructions.insertBefore(next.getNext().getNext().getNext(), changeCameraType(movingobjectpositionIndex, d0Index, d1Index,
-                                    d2Index, d4Index, d5Index, d6Index, f3Index, f4Index, f5Index, ClassTransformer.optifineVersion.equals("I7")));
-                            }
-                        }
-                    }
-                    break;
-                }
-
                 case "updateLightmap":
                 case "func_78472_g": {
-                    methodNode.instructions.insert(checkFullbright());
-
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         final AbstractInsnNode next = iterator.next();
                         if (next.getOpcode() == Opcodes.INVOKEVIRTUAL && next instanceof MethodInsnNode) {
                             final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("endSection") || methodInsnName.equals("func_76319_b")) {
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), assignCreatedLightmap());
-                            } else if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
+                            if (methodInsnName.equals("isPotionActive") || methodInsnName.equals("func_70644_a")) {
                                 final AbstractInsnNode suspect = next.getNext().getNext();
                                 if (suspect.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) suspect).owner.endsWith("CustomColors")) {
                                     continue;
@@ -135,30 +51,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "renderStreamIndicator":
-                case "func_152430_c":
-                    clearInstructions(methodNode);
-                    methodNode.instructions.insert(new InsnNode(Opcodes.RETURN));
-                    break;
-
                 case "renderWorldPass":
                 case "func_175068_a": {
                     final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-                            if (methodInsnName.equals("renderEntities") || methodInsnName.equals("func_180446_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), toggleCullingStatus(false));
-
-                                for (int i = 0; i < 4; i++) {
-                                    next = next.getPrevious();
-                                }
-
-                                methodNode.instructions.insertBefore(next, toggleCullingStatus(true));
-                            }
-                        }
-
                         switch (ClassTransformer.optifineVersion) {
                             case "I7": {
                                 if (next instanceof TypeInsnNode) {
@@ -203,36 +100,9 @@ public class EntityRendererTransformer implements PatcherTransformer {
                     break;
                 }
 
-                case "func_78479_a":
-                case "setupCameraTransform": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
-                    while (iterator.hasNext()) {
-                        final AbstractInsnNode next = iterator.next();
-
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKESPECIAL) {
-                            final String methodInsnName = mapMethodNameFromNode(next);
-
-                            if (methodInsnName.equals("setupViewBobbing") || methodInsnName.equals("func_78475_f")) {
-                                LabelNode ifne = new LabelNode();
-                                methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(), removeViewBobbing(ifne));
-                                methodNode.instructions.insertBefore(next.getNext(), ifne);
-                            }
-                        }/* else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            final String fieldInsnName = mapFieldNameFromNode(next);
-                            if (fieldInsnName.equals("rendererUpdateCount")) {
-                                methodNode.instructions.insertBefore(next.getPrevious(), removeNauseaEffect());
-                            }
-                        }*/
-                    }
-
-                    break;
-                }
-
                 case "func_78476_b":
                 case "renderHand": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-                    final LabelNode ifne = new LabelNode();
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
@@ -241,133 +111,11 @@ public class EntityRendererTransformer implements PatcherTransformer {
                             if (methodName.equals("getFOVModifier") || methodName.equals("func_78481_a")) {
                                 methodNode.instructions.insert(next, new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "getHandFOVModifier", "(F)F", false));
                             }
-                        } else if (next instanceof FieldInsnNode && next.getOpcode() == Opcodes.GETFIELD) {
-                            final String fieldName = mapFieldNameFromNode(next);
-
-                            if (fieldName.equals("viewBobbing") || fieldName.equals("field_74336_f")) {
-                                methodNode.instructions.insertBefore(next.getNext().getNext(), checkMap(ifne));
-
-                                for (int i = 0; i < 8; i++) {
-                                    next = next.getNext();
-                                }
-
-                                methodNode.instructions.insertBefore(next.getNext(), ifne);
-                                break;
-                            }
                         }
                     }
                 }
             }
         }
-    }
-
-    private InsnList fetchYBox(String value) {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 30));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/util/AxisAlignedBB", value, "D"));
-        return list;
-    }
-
-    private InsnList createBoundingBox() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 18));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 17));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/block/Block", dev ? "getSelectedBoundingBox" : "func_180646_a", "(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;)Lnet/minecraft/util/AxisAlignedBB;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, 30));
-        return list;
-    }
-
-    private InsnList checkMap(LabelNode ifne) {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("EntityRendererHook"), "hasMap", "()Z", false));
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        return list;
-    }
-
-    private InsnList removeViewBobbing(LabelNode ifne) {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("removeViewBobbing", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
-        return list;
-    }
-
-    private InsnList removeNauseaEffect() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("replaceNausea", "Z"));
-        LabelNode jump = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, jump));
-        list.add(new IntInsnNode(Opcodes.BIPUSH, 0));
-        list.add(new VarInsnNode(Opcodes.ISTORE, 5));
-        list.add(new InsnNode(Opcodes.FCONST_1));
-        list.add(new VarInsnNode(Opcodes.FSTORE, 6));
-        list.add(jump);
-        return list;
-    }
-
-    private InsnList changeCameraType(int movingobjectpositionIndex, int d0Index, int d1Index, int d2Index, int d4Index, int d5Index, int d6Index, int f3Index, int f4Index, int f5Index, boolean useNormalIndex) {
-        if (useNormalIndex) {
-            movingobjectpositionIndex = 26;
-            d0Index = 4;
-            d1Index = 6;
-            d2Index = 8;
-            d4Index = 16;
-            d5Index = 18;
-            d6Index = 20;
-            f3Index = 23;
-            f4Index = 24;
-            f5Index = 25;
-        }
-
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("betterCamera", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", dev ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", dev ? "theWorld" : "field_71441_e", "Lnet/minecraft/client/multiplayer/WorldClient;"));
-        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
-        list.add(new InsnNode(Opcodes.DUP));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f3Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d1Index));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f4Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d2Index));
-        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/Vec3", "<init>", "(DDD)V", false));
-        list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraft/util/Vec3"));
-        list.add(new InsnNode(Opcodes.DUP));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d0Index));
-        setupChanges(d4Index, f3Index, list);
-        list.add(new VarInsnNode(Opcodes.FLOAD, f5Index));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
-        list.add(new VarInsnNode(Opcodes.DLOAD, d1Index));
-        setupChanges(d6Index, f4Index, list);
-        list.add(new VarInsnNode(Opcodes.DLOAD, d2Index));
-        setupChanges(d5Index, f5Index, list);
-        list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraft/util/Vec3", "<init>", "(DDD)V", false));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/multiplayer/WorldClient", dev ? "rayTraceBlocks" : "func_147447_a", "(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;ZZZ)Lnet/minecraft/util/MovingObjectPosition;", false));
-        list.add(new VarInsnNode(Opcodes.ASTORE, movingobjectpositionIndex));
-        list.add(ifeq);
-        return list;
-    }
-
-    private void setupChanges(int doubleIndex, int floatIndex, InsnList list) {
-        list.add(new VarInsnNode(Opcodes.DLOAD, doubleIndex));
-        list.add(new InsnNode(Opcodes.DSUB));
-        list.add(new VarInsnNode(Opcodes.FLOAD, floatIndex));
-        list.add(new InsnNode(Opcodes.F2D));
-        list.add(new InsnNode(Opcodes.DADD));
     }
 
     private InsnList clampLightmap() {
@@ -392,52 +140,10 @@ public class EntityRendererTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.FLOAD, loadIndex));
     }
 
-    private InsnList toggleCullingStatus(boolean status) {
-        InsnList list = new InsnList();
-        list.add(new InsnNode(status ? Opcodes.ICONST_1 : Opcodes.ICONST_0));
-        list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/render/culling/EntityCulling", "shouldPerformCulling", "Z"));
-        return list;
-    }
-
     private InsnList getStoreCameraInsn(int var) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, var));
         list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "club/sk1er/patcher/util/world/render/culling/ParticleCulling", "camera", "Lnet/minecraft/client/renderer/culling/ICamera;"));
-        return list;
-    }
-
-    private InsnList assignCreatedLightmap() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new InsnNode(Opcodes.ICONST_1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/EntityRenderer", "createdLightmap", "Z"));
-        return list;
-    }
-
-    private InsnList checkFullbright() {
-        InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "club/sk1er/patcher/util/world/render/FullbrightTicker", "isFullbright", "()Z", false));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", "createdLightmap", "Z"));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
-        return list;
-    }
-
-    private InsnList fixParallax() {
-        InsnList list = new InsnList();
-        list.add(getPatcherSetting("parallaxFix", "Z"));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new LdcInsnNode(0.05F));
-        LabelNode gotoInsn = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
-        list.add(ifeq);
-        list.add(new LdcInsnNode(-0.10000000149011612F));
-        list.add(gotoInsn);
         return list;
     }
 }

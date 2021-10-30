@@ -1,6 +1,5 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.asm.external.mods.optifine.EntityRendererTransformer;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
