@@ -5,6 +5,7 @@ import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
+import org.spongepowered.asm.util.Bytecode;
 
 import java.util.Arrays;
 
@@ -46,10 +47,6 @@ public class ReflectionOptimizer implements PatcherTransformer {
         if (methodData == null) return getReflectorNode;
         Type returnType = Type.getReturnType(methodData.getDescriptor());
         Type[] parameterTypes = Type.getArgumentTypes(methodData.getDescriptor());
-        if (Arrays.stream(parameterTypes).anyMatch(it -> it.getDescriptor().length() == 1)) {
-            // TODO: Handle primitive unboxing
-            return getReflectorNode;
-        }
         int numberOfArrayStoresSeen = 0;
         AbstractInsnNode insn = getReflectorNode.getNext();
         while (insn.getNext() != null) {
@@ -60,7 +57,7 @@ public class ReflectionOptimizer implements PatcherTransformer {
                 MethodInsnNode methodInsnNode = ((MethodInsnNode) insn);
                 boolean isStatic = Type.getArgumentTypes(methodInsnNode.desc).length == 2;
                 int opcode = isStatic ? Opcodes.INVOKESTATIC : Opcodes.INVOKEVIRTUAL;
-                MethodInsnNode newCall = new MethodInsnNode(opcode, methodData.getTargetClass().replace('.', '/'), methodData.getName(), methodData.getDescriptor());
+                MethodInsnNode newCall = new MethodInsnNode(opcode, methodData.getTargetClass().replace('.', '/'), methodData.getName(), methodData.getDescriptor(), false);
                 insns.set(insn, newCall);
                 insns.remove(getReflectorNode);
                 return newCall;
@@ -84,14 +81,31 @@ public class ReflectionOptimizer implements PatcherTransformer {
                 }
                 AbstractInsnNode thisInsn = insn;
                 insn = insn.getNext();
-                // Cast to the desired type in case it isn't known by this point
-                insns.set(thisInsn, new TypeInsnNode(Opcodes.CHECKCAST, parameterTypes[numberOfArrayStoresSeen].getInternalName()));
+                Type parameterType = parameterTypes[numberOfArrayStoresSeen];
+                if (parameterType.getDescriptor().length() == 1) {
+                    // Primitive, need to unbox
+                    insns.set(thisInsn, unboxParameter(parameterType));
+                } else {
+                    // Cast to the desired type in case it isn't known by this point
+                    insns.set(thisInsn, new TypeInsnNode(Opcodes.CHECKCAST,parameterType.getInternalName()));
+                }
                 numberOfArrayStoresSeen++;
                 continue;
             }
             insn = insn.getNext();
         }
         return null;
+    }
+
+    private AbstractInsnNode unboxParameter(Type primitiveType) {
+        org.spongepowered.asm.lib.Type type = org.spongepowered.asm.lib.Type.getType(primitiveType.getDescriptor());
+        return new MethodInsnNode(
+            Opcodes.INVOKEVIRTUAL,
+            Bytecode.getBoxingType(type),
+            Bytecode.getUnboxingMethod(type),
+            "()" + primitiveType.getDescriptor(),
+            false
+        );
     }
 
     private boolean isReflectorCall(AbstractInsnNode insn) {

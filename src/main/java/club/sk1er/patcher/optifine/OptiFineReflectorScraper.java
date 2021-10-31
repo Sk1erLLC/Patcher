@@ -22,7 +22,8 @@ public class OptiFineReflectorScraper {
     private static final boolean isEnabled = "true".equals(System.getProperty("patcher.scrapeOptiFineReflectionData"));
     private static final ReflectionData data = new ReflectionData();
     private static final Gson gson = new Gson();
-    private static final Set<String> knownBrokenReflectors = ImmutableSet.of("ForgeBlock_isBed", "ForgeBlock_getBedDirection", "FMLCommonHandler_handleServerStarting");
+    private static final Set<String> knownBrokenReflectors
+        = ImmutableSet.of("ForgeBlock_isBed", "ForgeBlock_getBedDirection", "FMLCommonHandler_handleServerStarting", "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn");
 
     public static class ReflectionData {
         private Set<String> classesToTransform = new HashSet<>();
