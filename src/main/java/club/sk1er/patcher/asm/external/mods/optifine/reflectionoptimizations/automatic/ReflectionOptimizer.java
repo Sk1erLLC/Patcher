@@ -7,8 +7,6 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import org.spongepowered.asm.util.Bytecode;
 
-import java.util.Arrays;
-
 public class ReflectionOptimizer implements PatcherTransformer {
     private static final String reflectorClass = "net/optifine/reflect/Reflector";
     private final OptiFineReflectorScraper.ReflectionData data = OptiFineReflectorScraper.readData();
@@ -57,8 +55,17 @@ public class ReflectionOptimizer implements PatcherTransformer {
                 MethodInsnNode methodInsnNode = ((MethodInsnNode) insn);
                 boolean isStatic = Type.getArgumentTypes(methodInsnNode.desc).length == 2;
                 int opcode = isStatic ? Opcodes.INVOKESTATIC : Opcodes.INVOKEVIRTUAL;
-                MethodInsnNode newCall = new MethodInsnNode(opcode, methodData.getTargetClass().replace('.', '/'), methodData.getName(), methodData.getDescriptor(), false);
+                String internalTargetName = methodData.getTargetClass().replace('.', '/');
+                MethodInsnNode newCall = new MethodInsnNode(opcode, internalTargetName, methodData.getName(), methodData.getDescriptor(), false);
                 insns.set(insn, newCall);
+                if (returnType.getDescriptor().length() == 1 && returnType != Type.VOID_TYPE && methodInsnNode.desc.endsWith(")Ljava/lang/Object;")) {
+                    // This method should return a primitive, but is expected to return an object. Box it
+                    insns.insert(newCall, boxReturnValue(returnType));
+                }
+                if (!isStatic) {
+                    // Cast to the desired type in case it isn't already known
+                    insns.insertBefore(getReflectorNode, new TypeInsnNode(Opcodes.CHECKCAST, internalTargetName));
+                }
                 insns.remove(getReflectorNode);
                 return newCall;
             }
@@ -87,7 +94,7 @@ public class ReflectionOptimizer implements PatcherTransformer {
                     insns.set(thisInsn, unboxParameter(parameterType));
                 } else {
                     // Cast to the desired type in case it isn't known by this point
-                    insns.set(thisInsn, new TypeInsnNode(Opcodes.CHECKCAST,parameterType.getInternalName()));
+                    insns.set(thisInsn, new TypeInsnNode(Opcodes.CHECKCAST, parameterType.getInternalName()));
                 }
                 numberOfArrayStoresSeen++;
                 continue;
@@ -104,6 +111,18 @@ public class ReflectionOptimizer implements PatcherTransformer {
             Bytecode.getBoxingType(type),
             Bytecode.getUnboxingMethod(type),
             "()" + primitiveType.getDescriptor(),
+            false
+        );
+    }
+
+    private AbstractInsnNode boxReturnValue(Type returnType) {
+        org.spongepowered.asm.lib.Type type = org.spongepowered.asm.lib.Type.getType(returnType.getDescriptor());
+        String boxingType = Bytecode.getBoxingType(type);
+        return new MethodInsnNode(
+            Opcodes.INVOKESTATIC,
+            boxingType,
+            "valueOf",
+            '(' + returnType.getDescriptor() + ")L" + boxingType + ';',
             false
         );
     }
