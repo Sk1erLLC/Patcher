@@ -22,8 +22,14 @@ public class OptiFineReflectorScraper {
     private static final boolean isEnabled = "true".equals(System.getProperty("patcher.scrapeOptiFineReflectionData"));
     private static final ReflectionData data = new ReflectionData();
     private static final Gson gson = new Gson();
-    private static final Set<String> knownBrokenReflectors
-        = ImmutableSet.of("ForgeBlock_isBed", "ForgeBlock_getBedDirection", "FMLCommonHandler_handleServerStarting", "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn");
+    private static final Set<String> knownBrokenReflectors = ImmutableSet.of(
+        // OptiFine straight up calls these incorrectly and even the reflection throws an error, let's not touch them.
+        "ForgeBlock_isBed", "ForgeBlock_getBedDirection",
+        // OptiFine uses "callVoid" to call this even though it's a boolean. Should maybe handle properly in future.
+        "FMLCommonHandler_handleServerStarting",
+        // OptiFine calls these with the wrong primitive types, breaking my unboxing. Maybe handle in future.
+        "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn"
+    );
 
     public static class ReflectionData {
         private Set<String> classesToTransform = new HashSet<>();
