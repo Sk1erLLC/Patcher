@@ -13,7 +13,7 @@ public class FontRenderMixin_ShadowTypes {
 
     @Inject(method = "renderString", at = @At("HEAD"), cancellable = true)
     private void patcher$cancelDropShadow(String text, float x, float y, int color, boolean dropShadow, CallbackInfoReturnable<Integer> cir) {
-        if (PatcherConfig.disableShadowedText) {
+        if (PatcherConfig.disableShadowedText && dropShadow) {
             cir.setReturnValue(0);
         }
     }

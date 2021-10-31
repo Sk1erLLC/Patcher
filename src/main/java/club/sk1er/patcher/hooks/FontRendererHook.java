@@ -144,7 +144,6 @@ public final class FontRendererHook {
         this.fontRendererAccessor.setPosX(0.0f);
 
         float red = this.fontRendererAccessor.getRed();
-        // Blue and green mappings are mixed up
         float green = this.fontRendererAccessor.getGreen();
         float blue = this.fontRendererAccessor.getBlue();
         float alpha = this.fontRendererAccessor.getAlpha();
