@@ -28,7 +28,9 @@ public class OptiFineReflectorScraper {
         // OptiFine uses "callVoid" to call this even though it's a boolean. Should maybe handle properly in future.
         "FMLCommonHandler_handleServerStarting",
         // OptiFine calls these with the wrong primitive types, breaking my unboxing. Maybe handle in future.
-        "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn"
+        "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn", "ForgeEventFactory_doSpecialSpawn",
+        // This is an interface method which I don't yet handle. Should probably scrape info about that.
+        "ModContainer_getModId"
     );
 
     public static class ReflectionData {

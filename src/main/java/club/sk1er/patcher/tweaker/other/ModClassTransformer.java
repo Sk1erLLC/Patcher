@@ -105,9 +105,7 @@ public class ModClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (transformedName.startsWith("net.minecraft")) {
-            OptiFineReflectorScraper.scanClassBytesForReflector(bytes, transformedName);
-        }
+        OptiFineReflectorScraper.scanClassBytesForReflector(bytes, transformedName);
         return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, logger);
     }
 
@@ -133,9 +131,9 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerLSeriesTransformers() {
-        registerTransformer(new ItemModelMesherReflectionOptimizer());
-        registerTransformer(new CustomColorsReflectionOptimizer());
-        registerTransformer(new RenderChunkReflectionOptimizer());
+//        registerTransformer(new ItemModelMesherReflectionOptimizer());
+//        registerTransformer(new CustomColorsReflectionOptimizer());
+//        registerTransformer(new RenderChunkReflectionOptimizer());
         registerTransformer(new GuiDetailSettingsOFTransformer());
     }
 
