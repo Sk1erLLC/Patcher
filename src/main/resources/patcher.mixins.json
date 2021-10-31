@@ -47,6 +47,7 @@
     "bugfixes.GuiIngameForgeMixin_HotbarAlpha",
     "bugfixes.GuiIngameMixin_ScoreboardTextTransparency",
     "bugfixes.GuiLanguageMixin_ResetUnicodeFont",
+    "bugfixes.GuiNewChatMixin_ChatComponentBoundary",
     "bugfixes.GuiOptionsMixin_SaveSettings",
     "bugfixes.GuiScreenBookMixin_ResolveRenderLayer",
     "bugfixes.GuiScreenMixin_FixWindowsIME",
