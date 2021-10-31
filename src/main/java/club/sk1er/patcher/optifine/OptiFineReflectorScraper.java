@@ -92,7 +92,9 @@ public class OptiFineReflectorScraper {
     }
 
     public static ReflectionData readData() {
-        try (Reader reader = new InputStreamReader(OptiFineReflectorScraper.class.getClassLoader().getResourceAsStream("optifine_reflection_data.json"))) {
+        InputStream stream = OptiFineReflectorScraper.class.getClassLoader().getResourceAsStream("optifine_reflection_data.json");
+        if (stream == null) return null;
+        try (Reader reader = new InputStreamReader(stream)) {
             return gson.fromJson(reader, ReflectionData.class);
         } catch (IOException e) {
             e.printStackTrace();

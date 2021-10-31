@@ -14,6 +14,7 @@ public class ReflectionOptimizer implements PatcherTransformer {
 
     @Override
     public String[] getClassName() {
+        if (data == null) return new String[0];
         return data.getClassesToTransform().toArray(new String[0]);
     }
 
