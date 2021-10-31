@@ -50,6 +50,7 @@ import gg.essential.api.utils.WebUtil;
 import gg.essential.universal.UDesktop;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.ForgeVersion;
@@ -165,7 +166,10 @@ public class Patcher {
     public void onPostInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
             loadedGalacticFontRenderer = true;
-            ((FontRendererExt) Minecraft.getMinecraft().standardGalacticFontRenderer).patcher$getFontRendererHook().create();
+            FontRenderer galacticFontRenderer = Minecraft.getMinecraft().standardGalacticFontRenderer;
+            if (galacticFontRenderer instanceof FontRendererExt) {
+                ((FontRendererExt) galacticFontRenderer).patcher$getFontRendererHook().create();
+            }
         }
     }
 
