@@ -492,15 +492,7 @@ public final class FontRendererHook {
             return 0;
         }
 
-        final Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
-        if (!PatcherConfig.optimizedFontRenderer) {
-            if (stringWidthCache.size() != 0) {
-                stringWidthCache.clear();
-            }
-
-            return getUncachedWidth(text);
-        }
-
+        Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
         if (stringWidthCache.size() > 5000) {
             stringWidthCache.clear();
         }
@@ -543,6 +535,10 @@ public final class FontRendererHook {
 
             return (int) width;
         }
+    }
+
+    public EnhancedFontRenderer getEnhancedFontRenderer() {
+        return enhancedFontRenderer;
     }
 
     static class RenderPair {
