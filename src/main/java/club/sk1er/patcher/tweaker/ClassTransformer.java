@@ -260,7 +260,7 @@ public class ClassTransformer implements IClassTransformer {
     private void fetchSupportedOptiFineVersions() {
         HttpsURLConnection connection = null;
         try {
-            final URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
+            URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
             connection = (HttpsURLConnection) optifineVersions.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
             connection.setConnectTimeout(5000);
@@ -273,7 +273,7 @@ public class ClassTransformer implements IClassTransformer {
             }
         } catch (Exception e) {
             this.logger.error("Failed to read supported OptiFine versions, adding defaults.", e);
-            supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6"));
+            supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6_pre2", "M6"));
         } finally {
             if (connection != null) connection.disconnect();
         }
@@ -282,12 +282,12 @@ public class ClassTransformer implements IClassTransformer {
     private void updateOptiFineGenerations() {
         HttpsURLConnection connection = null;
         try {
-            final URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
+            URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
             connection = (HttpsURLConnection) optifineGenerations.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-            try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
+            try (Reader reader = new InputStreamReader(connection.getInputStream())) {
                 generations = new Gson().fromJson(reader, OptiFineGenerations.class);
             }
         } catch (Exception e) {
@@ -299,7 +299,8 @@ public class ClassTransformer implements IClassTransformer {
             generations.getLGeneration().add("L6");
 
             generations.getMGeneration().add("M5");
-            generations.getMGeneration().add("M6-pre1");
+            generations.getMGeneration().add("M6_pre1");
+            generations.getMGeneration().add("M6_pre2");
             generations.getMGeneration().add("M6");
         } finally {
             if (connection != null) connection.disconnect();
