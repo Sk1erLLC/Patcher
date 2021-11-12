@@ -139,6 +139,14 @@ public class PatcherConfig extends Vigilant {
     public static float fireOverlayOpacity = 1.0F;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Hide Fire Overlay with Fire Resistance",
+        description = "Hide the fire overlay when you have fire resistance active.\n" +
+            "The overlay will blink 5 seconds before your fire resistance is about to run out.",
+        category = "Miscellaneous", subcategory = "Overlays"
+    )
+    public static boolean hideFireOverlayWithFireResistance;
+
+    @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",
         description = "Allow for modifying FOV change states.",
         category = "Miscellaneous", subcategory = "Field of View"
