@@ -26,10 +26,7 @@ import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
-import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
-import club.sk1er.patcher.util.keybind.KeybindChatPeek;
-import club.sk1er.patcher.util.keybind.KeybindDropModifier;
-import club.sk1er.patcher.util.keybind.KeybindNameHistory;
+import club.sk1er.patcher.util.keybind.*;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.status.ProtocolVersionDetector;
@@ -152,7 +149,8 @@ public class Patcher {
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new HUDCaching(), new EntityRendererHook(),
-            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE
+            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE,
+            new MousePerspectiveKeybindHandler()
         );
 
         checkLogs();
