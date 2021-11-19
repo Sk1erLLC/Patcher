@@ -107,14 +107,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean nauseaEffect;
 
-    // todo: replace this with the proper way in 1.16 (separate texture, not modifying the vignette)
-    /*@Property(
-        type = PropertyType.SWITCH, name = "Replace Nausea",
-        description = "Replace nausea effect with a solid green overlay",
-        category = "Miscellaneous", subcategory = "Overlays"
-    )
-    public static boolean replaceNausea;*/
-
     @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",
         description = "Remove achievement notifications.",
@@ -134,7 +126,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Opacity",
         description = "Change the opacity of the fire overlay.",
         category = "Miscellaneous", subcategory = "Overlays",
-        minF = 0.0F, maxF = 1.0F
+        maxF = 1.0F
     )
     public static float fireOverlayOpacity = 1.0F;
 
@@ -145,6 +137,13 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Overlays"
     )
     public static boolean hideFireOverlayWithFireResistance;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Titles",
+        description = "Stop titles & subtitles from appearing.",
+        category = "Miscellaneous", subcategory = "Overlays"
+    )
+    public static boolean disableTitles;
 
     @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",

@@ -1,16 +1,14 @@
-// For those who want the bleeding edge
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
         maven { url "https://files.minecraftforge.net/maven" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://jitpack.io' }
         maven { url "https://repo.sk1er.club/repository/maven-public" }
     }
 
     dependencies {
-        classpath('com.github.ReplayMod:ForgeGradle:48c4f0c6c7:all')
-        classpath('com.github.LXGaming:MixinGradle:0.6-SNAPSHOT')
+        classpath('com.github.ReplayMod:ForgeGradle:ceb83c0:all')
     }
 }
 
@@ -25,14 +23,14 @@ apply plugin: 'kotlin'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
 
 version = this.properties.getOrDefault("BUILD_ID", "LOCAL")
 group = modGroup
 archivesBaseName = modBaseName
 
-sourceCompatibility = targetCompatibility = 1.8
-compileJava.options.encoding = 'UTF-8'
+kotlin.jvmToolchain {
+    languageVersion = JavaLanguageVersion.of(8)
+}
 
 minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
@@ -43,15 +41,10 @@ minecraft {
     clientRunArgs += ["--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker", "--mixin patcher.mixins.json"]
 }
 
-mixin {
-    add sourceSets.main, "patcher.mixins.refmap.json"
-}
-
 configurations {
     embed
     implementation.extendsFrom(embed)
 }
-def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
 
 dependencies {
     def kotlin_version = "1.5.31"
@@ -61,7 +54,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.1.1"
-    implementation "gg.essential:essential-${mcVersionStr}-forge:1470"
+    implementation "gg.essential:essential-1.8.9-forge:1470"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -77,21 +70,14 @@ dependencies {
     }
 
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    compileOnly 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+
     // Mixin needs these (and depends on them but for some reason that's not enough. FG, did you do that?)
     annotationProcessor 'com.google.code.gson:gson:2.2.4'
     annotationProcessor 'com.google.guava:guava:21.0'
     annotationProcessor 'org.ow2.asm:asm-tree:6.2'
+    annotationProcessor 'org.apache.logging.log4j:log4j-core:2.0-beta9'
 }
-
-task moveResources {
-    doLast {
-        ant.move file: "${buildDir}/resources/main",
-                todir: "${buildDir}/classes/java"
-    }
-}
-
-moveResources.dependsOn processResources
-classes.dependsOn moveResources
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -115,6 +101,27 @@ processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+ext {
+    mixinSrg = new File(project.buildDir, 'tmp/mixins/mixins.srg')
+    mixinRefMap = new File(project.buildDir, 'tmp/mixins/patcher.mixins.refmap.json')
+}
+
+compileJava {
+    options.compilerArgs += [
+            "-AoutSrgFile=${project.mixinSrg.canonicalPath}",
+            "-AoutRefMapFile=${project.mixinRefMap.canonicalPath}",
+            "-AreobfSrgFile=${project.file('build/mcp-srg.srg').canonicalPath}"
+    ]
+}
+
+task copySrg(type: Copy, dependsOn: 'genSrgs') {
+    from {project.tasks.genSrgs.mcpToSrg}
+    into 'build'
+}
+compileJava.dependsOn copySrg
+
+reobfJar.addSecondarySrgFile project.mixinSrg
+
 jar {
     dependsOn configurations.embed
     from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
@@ -127,15 +134,16 @@ jar {
     }
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    from files(project.mixinRefMap.canonicalPath)
     manifest {
-        attributes "FMLCorePlugin": "club.sk1er.patcher.tweaker.PatcherTweaker",
-                "ModSide": "CLIENT",
+        attributes 'FMLCorePlugin': 'club.sk1er.patcher.tweaker.PatcherTweaker',
+                'ModSide': 'CLIENT',
                 'FMLAT': 'patcher_at.cfg',
-                "FMLCorePluginContainsFMLMod": "Yes, yes it does",
-                "Main-Class": "club.sk1er.container.ContainerMessage",
-                "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker",
-                "TweakOrder": "0",
-                "MixinConfigs": "patcher.mixins.json"
+                'FMLCorePluginContainsFMLMod': 'Yes, yes it does',
+                'Main-Class': 'club.sk1er.container.ContainerMessage',
+                'TweakClass': 'gg.essential.loader.stage0.EssentialSetupTweaker',
+                'TweakOrder': '0',
+                'MixinConfigs': 'patcher.mixins.json'
     }
 }
 

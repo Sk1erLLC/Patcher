@@ -115,6 +115,7 @@
     "features.GuiContainerMixin_ClickOutOfContainers",
     "features.GuiContainerMixin_DropModifierKey",
     "features.GuiIngameForgeMixin_ActionbarText",
+    "features.GuiIngameForgeMixin_CancelTitleRender",
     "features.GuiIngameForgeMixin_CrosshairRendering",
     "features.GuiIngameMixin_CrosshairVisibility",
     "features.GuiMultiplayerMixin_FastServerJoin",

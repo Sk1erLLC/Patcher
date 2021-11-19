@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.0" apply false
+    kotlin("jvm") version "1.5.31" apply false
     id("fabric-loom") version "0.4-SNAPSHOT" apply false
     id("com.replaymod.preprocess") version "f64d217"
 }
