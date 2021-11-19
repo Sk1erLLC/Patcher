@@ -145,6 +145,7 @@
     "features.RenderEntityItemMixin_StaticItems",
     "features.RenderEntityItemMixin_UnstackedItems",
     "features.RendererLivingEntityMixin_NametagRendering",
+    "features.RenderLightningBoltMixin_CancelRender",
     "features.ScreenShotHelperMixin_ScreenshotManager",
     "features.TileEntityEnchantmentTableRendererMixin_CancelRender",
     "features.TileEntityEndPortalRendererMixins_CancelRender",

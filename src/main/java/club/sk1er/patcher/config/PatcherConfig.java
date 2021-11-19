@@ -390,6 +390,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableBlockBreakParticles;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Disable Lightning Bolts",
+        description = "Stop lightning bolts from appearing.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean disableLightningBolts;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Log Optimizer",
         description = "Delete all files in the logs folder, as these can usually take up a lot of space.\n§cThese files are not recoverable once deleted.",
         category = "Miscellaneous", subcategory = "General"
