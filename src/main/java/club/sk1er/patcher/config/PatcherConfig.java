@@ -1003,6 +1003,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean timestamps;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Show Seconds on Timestamps",
+        description = "Show the seconds on a timestamped message.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean secondsOnTimestamps;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Chat Timestamps Format",
         description = "Change the time format of Chat Timestamps.",
         category = "Screens", subcategory = "Chat",

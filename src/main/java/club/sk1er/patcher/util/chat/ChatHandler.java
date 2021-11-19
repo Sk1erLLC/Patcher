@@ -29,7 +29,7 @@ public class ChatHandler {
     private static final Map<Integer, Set<ChatLine>> messagesForHash = new HashMap<>();
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
+    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(:\\d\\d)?(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     public static int currentMessageHash = -1;
@@ -45,9 +45,16 @@ public class ChatHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
         if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
-            final String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
+            String timestampsPattern = "[hh:mm a]";
+            if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[hh:mm:ss a]";
+            if (PatcherConfig.timestampsFormat == 1) {
+                timestampsPattern = "[HH:mm]";
+                if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[HH:mm:ss]";
+            }
+
+            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(timestampsPattern));
             if (PatcherConfig.timestampsStyle == 0) {
-                final ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
+                ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
                 component.appendSibling(event.message);
                 event.message = component;
             } else if (PatcherConfig.timestampsStyle == 1) {
@@ -80,7 +87,7 @@ public class ChatHandler {
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             if (ticks++ >= 12000) {
-                final long time = System.currentTimeMillis();
+                long time = System.currentTimeMillis();
                 for (Map.Entry<Integer, ChatEntry> entry : chatMessageMap.entrySet()) {
                     if ((time - entry.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
                         messagesForHash.remove(entry.getKey());
@@ -94,7 +101,7 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void setChatMessageMap(ClientChatReceivedEvent event) {
-        final String message = cleanColor(event.message.getFormattedText()).trim();
+        String message = cleanColor(event.message.getFormattedText()).trim();
         if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
             event.setCanceled(true);
         }
@@ -105,28 +112,28 @@ public class ChatHandler {
         ticks = 0;
     }
 
-    public static boolean appendMessageCounter(IChatComponent chatComponent, boolean refresh) {
+    public static void appendMessageCounter(IChatComponent chatComponent, boolean refresh) {
         if ((Loader.isModLoaded("hychat") || Loader.isModLoaded("labymod")) || !PatcherConfig.compactChat) {
-            return true;
+            return;
         }
 
         if (!refresh) {
-            final String message = cleanColor(chatComponent.getFormattedText()).trim();
+            String message = cleanColor(chatComponent.getFormattedText()).trim();
             if (message.isEmpty() || isDivider(message)) {
-                return true;
+                return;
             }
 
             currentMessageHash = getChatComponentHash(chatComponent);
-            final long currentTime = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
 
             if (!chatMessageMap.containsKey(currentMessageHash)) {
                 chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
             } else {
-                final ChatEntry entry = chatMessageMap.get(currentMessageHash);
+                ChatEntry entry = chatMessageMap.get(currentMessageHash);
                 if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
                     chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                 } else {
-                    final boolean deleted = deleteMessageByHash(currentMessageHash);
+                    boolean deleted = deleteMessageByHash(currentMessageHash);
                     if (!deleted) {
                         chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                     } else {
@@ -137,10 +144,8 @@ public class ChatHandler {
                 }
             }
 
-            return true;
         }
 
-        return true;
     }
 
     public static void setChatLine_addToList(ChatLine line) {
