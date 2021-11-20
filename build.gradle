@@ -48,14 +48,14 @@ configurations {
 }
 
 dependencies {
-    def kotlin_version = "1.5.31"
+    def kotlin_version = "1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version") {
         exclude module: "kotlin-stdlib"
     }
 
-    embed "gg.essential:loader-launchwrapper:1.1.1"
-    implementation "gg.essential:essential-1.8.9-forge:1470"
+    embed "gg.essential:loader-launchwrapper:1.1.2"
+    implementation "gg.essential:essential-1.8.9-forge:1567+release-launch"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"

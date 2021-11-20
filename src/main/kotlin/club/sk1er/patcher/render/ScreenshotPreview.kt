@@ -17,7 +17,6 @@ object ScreenshotPreview {
 
     private var currentWindow: Window? = null
 
-    @Suppress("DEPRECATION")
     @SubscribeEvent
     fun renderScreenshot(event: RenderGameOverlayEvent.Post) {
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return

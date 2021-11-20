@@ -137,7 +137,7 @@ class ScreenHistory @JvmOverloads constructor(
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun onDrawScreen(matrixStack: UMatrixStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
+    override fun onDrawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         if (uuid != nameFetcher.uuid) {
             uuid = nameFetcher.uuid
             // update gui info
@@ -169,7 +169,7 @@ class ScreenHistory @JvmOverloads constructor(
                 }
             }
         }
-        super.onDrawScreen(matrixStack, mouseX, mouseY, partialTicks)
+        super.onDrawScreen(mouseX, mouseY, partialTicks)
     }
 
     override fun onTick() {
@@ -224,7 +224,7 @@ class ScreenHistory @JvmOverloads constructor(
         }
         var player: FakePlayer = FakePlayer(GameProfile(uuid ?: defaultProfile.id, name))
 
-        override fun draw(matrixStack: UMatrixStack) {
+        override fun draw() {
             UGraphics.GL.pushMatrix()
             UGraphics.enableLighting()
             UGraphics.enableAlpha()
@@ -256,43 +256,39 @@ class ScreenHistory @JvmOverloads constructor(
             UGraphics.depthFunc(GL11.GL_LEQUAL)
             UGraphics.GL.popMatrix()
 
-            super.draw(matrixStack)
+            super.draw()
         }
     }
 
     private inner class HistoryComponent : UIComponent() {
-        override fun draw(matrixStack: UMatrixStack) {
+        override fun draw() {
             UGraphics.GL.pushMatrix()
 
-            val i = 12f + (nameFetcher.names.size * 10)
-            if (getHeight() != i) {
-                setHeight(i.pixels())
+            val maxHeight = 12f + (nameFetcher.names.size * 10)
+            if (getHeight() != maxHeight) {
+                setHeight(maxHeight.pixels())
             }
 
-            drawRoundedRectangle(matrixStack, getLeft(),
-                getTop(),
-                getRight(),
-                getTop() + i,
-                3f,
+            drawRoundedRectangle(getLeft(), getTop(), getRight(), getTop() + maxHeight, 3f,
                 VigilancePalette.getDarkHighlight()
             )
 
-            val j = (getWidth() / 2 + getLeft()).toInt()
+            val x = (getWidth() / 2 + getLeft()).toInt()
             drawCenteredString(
-                fontRendererObj, "Name History", j, getTop().toInt() + 2, VigilancePalette.getBrightText().rgb
+                fontRendererObj, "Name History", x, getTop().toInt() + 2, VigilancePalette.getBrightText().rgb
             )
-            for (k in nameFetcher.names.indices) {
+            for (nameIndex in nameFetcher.names.indices) {
                 drawCenteredString(
                     fontRendererObj,
-                    nameFetcher.names[k],
-                    j,
-                    getTop().toInt() + 2 + (10 * (k + 1)),
+                    nameFetcher.names[nameIndex],
+                    x,
+                    getTop().toInt() + 2 + (10 * (nameIndex + 1)),
                     VigilancePalette.getBrightText().rgb
                 )
             }
 
             UGraphics.GL.popMatrix()
-            super.draw(matrixStack)
+            super.draw()
         }
     }
 
@@ -479,11 +475,11 @@ class ScreenHistory @JvmOverloads constructor(
             super.afterInitialization()
         }
 
-        override fun draw(matrixStack: UMatrixStack) {
+        override fun draw() {
             // I hate this.
             UGraphics.GL.pushMatrix()
             UGraphics.GL.translate(0f, 0f, 500f)
-            super.draw(matrixStack)
+            super.draw()
             UGraphics.GL.popMatrix()
         }
     }

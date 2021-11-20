@@ -439,22 +439,18 @@ public class Patcher {
         return chatPeek;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getDropModifier() {
         return dropModifier;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getHideScreen() {
         return hideScreen;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getCustomDebug() {
         return customDebug;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getClearShaders() {
         return clearShaders;
     }

@@ -31,7 +31,6 @@ object HistoryPopUp {
         UIContainer() childOf window
     }
 
-    @Suppress("DEPRECATION")
     @SubscribeEvent
     fun render(event: RenderGameOverlayEvent.Post) {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT && Minecraft.getMinecraft().currentScreen !is ScreenHistory) {
