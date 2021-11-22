@@ -468,6 +468,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableShadowedText;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Left Hand in First Person",
+        description = "Render the first-person hand on the left of the screen.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean leftHandInFirstPerson;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Better Camera",
         description = "Stop tall grass, plants, reeds, etc. from affecting your FOV as done in 1.14+.",
         category = "Miscellaneous", subcategory = "General"
