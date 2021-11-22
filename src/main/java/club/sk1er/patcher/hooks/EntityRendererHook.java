@@ -16,6 +16,7 @@ public class EntityRendererHook {
     private static boolean isBeingHeld = false;
     private static float oldSensitivity;
     private static float partialTicks;
+    public static float lastZoomModifier;
 
     public static void fixMissingChunks() {
         mc.renderGlobal.setDisplayListEntitiesDirty();
@@ -36,9 +37,16 @@ public class EntityRendererHook {
         return PatcherConfig.mapBobbing && mc.thePlayer != null && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemMap;
     }
 
-    public static void reduceSensitivity() {
+    public static void reduceSensitivityWhenZoomStarts() {
         oldSensitivity = mc.gameSettings.mouseSensitivity;
         mc.gameSettings.mouseSensitivity = oldSensitivity * PatcherConfig.customZoomSensitivity;
+    }
+
+    public static void reduceSensitivityDynamically(float modifier) {
+        if (!PatcherConfig.dynamicZoomSensitivity || !ZoomHook.zoomed) return;
+        float sensitivity = oldSensitivity * PatcherConfig.customZoomSensitivity;
+        sensitivity *= modifier / lastZoomModifier;
+        mc.gameSettings.mouseSensitivity = sensitivity;
     }
 
     public static void resetSensitivity() {
