@@ -15,17 +15,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class OverlayHandler {
 
     private boolean toggledTab;
-    public static boolean toggledChat;
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
     public void keyPress(InputEvent.KeyInputEvent event) {
         if (mc.gameSettings.keyBindPlayerList.isPressed()) this.toggledTab = !this.toggledTab;
-    }
-
-    @SubscribeEvent
-    public void tickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) toggledChat = Patcher.instance.getChatPeek().isKeyDown();
     }
 
     @SubscribeEvent
