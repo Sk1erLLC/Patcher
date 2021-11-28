@@ -1,5 +1,7 @@
 package club.sk1er.patcher.mixins.performance;
 
+// todo: make this work with 1.12
+//#if MC==10809
 import club.sk1er.patcher.util.world.render.culling.ParticleCulling;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
@@ -36,3 +38,4 @@ public class EffectRendererMixin_ParticleCulling {
         return entityFX;
     }
 }
+//#endif

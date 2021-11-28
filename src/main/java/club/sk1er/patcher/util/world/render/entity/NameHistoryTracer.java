@@ -4,13 +4,13 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import gg.essential.api.utils.GuiUtil;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
@@ -28,7 +28,11 @@ public class NameHistoryTracer {
 
     @SubscribeEvent
     public void worldRender(RenderWorldLastEvent event) {
+        //#if MC==10809
         this.partialTicks = event.partialTicks;
+        //#else
+        //$$ this.partialTicks = event.getPartialTicks();
+        //#endif
     }
 
     /**
@@ -46,7 +50,7 @@ public class NameHistoryTracer {
             this.getMouseOver(this.partialTicks);
 
             if (targetEntity != null && targetEntity instanceof EntityPlayer) {
-                if (targetEntity.getDisplayName().getFormattedText().contains(EnumChatFormatting.OBFUSCATED.toString())) {
+                if (targetEntity.getDisplayName().getFormattedText().contains(ChatColor.MAGIC.toString())) {
                     return;
                 }
 
@@ -114,7 +118,12 @@ public class NameHistoryTracer {
                         continue;
                     }
 
-                    if (worldEntities == entity.ridingEntity && !entity.canRiderInteract()) {
+                    //#if MC==10809
+                    Entity ridingEntity = mc.thePlayer.ridingEntity;
+                    //#else
+                    //$$ Entity ridingEntity = mc.player.getRidingEntity();
+                    //#endif
+                    if (worldEntities == ridingEntity && !entity.canRiderInteract()) {
                         if (distanceFrom != 0) {
                             continue;
                         }

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.features;
 
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import net.minecraft.client.Minecraft;
@@ -16,8 +17,9 @@ public class MinecraftMixin_BetterKeybindHandling {
 
     @Inject(method = "setIngameFocus", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MouseHelper;grabMouseCursor()V"))
     private void patcher$makeKeysReRegister(CallbackInfo ci) {
-        if (PatcherConfig.newKeybindHandling && !isRunningOnMac) {
+        if (PatcherConfig.newKeybindHandling && !Minecraft.isRunningOnMac) {
             MinecraftHook.updateKeyBindState();
         }
     }
 }
+//#endif

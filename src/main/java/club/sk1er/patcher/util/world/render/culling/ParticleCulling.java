@@ -9,6 +9,11 @@ public class ParticleCulling {
     public static ICamera camera;
 
     public static boolean shouldRender(EntityFX entityFX) {
+        // todo: make this work in 1.12
+        //#if MC==10809
         return entityFX != null && (camera == null || entityFX.distanceWalkedModified > -1);
+        //#else
+        //$$ return entityFX != null;
+        //#endif
     }
 }

@@ -15,6 +15,7 @@ import gg.essential.api.commands.SubCommand;
 import gg.essential.api.utils.GuiUtil;
 import gg.essential.api.utils.Multithreading;
 import gg.essential.universal.ChatColor;
+import gg.essential.universal.wrappers.message.UTextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.event.ClickEvent;
@@ -70,9 +71,9 @@ public class PatcherCommand extends Command {
 
                 message.appendText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------");
 
-                ChatComponentText deleteMessage = new ChatComponentText('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
+                UTextComponent deleteMessage = new UTextComponent('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
                 ChatStyle style = deleteMessage.getChatStyle();
-                style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(ChatColor.GRAY + "This will only delete the most recent name history message.")));
+                style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new UTextComponent(ChatColor.GRAY + "This will only delete the most recent name history message.")));
                 style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$deletenamehistory"));
                 message.appendSibling(deleteMessage);
 

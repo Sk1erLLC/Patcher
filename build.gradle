@@ -1,5 +1,9 @@
 //file:noinspection GroovyAssignabilityCheck
 buildscript {
+    def mcVersion
+    def (major, minor, patch) = project.name.tokenize('-')[0].tokenize('.')
+    mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
+
     repositories {
         mavenCentral()
         maven { url 'https://jitpack.io' }
@@ -9,7 +13,11 @@ buildscript {
     }
 
     dependencies {
-        classpath('com.github.ReplayMod:ForgeGradle:ceb83c0:all')
+        classpath('com.github.ReplayMod:ForgeGradle:' + (
+                mcVersion >= 11200
+                        ? '717a9f4' // 2.3 (1.12)
+                        : 'ceb83c0' // 2.1 (1.8)
+        ) + ':all')
     }
 }
 
@@ -25,6 +33,14 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'maven-publish'
 
+mcVersion = project.ext.mcVersion
+def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
+def accessTransformerName = mcVersion >= 11202 ? 'patcher112_at.cfg' : 'patcher18_at.cfg'
+
+preprocess {
+    vars.put("MC", mcVersion)
+}
+
 version = this.properties.getOrDefault("BUILD_ID", "LOCAL")
 group = modGroup
 archivesBaseName = modBaseName
@@ -34,12 +50,22 @@ kotlin.jvmToolchain {
 }
 
 minecraft {
-    version = '1.8.9-11.15.1.2318-1.8.9'
-    mappings = "stable_22"
+    version = [
+            11202: '1.12.2-14.23.0.2486',
+            10809: '1.8.9-11.15.1.2318-1.8.9'
+    ][mcVersion]
+    mappings = [
+            11202: "snapshot_20170615",
+            10809: "stable_22"
+    ][mcVersion]
+
     runDir = "run"
     makeObfSourceJar = false
     clientJvmArgs += ["-Dfml.coreMods.load=club.sk1er.patcher.tweaker.PatcherTweaker", "-Dpatcher.debugBytecode=true", "-Dmixin.debug.verbose=true", "-Dmixin.debug.export=true", "-Dmixin.dumpTargetOnFailure=true"]
     clientRunArgs += ["--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker", "--mixin patcher.mixins.json"]
+
+    getAccessTransformerSources().clear()
+    at(rootProject.file("src/main/resources/$accessTransformerName"))
 }
 
 configurations {
@@ -55,7 +81,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.1.2"
-    implementation "gg.essential:essential-1.8.9-forge:1576+release-launch"
+    implementation "gg.essential:essential-${mcVersionStr}-forge:1576+release-launch"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -85,9 +111,7 @@ processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
     // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
+    filesMatching("mcmod.info") {
         // replace version and mcversion
         expand 'version': project.version, 'mcversion': project.minecraft.version
     }
@@ -116,7 +140,7 @@ compileJava {
 }
 
 task copySrg(type: Copy, dependsOn: 'genSrgs') {
-    from {project.tasks.genSrgs.mcpToSrg}
+    from { project.tasks.genSrgs.mcpToSrg }
     into 'build'
 }
 compileJava.dependsOn copySrg
@@ -139,7 +163,7 @@ jar {
     manifest {
         attributes 'FMLCorePlugin': 'club.sk1er.patcher.tweaker.PatcherTweaker',
                 'ModSide': 'CLIENT',
-                'FMLAT': 'patcher_at.cfg',
+                'FMLAT': accessTransformerName,
                 'FMLCorePluginContainsFMLMod': 'Yes, yes it does',
                 'Main-Class': 'club.sk1er.container.ContainerMessage',
                 'TweakClass': 'gg.essential.loader.stage0.EssentialSetupTweaker',

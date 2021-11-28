@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.features.cropheight;
 
+//#if MC==10809
 import club.sk1er.patcher.hooks.CropUtilities;
 import net.minecraft.block.BlockBush;
 import net.minecraft.block.BlockNetherWart;
@@ -25,3 +26,4 @@ public abstract class BlockNetherWartMixin_CropHeight extends BlockBush {
         return super.collisionRayTrace(worldIn, pos, start, end);
     }
 }
+//#endif

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.performance;
 
+//#if MC==10809
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.stream.IStream;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,3 +25,4 @@ public class MinecraftMixin_SkipTwitchStuff {
         // No-op
     }
 }
+//#endif

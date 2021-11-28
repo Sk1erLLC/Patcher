@@ -54,8 +54,19 @@ public class HUDCaching {
             GlStateManager.enableBlend();
             if (framebuffer != null) {
                 if (ingame instanceof GuiIngameForge) {
-                    ((GuiIngameForgeAccessor) ingame).callRenderCrosshairs(width, height);
-                } else if (((GuiIngameAccessor) ingame).callShowCrosshair() && GuiIngameForge.renderCrosshairs) {
+                    ((GuiIngameForgeAccessor) ingame).callRenderCrosshairs(
+                        //#if MC==10809
+                        width, height
+                        //#else
+                        //$$ partialTicks
+                        //#endif
+                    );
+                } else if (
+                    // todo: fix this boolean check
+                    //#if MC==10809
+                    ((GuiIngameAccessor) ingame).invokeShowCrosshair() &&
+                        //#endif
+                        GuiIngameForge.renderCrosshairs) {
                     mc.getTextureManager().bindTexture(Gui.icons);
                     GlStateManager.enableBlend();
                     GlStateManager.tryBlendFuncSeparate(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);

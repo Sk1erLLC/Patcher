@@ -8,5 +8,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(GuiSelectWorld.class)
 public interface GuiSelectWorldAccessor {
     @Accessor
+    //#if MC==10809
     GuiScreen getParentScreen();
+    //#else
+    //$$ GuiScreen getPrevScreen();
+    //#endif
 }

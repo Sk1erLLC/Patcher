@@ -14,7 +14,6 @@ import gg.essential.universal.UResolution
 import gg.essential.universal.USound
 import gg.essential.vigilance.gui.VigilancePalette
 import net.minecraft.client.Minecraft
-import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -109,7 +108,7 @@ object HistoryPopUp {
 
                 onMouseClick {
                     // todo add thing that shows what each mouse button does
-                    USound.playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    USound.playButtonPress()
                     when (it.mouseButton) {
                         0 -> {
                             EssentialAPI.getGuiUtil().openScreen(ScreenHistory(fetcher.name))

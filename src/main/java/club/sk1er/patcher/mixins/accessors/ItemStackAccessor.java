@@ -1,13 +1,11 @@
 package club.sk1er.patcher.mixins.accessors;
 
-//#if MC==10809
-import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(Block.class)
-public interface BlockAccessor {
+@Mixin(ItemStack.class)
+public interface ItemStackAccessor {
     @Accessor
-    void setMaxY(double maxY);
+    int getStackSize();
 }
-//#endif

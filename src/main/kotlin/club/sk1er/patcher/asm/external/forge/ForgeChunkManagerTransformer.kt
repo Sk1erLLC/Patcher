@@ -1,5 +1,6 @@
 package club.sk1er.patcher.asm.external.forge
 
+//#if MC==10809
 import club.sk1er.hookinjection.injectInstructions
 import club.sk1er.patcher.hooks.ForgeChunkManagerHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
@@ -61,3 +62,4 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
         }
     }
 }
+//#endif

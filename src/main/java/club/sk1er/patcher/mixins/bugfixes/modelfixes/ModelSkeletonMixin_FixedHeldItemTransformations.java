@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes.modelfixes;
 
+//#if MC==10809
 import net.minecraft.client.model.ModelSkeleton;
 import net.minecraft.client.model.ModelZombie;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,3 +15,4 @@ public abstract class ModelSkeletonMixin_FixedHeldItemTransformations extends Mo
         this.bipedRightArm.rotationPointX--;
     }
 }
+//#endif

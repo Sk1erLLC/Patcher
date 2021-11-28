@@ -35,6 +35,10 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 import java.util.*
 
+//#if MC==11202
+//$$ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type
+//#endif
+
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
@@ -161,7 +165,11 @@ class ScreenHistory @JvmOverloads constructor(
                                     if (alex) mapOf("model" to "slim") else null
                                 ), MinecraftProfileTexture.Type.SKIN
                             )
+                            //#if MC==10809
                             ((player.player as AbstractClientPlayerAccessor).playerInfo as NetworkPlayerInfoAccessor).setLocationSkin(rl)
+                            //#else
+                            //$$ ((player.player as AbstractClientPlayerAccessor).playerInfo as NetworkPlayerInfoAccessor).playerTextures[Type.SKIN] = rl
+                            //#endif
                             skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
                             skinText.setText("Skin of ${nameFetcher.name}")
                         }
@@ -332,7 +340,7 @@ class ScreenHistory @JvmOverloads constructor(
                 }
             }.onMouseClick {
                 if (enabled) {
-                    USound.playSoundStatic(ResourceLocation("gui.button.press"), .25f, 1f)
+                    USound.playButtonPress()
                     buttonAction()
                 }
             }

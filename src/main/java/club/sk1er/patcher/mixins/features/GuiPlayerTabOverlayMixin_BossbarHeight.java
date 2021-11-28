@@ -1,5 +1,7 @@
 package club.sk1er.patcher.mixins.features;
 
+// todo: make this work with 1.12
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,3 +35,4 @@ public class GuiPlayerTabOverlayMixin_BossbarHeight {
         }
     }
 }
+//#endif

@@ -20,6 +20,7 @@ public abstract class ModelPlayerMixin_FixedTransformations extends ModelBiped {
         return PatcherConfig.fixedAlexArms ? 2.0F : original;
     }
 
+    //#if MC==10809
     /**
      * @author asbyth
      * @reason Resolve item positions being incorrect on Alex models (MC-72397)
@@ -34,4 +35,5 @@ public abstract class ModelPlayerMixin_FixedTransformations extends ModelBiped {
             this.bipedRightArm.postRender(scale);
         }
     }
+    //#endif
 }

@@ -2,7 +2,6 @@ pluginManagement {
     repositories {
         mavenLocal()
         gradlePluginPortal()
-        jcenter()
         mavenCentral()
         google()
         maven("https://jitpack.io")
@@ -25,7 +24,8 @@ pluginManagement {
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
-    "1.8.9"
+    "1.8.9",
+    "1.12.2"
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {

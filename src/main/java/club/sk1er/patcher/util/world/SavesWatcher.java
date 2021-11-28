@@ -38,7 +38,11 @@ public class SavesWatcher {
                         if (this.mc.currentScreen instanceof GuiSelectWorld) {
                             this.mc.addScheduledTask(() -> {
                                 if (this.mc.currentScreen instanceof GuiSelectWorld) {
+                                    //#if MC==10809
                                     this.mc.displayGuiScreen(((GuiSelectWorldAccessor) new GuiSelectWorld(mc.currentScreen)).getParentScreen());
+                                    //#else
+                                    //$$ this.mc.displayGuiScreen(((GuiSelectWorldAccessor) new GuiWorldSelection(mc.currentScreen)).getPrevScreen());
+                                    //#endif
                                 }
                             });
                         }

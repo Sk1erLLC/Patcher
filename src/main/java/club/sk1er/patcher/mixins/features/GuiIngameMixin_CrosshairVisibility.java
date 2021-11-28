@@ -1,5 +1,7 @@
 package club.sk1er.patcher.mixins.features;
 
+// todo: make this work in 1.12
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -24,3 +26,4 @@ public class GuiIngameMixin_CrosshairVisibility {
         }
     }
 }
+//#endif

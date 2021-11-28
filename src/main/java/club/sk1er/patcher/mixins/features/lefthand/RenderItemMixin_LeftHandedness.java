@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.features.lefthand;
 
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.ItemRendererHook;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,3 +32,4 @@ public class RenderItemMixin_LeftHandedness {
         }
     }
 }
+//#endif

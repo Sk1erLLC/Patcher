@@ -19,6 +19,8 @@ public interface GuiIngameAccessor {
     @Accessor
     void setDisplayedSubTitle(String subTitle);
 
+    //#if MC==10809
     @Invoker
-    boolean callShowCrosshair();
+    boolean invokeShowCrosshair();
+    //#endif
 }

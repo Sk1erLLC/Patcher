@@ -62,8 +62,13 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
+        //#if MC==10809
         mcButtonList = event.buttonList;
-        final GuiScreen gui = event.gui;
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ mcButtonList = event.getButtonList();
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
         final int width = gui.width;
         final int height = gui.height;
 
@@ -106,7 +111,14 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void preActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
-        if (event.gui instanceof GuiIngameMenu && event.button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        GuiButton button = event.button;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //$$ GuiButton button = event.getButton();
+        //#endif
+        if (gui instanceof GuiIngameMenu && button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
             if (PatcherConfig.smartDisconnect) {
                 mc.displayGuiScreen(new SmartDisconnectScreen());
                 event.setCanceled(true);
@@ -116,8 +128,13 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
+        //#if MC==10809
         int buttonId = event.button.id;
         GuiScreen gui = event.gui;
+        //#else
+        //$$ int buttonId = event.getButton().id;
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
         if (gui instanceof GuiIngameMenu && buttonId == serverList) {
             mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
         } else if (gui instanceof GuiScreenOptionsSounds) {
@@ -131,20 +148,25 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void drawMenu(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
+        if (PatcherConfig.cleanMainMenu && gui instanceof GuiMainMenu) {
             if (realmsButton != null) {
                 realmsButton.visible = false;
                 realmsButton.enabled = false;
             }
         }
 
-        if (PatcherConfig.openToLanReplacement == 2 && event.gui instanceof GuiIngameMenu) {
+        if (PatcherConfig.openToLanReplacement == 2 && gui instanceof GuiIngameMenu) {
             EssentialConfig config = EssentialAPI.getConfig();
             if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
                 for (GuiButton button : mcButtonList) {
                     if (button != null && button.displayString.equals("Invite Friends")) {
                         button.width = 200;
-                        button.xPosition = (event.gui.width / 2) - 100;
+                        button.xPosition = (gui.width / 2) - 100;
                         break;
                     }
                 }
@@ -161,7 +183,12 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void keyboardInput(GuiScreenEvent.KeyboardInputEvent.Post event) {
-        if (event.gui instanceof GuiMainMenu) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
+        if (gui instanceof GuiMainMenu) {
             int key = Keyboard.getEventKey();
             if (Keyboard.isKeyDown(key) && !Keyboard.isRepeatEvent()) {
                 int i = next + 1;

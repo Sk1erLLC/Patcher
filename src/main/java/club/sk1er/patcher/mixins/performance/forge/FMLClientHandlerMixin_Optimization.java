@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.performance.forge;
 
+//#if MC==10809
 import club.sk1er.patcher.hooks.FontRendererHook;
 import com.google.common.base.CharMatcher;
 import net.minecraft.util.StringUtils;
@@ -31,3 +32,4 @@ public class FMLClientHandlerMixin_Optimization {
         // No-op
     }
 }
+//#endif

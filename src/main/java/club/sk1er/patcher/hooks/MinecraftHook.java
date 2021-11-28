@@ -22,14 +22,11 @@ import java.awt.*;
 public class MinecraftHook {
     public static final MinecraftHook INSTANCE = new MinecraftHook();
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final MinecraftAccessor mcAccesor = (MinecraftAccessor) mc;
+    private static final MinecraftAccessor minecraftAccessor = (MinecraftAccessor) mc;
     private boolean lastFullscreen = false;
     public static MetricsData metricsData;
 
-    public MinecraftHook() {
-
-    }
-
+    //#if MC==10809
     public static void updateKeyBindState() {
         for (KeyBinding keybinding : KeyBindingAccessor.getKeybindArray()) {
             try {
@@ -39,13 +36,14 @@ public class MinecraftHook {
             }
         }
     }
+    //#endif
 
     public static boolean fullscreen() {
         if (!PatcherConfig.instantFullscreen || !PatcherConfig.windowedFullscreen || Util.getOSType() != Util.EnumOS.WINDOWS) {
             return false;
         }
 
-        mcAccesor.setFullScreen(!mc.isFullScreen());
+        minecraftAccessor.setFullScreen(!mc.isFullScreen());
 
         boolean grabbed = Mouse.isGrabbed();
         if (grabbed)
@@ -58,7 +56,7 @@ public class MinecraftHook {
                 Display.setLocation(0, 0);
             } else {
                 System.setProperty("org.lwjgl.opengl.Window.undecorated", "false");
-                displayMode = new DisplayMode(mcAccesor.getTempDisplayWidth(), mcAccesor.getTempDisplayHeight());
+                displayMode = new DisplayMode(minecraftAccessor.getTempDisplayWidth(), minecraftAccessor.getTempDisplayHeight());
                 Display.setDisplayMode(displayMode);
                 displayCommon();
             }
@@ -69,7 +67,7 @@ public class MinecraftHook {
             if (mc.currentScreen != null) {
                 mc.resize(mc.displayWidth, mc.displayHeight);
             } else {
-                mcAccesor.callUpdateFramebufferSize();
+                minecraftAccessor.invokeUpdateFramebufferSize();
             }
             INSTANCE.lastFullscreen = mc.isFullScreen(); //Forward so both behavior isn't ran
             mc.updateDisplay();

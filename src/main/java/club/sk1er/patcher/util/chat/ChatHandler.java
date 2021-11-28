@@ -20,7 +20,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+//#if MC==11202
+//$$ import net.minecraft.util.text.ChatType;
+//#endif
 
 @SuppressWarnings("unused")
 public class ChatHandler {
@@ -35,16 +46,27 @@ public class ChatHandler {
     public static int currentMessageHash = -1;
     private int ticks;
 
+    //#if MC==10809
     @SubscribeEvent
     public void renderChat(RenderGameOverlayEvent.Chat event) {
         if (event.type == RenderGameOverlayEvent.ElementType.CHAT && PatcherConfig.chatPosition) {
             event.posY -= 12;
         }
     }
+    //#endif
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
-        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
+        //#if MC==10809
+        IChatComponent message = event.message;
+        int type = event.type;
+        int gameInfoType = 2;
+        //#else
+        //$$ ITextComponent message = event.getMessage();
+        //$$ ChatType type = event.getType();
+        //$$ ChatType gameInfoType = ChatType.GAME_INFO;
+        //#endif
+        if (PatcherConfig.timestamps && !message.getUnformattedText().trim().isEmpty() && type != gameInfoType) {
             String timestampsPattern = "[hh:mm a]";
             if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[hh:mm:ss a]";
             if (PatcherConfig.timestampsFormat == 1) {
@@ -55,11 +77,20 @@ public class ChatHandler {
             String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(timestampsPattern));
             if (PatcherConfig.timestampsStyle == 0) {
                 ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
+                //#if MC==10809
                 component.appendSibling(event.message);
                 event.message = component;
+                //#else
+                //$$ component.appendSibling(event.getMessage());
+                //$$ event.setMessage(component);
+                //#endif
             } else if (PatcherConfig.timestampsStyle == 1) {
                 LinkedList<IChatComponent> queue = new LinkedList<>();
+                //#if MC==10809
                 queue.add(event.message);
+                //#else
+                //$$ queue.add(event.getMessage());
+                //#endif
 
                 while (!queue.isEmpty()) {
                     IChatComponent component = queue.remove();
@@ -101,8 +132,13 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void setChatMessageMap(ClientChatReceivedEvent event) {
-        String message = cleanColor(event.message.getFormattedText()).trim();
-        if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
+        //#if MC==10809
+        IChatComponent message = event.message;
+        //#else
+        //$$ ITextComponent message = event.getMessage();
+        //#endif
+        String clearMessage = cleanColor(message.getFormattedText()).trim();
+        if (clearMessage.isEmpty() && PatcherConfig.removeBlankMessages) {
             event.setCanceled(true);
         }
     }

@@ -8,6 +8,7 @@ import club.sk1er.patcher.mixins.accessors.SoundRegistryAccessor;
 import gg.essential.vigilance.data.PropertyData;
 import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
 import net.minecraft.client.resources.IResourceManager;
@@ -28,15 +29,20 @@ public class SoundHandler implements IResourceManagerReloadListener {
 
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
-        if (event.result instanceof PositionedSound) {
-            PositionedSound result = (PositionedSound) event.result;
+        //#if MC==10809
+        ISound soundResult = event.result;
+        //#else
+        //$$ ISound soundResult = event.getResultSound();
+        //#endif
+        if (soundResult instanceof PositionedSound) {
+            PositionedSound result = (PositionedSound) soundResult;
             PositionedSoundAccessor accessor = (PositionedSoundAccessor) result;
 
             if (!Display.isActive()) {
                 accessor.setVolume(result.getVolume() * PatcherConfig.unfocusedSounds);
             }
 
-            accessor.setVolume(result.getVolume() * getVolumeMultiplier(event.result.getSoundLocation()));
+            accessor.setVolume(result.getVolume() * getVolumeMultiplier(soundResult.getSoundLocation()));
         }
     }
 
@@ -55,7 +61,11 @@ public class SoundHandler implements IResourceManagerReloadListener {
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
             data.computeIfAbsent(entry.getKey(), location ->
                 ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
+                    //#if MC==10809
                     WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
+                    //#else
+                    //$$ "Sound Categories (todo)",
+                    //#endif
                     "Sounds", getName(location), "Sound Multiplier for " + getName(location),
                     100, 0, 200, __ -> {
                     }

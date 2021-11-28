@@ -17,5 +17,5 @@ public interface MinecraftAccessor {
     int getTempDisplayHeight();
 
     @Invoker
-    void callUpdateFramebufferSize();
+    void invokeUpdateFramebufferSize();
 }

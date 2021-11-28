@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes.network;
 
+//#if MC==10809
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.util.IChatComponent;
@@ -19,3 +20,4 @@ public class NetHandlerPlayClientMixin_SignChatSpam {
         // No-op
     }
 }
+//#endif

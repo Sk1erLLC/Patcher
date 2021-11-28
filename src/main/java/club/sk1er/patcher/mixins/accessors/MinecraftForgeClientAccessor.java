@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.accessors;
 
+//#if MC==10809
 import com.google.common.cache.LoadingCache;
 import net.minecraft.client.renderer.RegionRenderCache;
 import net.minecraft.util.BlockPos;
@@ -17,3 +18,4 @@ public interface MinecraftForgeClientAccessor {
         throw new AssertionError();
     }
 }
+//#endif

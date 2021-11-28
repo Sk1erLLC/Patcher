@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
+//#if MC==10809
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.LayeredColorMaskTexture;
@@ -75,3 +76,4 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
         return DESIGNS.size() < 256;
     }
 }
+//#endif

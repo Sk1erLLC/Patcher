@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.features;
 
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -29,3 +30,4 @@ public class EntityPlayerSPMixin_NauseaEffect extends AbstractClientPlayer {
         super.removePotionEffectClient(potionId);
     }
 }
+//#endif

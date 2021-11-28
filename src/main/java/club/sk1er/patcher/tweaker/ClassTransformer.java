@@ -1,6 +1,8 @@
 package club.sk1er.patcher.tweaker;
 
+//#if MC==10809
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
+//#endif
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
@@ -139,12 +141,12 @@ public class ClassTransformer implements IClassTransformer {
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
+        //#if MC==10809
         registerTransformer(new ForgeHooksClientTransformer());
         registerTransformer(new GuiModListTransformer());
         registerTransformer(new ModClassLoaderTransformer());
         registerTransformer(new ModelLoaderTransformer());
         registerTransformer(new ForgeChunkManagerTransformer());
-        registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new VertexLighterSmoothAoTransformer());
@@ -153,6 +155,8 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ASMModParserTransformer());
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
+        //#endif
+        registerTransformer(new GuiIngameForgeTransformer());
         //registerTransformer(new JarDiscovererTransformer());
 
         // lwjgl

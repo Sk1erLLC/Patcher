@@ -23,12 +23,18 @@ public class MetricsRenderer extends Gui {
 
     @SubscribeEvent
     public void draw(RenderGameOverlayEvent.Post event) {
-        if (PatcherConfig.useVanillaMetricsRenderer && event.type == RenderGameOverlayEvent.ElementType.DEBUG && mc.gameSettings.showLagometer && mc.gameSettings.showDebugInfo) {
-            final ScaledResolution resolution = new ScaledResolution(mc);
-            final int width = resolution.getScaledWidth();
-            this.drawMetricsData(resolution, mc.fontRendererObj, MinecraftHook.metricsData, 0, width >> 1, true);
+        //#if MC==10809
+        RenderGameOverlayEvent.ElementType type = event.type;
+        ScaledResolution res = event.resolution;
+        //#else
+        //$$ RenderGameOverlayEvent.ElementType type = event.getType();
+        //$$ ScaledResolution res = event.getResolution();
+        //#endif
+        if (PatcherConfig.useVanillaMetricsRenderer && type == RenderGameOverlayEvent.ElementType.DEBUG && mc.gameSettings.showLagometer && mc.gameSettings.showDebugInfo) {
+            final int width = res.getScaledWidth();
+            this.drawMetricsData(res, mc.fontRendererObj, MinecraftHook.metricsData, 0, width >> 1, true);
             if (mc.getIntegratedServer() != null) {
-                this.drawMetricsData(resolution, mc.fontRendererObj, MinecraftServerHook.metricsData, width - Math.min(width >> 1, 240), width >> 1, false);
+                this.drawMetricsData(res, mc.fontRendererObj, MinecraftServerHook.metricsData, width - Math.min(width >> 1, 240), width >> 1, false);
             }
         }
     }

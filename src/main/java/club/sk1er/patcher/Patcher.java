@@ -94,7 +94,7 @@ public class Patcher {
     // betas will be "1.x.x+beta-y" / "1.x.x+branch_beta-y"
     // rcs will be 1.x.x+rc-y
     // extra branches will be 1.x.x+branch-y
-    public static final String VERSION = "1.7.0";
+    public static final String VERSION = "1.8.0";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "logs" + File.separator);
@@ -222,6 +222,7 @@ public class Patcher {
      *
      * @param event {@link FMLNetworkEvent.ClientConnectedToServerEvent}
      */
+    //#if MC==10809
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
@@ -242,6 +243,7 @@ public class Patcher {
 
         GuiChatTransformer.maxChatLength = compatible ? 256 : 100;
     }
+    //#endif
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.performance;
 
+//#if MC==10809
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.pathfinder.NodeProcessor;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,3 +19,4 @@ public class NodeProcessorMixin_MemoryLeak {
         this.blockaccess = null;
     }
 }
+//#endif

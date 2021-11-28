@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+//#if MC==10809
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.util.chat.ChatUtilities;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
  */
 @SuppressWarnings("unused")
 public class NetHandlerPlayClientHook {
+
     public static boolean validateResourcePackUrl(NetHandlerPlayClient client, S48PacketResourcePackSend packet) {
         try {
             String url = packet.getURL();
@@ -54,3 +56,4 @@ public class NetHandlerPlayClientHook {
         return false;
     }
 }
+//#endif

@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.BlockAccessor;
 import gg.essential.api.EssentialAPI;
@@ -69,3 +70,4 @@ public class CropUtilities {
         );
     }
 }
+//#endif

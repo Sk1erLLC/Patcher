@@ -162,6 +162,8 @@
     "features.invscale.ForgeHooksClientMixin_InventoryScale",
     "features.invscale.GuiScreenMixin_InventoryScale",
     "features.invscale.ScaledResolutionMixin_InventoryScale",
+    "features.lefthand.EntityRendererMixin_LeftHandedness",
+    "features.lefthand.RenderItemMixin_LeftHandedness",
     "features.network.NetHandlerPlayClientMixin_ChatDelay",
     "features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength",
     "features.network.packet.S2EPacketCloseWindowMixin_NoCloseMyChat",
@@ -169,10 +171,8 @@
     "features.optifine.EntityRendererMixin_ZoomTweaks",
     "features.optifine.GuiOverlayDebugMixin_SimplifyFpsCounter",
     "features.optifine.GuiOverlayDebugMixin_VanillaMetricsRenderer",
-    "features.lefthand.EntityRendererMixin_LeftHandedness",
     "features.render.item.ItemRendererMixin_FireRendering",
     "features.render.item.ItemRendererMixin_RemoveWaterOverlay",
-    "features.lefthand.RenderItemMixin_LeftHandedness",
     "misc.GuiOverlayDebugMixin_ShowPatcherVersion",
     "performance.AnvilChunkLoaderMixin_UnclosedStream",
     "performance.BlockPosMixin_ReduceAllocations",
@@ -213,5 +213,8 @@
     "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
     "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak",
     "performance.render.item.ItemStackMixin_CacheDisplayName"
+  ],
+  "mixins": [
+    "accessors.ItemStackAccessor"
   ]
 }

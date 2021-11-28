@@ -1,7 +1,9 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
+// todo: make this work in 1.12 (if it's not already fixed there)
+//#if MC==10809
+import gg.essential.universal.USound;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
@@ -28,9 +30,10 @@ public class ContainerMixin_PlaySound {
             if (slot != null) {
                 ItemStack slotStack = slot.getStack();
                 if (slotStack != null && slotStack.getItem() instanceof ItemArmor && slotStack.getItemDamage() > slotStack.getMaxDamage() - 2) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("random.break")));
+                    USound.INSTANCE.playSoundStatic(new ResourceLocation("random.break"), 1, 1);
                 }
             }
         }
     }
 }
+//#endif

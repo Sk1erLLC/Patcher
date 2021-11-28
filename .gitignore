@@ -14,6 +14,7 @@ classes
 *.iws
 *.iml
 .idea
+.run
 
 # gradle
 build
@@ -28,4 +29,4 @@ run
 .DS_Store
 Thumbs.db
 
-.mixin.out
+versions/*/tmp.srg

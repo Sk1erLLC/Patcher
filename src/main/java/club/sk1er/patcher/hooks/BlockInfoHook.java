@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+//#if MC==10809
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -51,3 +52,4 @@ public class BlockInfoHook {
         lightmap[1] = ((float) ((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
     }
 }
+//#endif

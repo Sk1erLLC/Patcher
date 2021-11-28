@@ -1,6 +1,8 @@
 package club.sk1er.patcher.mixins.performance;
 
+//#if MC==10809
 import club.sk1er.patcher.mixins.accessors.MinecraftForgeClientAccessor;
+//#endif
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -25,6 +27,7 @@ public class MinecraftMixin_MemoryIssues {
         }
     }
 
+    //#if MC==10809
     @SuppressWarnings("UnstableApiUsage")
     @Inject(
         method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V",
@@ -36,4 +39,5 @@ public class MinecraftMixin_MemoryIssues {
         MinecraftForgeClientAccessor.getRegionCache().invalidateAll();
         MinecraftForgeClientAccessor.getRegionCache().cleanUp();
     }
+    //#endif
 }

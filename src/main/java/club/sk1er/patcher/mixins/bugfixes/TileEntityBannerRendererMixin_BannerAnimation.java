@@ -8,7 +8,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(TileEntityBannerRenderer.class)
 public class TileEntityBannerRendererMixin_BannerAnimation {
-    @Redirect(method = "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntityBanner;DDDFI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getTotalWorldTime()J"))
+
+    private final String patcher$renderTileEntityAtDesc =
+        //#if MC==10809
+        "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntityBanner;DDDFI)V";
+        //#else
+        //$$ "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntityBanner;DDDFIF)V";
+        //#endif
+
+    @Redirect(method = patcher$renderTileEntityAtDesc, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getTotalWorldTime()J"))
     private long patcher$resolveOverflow(World world) {
         return world.getTotalWorldTime() % 100L;
     }
