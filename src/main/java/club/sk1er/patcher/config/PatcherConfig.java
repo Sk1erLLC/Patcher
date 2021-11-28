@@ -825,7 +825,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Click Out of Containers",
-        description = "Click outside of a container to close the menu.",
+        description = "Click outside a container to close the menu.",
         category = "Screens", subcategory = "Inventory"
     )
     public static boolean clickOutOfContainers;
@@ -844,7 +844,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Container Background",
-        description = "Remove the dark background inside of a container.",
+        description = "Remove the dark background inside a container.",
         category = "Screens", subcategory = "General"
     )
     public static boolean removeContainerBackground = false;
@@ -990,14 +990,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Protection Percentage",
-        description = "View how much total armor protection you have inside of your inventory.",
+        description = "View how much total armor protection you have inside your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
     public static boolean protectionPercentage;
 
     @Property(
         type = PropertyType.SWITCH, name = "Projectile Protection Percentage",
-        description = "View how much total projectile protection you have inside of your inventory.",
+        description = "View how much total projectile protection you have inside your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
     public static boolean projectileProtectionPercentage;

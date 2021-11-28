@@ -31,7 +31,7 @@
 - **Speed FOV** - Modify your FOV when having the speed effect.
 - **Slowness FOV** - Modify Your FOV when having the slowness effect.
 - **Better Keybind Handling** - Makes keys re-register when closing a GUI, like in 1.12+. (Does not work on macOS due to LWJGL issues) *default
-- **Separate Sound & Texture Reloading** - Separate reloading resources into reloading souns (F3+S) and reloading textures (F3+T).
+- **Separate Sound & Texture Reloading** - Separate reloading resources into reloading sounds (F3+S) and reloading textures (F3+T).
 - **Disable Hotbar Scrolling** - Remove the ability to scroll through your hotbar.
 - **Crosshair Perspective** - Remove the crosshair when in third person.
 - **Unfocused Sounds** - Change the volume of sounds when you're not tabbed into the window.
@@ -54,7 +54,7 @@
 - **Smooth Zoom Function** - Change the smoothing function used in the smooth zooming animation.
 - **Toggle to Zoom** - Make OptiFine's zoom key a toggle instead of requiring you to hold it.
 - **Simplify FPS Counter** - Remove the additions OptiFine L5 and above makes to the debug screen fps counter. *default
-- **Use Vanilla Metrics Renderer** - Replace Optifine's ALT+F3 metrics renderer with the Vanilla renderer. *default
+- **Use Vanilla Metrics Renderer** - Replace OptiFine's ALT+F3 metrics renderer with the Vanilla renderer. *default
 - **Nausea Effect** - Remove the nether portal effect appearing when clearing nausea.
 - **Disable Achievements** - Remove achievement notification.
 - **Fire Overlay Height** - Change the height of the fire overlay.
@@ -148,10 +148,10 @@
 - **Damage Glance** - View the damage value of the currently held item above your hotbar.
 - **Item Count Glance** - View the total amount of the currently held item above your hotbar.
 - **Enchantment Glance** - View the enchantments of the currently held item above your hotbar.
-- **Protection Percentage** - View how much total armor protection you have inside of your inventory.
-- **Projectile Protection Percentage** - View how much total projectile protection you have inside of your inventory.
+- **Protection Percentage** - View how much total armor protection you have inside your inventory.
+- **Projectile Protection Percentage** - View how much total projectile protection you have inside your inventory.
 - **Name History Style** - Choose how Name History should appear.
-- **Container Backgrounds** - Remove the dark background inside of a container.
+- **Container Backgrounds** - Remove the dark background inside a container.
 - **Container Opacity** - Change the opacity of supported containers. Includes Chests & Survival inventory.
 - **GUI Crosshair** - Stop rendering the crosshair when in a GUI.
 - **Startup Notification** - Notify how long the game took to start. *default
@@ -161,7 +161,7 @@
 - **Image Preview** - Preview image links when hovering over a supported URL. Press shift to use fullscreen and Control to render in native image resolution. (Currently supported: Imgur, Discord, Badlion screenshots)
 - **Image Preview Width** - The % of screen width to be used for image preview.
 - **Inventory Position** - Stop potion effects from shifting your inventory to the right. *default
-- **Click Out of Containers** - Click outside of a container to close the menu.
+- **Click Out of Containers** - Click outside a container to close the menu.
 - **Inventory Scale** - Change the scale of your inventory independent of your GUI scale.
 - **Tab Opacity** - Change the tab list opacity.
 - **Tab Height** - Move the tab overlay down the selected amount of pixels when there's an active bossbar.
