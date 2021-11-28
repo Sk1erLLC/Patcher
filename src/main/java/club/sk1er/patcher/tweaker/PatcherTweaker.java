@@ -38,11 +38,12 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
             // Create a second internal tweaker, creating after OptiFine does its thing.
             FMLLaunchHandler launchHandler = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
             LaunchClassLoader classLoader = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, launchHandler, "classLoader");
-            Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class, null,
+            Method loadCoreMod = ReflectionHelper.findMethod(CoreModManager.class,
                 //#if MC==10809
+                null,
                 new String[]{"loadCoreMod"},
                 //#else
-                //$$ "loadCoreMod",
+                //$$ "loadCoreMod", null,
                 //#endif
                 LaunchClassLoader.class, String.class, File.class);
             URL path = PatcherTweaker.class.getProtectionDomain().getCodeSource().getLocation();
