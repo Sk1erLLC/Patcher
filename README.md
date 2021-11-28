@@ -31,7 +31,7 @@
 - **Speed FOV** - Modify your FOV when having the speed effect.
 - **Slowness FOV** - Modify Your FOV when having the slowness effect.
 - **Better Keybind Handling** - Makes keys re-register when closing a GUI, like in 1.12+. (Does not work on macOS due to LWJGL issues) *default
-- **Separate Sound & Texture Reloading** - Separate reloading resources into reloading souns (F3+S) and reloading textures (F3+T).
+- **Separate Sound & Texture Reloading** - Separate reloading resources into reloading sounds (F3+S) and reloading textures (F3+T).
 - **Disable Hotbar Scrolling** - Remove the ability to scroll through your hotbar.
 - **Crosshair Perspective** - Remove the crosshair when in third person.
 - **Unfocused Sounds** - Change the volume of sounds when you're not tabbed into the window.
