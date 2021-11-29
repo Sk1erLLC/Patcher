@@ -14,9 +14,10 @@ public class RenderGlobalMixin_FixSkyVBOs {
     @Redirect(
         method = "renderSky(Lnet/minecraft/client/renderer/WorldRenderer;FZ)V",
         at = @At(
-            value ="FIELD",
-            target = "net/minecraft/client/renderer/RenderGlobal.renderDistance:I",
-            opcode = Opcodes.GETFIELD
+            value = "FIELD",
+            target = "Lnet/minecraft/client/renderer/RenderGlobal;renderDistance:I",
+            opcode = Opcodes.GETFIELD,
+            remap = false
         )
     )
     private int patcher$distanceOverride(RenderGlobal instance) {
@@ -26,10 +27,10 @@ public class RenderGlobalMixin_FixSkyVBOs {
     @Dynamic("OptiFine")
     @Redirect(
         method = "renderSky(FI)V",
-        slice = @Slice(from = @At(value = "FIELD", target = "net/minecraft/client/settings/GameSettings.renderDistanceChunks:I")),
+        slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/settings/GameSettings;renderDistanceChunks:I")),
         at = @At(
             value = "FIELD",
-            target = "net/minecraft/client/renderer/RenderGlobal.vboEnabled:Z",
+            target = "Lnet/minecraft/client/renderer/RenderGlobal;vboEnabled:Z",
             ordinal = 0
         )
     )
