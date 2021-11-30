@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(World.class)
 public class WorldMixin_Fullbright {
 
+    // todo: make this work with 1.12
+    //#if MC==10809
     @Inject(method = "checkLightFor", at = @At("HEAD"), cancellable = true)
     private void patcher$checkLightFor_fullbright(CallbackInfoReturnable<Boolean> cir) {
         if (this.patcher$checkFullbright()) {
@@ -33,4 +35,5 @@ public class WorldMixin_Fullbright {
     private boolean patcher$checkFullbright() {
         return Minecraft.getMinecraft().isCallingFromMinecraftThread() && FullbrightTicker.isFullbright();
     }
+    //#endif
 }

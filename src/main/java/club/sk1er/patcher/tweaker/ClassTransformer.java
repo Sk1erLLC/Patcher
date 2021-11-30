@@ -115,7 +115,10 @@ public class ClassTransformer implements IClassTransformer {
         } catch (IOException ignored) {
         }
 
+        //#if MC==10809
         registerTransformer(new RenderPlayerTransformer());
+        registerTransformer(new RenderGlobalTransformer());
+        //#endif
         registerTransformer(new GuiUtilsTransformer());
         registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
@@ -123,7 +126,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());
-        registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new VisGraphTransformer());

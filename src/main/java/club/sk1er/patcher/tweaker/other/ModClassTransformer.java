@@ -45,7 +45,9 @@ public class ModClassTransformer implements IClassTransformer {
         MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         // OptiFine loads these classes after we do, overwriting our changes,
         // so transform it AFTER OptiFine loads.
+        //#if MC==10809
         registerTransformer(new EntityRendererTransformer());
+        //#endif
         registerTransformer(new RenderTransformer());
         registerTransformer(new RendererLivingEntityTransformer());
         registerTransformer(new RenderItemFrameTransformer());
