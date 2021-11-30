@@ -11,11 +11,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(MinecraftForgeClient.class)
+//#endif
 public interface MinecraftForgeClientAccessor {
+    //#if MC==10809
     @SuppressWarnings("UnstableApiUsage")
     @Accessor(remap = false)
     static LoadingCache<Pair<World, BlockPos>, RegionRenderCache> getRegionCache() {
         throw new AssertionError();
     }
+    //#endif
 }
-//#endif

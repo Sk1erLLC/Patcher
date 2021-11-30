@@ -1,18 +1,18 @@
 package club.sk1er.patcher.mixins.bugfixes.modelfixes;
 
-//#if MC==10809
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelSkeleton;
-import net.minecraft.client.model.ModelZombie;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ModelSkeleton.class)
-public abstract class ModelSkeletonMixin_FixedHeldItemTransformations extends ModelZombie {
+public class ModelSkeletonMixin_FixedHeldItemTransformations extends ModelBiped {
 
+    //#if MC==10809
     @Override
     public void postRenderArm(float scale) {
         this.bipedRightArm.rotationPointX++;
         this.bipedRightArm.postRender(scale);
         this.bipedRightArm.rotationPointX--;
     }
+    //#endif
 }
-//#endif

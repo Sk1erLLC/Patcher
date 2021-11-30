@@ -9,10 +9,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiGameOver.class)
 public class GuiGameOverMixin_ResolveButtonClick {
+    //#if MC==10809
     @Shadow private int enableButtonsTimer;
 
     @Inject(method = "initGui", at = @At("HEAD"))
     private void patcher$allowClickable(CallbackInfo ci) {
         this.enableButtonsTimer = 0;
     }
+    //#endif
 }

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(S3FPacketCustomPayload.class)
 public class S3FPacketCustomPayloadMixin_MemoryLeak {
+    //#if MC==10809
     @Shadow private PacketBuffer data;
 
     @Inject(method = "processPacket(Lnet/minecraft/network/play/INetHandlerPlayClient;)V", at = @At("TAIL"))
@@ -19,4 +20,5 @@ public class S3FPacketCustomPayloadMixin_MemoryLeak {
             this.data.release();
         }
     }
+    //#endif
 }

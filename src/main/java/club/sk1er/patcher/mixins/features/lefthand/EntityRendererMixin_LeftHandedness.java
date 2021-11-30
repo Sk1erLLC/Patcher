@@ -1,6 +1,5 @@
 package club.sk1er.patcher.mixins.features.lefthand;
 
-//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.ItemRendererHook;
 import club.sk1er.patcher.mixins.accessors.ItemRendererAccessor;
@@ -20,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin_LeftHandedness {
+    //#if MC==10809
     @Shadow @Final public ItemRenderer itemRenderer;
 
     @Dynamic("OptiFine adds its own version of renderHand")
@@ -48,5 +48,5 @@ public class EntityRendererMixin_LeftHandedness {
             GL11.glFrontFace(GL11.GL_CCW);
         }
     }
+    //#endif
 }
-//#endif

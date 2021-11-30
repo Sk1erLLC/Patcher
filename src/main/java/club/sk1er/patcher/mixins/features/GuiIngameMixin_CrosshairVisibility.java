@@ -1,7 +1,6 @@
 package club.sk1er.patcher.mixins.features;
 
 // todo: make this work in 1.12
-//#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -15,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GuiIngame.class)
 public class GuiIngameMixin_CrosshairVisibility {
 
+    //#if MC==10809
     @Shadow
     @Final
     protected Minecraft mc;
@@ -25,5 +25,5 @@ public class GuiIngameMixin_CrosshairVisibility {
             cir.setReturnValue(false);
         }
     }
+    //#endif
 }
-//#endif

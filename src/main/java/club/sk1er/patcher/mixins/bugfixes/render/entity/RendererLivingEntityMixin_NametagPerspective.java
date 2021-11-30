@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(RendererLivingEntity.class)
 public class RendererLivingEntityMixin_NametagPerspective {
+    //#if MC==10809
     @Redirect(
         method = "renderName(Lnet/minecraft/entity/EntityLivingBase;DDD)V",
         at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/RenderManager;playerViewX:F")
@@ -17,4 +18,5 @@ public class RendererLivingEntityMixin_NametagPerspective {
         //TODO: Migrate the rest of the transformers to Mixins
         return instance.playerViewX * RenderTransformer.checkPerspective();
     }
+    //#endif
 }

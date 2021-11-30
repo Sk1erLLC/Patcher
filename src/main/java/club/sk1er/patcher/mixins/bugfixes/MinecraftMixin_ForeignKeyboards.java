@@ -8,8 +8,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin_ForeignKeyboards {
+    //#if MC==10809
     @Redirect(method = "dispatchKeypresses", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventCharacter()C", remap = false))
     private char patcher$resolveForeignKeyboards() {
         return (char) (Keyboard.getEventCharacter() + 256);
     }
+    //#endif
 }

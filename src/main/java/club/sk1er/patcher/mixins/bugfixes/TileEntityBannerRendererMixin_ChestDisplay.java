@@ -1,6 +1,5 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
-//#if MC==10809
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.LayeredColorMaskTexture;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 @Mixin(TileEntityBannerRenderer.class)
 public class TileEntityBannerRendererMixin_ChestDisplay {
-
+    //#if MC==10809
     @Shadow @Final private static Map<String, TileEntityBannerRenderer.TimedBannerTexture> DESIGNS;
 
     @Shadow @Final private static ResourceLocation BANNERTEXTURES;
@@ -75,5 +74,5 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
 
         return DESIGNS.size() < 256;
     }
+    //#endif
 }
-//#endif

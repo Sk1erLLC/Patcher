@@ -15,7 +15,8 @@ import java.util.List;
 public abstract class ServerListMixin_ResolveNpe {
     private static final Logger patcher$logger = LogManager.getLogger("Patcher - ServerList");
 
-    @Shadow @Final public List<ServerData> servers;
+    @Shadow @Final
+    private List<ServerData> servers;
 
     @Shadow public abstract void saveServerList();
 

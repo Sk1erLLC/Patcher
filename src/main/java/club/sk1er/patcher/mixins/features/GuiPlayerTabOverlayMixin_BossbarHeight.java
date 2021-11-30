@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GuiPlayerTabOverlay.class)
+//#endif
 public class GuiPlayerTabOverlayMixin_BossbarHeight {
 
+    //#if MC==10809
     @Unique
     private boolean patcher$willShiftDown;
 
@@ -34,5 +36,6 @@ public class GuiPlayerTabOverlayMixin_BossbarHeight {
             GlStateManager.popMatrix();
         }
     }
+    //#endif
 }
-//#endif
+

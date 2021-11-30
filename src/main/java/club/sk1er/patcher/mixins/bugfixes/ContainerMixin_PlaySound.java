@@ -1,7 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
 // todo: make this work in 1.12 (if it's not already fixed there)
-//#if MC==10809
 import gg.essential.universal.USound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
@@ -18,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Container.class)
 public class ContainerMixin_PlaySound {
 
+    //#if MC==10809
     @Inject(method = "putStackInSlot", at = @At("HEAD"))
     private void patcher$playArmorBreakingSound(int slotID, ItemStack stack, CallbackInfo ci) {
         if (!Minecraft.getMinecraft().theWorld.isRemote || stack != null) {
@@ -35,5 +35,5 @@ public class ContainerMixin_PlaySound {
             }
         }
     }
+    //#endif
 }
-//#endif

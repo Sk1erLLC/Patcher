@@ -9,8 +9,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin_FixedBrightness {
+    //#if MC==10809
     @Redirect(method = "getBrightnessForRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isBlockLoaded(Lnet/minecraft/util/BlockPos;)Z"))
     public boolean patcher$alwaysReturnTrue(World world, BlockPos pos) {
         return true;
     }
+    //#endif
 }

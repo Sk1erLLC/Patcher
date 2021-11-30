@@ -2,26 +2,22 @@ package club.sk1er.patcher.hooks;
 
 //#if MC==10809
 import club.sk1er.patcher.Patcher;
-import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.util.chat.ChatUtilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.C19PacketResourcePackStatus;
 import net.minecraft.network.play.server.S48PacketResourcePackSend;
-import org.objectweb.asm.tree.ClassNode;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+//#endif
 
-/**
- * Used by {@link NetHandlerPlayClientTransformer#transform(ClassNode, String)}
- */
-@SuppressWarnings("unused")
 public class NetHandlerPlayClientHook {
 
+    //#if MC==10809
     public static boolean validateResourcePackUrl(NetHandlerPlayClient client, S48PacketResourcePackSend packet) {
         try {
             String url = packet.getURL();
@@ -55,5 +51,5 @@ public class NetHandlerPlayClientHook {
 
         return false;
     }
+    //#endif
 }
-//#endif

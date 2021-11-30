@@ -9,8 +9,10 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(C01PacketChatMessage.class)
 public class C01PacketChatMessageMixin_ExtendedChatLength {
+    //#if MC==10809
     @ModifyConstant(method = {"<init>(Ljava/lang/String;)V", "readPacketData"}, constant = @Constant(intValue = 100))
     private int patcher$useExtendedChatLength(int original) {
         return PatcherConfig.extendedChatLength ? GuiChatTransformer.maxChatLength : original;
     }
+    //#endif
 }

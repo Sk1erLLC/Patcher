@@ -8,8 +8,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin_SkipTwitchRendering {
+    //#if MC==10809
     @Inject(method = "renderStreamIndicator", at = @At("HEAD"), cancellable = true)
     private void patcher$cancelStreamIndicator(CallbackInfo ci) {
         ci.cancel();
     }
+    //#endif
 }

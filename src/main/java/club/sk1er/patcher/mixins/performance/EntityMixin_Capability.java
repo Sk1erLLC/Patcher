@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Entity.class)
 public class EntityMixin_Capability {
 
+    //#if MC==10809
     @Shadow(remap = false) private CapabilityDispatcher capabilities;
 
     /**
@@ -21,4 +22,5 @@ public class EntityMixin_Capability {
     public boolean hasCapability(Capability<?> capability, EnumFacing direction) {
         return this.capabilities != null && this.capabilities.hasCapability(capability, direction);
     }
+    //#endif
 }

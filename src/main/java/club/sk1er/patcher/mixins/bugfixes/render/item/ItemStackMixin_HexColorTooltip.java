@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin_HexColorTooltip {
+    //#if MC==10809
     @Redirect(
         method = "getTooltip",
         at = @At(value = "INVOKE", target = "Ljava/lang/Integer;toHexString(I)Ljava/lang/String;")
@@ -14,4 +15,5 @@ public class ItemStackMixin_HexColorTooltip {
     private String patcher$fixHexColorString(int i) {
         return String.format("%06X", i);
     }
+    //#endif
 }

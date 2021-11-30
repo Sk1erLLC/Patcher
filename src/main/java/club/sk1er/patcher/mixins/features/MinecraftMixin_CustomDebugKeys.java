@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin_CustomDebugKeys {
+    //#if MC==10809
     @ModifyConstant(method = "runTick", constant = @Constant(intValue = Keyboard.KEY_F3))
     private int patcher$replaceF3KeyChecks(int original) {
         int customDebugKeycode = Patcher.instance.getCustomDebug().getKeyCode();
@@ -38,4 +39,5 @@ public class MinecraftMixin_CustomDebugKeys {
 
         return original;
     }
+    //#endif
 }

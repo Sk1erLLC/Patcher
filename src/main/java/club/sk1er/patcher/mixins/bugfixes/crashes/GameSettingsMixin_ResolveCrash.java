@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 @Mixin(GameSettings.class)
 public class GameSettingsMixin_ResolveCrash {
 
+    //#if MC==10809
     /**
      * @author asbyth
      * @reason Resolve Chat Key bound to a unicode char causing crashes while creative inventory is opened (MC-102867)
@@ -23,4 +24,5 @@ public class GameSettingsMixin_ResolveCrash {
             return false;
         }
     }
+    //#endif
 }

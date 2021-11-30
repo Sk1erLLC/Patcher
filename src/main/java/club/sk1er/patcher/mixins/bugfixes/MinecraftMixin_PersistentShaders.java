@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin_PersistentShaders {
+    //#if MC==10809
     @Redirect(
         method = "runTick",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;loadEntityShader(Lnet/minecraft/entity/Entity;)V")
@@ -19,4 +20,5 @@ public class MinecraftMixin_PersistentShaders {
             entityRenderer.loadEntityShader(entityIn);
         }
     }
+    //#endif
 }

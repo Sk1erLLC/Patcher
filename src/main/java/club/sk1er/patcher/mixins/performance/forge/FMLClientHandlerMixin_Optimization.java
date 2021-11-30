@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(FMLClientHandler.class)
+//#endif
 @SuppressWarnings("UnstableApiUsage")
 public class FMLClientHandlerMixin_Optimization {
+    //#if MC==10809
     private static final CharMatcher patcher$DISALLOWED_CHAR_MATCHER = CharMatcher.anyOf(FontRendererHook.characterDictionary).negate();
 
     /**
@@ -31,5 +33,5 @@ public class FMLClientHandlerMixin_Optimization {
     private void patcher$avoidLanguageLoading(LanguageRegistry languageRegistry, ModContainer container, Side side) {
         // No-op
     }
+    //#endif
 }
-//#endif

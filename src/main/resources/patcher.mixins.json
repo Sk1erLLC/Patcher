@@ -1,7 +1,6 @@
 {
   "package": "club.sk1er.patcher.mixins",
   "refmap": "patcher.mixins.refmap.json",
-  "minVersion": "0.7.11",
   "compatibilityLevel": "JAVA_8",
   "plugin": "club.sk1er.patcher.mixins.plugin.PatcherMixinPlugin",
   "overwrites": {
@@ -21,6 +20,7 @@
     "accessors.GuiSelectWorldAccessor",
     "accessors.ItemAccessor",
     "accessors.ItemRendererAccessor",
+    "accessors.ItemStackAccessor",
     "accessors.KeyBindingAccessor",
     "accessors.MinecraftAccessor",
     "accessors.MinecraftForgeClientAccessor",
@@ -213,8 +213,5 @@
     "performance.network.packet.C17PacketCustomPayloadMixin_MemoryLeak",
     "performance.network.packet.S3FPacketCustomPayloadMixin_MemoryLeak",
     "performance.render.item.ItemStackMixin_CacheDisplayName"
-  ],
-  "mixins": [
-    "accessors.ItemStackAccessor"
   ]
 }
