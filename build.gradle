@@ -49,6 +49,10 @@ kotlin.jvmToolchain {
     languageVersion = JavaLanguageVersion.of(8)
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 minecraft {
     version = [
             11202: '1.12.2-14.23.0.2486',

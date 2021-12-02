@@ -8,6 +8,7 @@ import gg.essential.vigilance.data.Property;
 import gg.essential.vigilance.data.PropertyType;
 import kotlin.jvm.functions.Function0;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeVersion;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -1041,7 +1042,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean Main Menu",
-        description = "Remove the Realms button on the main menu as it's useless on 1.8.9.",
+        description = "Remove the Realms button on the main menu as it's useless on older versions.",
         category = "Screens", subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
@@ -1233,70 +1234,55 @@ public class PatcherConfig extends Vigilant {
             addDependency("imagePreviewWidth", "imagePreview");
 
             Arrays.asList(
-                "slownessFovModifierFloat",
-                "speedFovModifierFloat",
-                "bowFovModifierFloat",
-                "sprintingFovModifierFloat"
+                "slownessFovModifierFloat", "speedFovModifierFloat",
+                "bowFovModifierFloat", "sprintingFovModifierFloat"
             ).forEach(property -> addDependency(property, "allowFovModifying"));
 
             addDependency("logOptimizerLength", "logOptimizer");
             addDependency("smoothZoomAlgorithm", "smoothZoomAnimation");
 
             Arrays.asList(
-                "cullingInterval",
-                "smartEntityCulling",
-                "dontCullNametags",
-                "dontCullEntityNametags",
-                "dontCullArmorStandNametags",
-                "checkArmorstandRules"
+                "cullingInterval", "smartEntityCulling", "dontCullNametags",
+                "dontCullEntityNametags", "dontCullArmorStandNametags", "checkArmorstandRules"
             ).forEach(property -> addDependency(property, "entityCulling"));
 
             Arrays.asList(
-                "entityRenderDistance",
-                "playerRenderDistance",
-                "passiveEntityRenderDistance",
-                "hostileEntityRenderDistance"
+                "entityRenderDistance", "playerRenderDistance",
+                "passiveEntityRenderDistance", "hostileEntityRenderDistance"
             ).forEach(property -> addDependency(property, "entityRenderDistanceToggle"));
 
             addDependency("cacheFontData", "optimizedFontRenderer");
             addDependency("chunkUpdateLimit", "limitChunks");
 
             Arrays.asList(
-                "screenshotNoFeedback",
-                "compactScreenshotResponse",
-                "autoCopyScreenshot",
-                "screenshotPreview",
-                "previewTime",
-                "previewAnimationStyle",
-                "previewScale",
-                "favoriteScreenshot",
-                "deleteScreenshot",
-                "uploadScreenshot",
-                "copyScreenshot",
-                "openScreenshotsFolder"
+                "screenshotNoFeedback", "compactScreenshotResponse", "autoCopyScreenshot", "screenshotPreview",
+                "previewTime", "previewAnimationStyle", "previewScale", "favoriteScreenshot",
+                "deleteScreenshot", "uploadScreenshot", "copyScreenshot", "openScreenshotsFolder"
             ).forEach(property -> addDependency(property, "screenshotManager"));
 
             hidePropertyIf("instantFullscreen", () -> !SystemUtils.IS_OS_WINDOWS);
 
+            Function0<Boolean> noOptiFine = () -> ClassTransformer.optifineVersion.equals("NONE");
             Arrays.asList(
-                "scrollToZoom",
-                "normalZoomSensitivity",
-                "customZoomSensitivity",
-                "smoothZoomAnimation",
-                "smoothZoomAnimationWhenScrolling",
-                "smoothZoomAlgorithm",
-                "toggleToZoom",
-                "normalFpsCounter",
-                "useVanillaMetricsRenderer",
-                "renderHandWhenZoomed",
-                "smartFullbright",
-                "smartEntityCulling",
+                "scrollToZoom", "normalZoomSensitivity", "customZoomSensitivity", "smoothZoomAnimation",
+                "smoothZoomAnimationWhenScrolling", "smoothZoomAlgorithm", "toggleToZoom", "normalFpsCounter",
+                "useVanillaMetricsRenderer", "renderHandWhenZoomed", "smartFullbright", "smartEntityCulling",
                 "dynamicZoomSensitivity"
-            ).forEach(property -> hidePropertyIf(property, () -> ClassTransformer.optifineVersion.equals("NONE")));
+            ).forEach(property -> hidePropertyIf(property, noOptiFine));
 
             Function0<Boolean> smoothFontDetected = () -> ClassTransformer.smoothFontDetected;
             hidePropertyIf("optimizedFontRenderer", smoothFontDetected);
             hidePropertyIf("cacheFontData", smoothFontDetected);
+
+            // these are all already built into the client by 1.12, so no
+            // need to show them in the config menu
+
+            //noinspection ConstantConditions
+            Function0<Boolean> minecraft112 = () -> ForgeVersion.mcVersion.equals("1.12.2");
+            Arrays.asList(
+                "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
+                "leftHandInFirstPerson", "gpuCloudRenderer", "extendedChatLength", "chatPosition"
+            ).forEach(property -> hidePropertyIf(property, minecraft112));
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }

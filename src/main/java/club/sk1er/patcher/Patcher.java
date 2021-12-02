@@ -185,7 +185,8 @@ public class Patcher {
 
         logger.info("Minecraft started in {} seconds.", time);
 
-        if (ForgeVersion.getVersion().contains("2318")) return;
+        //noinspection ConstantConditions
+        if (!ForgeVersion.mcVersion.equals("1.8.9") || ForgeVersion.getVersion().contains("2318")) return;
         notifications.push("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
             "Click to open the Forge website to download the latest version.", 30, () -> {
             String updateLink = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html";
