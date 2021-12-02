@@ -279,7 +279,12 @@ public class ClassTransformer implements IClassTransformer {
             }
         } catch (Exception e) {
             this.logger.error("Failed to read supported OptiFine versions, adding defaults.", e);
-            supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6_pre2", "M6"));
+            supportedOptiFineVersions.addAll(Arrays.asList(
+                "I7",
+                "L5",
+                "M5", "M6_pre1", "M6_pre2", "M6",
+                "G5", "G6_pre1", "G6"
+            ));
         } finally {
             if (connection != null) connection.disconnect();
         }
@@ -308,6 +313,10 @@ public class ClassTransformer implements IClassTransformer {
             generations.getMGeneration().add("M6_pre1");
             generations.getMGeneration().add("M6_pre2");
             generations.getMGeneration().add("M6");
+
+            generations.getGGeneration().add("G5");
+            generations.getGGeneration().add("G6_pre1");
+            generations.getGGeneration().add("G6");
         } finally {
             if (connection != null) connection.disconnect();
         }
