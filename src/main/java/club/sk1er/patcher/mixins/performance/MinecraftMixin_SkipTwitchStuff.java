@@ -1,14 +1,14 @@
 package club.sk1er.patcher.mixins.performance;
 
 //#if MC==10809
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.stream.IStream;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+//#endif
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(Minecraft.class)
-//#endif
 public class MinecraftMixin_SkipTwitchStuff {
     //#if MC==10809
     @Redirect(

@@ -5,13 +5,13 @@ import com.google.common.cache.LoadingCache;
 import net.minecraft.client.renderer.RegionRenderCache;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.apache.commons.lang3.tuple.Pair;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+//#endif
+import net.minecraftforge.client.MinecraftForgeClient;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(MinecraftForgeClient.class)
-//#endif
 public interface MinecraftForgeClientAccessor {
     //#if MC==10809
     @SuppressWarnings("UnstableApiUsage")

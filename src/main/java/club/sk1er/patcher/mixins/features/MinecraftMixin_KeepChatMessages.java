@@ -16,8 +16,13 @@ public class MinecraftMixin_KeepChatMessages {
         //$$ "Lnet/minecraft/client/gui/GuiNewChat;clearChatMessages(Z)V";
         //#endif
 
+    // this is so ugly : (
     @Redirect(method = "displayGuiScreen", at = @At(value = "INVOKE", target = patcher$clearChatMessagesTarget))
-    private void patcher$keepChatMessages(GuiNewChat instance) {
+    private void patcher$keepChatMessages(GuiNewChat instance
+                                          //#if MC==11202
+                                          //$$ , boolean clearSentMessages
+                                          //#endif
+    ) {
         // No-op
     }
 }

@@ -10,7 +10,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LayerArmorBase.class)
 public class LayerArmorBaseMixin_DisableEnchantGlint {
     @Inject(method = "renderGlint", at = @At("HEAD"), cancellable = true)
+    //#if MC==10809
     private void patcher$disableEnchantGlint(CallbackInfo ci) {
+    //#else
+    //$$ private static void patcher$disableEnchantGlint(CallbackInfo ci) {
+    //#endif
         if (PatcherConfig.disableEnchantmentGlint) ci.cancel();
     }
 }

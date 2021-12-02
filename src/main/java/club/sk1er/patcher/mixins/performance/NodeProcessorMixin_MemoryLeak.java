@@ -1,16 +1,14 @@
 package club.sk1er.patcher.mixins.performance;
 
-//#if MC==10809
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.pathfinder.NodeProcessor;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.world.pathfinder.NodeProcessor;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(NodeProcessor.class)
-//#endif
 public class NodeProcessorMixin_MemoryLeak {
 
     //#if MC==10809

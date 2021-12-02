@@ -3,18 +3,18 @@ package club.sk1er.patcher.mixins.features;
 // todo: make this work with 1.12
 //#if MC==10809
 import club.sk1er.patcher.config.PatcherConfig;
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraftforge.client.GuiIngameForge;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+//#endif
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(GuiPlayerTabOverlay.class)
-//#endif
 public class GuiPlayerTabOverlayMixin_BossbarHeight {
 
     //#if MC==10809

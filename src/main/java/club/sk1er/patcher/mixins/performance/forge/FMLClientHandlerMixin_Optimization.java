@@ -4,17 +4,17 @@ package club.sk1er.patcher.mixins.performance.forge;
 import club.sk1er.patcher.hooks.FontRendererHook;
 import com.google.common.base.CharMatcher;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.LanguageRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+//#endif
+import net.minecraftforge.fml.client.FMLClientHandler;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(FMLClientHandler.class)
-//#endif
 @SuppressWarnings("UnstableApiUsage")
 public class FMLClientHandlerMixin_Optimization {
     //#if MC==10809
