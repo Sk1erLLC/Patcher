@@ -31,10 +31,12 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             switch (methodName) {
+                //#if MC==10809
                 case "func_147235_a":
                 case "handleSpawnObject":
                     S0EPacketSpawnObjectTransformer.changeJumpNode(methodNode);
                     break;
+                //#endif
 
                 case "func_147240_a":
                 case "handleCustomPayload": {

@@ -744,13 +744,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean gpuCloudRenderer = true;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Remove Cloud Transparency",
-        description = "Remove transparency from clouds.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean removeCloudTransparency;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
         description = "Stop rendering sides of entities that you cannot see.\n" +
             "Being inside an entity will cause that body part to be invisible.\n" +

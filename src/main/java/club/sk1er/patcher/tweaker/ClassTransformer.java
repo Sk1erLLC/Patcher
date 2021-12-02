@@ -116,25 +116,25 @@ public class ClassTransformer implements IClassTransformer {
         }
 
         //#if MC==10809
-        registerTransformer(new RenderGlobalTransformer());
+        registerTransformer(new GuiNewChatTransformer());
+        registerTransformer(new S0EPacketSpawnObjectTransformer());
+        registerTransformer(new RenderXPOrbTransformer());
+        registerTransformer(new RenderFireballTransformer());
+        registerTransformer(new RenderFishTransformer());
+        registerTransformer(new RenderSnowballTransformer());
         //#endif
+        registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new RenderPlayerTransformer());
         registerTransformer(new GuiUtilsTransformer());
-        registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());
-        registerTransformer(new S0EPacketSpawnObjectTransformer());
-        registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new VisGraphTransformer());
         registerTransformer(new EffectRendererTransformer());
         registerTransformer(new VertexFormatTransformer());
         registerTransformer(new LayerHeldItemTransformer());
-        registerTransformer(new RenderFireballTransformer());
-        registerTransformer(new RenderFishTransformer());
-        registerTransformer(new RenderSnowballTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new EntityWitherTransformer());
         //registerTransformer(new RecipeBookCloningTransformer());
