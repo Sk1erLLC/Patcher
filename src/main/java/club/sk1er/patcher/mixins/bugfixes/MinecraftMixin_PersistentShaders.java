@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin_PersistentShaders {
+    // todo: make this work in 1.12
     //#if MC==10809
     @Redirect(
         method = "runTick",

@@ -10,8 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Chunk.class)
 public class ChunkMixin_Fullbright {
 
-    // todo: make this work with 1.12
-    //#if MC==10809
     @Inject(method = {"getLightFor", "getLightSubtracted"}, at = @At("HEAD"), cancellable = true)
     private void patcher$fullbright(CallbackInfoReturnable<Integer> cir) {
         // todo: should this be checking main thread like World's fullbright does?
@@ -20,5 +18,4 @@ public class ChunkMixin_Fullbright {
             cir.setReturnValue(15);
         }
     }
-    //#endif
 }
