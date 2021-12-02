@@ -329,7 +329,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Simplify FPS Counter",
-        description = "Remove the additions OptiFine L5 and above makes to the debug screen FPS counter.",
+        description = "Remove the extra FPS counter added by OptiFine.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean normalFpsCounter = true;

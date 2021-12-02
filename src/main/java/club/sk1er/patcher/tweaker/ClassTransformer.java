@@ -44,6 +44,7 @@ import com.google.gson.Gson;
 import gg.essential.universal.UDesktop;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -108,8 +109,9 @@ public class ClassTransformer implements IClassTransformer {
 
             if (!supportedOptiFineVersions.contains(optifineVersion)) {
                 logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
-                this.haltForOptifine("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
-                    "Please update to a newer version of OptiFine (i7 and above are supported) before trying to launch.");
+                this.haltForOptifine("Patcher has detected OptiFine " + optifineVersion + ", which is not supported and will crash.\n" +
+                    "Please update to a supported version of OptiFine and try again.\n" +
+                    "Supported versions: " + StringUtils.join(supportedOptiFineVersions, ", "));
                 return;
             }
         } catch (IOException ignored) {
