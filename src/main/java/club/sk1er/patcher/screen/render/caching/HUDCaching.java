@@ -47,11 +47,13 @@ public class HUDCaching {
         if (!OpenGlHelper.isFramebufferEnabled() || !PatcherConfig.hudCaching) {
             ingame.renderGameOverlay(partialTicks);
         } else {
+            GlStateManager.enableDepth();
             ScaledResolution resolution = new ScaledResolution(mc);
             int width = resolution.getScaledWidth();
             int height = resolution.getScaledHeight();
             renderer.setupOverlayRendering();
             GlStateManager.enableBlend();
+
             if (framebuffer != null) {
                 Tessellator tessellator = Tessellator.getInstance();
                 WorldRenderer worldRenderer = tessellator.getWorldRenderer();
