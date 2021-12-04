@@ -18,6 +18,7 @@ import club.sk1er.patcher.asm.external.forge.render.screen.GuiIngameForgeTransfo
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiModListTransformer;
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiUtilsTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.KeyboardTransformer;
+import club.sk1er.patcher.asm.external.lwjgl.LibraryLWJGLOpenALTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
@@ -142,6 +143,7 @@ public class ClassTransformer implements IClassTransformer {
         //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new RenderWitherTransformer());
+        registerTransformer(new LibraryLWJGLOpenALTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes

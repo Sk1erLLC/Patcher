@@ -37,6 +37,7 @@ import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
+import club.sk1er.patcher.util.world.sound.audioswitcher.AudioSwitcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gg.essential.api.EssentialAPI;
@@ -108,6 +109,7 @@ public class Patcher {
 
     private final CloudHandler cloudHandler = new CloudHandler();
     private final SavesWatcher savesWatcher = new SavesWatcher();
+    private final AudioSwitcher audioSwitcher = new AudioSwitcher();
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
@@ -143,7 +145,7 @@ public class Patcher {
         );
 
         registerEvents(
-            this, soundHandler, cloudHandler, dropModifier,
+            this, soundHandler, cloudHandler, dropModifier, audioSwitcher,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
@@ -456,6 +458,10 @@ public class Patcher {
 
     public KeyBinding getClearShaders() {
         return clearShaders;
+    }
+
+    public AudioSwitcher getAudioSwitcher() {
+        return audioSwitcher;
     }
 
     public void forceSaveConfig() {

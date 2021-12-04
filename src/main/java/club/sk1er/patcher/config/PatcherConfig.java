@@ -1205,6 +1205,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean labyModMoment = true;
 
+    @Property(
+        type = PropertyType.TEXT, name = "Selected Audio Device",
+        description = "currently selected audio device, used for AudioSwitcher",
+        category = "hidden", hidden = true
+    )
+    public static String selectedAudioDevice = "";
+
     public static PatcherConfig INSTANCE = new PatcherConfig(); // Needs to be at the bottom or the default values take priority
 
     public PatcherConfig() {
