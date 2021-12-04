@@ -1,6 +1,5 @@
 package club.sk1er.patcher.mixins.features;
 
-// todo: make this work in 1.12
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;

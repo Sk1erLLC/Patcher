@@ -143,8 +143,8 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
                         }
                     }
                 }
-            } catch (MalformedJsonException ignored) {
-                // powns lol
+            } catch (MalformedJsonException | IllegalStateException ignored) {
+                // some mods provide invalid mod infos : (
             } catch (Exception e) {
                 e.printStackTrace();
             }

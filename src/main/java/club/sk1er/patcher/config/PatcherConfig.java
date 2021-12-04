@@ -1274,7 +1274,8 @@ public class PatcherConfig extends Vigilant {
             Function0<Boolean> minecraft112 = () -> ForgeVersion.mcVersion.equals("1.12.2");
             Arrays.asList(
                 "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
-                "leftHandInFirstPerson", "gpuCloudRenderer", "extendedChatLength", "chatPosition"
+                "leftHandInFirstPerson", "gpuCloudRenderer", "extendedChatLength", "chatPosition",
+                "parallaxFix", "crosshairPerspective"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
