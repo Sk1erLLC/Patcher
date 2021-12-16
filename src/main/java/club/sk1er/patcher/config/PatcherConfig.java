@@ -902,6 +902,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean transparentChatInputField;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Extend Chat Background",
+        description = "Extend the chat background all the way to the left of the screen.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean extendChatBackground = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Tab Height",
         description = "Move the tab overlay down the selected amount of pixels when there's an active bossbar.",
         category = "Screens", subcategory = "Tab"

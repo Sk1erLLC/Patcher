@@ -125,6 +125,7 @@
     "features.GuiNewChatMixin_ChatOverlay",
     "features.GuiNewChatMixin_CompactChat",
     "features.GuiNewChatMixin_ExpandChatHistory",
+    "features.GuiNewChatMixin_ExtendChatBackground",
     "features.GuiNewChatMixin_TransparentChat",
     "features.GuiPlayerTabOverlayMixin_BossbarHeight",
     "features.GuiPlayerTabOverlayMixin_PlayerCount",
