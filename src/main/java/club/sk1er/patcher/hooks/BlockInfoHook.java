@@ -14,20 +14,12 @@ public class BlockInfoHook {
     private static final int[] packed = new int[7];
     private static boolean full;
 
-    private static float combine(int c, int s1, int s2, int s3, boolean t0, boolean t1, boolean t2, boolean t3) {
-        if (c == 0 && !t0) c = Math.max(0, Math.max(s1, s2) - 1);
-        if (s1 == 0 && !t1) s1 = Math.max(0, c - 1);
-        if (s2 == 0 && !t2) s2 = Math.max(0, c - 1);
-        if (s3 == 0 && !t3) s3 = Math.max(0, Math.max(s1, s2) - 1);
-        return (float) (c + s1 + s2 + s3) * 0x20 / (4 * 0xFFFF);
-    }
-
     public static void updateFlatLighting(Block block, IBlockAccess world, BlockPos blockPos) {
         full = block.isFullCube();
         packed[0] = block.getMixedBrightnessForBlock(world, blockPos);
 
-        for (final EnumFacing side : sides) {
-            final int i = side.ordinal() + 1;
+        for (EnumFacing side : sides) {
+            int i = side.ordinal() + 1;
             packed[i] = block.getMixedBrightnessForBlock(world, blockPos.offset(side));
         }
     }

@@ -295,7 +295,7 @@ public class ChatHandler {
     }
 
     private static int getChatComponentHash(IChatComponent chatComponent) {
-        final List<Integer> siblingHashes = new ArrayList<>();
+        List<Integer> siblingHashes = new ArrayList<>();
         for (IChatComponent sibling : chatComponent.getSiblings()) {
             if (!(sibling instanceof ChatComponentIgnored) && sibling instanceof ChatComponentStyle) {
                 siblingHashes.add(getChatComponentHash(sibling));
@@ -306,8 +306,8 @@ public class ChatHandler {
             return Objects.hash(siblingHashes);
         }
 
-        final String unformattedText = chatComponent.getUnformattedText();
-        final String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
+        String unformattedText = chatComponent.getUnformattedText();
+        String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
         return Objects.hash(cleanedMessage, siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 

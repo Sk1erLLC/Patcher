@@ -16,7 +16,7 @@ public class WorldHandler {
         if (event.phase == TickEvent.Phase.END) {
             final WorldClient world = Minecraft.getMinecraft().theWorld;
             if (world != null) {
-                final float celestialAngle = world.getCelestialAngle(0);
+                float celestialAngle = world.getCelestialAngle(0);
                 float modifiedAngle = MathHelper.cos(celestialAngle * (float) Math.PI * 2.0F) * 2.0F + 0.5F;
                 modifiedAngle = MathHelper.clamp_float(modifiedAngle, 0.0F, 1.0F);
                 skyColorVector = new Vec3(0.472549021244049 * modifiedAngle, 0.652941197156906 * modifiedAngle, 1 * modifiedAngle);

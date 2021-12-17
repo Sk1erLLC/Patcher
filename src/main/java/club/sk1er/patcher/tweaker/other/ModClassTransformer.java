@@ -125,7 +125,7 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerI7Transformers() {
-        //registerTransformer(new MapGenStructureReflectionOptimizer());
+
     }
 
     private void registerLSeriesTransformers() {

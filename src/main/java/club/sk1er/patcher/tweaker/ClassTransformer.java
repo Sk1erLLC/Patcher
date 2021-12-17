@@ -140,7 +140,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new LayerHeldItemTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new EntityWitherTransformer());
-        //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new RenderWitherTransformer());
         registerTransformer(new LibraryLWJGLOpenALTransformer());

@@ -27,7 +27,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
 
     private final Map<ResourceLocation, PropertyData> data = new HashMap<>();
 
-    //#if MC==10809
     @SubscribeEvent
     public void onSound(PlaySoundEvent event) {
         //#if MC==10809
@@ -35,10 +34,14 @@ public class SoundHandler implements IResourceManagerReloadListener {
         //#else
         //$$ ISound soundResult = event.getResultSound();
         //#endif
+        if (soundResult == null) return;
         if (soundResult instanceof PositionedSound) {
             PositionedSound result = (PositionedSound) soundResult;
             PositionedSoundAccessor accessor = (PositionedSoundAccessor) result;
 
+            //#if MC==11202
+            //$$ if (result.getSound() == null) return;
+            //#endif
             float volume = result.getVolume();
             if (!Display.isActive()) {
                 accessor.setVolume(volume * PatcherConfig.unfocusedSounds);
@@ -47,7 +50,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
             accessor.setVolume(volume * getVolumeMultiplier(soundResult.getSoundLocation()));
         }
     }
-    //#endif
 
     private float getVolumeMultiplier(ResourceLocation sound) {
         PropertyData propertyData = data.get(sound);
