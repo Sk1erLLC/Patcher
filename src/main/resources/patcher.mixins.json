@@ -12,6 +12,7 @@
     "accessors.EntityArrowAccessor",
     "accessors.FontRendererAccessor",
     "accessors.GlStateManagerAccessor",
+    "accessors.GuiBossOverlayAccessor",
     "accessors.GuiIngameAccessor",
     "accessors.GuiIngameForgeAccessor",
     "accessors.GuiMainMenuAccessor",
