@@ -85,7 +85,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.1.2"
-    implementation "gg.essential:essential-${mcVersionStr}-forge:1626+release-launch"
+    implementation "gg.essential:essential-${mcVersionStr}-forge:1684+release-1.1-phase1"
 
     embed("com.github.Sk1erLLC:HookInjection:b9ac92c31e") {
         exclude module: "koffee"
@@ -100,8 +100,8 @@ dependencies {
         exclude module: 'asm'
     }
 
-    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
-    compileOnly 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
+    compileOnly 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
 
     // Mixin needs these (and depends on them but for some reason that's not enough. FG, did you do that?)
     annotationProcessor 'com.google.code.gson:gson:2.2.4'

@@ -3,7 +3,7 @@ package club.sk1er.patcher.mixins.plugin;
 import club.sk1er.patcher.tweaker.ClassTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import kotlin.text.StringsKt;
-import org.spongepowered.asm.lib.tree.ClassNode;
+import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 

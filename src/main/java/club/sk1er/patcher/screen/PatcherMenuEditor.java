@@ -6,10 +6,12 @@ import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
+import gg.essential.elementa.ElementaVersion;
 import gg.essential.elementa.components.UIImage;
 import gg.essential.elementa.components.Window;
 import gg.essential.elementa.dsl.ComponentsKt;
 import gg.essential.elementa.dsl.UtilitiesKt;
+import gg.essential.universal.UMatrixStack;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -43,7 +45,7 @@ public class PatcherMenuEditor {
         25, // tab
         72 // return
     };
-    private final Window window = (Window) new Window().addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
+    private final Window window = (Window) new Window(ElementaVersion.V1).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
         uiConstraints.setX(UtilitiesKt.pixels(0, true));
         uiConstraints.setWidth(UtilitiesKt.pixels(200));
         uiConstraints.setHeight(UtilitiesKt.pixels(200));
@@ -104,8 +106,13 @@ public class PatcherMenuEditor {
                 }
             }
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 100, 20, "All Sounds"));
-            mcButtonList.add(new GuiButton(refreshSounds, (width >> 1), height / 6 + 146, 100, 20, "Refresh Sounds"));
+            //#if MC==10809
+            int buttonHeight = height / 6 + 146;
+            //#else
+            //$$ int buttonHeight = height / 6 + 190;
+            //#endif
+            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, buttonHeight, 100, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(refreshSounds, (width >> 1), buttonHeight, 100, 20, "Refresh Sounds"));
         }
     }
 
@@ -177,7 +184,7 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (tripped && event.phase == TickEvent.Phase.END) {
-            window.draw();
+            window.draw(UMatrixStack.Compat.INSTANCE.get());
         }
     }
 

@@ -50,7 +50,11 @@ public class AudioSwitcher {
                         buttonText = this.mc.fontRendererObj.trimStringToWidth(buttonText, 170) + "...";
                     }
 
-                    this.buttonYPosition = button.yPosition - 45;
+                    //#if MC==10809
+                    this.buttonYPosition = button.yPosition - 44;
+                    //#else
+                    //$$ this.buttonYPosition = button.y + 60;
+                    //#endif
                     buttonList.add(new GuiButton(38732, (gui.width / 2) - 100, this.buttonYPosition, buttonText));
                     break;
                 }
@@ -81,7 +85,7 @@ public class AudioSwitcher {
         //#endif
 
         if (gui instanceof GuiScreenOptionsSounds) {
-            gui.drawCenteredString(this.mc.fontRendererObj, "Sound Device (Click to Change)", gui.width / 2, this.buttonYPosition - 14, -1);
+            gui.drawCenteredString(this.mc.fontRendererObj, "Sound Device (Click to Change)", gui.width / 2, this.buttonYPosition - 12, -1);
         }
     }
 

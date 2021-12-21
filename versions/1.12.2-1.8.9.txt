@@ -55,4 +55,3 @@ net.minecraft.client.particle.Particle net.minecraft.client.particle.EntityFX
 net.minecraft.client.gui.advancements.GuiAdvancement net.minecraft.client.gui.achievement.GuiAchievement
 net.minecraft.client.gui.GuiWorldSelection net.minecraft.client.gui.GuiSelectWorld
 net.minecraft.pathfinding.NodeProcessor net.minecraft.world.pathfinder.NodeProcessor
-org.objectweb.asm.tree.ClassNode org.spongepowered.asm.lib.tree.ClassNode
