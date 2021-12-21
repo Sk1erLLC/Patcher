@@ -1,7 +1,6 @@
 package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.asm.external.mods.essential.EssentialModelRendererTransformer;
-import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.*;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
@@ -55,9 +54,6 @@ public class ModClassTransformer implements IClassTransformer {
         // PingTag by Powns
         registerTransformer(new TagRendererTransformer());
         registerTransformer(new TagRendererListenerTransformer());
-
-        // LevelHead by Sk1er LLC (I know that guy!)
-        registerTransformer(new LevelheadAboveHeadRenderTransformer());
 
         // TNT Timer by Sk1er LLC
         registerTransformer(new TNTTimeTransformer());

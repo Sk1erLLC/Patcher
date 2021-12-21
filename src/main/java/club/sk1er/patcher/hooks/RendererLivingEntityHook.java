@@ -32,9 +32,4 @@ public class RendererLivingEntityHook {
     public static float getVisibleHeight(Entity entity) {
         return entity instanceof EntityZombie && ((EntityZombie) entity).isChild() ? entity.height / 2 : entity.height;
     }
-
-    public static boolean shouldRenderNametag(Entity entity1, Entity entity2) {
-        if (PatcherConfig.showOwnNametag) return true;
-        return entity1 != entity2;
-    }
 }
