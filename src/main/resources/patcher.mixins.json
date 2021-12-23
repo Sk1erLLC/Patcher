@@ -108,6 +108,7 @@
     "features.EffectRendererMixin_ChangeParticleLimit",
     "features.EnchantmentMixin_RomanNumerals",
     "features.EntityFXMixin_StaticParticleColor",
+    "features.EntityFXMixin_TrackCullState",
     "features.EntityLivingBaseMixin_CleanView",
     "features.EntityPlayerSPMixin_NauseaEffect",
     "features.EntityRendererMixin_CameraPerspective",
