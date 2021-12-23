@@ -1,6 +1,5 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
-// todo: make this work in 1.12 (if it's not already fixed there)
 import gg.essential.universal.USound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;

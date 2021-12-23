@@ -10,10 +10,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin_PersistentShaders {
-    // todo: make this work in 1.12
-    //#if MC==10809
     @Redirect(
+        //#if MC==10809
         method = "runTick",
+        //#else
+        //$$ method = "processKeyBinds",
+        //#endif
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;loadEntityShader(Lnet/minecraft/entity/Entity;)V")
     )
     private void patcher$keepShadersOnPerspectiveChange(EntityRenderer entityRenderer, Entity entityIn) {
@@ -21,5 +23,4 @@ public class MinecraftMixin_PersistentShaders {
             entityRenderer.loadEntityShader(entityIn);
         }
     }
-    //#endif
 }
