@@ -15,7 +15,7 @@ public class AboveHeadRenderMixin_NametagBackground {
     @Dynamic("Levelhead")
     @ModifyArg(
         method = "renderName", remap = false,
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldRenderer;color(FFFF)Lnet/minecraft/client/renderer/WorldRenderer;", remap = true),
+        at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;", remap = true),
         index = 3
     )
     private float patcher$removeBackground(float alpha) {
