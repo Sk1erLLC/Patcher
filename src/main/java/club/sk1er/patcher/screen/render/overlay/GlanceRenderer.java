@@ -293,7 +293,7 @@ public class GlanceRenderer {
                 Item item = itemStack.getItem();
 
                 if (Item.getIdFromItem(item) == id && itemStack.getItemDamage() == data) {
-                    count += ((ItemStackAccessor) item).getStackSize();
+                    count += ((ItemStackAccessor) (Object) itemStack).getStackSize();
                 }
             }
         }
