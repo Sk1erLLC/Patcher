@@ -113,7 +113,6 @@ public class Patcher {
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
-    private KeyBinding chatPeek;
     private KeyBinding hideScreen, customDebug, clearShaders;
 
     private PatcherConfig patcherConfig;
@@ -125,8 +124,8 @@ public class Patcher {
     public void onInit(FMLInitializationEvent event) {
         registerKeybinds(
             nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
-            chatPeek = new KeybindChatPeek(), hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
-            customDebug = new FunctionKeyChanger.KeybindCustomDebug(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
+            hideScreen = new FunctionKeyChanger.KeybindHideScreen(), customDebug = new FunctionKeyChanger.KeybindCustomDebug(),
+            clearShaders = new FunctionKeyChanger.KeybindClearShaders()
         );
 
         patcherConfig = PatcherConfig.INSTANCE;
@@ -438,10 +437,6 @@ public class Patcher {
 
     public KeyBinding getNameHistory() {
         return nameHistory;
-    }
-
-    public KeyBinding getChatPeek() {
-        return chatPeek;
     }
 
     public KeyBinding getDropModifier() {

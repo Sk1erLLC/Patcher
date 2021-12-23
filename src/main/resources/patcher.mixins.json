@@ -126,7 +126,6 @@
     "features.GuiIngameMixin_CrosshairVisibility",
     "features.GuiMultiplayerMixin_FastServerJoin",
     "features.GuiNewChatMixin_ChatDelay",
-    "features.GuiNewChatMixin_ChatOverlay",
     "features.GuiNewChatMixin_CompactChat",
     "features.GuiNewChatMixin_ExtendChatBackground",
     "features.GuiNewChatMixin_TransparentChat",
