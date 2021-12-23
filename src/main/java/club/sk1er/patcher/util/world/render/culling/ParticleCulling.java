@@ -8,12 +8,13 @@ public class ParticleCulling {
 
     public static ICamera camera;
 
-    public static boolean shouldRender(EntityFX entityFX) {
-        // todo: make this work in 1.12
-        //#if MC==10809
-        return entityFX != null && (camera == null || entityFX.distanceWalkedModified > -1);
-        //#else
-        //$$ return entityFX != null;
-        //#endif
+    public static boolean shouldRender(EntityFX particle) {
+        return particle != null && camera != null && camera.isBoundingBoxInFrustum(
+            //#if MC==10809
+            particle.getEntityBoundingBox()
+            //#else
+            //$$ particle.getBoundingBox()
+            //#endif
+        );
     }
 }
