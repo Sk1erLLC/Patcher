@@ -43,7 +43,7 @@ public class GuiPlayerTabOverlayMixin_BossbarHeight {
         }
     }
 
-    @Inject(method = "renderPlayerlist", at = @At("TAIL"))
+    @Inject(method = "renderPlayerlist", at = @At("RETURN"))
     private void patcher$shiftDownTail(CallbackInfo ci) {
         if (this.patcher$willShiftDown) {
             GlStateManager.popMatrix();
