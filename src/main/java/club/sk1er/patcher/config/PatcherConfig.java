@@ -224,7 +224,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.SLIDER, name = "Unfocused FPS Amount",
         description = "Change the maximum FPS when you're not tabbed into the window, saving resources.",
         category = "Miscellaneous", subcategory = "General",
-        min = 1, max = 240
+        min = 15, max = 240
     )
     public static int unfocusedFPSAmount = 60;
 
