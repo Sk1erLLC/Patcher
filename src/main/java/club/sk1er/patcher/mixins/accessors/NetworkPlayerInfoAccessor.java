@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(NetworkPlayerInfo.class)
 public interface NetworkPlayerInfoAccessor {
     @Accessor
-    //#if MC==10909
+    //#if MC==10809
     void setLocationSkin(ResourceLocation location);
     //#else
     //$$ Map<Type, ResourceLocation> getPlayerTextures();
