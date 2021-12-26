@@ -26,7 +26,6 @@
     "accessors.MinecraftAccessor",
     "accessors.MinecraftForgeClientAccessor",
     "accessors.NetworkPlayerInfoAccessor",
-    "accessors.PositionedSoundAccessor",
     "accessors.RenderManagerAccessor",
     "accessors.ResourcePackRepositoryAccessor",
     "accessors.SoundHandlerAccessor",

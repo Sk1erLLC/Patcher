@@ -2,7 +2,6 @@ package club.sk1er.patcher.util.world.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.mixins.accessors.PositionedSoundAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundHandlerAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundRegistryAccessor;
 import gg.essential.vigilance.data.PropertyData;
@@ -34,20 +33,17 @@ public class SoundHandler implements IResourceManagerReloadListener {
         //#else
         //$$ ISound soundResult = event.getResultSound();
         //#endif
-        if (soundResult == null) return;
         if (soundResult instanceof PositionedSound) {
             PositionedSound result = (PositionedSound) soundResult;
-            PositionedSoundAccessor accessor = (PositionedSoundAccessor) result;
 
             //#if MC==11202
             //$$ if (result.getSound() == null) return;
             //#endif
-            float volume = result.getVolume();
             if (!Display.isActive()) {
-                accessor.setVolume(volume * PatcherConfig.unfocusedSounds);
+                result.volume *= PatcherConfig.unfocusedSounds;
             }
 
-            accessor.setVolume(volume * getVolumeMultiplier(soundResult.getSoundLocation()));
+            result.volume *= getVolumeMultiplier(soundResult.getSoundLocation());
         }
     }
 
@@ -64,17 +60,19 @@ public class SoundHandler implements IResourceManagerReloadListener {
     public void onResourceManagerReload(IResourceManager resourceManager) {
         Map<ResourceLocation, SoundEventAccessorComposite> soundRegistry = ((SoundRegistryAccessor) ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndRegistry()).getSoundRegistry();
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
-            data.computeIfAbsent(entry.getKey(), location ->
-                ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
-                    //#if MC==10809
-                    WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
-                    //#else
-                    //$$ "Sound Categories (todo)",
-                    //#endif
-                    "Sounds", getName(location), "Sound Multiplier for " + getName(location),
-                    100, 0, 200, __ -> {
-                    }
-                )
+            data.computeIfAbsent(entry.getKey(), location -> {
+                    String name = getName(location);
+                    return ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
+                        //#if MC==10809
+                        WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
+                        //#else
+                        //$$ "Sound Categories (todo)",
+                        //#endif
+                        "Sounds", name, "Sound Multiplier for " + name,
+                        100, 0, 200, __ -> {
+                        }
+                    );
+                }
             );
         }
     }
