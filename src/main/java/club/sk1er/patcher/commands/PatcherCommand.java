@@ -171,7 +171,7 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat. Anything after 'sendcoords' will be put at the end of the message.")
-    public void sendCoords(@DisplayName("additional information") Optional<String> message) {
+    public void sendCoords(@DisplayName("additional information") @Greedy Optional<String> message) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ +
             // might be an issue if they provide a long message?
