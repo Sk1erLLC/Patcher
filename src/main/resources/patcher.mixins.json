@@ -160,6 +160,7 @@
     "features.cropheight.BlockNetherWartMixin_CropHeight",
     "features.disableenchantglint.LayerArmorBaseMixin_DisableEnchantGlint",
     "features.disableenchantglint.RenderItemMixin_DisableEnchantGlint",
+    "features.essential.OnlineIndicatorMixin_NametagBackground",
     "features.fullbright.ChunkMixin_Fullbright",
     "features.fullbright.WorldMixin_Fullbright",
     "features.invscale.ForgeHooksClientMixin_InventoryScale",

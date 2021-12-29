@@ -11,11 +11,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(targets = "club.sk1er.mods.levelhead.render.AboveHeadRender")
 public class AboveHeadRenderMixin_NametagBackground {
 
-    @SuppressWarnings("DefaultAnnotationParam")
     @Dynamic("Levelhead")
     @ModifyArg(
         method = "renderName", remap = false,
-        at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;", remap = true),
+        at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(FFFF)Lgg/essential/universal/UGraphics;"),
         index = 3
     )
     private float patcher$removeBackground(float alpha) {
