@@ -37,9 +37,6 @@ public class SoundHandler implements IResourceManagerReloadListener {
         if (soundResult instanceof PositionedSoundAccessor) {
             PositionedSoundAccessor result = (PositionedSoundAccessor) soundResult;
 
-            //#if MC==11202
-            //$$ if (result.getSound() == null) return;
-            //#endif
             if (!Display.isActive()) {
                 result.setVolume(result.getVolumeField() * PatcherConfig.unfocusedSounds);
             }
