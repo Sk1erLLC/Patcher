@@ -168,6 +168,7 @@
     "features.invscale.GuiScreenMixin_InventoryScale",
     "features.invscale.ScaledResolutionMixin_InventoryScale",
     "features.lefthand.EntityRendererMixin_LeftHandedness",
+    "features.lefthand.RenderFishMixin_LeftHandedness",
     "features.lefthand.RenderItemMixin_LeftHandedness",
     "features.levelhead.AboveHeadRenderMixin_NametagBackground",
     "features.levelhead.AboveHeadRenderMixin_NametagPosition",
