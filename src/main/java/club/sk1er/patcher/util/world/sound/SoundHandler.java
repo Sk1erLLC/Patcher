@@ -2,6 +2,7 @@ package club.sk1er.patcher.util.world.sound;
 
 import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.mixins.accessors.PositionedSoundAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundHandlerAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundRegistryAccessor;
 import gg.essential.vigilance.data.PropertyData;
@@ -40,10 +41,10 @@ public class SoundHandler implements IResourceManagerReloadListener {
             //$$ if (result.getSound() == null) return;
             //#endif
             if (!Display.isActive()) {
-                result.volume *= PatcherConfig.unfocusedSounds;
+                ((PositionedSoundAccessor) result).setVolume(result.getVolume() * PatcherConfig.unfocusedSounds);
             }
 
-            result.volume *= getVolumeMultiplier(soundResult.getSoundLocation());
+            ((PositionedSoundAccessor) result).setVolume(result.getVolume() * getVolumeMultiplier(soundResult.getSoundLocation()));
         }
     }
 
