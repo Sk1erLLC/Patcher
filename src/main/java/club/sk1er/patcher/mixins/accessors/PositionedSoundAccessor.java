@@ -6,6 +6,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(PositionedSound.class)
 public interface PositionedSoundAccessor {
+    @Accessor("volume")
+    float getVolumeField();
+
     @Accessor
     void setVolume(float volume);
 }
