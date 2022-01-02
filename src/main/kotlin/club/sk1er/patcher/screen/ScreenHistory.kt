@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile
 import gg.essential.api.EssentialAPI
 import gg.essential.api.gui.EmulatedPlayerBuilder
 import gg.essential.api.utils.Multithreading
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
 import gg.essential.elementa.components.input.UITextInput
@@ -29,7 +30,7 @@ import java.util.*
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = EssentialAPI.getGuiUtil().getGuiScale()) {
+) : WindowScreen(ElementaVersion.V1, newGuiScale = EssentialAPI.getGuiUtil().getGuiScale()) {
 
     // Sk1erLLC UUID
     private val defaultGameProfile = GameProfile(UUID.fromString("1db6a87e-47fb-47fe-8617-a19c2fd44d75"), "Steve")
