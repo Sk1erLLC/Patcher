@@ -1,524 +1,254 @@
 package club.sk1er.patcher.screen
 
-import club.sk1er.patcher.Patcher
-import club.sk1er.patcher.mixins.accessors.AbstractClientPlayerAccessor
-import club.sk1er.patcher.mixins.accessors.NetworkPlayerInfoAccessor
-import club.sk1er.patcher.util.chat.ChatUtilities
-import club.sk1er.patcher.util.name.NameFetcher
-import com.google.gson.JsonParser
+import club.sk1er.patcher.util.NameFetcher
 import com.mojang.authlib.GameProfile
-import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import gg.essential.api.EssentialAPI
-import gg.essential.api.utils.mojang.Model
-import gg.essential.api.utils.mojang.Profile
-import gg.essential.elementa.UIComponent
+import gg.essential.api.gui.EmulatedPlayerBuilder
+import gg.essential.api.utils.Multithreading
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.*
-import gg.essential.elementa.components.UIRoundedRectangle.Companion.drawRoundedRectangle
 import gg.essential.elementa.components.input.UITextInput
+import gg.essential.elementa.components.inspector.Inspector
 import gg.essential.elementa.constraints.CenterConstraint
-import gg.essential.elementa.constraints.ChildBasedSizeConstraint
+import gg.essential.elementa.constraints.FillConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
-import gg.essential.elementa.effects.ScissorEffect
 import gg.essential.elementa.state.BasicState
+import gg.essential.elementa.state.State
+import gg.essential.elementa.utils.ObservableClearEvent
 import gg.essential.elementa.utils.withAlpha
-import gg.essential.universal.*
+import gg.essential.universal.UKeyboard
+import gg.essential.universal.UMinecraft
 import gg.essential.vigilance.gui.VigilancePalette
-import net.minecraft.client.entity.AbstractClientPlayer
-import net.minecraft.client.gui.inventory.GuiInventory
-import net.minecraft.client.network.NetworkPlayerInfo
-import net.minecraft.client.resources.DefaultPlayerSkin
-import net.minecraft.util.ResourceLocation
-import org.lwjgl.opengl.GL11
+import java.awt.Color
 import java.util.*
 
-//#if MC==11202
-//$$ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type
-//#endif
-
+@Suppress("unused", "UNUSED_PARAMETER")
 class ScreenHistory @JvmOverloads constructor(
     val name: String? = null,
     focus: Boolean = name == null
-) : WindowScreen(newGuiScale = GuiScale.scaleForScreenSize().ordinal) {
-    private val nameFetcher = NameFetcher()
-    private var uuid: UUID? = null
-    private val skin = initialSkin
+) : WindowScreen(newGuiScale = EssentialAPI.getGuiUtil().getGuiScale()) {
 
-    private val background by UIRoundedRectangle(5f).constrain {
+    // Sk1erLLC UUID
+    private val defaultGameProfile = GameProfile(UUID.fromString("1db6a87e-47fb-47fe-8617-a19c2fd44d75"), "Steve")
+    private val nameFetcher = NameFetcher()
+
+    private val blockContainer by UIContainer().constrain {
+        y = CenterConstraint()
+        width = 100.percent()
+        height = 79.percent()
+    } childOf window
+
+    private val informationContainer by UIBlock().constrain {
+        x = CenterConstraint()
+        y = SiblingConstraint()
+        width = 57.percent()
+        height = FillConstraint()
+        color = VigilancePalette.getBackground().toConstraint()
+    } effect OutlineEffect(VigilancePalette.getDivider(), 1.0f) childOf blockContainer
+
+    private val contentContainer by UIContainer().constrain {
         x = CenterConstraint()
         y = CenterConstraint()
-        height = 75.percent()
-        width = 50.percent()
-        color = VigilancePalette.getBackground().toConstraint()
-    } effect ScissorEffect() childOf window
+        width = 100.percent() - 64.pixels()
+        height = 100.percent() - 64.pixels()
+    } childOf informationContainer
 
-    private val textHolder by UIBlock(VigilancePalette.getDarkHighlight()).constrain {
-        x = CenterConstraint()
-        y = 10.pixels()
-        width = 80.percent()
-        height = ChildBasedSizeConstraint() + 6.pixels()
-    } childOf background effect OutlineEffect(VigilancePalette.getDivider(), 0.75f)
+    private val rightContainer by UIContainer().constrain {
+        x = 0.pixels(alignOpposite = true)
+        y = CenterConstraint()
+        width = 48.percent()
+        height = 100.percent()
+    } childOf contentContainer
 
-    private val textInput by UITextInput("Enter a name").constrain {
-        x = 3.pixels()
-        y = 3.pixels()
-        width = basicWidthConstraint { textHolder.getWidth() }
+    private val playerContainer by UIBlock().constrain {
+        x = 0.pixels()
+        y = CenterConstraint()
+        width = 48.percent()
+        height = 100.percent()
+        color = VigilancePalette.getDarkHighlight().toConstraint()
+    } childOf contentContainer
+
+    private val searchContainer by UIBlock().constrain {
+        x = 0.pixels()
+        y = 0.pixels()
+        width = 100.percent()
+        height = 9.percent()
+        color = VigilancePalette.getDarkHighlight().toConstraint()
+    } childOf rightContainer
+
+    private val searchText by UITextInput(placeholder = "Search...", shadow = false).constrain {
+        x = 15.pixels()
+        y = CenterConstraint()
+        width = 100.percent() - 10.pixels()
+        height = 18.pixels()
+        textScale = 2.pixels()
+        color = VigilancePalette.getBrightText().toConstraint()
     }.onMouseClick {
         grabWindowFocus()
     }.onKeyType { _, keyCode ->
         if (keyCode == UKeyboard.KEY_ENTER) {
-            getNameHistory((this as UITextInput).getText())
+            nameFetcher.execute((this as UITextInput).getText())
+            releaseWindowFocus()
         }
     } as UITextInput
 
-    init {
-        textInput childOf textHolder
-
-        if (name != null) {
-            textInput.setText(name)
-            getNameHistory(name)
-        }
-
-        if (focus) {
-            textInput.grabWindowFocus()
-        }
-    }
-
-    private val playerHolder by UIRoundedRectangle(3f).constrain {
-        y = CenterConstraint() - 5.pixels()
-        width = 33.percent()
-        x = 7.percent()
-        height = 70.percent()
+    private val namesContainer by UIBlock().constrain {
+        x = 0.pixels()
+        y = 0.pixels(alignOpposite = true)
+        width = 100.percent()
+        height = 89.percent()
         color = VigilancePalette.getDarkHighlight().toConstraint()
-    } childOf background
+    } childOf rightContainer
 
-    private val skinText by UIText("Skin of $name").constrain {
+    private val gameProfileState: State<GameProfile?> = BasicState(defaultGameProfile)
+
+    private val player by EmulatedPlayerBuilder().apply {
+        showCape = false
+        profileState = gameProfileState
+        renderNameTag = false
+    }.build().constrain {
         x = CenterConstraint()
-        y = 1.pixel()
-        color = VigilancePalette.getBrightText().toConstraint()
-    } childOf playerHolder
-
-    // todo: replace this with the essential player object
-    private val player by UIPlayer().constrain {
         y = CenterConstraint()
-        x = CenterConstraint()
         height = 75.percent()
         width = 75.percent()
-    } childOf playerHolder
+    } childOf playerContainer
 
-    private val buttonContainer by UIContainer().constrain {
-        x = basicXConstraint { playerHolder.getLeft() }
-        y = basicYConstraint { playerHolder.getBottom() + 3 }
-        width = basicWidthConstraint { playerHolder.getWidth() }
-        height = 7.5f.percent()
-    } childOf background
-
-    private val applySkinButton by BigButton(true, "Apply this Skin!") {
-        ChangeSkinConfirmationModal() childOf window
-    }.constrain {
-        width = 80.percent()
+    private val gradient by GradientComponent(
+        VigilancePalette.getBackground().withAlpha(0f),
+        VigilancePalette.getDarkBackground().withAlpha(.25f),
+    ).constrain {
+        width = 100.percent()
         height = 100.percent()
-        x = CenterConstraint()
-        y = 0.pixels()
-    } childOf buttonContainer
+    } childOf namesContainer
 
-    private val historyScroller by ScrollComponent().constrain {
-        x = 50.percent()
-        y = basicYConstraint { playerHolder.getTop() }
-        height = basicHeightConstraint { playerHolder.getHeight() }
-        width = "WWWWWWWWWWWWWWWW » 99/99/9999".width().pixels()
-    } childOf background
+    private val scrollBar by UIBlock(VigilancePalette.getScrollBar()).constrain {
+        x = 2.5.pixels(true)
+        y = 5.pixels
+        width = 3.pixels
+        height = 100.percent - 10.pixels
+    } childOf namesContainer
+
+    private val names by ScrollComponent().constrain {
+        x = 15.pixels
+        y = 0.pixels(true)
+        width = 100.percent - 15.pixels
+        height = 100.percent - 10.pixels
+    } childOf namesContainer
 
     init {
-        HistoryComponent().constrain {
-            x = 0.pixels()
-            y = 0.pixels()
-            width = 100.percent()
-        } childOf historyScroller
+        names.setScrollBarComponent(scrollBar, hideWhenUseless = true, isHorizontal = false)
     }
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun onDrawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        if (uuid != nameFetcher.uuid) {
-            uuid = nameFetcher.uuid
-            // update gui info
-            val uuid = uuid
-            if (uuid == null) {
-                // set blank
-                player.player = FakePlayer(defaultProfile)
+    override fun afterInitialization() {
+        nameFetcher.names.addObserver { _, arg ->
+            if (arg is ObservableClearEvent<*>) {
+                names.clearChildren()
+            }
+        }
+
+        nameFetcher.callback = {
+            if (nameFetcher.names.isEmpty()) {
+                val card = NameCardComponent(
+                    VigilancePalette.getMidText(),
+                    VigilancePalette.getDarkText(),
+                    "Unknown", "Unknown"
+                ).constrain {
+                    y = SiblingConstraint(2.5f)
+                    width = 90.percent
+                    height = 20.pixels
+                }
+                names.insertChildAt(card, 0)
             } else {
-                // uuid is the only thing that matters here
-                player.player = FakePlayer(GameProfile(uuid, name))
-                val info = (player.player as AbstractClientPlayerAccessor).playerInfo
-                if (info != null) {
-                    val profile = EssentialAPI.getMojangAPI().getProfile(uuid)
-                    if (profile != null) {
-                        val url = profile.textures.textures?.skin?.url
-                        if (url != null) {
-                            val alex = profile.isAlex()
-                            val rl = mc.skinManager.loadSkin(
-                                MinecraftProfileTexture(
-                                    url,
-                                    if (alex) mapOf("model" to "slim") else null
-                                ), MinecraftProfileTexture.Type.SKIN
-                            )
-                            //#if MC==10809
-                            ((player.player as AbstractClientPlayerAccessor).playerInfo as NetworkPlayerInfoAccessor).setLocationSkin(rl)
-                            //#else
-                            //$$ ((player.player as AbstractClientPlayerAccessor).playerInfo as NetworkPlayerInfoAccessor).playerTextures[Type.SKIN] = rl
-                            //#endif
-                            skin.take(Triple(rl, url, if (alex) Model.ALEX else Model.STEVE))
-                            skinText.setText("Skin of ${nameFetcher.name}")
+                nameFetcher.names.forEachIndexed { i, name ->
+                    Window.enqueueRenderOperation {
+                        val card = NameCardComponent(
+                            if (i == nameFetcher.names.size - 1) VigilancePalette.getAccent() else VigilancePalette.getMidText(),
+                            if (i == nameFetcher.names.size - 1) VigilancePalette.getBrightText() else VigilancePalette.getDarkText(),
+                            when (i) {
+                                0 -> "Original"
+                                nameFetcher.names.size - 1 -> "Current"
+                                else -> nameFetcher.getDate(i)
+                            },
+                            name.name!!
+                        ).constrain {
+                            y = SiblingConstraint(2.5f)
+                            width = 90.percent
+                            height = 20.pixels
                         }
+                        names.insertChildAt(card, 0)
                     }
                 }
             }
-        }
-        super.onDrawScreen(mouseX, mouseY, partialTicks)
-    }
 
-    override fun onTick() {
-        val diff = System.currentTimeMillis() - lastSkinChange
-        if (diff < 60000L) {
-            if (applySkinButton.enabled) {
-                applySkinButton.disable()
-            }
-
-            applySkinButton.setText("Wait ${60 - (diff / 1000L)}s...")
-        } else if (!applySkinButton.enabled) {
-            applySkinButton.enable()
-            applySkinButton.setText("Apply this Skin!")
-        }
-        super.onTick()
-    }
-
-    private fun getNameHistory(username: String) {
-        nameFetcher.execute(username)
-    }
-
-    private fun Profile.isAlex(): Boolean {
-        try {
-            val decodedJson =
-                JsonParser().parse(String(Base64.getDecoder().decode(properties?.get(0)?.value))).asJsonObject
-            val skin = decodedJson["textures"]!!.asJsonObject["SKIN"]!!.asJsonObject
-            if (skin.has("metadata")) {
-                val metadataElement = skin["metadata"]
-                if (metadataElement.isJsonObject) {
-                    val metadata = metadataElement.asJsonObject
-                    if (metadata.has("model")) {
-                        return metadata["model"].asString == "slim"
-                    }
-                }
-            }
-            return false
-        } catch (e: Exception) {
-            Patcher.instance.logger.error("Failed to determine if model was of Alex format.", e)
-            return false
-        }
-    }
-
-    override fun doesGuiPauseGame(): Boolean = false
-
-    private inner class UIPlayer : UIComponent() {
-        val uuid: UUID? = try {
-            EssentialAPI.getMojangAPI().getUUID(name ?: "")?.get()
-        } catch (e: Exception) {
-            Patcher.instance.logger.error("Failed to fetch UUID.", e)
-            EssentialAPI.getNotifications().push("Name History", "Failed to fetch UUID.")
-            null
-        }
-        var player: FakePlayer = FakePlayer(GameProfile(uuid ?: defaultProfile.id, name))
-
-        override fun draw() {
-            UGraphics.GL.pushMatrix()
-            UGraphics.enableLighting()
-            UGraphics.enableAlpha()
-            UGraphics.shadeModel(GL11.GL_FLAT)
-            UGraphics.enableDepth()
-            UGraphics.GL.translate(0f, 0f, 200f)
-
-            val posX = getLeft().toInt()
-            val posY = getTop().toInt()
-            val h = (getHeight().toInt() / 2)
-            val w = getWidth().toInt()
-            val scale2 = if (h > w) w else h
-
-            val posX2 = UResolution.scaledWidth
-            val posY2 = UResolution.scaledHeight
-
-            val yaw = posX2 - UMouse.getTrueX()
-            val pitch = -(posY2 - UMouse.getTrueY())
-
-            GuiInventory.drawEntityOnScreen(
-                posX + scale2 / 2,
-                posY + scale2 * 2,
-                scale2,
-                yaw.toFloat(),
-                pitch.toFloat(),
-                player
-            )
-
-            UGraphics.depthFunc(GL11.GL_LEQUAL)
-            UGraphics.GL.popMatrix()
-
-            super.draw()
-        }
-    }
-
-    private inner class HistoryComponent : UIComponent() {
-        override fun draw() {
-            UGraphics.GL.pushMatrix()
-
-            val maxHeight = 12f + (nameFetcher.names.size * 10)
-            if (getHeight() != maxHeight) {
-                setHeight(maxHeight.pixels())
-            }
-
-            drawRoundedRectangle(getLeft(), getTop(), getRight(), getTop() + maxHeight, 3f,
-                VigilancePalette.getDarkHighlight()
-            )
-
-            val x = (getWidth() / 2 + getLeft()).toInt()
-            drawCenteredString(
-                fontRendererObj, "Name History", x, getTop().toInt() + 2, VigilancePalette.getBrightText().rgb
-            )
-            for (nameIndex in nameFetcher.names.indices) {
-                drawCenteredString(
-                    fontRendererObj,
-                    nameFetcher.names[nameIndex],
-                    x,
-                    getTop().toInt() + 2 + (10 * (nameIndex + 1)),
-                    VigilancePalette.getBrightText().rgb
-                )
-            }
-
-            UGraphics.GL.popMatrix()
-            super.draw()
-        }
-    }
-
-    private inner class BigButton(
-        var enabled: Boolean,
-        buttonText: String,
-        buttonAction: () -> Unit
-    ) : UIRoundedRectangle(5f) {
-        private val buttonTextState = BasicState(buttonText)
-
-        init {
-            constrain {
-                color = VigilancePalette.getAccent().toConstraint()
+            Multithreading.runAsync {
+                val profile = GameProfile(nameFetcher.uuid ?: defaultGameProfile.id, name)
+                UMinecraft.getMinecraft().sessionService.fillProfileProperties(profile, true)
+                Window.enqueueRenderOperation { this.gameProfileState.set(profile) }
             }
         }
+    }
 
-        private val buttonBody by UIRoundedRectangle(5f).constrain {
-            width = basicWidthConstraint { this@BigButton.getWidth() - 4 }
-            height = basicHeightConstraint { this@BigButton.getHeight() - 4 }
+    init {
+        searchText childOf searchContainer
+
+        if (focus) {
+            searchText.grabWindowFocus()
+        }
+
+        if (name != null) {
+            searchText.setText(name)
+            nameFetcher.execute(name)
+        }
+
+        if (EssentialAPI.getMinecraftUtil().isDevelopment()) {
+            Inspector(window).constrain {
+                x = 5.pixels(true)
+                y = 5.pixels(true)
+            } childOf window
+        }
+    }
+
+    override fun doesGuiPauseGame() = false
+
+    inner class NameCardComponent(
+        private val dateBlockColor: Color = VigilancePalette.getMidText(),
+        private val dateTextColor: Color = VigilancePalette.getDarkText(),
+        dateText: String = "Unknown Date",
+        name: String = "Unknown Username"
+    ) : UIContainer() {
+        private val dateBlock by UIBlock().constrain {
+            x = 0.pixels()
             y = CenterConstraint()
-            x = CenterConstraint()
-            color = VigilancePalette.getDarkHighlight().toConstraint()
+            width = 90.pixels()
+            height = 20.pixels()
+            color = dateBlockColor.toConstraint()
         } childOf this
 
-        private val buttonTextComponent by UIText().bindText(buttonTextState).constrain {
+        private val date by UIText(dateText, shadow = false).constrain {
             x = CenterConstraint()
             y = CenterConstraint()
-            color = VigilancePalette.getBrightText().toConstraint()
+            color = dateTextColor.toConstraint()
+        } childOf dateBlock
+
+        private val username by UIText(name, shadow = false).constrain {
+            x = SiblingConstraint(6f)
+            y = CenterConstraint()
+            color = VigilancePalette.getMidText().toConstraint()
         } childOf this
 
         init {
             onMouseEnter {
-                if (enabled) {
-                    buttonBody.animate {
-                        setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getAccent().toConstraint())
-                    }
-                }
-            }.onMouseLeave {
-                buttonBody.animate {
-                    setColorAnimation(Animations.OUT_EXP, .3f, VigilancePalette.getDarkHighlight().toConstraint())
-                }
-            }.onMouseClick {
-                if (enabled) {
-                    USound.playButtonPress()
-                    buttonAction()
-                }
-            }
-        }
-
-        fun setText(newButtonText: String): Unit = buttonTextState.set(newButtonText)
-
-        fun enable() {
-            enabled = true
-            if (buttonBody.isHovered()) {
-                buttonBody.setColor(VigilancePalette.getAccent().toConstraint())
-            }
-            buttonTextComponent.setColor(VigilancePalette.getBrightText().toConstraint())
-            setColor(VigilancePalette.getAccent().toConstraint())
-        }
-
-        fun disable() {
-            enabled = false
-            buttonBody.setColor(VigilancePalette.getDarkHighlight().toConstraint())
-            buttonTextComponent.setColor(VigilancePalette.getMidText().toConstraint())
-            setColor(VigilancePalette.getHighlight().toConstraint())
-        }
-    }
-
-    private inner class ChangeSkinConfirmationModal : UIBlock(VigilancePalette.getModalBackground().withAlpha(0)) {
-        init {
-            constrain {
-                x = 0.pixels()
-                y = 0.pixels()
-                height = 100.percent()
-                width = 100.percent()
+                date.hide(true)
+                dateBlock.animate { setWidthAnimation(Animations.OUT_EXP, 0.5f, 0.pixels()) }
             }
 
-            onMouseClick {
-                closeModal()
+            onMouseLeave {
+                date.unhide(true)
+                dateBlock.animate { setWidthAnimation(Animations.OUT_EXP, 0.5f, 90.pixels()) }
             }
         }
-
-        private val actualModal by UIBlock(VigilancePalette.getDarkBackground()).constrain {
-            x = CenterConstraint()
-            y = CenterConstraint()
-            height = 1.pixel()
-            width = 1.pixel()
-        }.onMouseClick { e -> e.stopPropagation() } effect ScissorEffect() childOf this
-
-        init {
-            UIText("Are you sure?").constrain {
-                color = VigilancePalette.getBrightText().toConstraint()
-                x = CenterConstraint()
-                y = 25.percent()
-                textScale = 1.2f.pixels()
-            } childOf actualModal
-
-            UIWrappedText("You can only change your skin once per minute!", centered = true).constrain {
-                color = VigilancePalette.getMidText().toConstraint()
-                width = 70.percent()
-                x = CenterConstraint()
-                y = SiblingConstraint(3f)
-            } childOf actualModal
-        }
-
-        val modalBigButtonContainer by UIContainer().constrain {
-            x = CenterConstraint()
-            y = SiblingConstraint(5f)
-            height = basicHeightConstraint { buttonContainer.getHeight() }
-            width = basicWidthConstraint { buttonContainer.getWidth() }
-        } childOf actualModal
-
-        init {
-            BigButton(true, "Yes, I'm sure!") {
-                try {
-                    EssentialAPI.getMojangAPI()
-                        .changeSkin(mc.session.token, mc.thePlayer.uniqueID, skin.model, skin.url)
-                } catch (e: Exception) {
-                    ChatUtilities.sendNotification("Name History", "Failed to change your skin.")
-                    Patcher.instance.logger.error("Failed to change players skin through name history.", e)
-                    closeModal()
-                    return@BigButton
-                }
-
-                ChatUtilities.sendNotification("Name History", "Successfully changed your skin!")
-                lastSkinChange = System.currentTimeMillis()
-                closeModal()
-            }.constrain {
-                width = 80.percent()
-                height = 100.percent()
-                x = CenterConstraint()
-                y = 0.pixels()
-            } childOf modalBigButtonContainer
-
-            UIText("Wait, go back!").constrain {
-                x = CenterConstraint()
-                y = SiblingConstraint(5f)
-                color = VigilancePalette.getMidText().toConstraint()
-            }.onMouseEnter {
-                animate {
-                    setColorAnimation(Animations.OUT_EXP, .25f, VigilancePalette.getMidText().brighter().toConstraint())
-                }
-            }.onMouseLeave {
-                animate {
-                    setColorAnimation(Animations.OUT_EXP, .25f, VigilancePalette.getMidText().toConstraint())
-                }
-            }.onMouseClick {
-                closeModal()
-            } childOf actualModal
-        }
-
-        private fun closeModal() {
-            animate {
-                setColorAnimation(
-                    Animations.OUT_EXP,
-                    .5f,
-                    VigilancePalette.getModalBackground().withAlpha(0).toConstraint()
-                )
-            }
-
-            actualModal.animate {
-                setHeightAnimation(Animations.OUT_EXP, .25f, 1.pixel()).onComplete {
-                    actualModal.animate {
-                        setWidthAnimation(Animations.OUT_EXP, .25f, 1.pixel()).onComplete {
-                            window.removeChild(this@ChangeSkinConfirmationModal)
-                        }
-                    }
-                }
-            }
-        }
-
-        override fun afterInitialization() {
-            animate {
-                setColorAnimation(Animations.OUT_EXP, .5f, VigilancePalette.getModalBackground().toConstraint())
-            }
-
-            actualModal.animate {
-                setWidthAnimation(Animations.OUT_EXP, .25f, 35.percent()).onComplete {
-                    actualModal.animate {
-                        setHeightAnimation(Animations.OUT_EXP, .25f, 30.percent())
-                    }
-                }
-            }
-            super.afterInitialization()
-        }
-
-        override fun draw() {
-            // I hate this.
-            UGraphics.GL.pushMatrix()
-            UGraphics.GL.translate(0f, 0f, 500f)
-            super.draw()
-            UGraphics.GL.popMatrix()
-        }
-    }
-
-    private class FakePlayer(gameProfile: GameProfile) : AbstractClientPlayer(UMinecraft.getWorld(), gameProfile) {
-        init {
-            @Suppress("CAST_NEVER_SUCCEEDS")
-            (this as AbstractClientPlayerAccessor).playerInfo = NetworkPlayerInfo(gameProfile)
-        }
-    }
-
-    private data class SelectableSkin(
-        var resourceLocation: ResourceLocation,
-        var url: String,
-        var model: Model
-    ) {
-        fun take(triple: Triple<ResourceLocation, String, Model>) {
-            resourceLocation = triple.first
-            url = triple.second
-            model = triple.third
-        }
-    }
-
-    companion object {
-        private val defaultProfile: GameProfile =
-            GameProfile(UUID.fromString("8667ba71-b85a-4004-af54-457a9734eed7"), "Steve")
-        private val initialSkin: SelectableSkin = SelectableSkin(
-            DefaultPlayerSkin.getDefaultSkinLegacy(),
-            "https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b",
-            Model.STEVE
-        )
-        private var lastSkinChange: Long = 0L
     }
 }

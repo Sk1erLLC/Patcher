@@ -393,6 +393,7 @@ public class Patcher {
             return;
         }
 
+        if (replacedMods == null) return;
         Set<String> replacements = new HashSet<>();
         Set<String> jsonKey = replacedMods.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
         for (ModContainer modContainer : activeModList) {
