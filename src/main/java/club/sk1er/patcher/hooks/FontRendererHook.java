@@ -17,13 +17,11 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public final class FontRendererHook {
 
@@ -84,6 +82,14 @@ public final class FontRendererHook {
         for (int i = 0; i < 256; i++) {
             try (final InputStream stream = mc.getResourceManager().getResource(new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i))).getInputStream()) {
                 bufferedImage.getGraphics().drawImage(ImageIO.read(stream), i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+                if (i == 0x0d) {
+                    try (final InputStream sustream = FontRendererHook.class.getResourceAsStream("/assets/patcher/font_glyph_data.bin")) {
+                        Graphics2D graphics = bufferedImage.createGraphics();
+                        graphics.setComposite(AlphaComposite.Src);
+                        graphics.drawImage(ImageIO.read(Objects.requireNonNull(sustream)), 0x9DE % 16 * 16 /* 224 */, (i % 16 * texSheetDim) + (0x9DE / 16 - 16 /* 141 */), null);
+                        fontRendererAccessor.getGlyphWidth()[0xD9E] = 14;
+                    }
+                }
             } catch (Exception ignored) {
             }
         }

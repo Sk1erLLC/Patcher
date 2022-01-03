@@ -22,7 +22,6 @@ import club.sk1er.patcher.asm.external.lwjgl.LibraryLWJGLOpenALTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
-import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.packet.S0EPacketSpawnObjectTransformer;
@@ -168,8 +167,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new WindowsKeycodesTransformer());
         registerTransformer(new KeyboardTransformer());
-
-        registerTransformer(new ForcePublicTransformer());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

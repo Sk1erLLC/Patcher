@@ -1,7 +1,6 @@
 package club.sk1er.patcher.asm.render.screen;
 
 import club.sk1er.patcher.tweaker.transform.CommonTransformer;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
