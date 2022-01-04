@@ -47,6 +47,7 @@ net.minecraft.client.audio.SoundEventAccessor net.minecraft.client.audio.SoundEv
 net.minecraft.client.renderer.BufferBuilder net.minecraft.client.renderer.WorldRenderer
 net.minecraft.client.renderer.entity.RenderLivingBase net.minecraft.client.renderer.entity.RendererLivingEntity
 net.minecraft.client.renderer.entity.RenderArmorStand net.minecraft.client.renderer.entity.ArmorStandRenderer
+net.minecraft.client.renderer.entity.RenderItemFrame net.minecraft.client.renderer.tileentity.RenderItemFrame
 net.minecraft.client.renderer.block.model.IBakedModel net.minecraft.client.resources.model.IBakedModel
 net.minecraft.client.renderer.block.model.ModelManager net.minecraft.client.resources.model.ModelManager
 net.minecraft.client.renderer.RenderItem net.minecraft.client.renderer.entity.RenderItem

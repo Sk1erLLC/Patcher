@@ -50,7 +50,6 @@ public class ModClassTransformer implements IClassTransformer {
         //#endif
         registerTransformer(new RenderTransformer());
         registerTransformer(new RendererLivingEntityTransformer());
-        registerTransformer(new RenderItemFrameTransformer());
 
         // PingTag by Powns
         registerTransformer(new TagRendererTransformer());
