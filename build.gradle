@@ -2,6 +2,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("dev.architectury.loom")
+    id("dev.architectury.architectury-pack200")
     id("com.replaymod.preprocess")
     id("maven-publish")
 }
@@ -47,6 +48,7 @@ loom {
         }
     }
     forge {
+        pack200Provider = new dev.architectury.pack200.java.Pack200Adapter()
         accessTransformer(project.parent.file("src/main/resources/$accessTransformerName"))
         mixinConfig("patcher.mixins.json")
     }
