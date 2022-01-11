@@ -142,7 +142,7 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SWITCH, name = "Disable Titles",
         description = "Stop titles from appearing.",
-        category = "Miscellaneous", subcategory = "Titles"
+        category = "Miscellaneous", subcategory = "Overlays", i18nSubcategory = "Titles"
     )
     public static boolean disableTitles;
 
@@ -159,6 +159,14 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Titles"
     )
     public static boolean autoTitleScale;
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Title Opacity",
+        description = "Change the opacity of titles.",
+        category = "Miscellaneous", subcategory = "Titles",
+        maxF = 1.0F
+    )
+    public static float titleOpacity = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",

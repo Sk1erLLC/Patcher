@@ -5,16 +5,17 @@ import gg.essential.universal.UResolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.GuiIngameForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(GuiIngameForge.class)
+@Mixin(value = GuiIngameForge.class, remap = false)
 public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
 
     @Shadow
@@ -24,22 +25,41 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
         super(mc);
     }
 
-    @Inject(method = "renderTitle", at = @At("HEAD"),cancellable = true, remap = false)
+    @Inject(method = "renderTitle", at = @At("HEAD"), cancellable = true)
     private void patcher$cancelTitleRender(CallbackInfo ci) {
         if (PatcherConfig.disableTitles) ci.cancel();
     }
 
-    @ModifyArgs(method = "renderTitle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V"))
-    private void patcher$scaleTitle(Args args) {
+    @Inject(method = "renderTitle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V", ordinal = 0, shift = At.Shift.AFTER, remap = true))
+    private void patcher$modifyTitle(int l, int age, float opacity, CallbackInfo ci) {
         float titleScale = PatcherConfig.titleScale;
         if (PatcherConfig.autoTitleScale) {
-            float longestWidth = Math.max(fontrenderer.getStringWidth(displayedTitle) * 4.0F * titleScale, fontrenderer.getStringWidth(displayedSubTitle) * 2.0F * titleScale);
-            if (longestWidth > UResolution.getScaledWidth()) {
-                titleScale = (UResolution.getScaledWidth() / longestWidth) * PatcherConfig.titleScale;
+            float width = fontrenderer.getStringWidth(displayedTitle) * 4.0F;
+            if (width > UResolution.getScaledWidth()) {
+                titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
             }
         }
-        args.set(0, ((float) args.get(0)) * titleScale);
-        args.set(1, ((float) args.get(1)) * titleScale);
-        args.set(2, ((float) args.get(2)) * titleScale);
+        GlStateManager.scale(titleScale, titleScale, titleScale);
+    }
+    @Inject(method = "renderTitle", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;scale(FFF)V", ordinal = 1, shift = At.Shift.AFTER, remap = true))
+    private void patcher$modifySubtitle(int l, int age, float opacity, CallbackInfo ci) {
+        float titleScale = PatcherConfig.titleScale;
+        if (PatcherConfig.autoTitleScale) {
+            float width = fontrenderer.getStringWidth(displayedSubTitle) * 2.0F;
+            if (width > UResolution.getScaledWidth()) {
+                titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
+            }
+        }
+        GlStateManager.scale(titleScale, titleScale, titleScale);
+    }
+
+    @ModifyConstant(method = "renderTitle", constant = @Constant(intValue = 255))
+    private int patcher$modifyOpacity(int constant) {
+        return (int) (PatcherConfig.titleOpacity * 255);
+    }
+
+    @ModifyConstant(method = "renderTitle", constant = @Constant(floatValue = 255.0F))
+    private float patcher$modifyOpacity(float constant) {
+        return PatcherConfig.titleOpacity * 255;
     }
 }
