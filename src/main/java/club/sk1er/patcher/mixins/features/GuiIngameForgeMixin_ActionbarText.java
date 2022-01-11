@@ -14,7 +14,6 @@ public class GuiIngameForgeMixin_ActionbarText {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I")
     )
     private int patcher$drawCustomActionbarText(FontRenderer instance, String text, int x, int y, int color) {
-        GuiIngameForgeHook.drawActionbarText(text, color);
-        return 0;
+        return GuiIngameForgeHook.drawActionbarText(text, color);
     }
 }
