@@ -145,13 +145,18 @@ public class GlanceRenderer {
 
         ItemStack currentItem = player.inventory.getCurrentItem();
         if (currentItem != null) {
-            final boolean holdingBow = currentItem.getItem() instanceof ItemBow;
-            final int count = getHeldItemCount(holdingBow);
-            final boolean shouldRenderArrowCount = holdingBow && count > 0;
+            // air counts for some reason on 1.12?
+            //#if MC==11202
+            //$$ if (currentItem.getItem() == Items.AIR) return;
+            //#endif
+
+            boolean holdingBow = currentItem.getItem() instanceof ItemBow;
+            int count = getHeldItemCount(holdingBow);
+            boolean shouldRenderArrowCount = holdingBow && count > 0;
             this.renderingArrows = shouldRenderArrowCount;
 
             if (count > 1 || shouldRenderArrowCount) {
-                final int offset = mc.playerController.getCurrentGameType() ==
+                int offset = mc.playerController.getCurrentGameType() ==
                     //#if MC==10809
                     WorldSettings.GameType.CREATIVE
                     //#else
