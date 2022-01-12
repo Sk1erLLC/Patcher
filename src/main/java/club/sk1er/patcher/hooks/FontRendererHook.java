@@ -265,7 +265,7 @@ public final class FontRendererHook {
 
                 ++messageChar;
             } else {
-                int obfuscationIndex = shadow || this.fontRendererAccessor.isRandomStyle() ? characterDictionary.indexOf(letter) : 0; //save calculation
+                int obfuscationIndex = shadow || this.fontRendererAccessor.isRandomStyle() ? characterDictionary.indexOf(letter) : -1; //save calculation
 
                 if (this.fontRendererAccessor.isRandomStyle() && obfuscationIndex != -1) {
                     final float charWidthFloat = getCharWidthFloat(letter);
@@ -535,7 +535,7 @@ public final class FontRendererHook {
                 width += characterWidth;
 
                 if (bold && characterWidth > 0) {
-                    width += getBoldOffset(characterDictionary.indexOf(character));
+                    width += getOptifineBoldOffset();
                 }
             }
 
