@@ -215,8 +215,6 @@ public class GlanceRenderer {
      * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.
      */
     private String getAttackDamageString(ItemStack stack) {
-        long start = System.nanoTime();
-
         if (stack != null) {
             //#if MC==11202
             //$$ final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
@@ -249,23 +247,18 @@ public class GlanceRenderer {
                 //noinspection ConstantConditions - IntelliJ incorrectly identifies this as a constant condition evaluating to false. It doesn't seem to notice the `damage = ...` statement just a few lines above.
                 if (damage > 0) {
                     //#if MC==11202
-                    //$$ String s = I18n.translateToLocalFormatted(
+                    //$$ return I18n.translateToLocalFormatted(
                     //#else
-                    String s = StatCollector.translateToLocalFormatted(
+                    return StatCollector.translateToLocalFormatted(
                     //#endif
                         "attribute.modifier.plus." + operation,
                         this.format.format(damage),
                         ""
                     );
-                    long end = System.nanoTime();
-                    Patcher.instance.getLogger().info("Calculation took " + (end - start) / 1_000_000.0 + "ms");
-                    return s;
                 }
             }
         }
 
-        long end = System.nanoTime();
-        Patcher.instance.getLogger().info("Calculation took " + (end - start) / 1_000_000.0 + "ms");
         return null;
     }
 
