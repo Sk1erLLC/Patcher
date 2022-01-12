@@ -1,5 +1,6 @@
 package club.sk1er.patcher.screen.render.overlay;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.ItemAccessor;
 import club.sk1er.patcher.mixins.accessors.ItemStackAccessor;
@@ -9,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -26,9 +26,10 @@ import net.minecraft.world.WorldSettings;
 //$$ import net.minecraft.potion.PotionUtils;
 //$$ import net.minecraft.world.GameType;
 //$$ import net.minecraft.enchantment.Enchantment;
+//$$ import net.minecraft.inventory.EntityEquipmentSlot;
+//$$ import net.minecraft.entity.SharedMonsterAttributes;
 //#endif
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.text.DecimalFormat;
@@ -45,7 +46,6 @@ import java.util.Map;
 public class GlanceRenderer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private final Map<String, ItemStack> cachedDamageMap = new HashMap<>();
     private final DecimalFormat format = new DecimalFormat("#.###");
     private boolean renderingArrows;
     private boolean renderingDamage;
@@ -208,65 +208,65 @@ public class GlanceRenderer {
         }
     }
 
-    @SubscribeEvent
-    public void clearDamageMap(WorldEvent.Unload event) {
-        if (!this.cachedDamageMap.isEmpty()) {
-            this.cachedDamageMap.clear();
-        }
-    }
-
     /**
-     * Get the currently held items attack damage by searching through the item's lore.
-     * todo: make this work in 1.12
+     * Get the currently held items attack damage by searching through the item's attribute modifiers.
      *
      * @param stack Currently held item.
      * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.
      */
     private String getAttackDamageString(ItemStack stack) {
-        //#if MC==11202
-        //$$ return "TODO";
-        //#else
-        if (!this.cachedDamageMap.isEmpty() && this.cachedDamageMap.containsValue(stack)) {
-            for (Map.Entry<String, ItemStack> entry : this.cachedDamageMap.entrySet()) {
-                if (entry.getValue() == stack) {
-                    return entry.getKey();
-                }
-            }
-        }
+        long start = System.nanoTime();
 
         if (stack != null) {
+            //#if MC==11202
+            //$$ final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+            //#else
             final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers();
+            //#endif
+
             if (!modifiers.isEmpty()) {
+                double damage = 0;
+                int operation = 0;
+
                 for (Map.Entry<String, AttributeModifier> entry : modifiers.entries()) {
                     final AttributeModifier modifier = entry.getValue();
-                    double damage = modifier.getAmount();
-
                     if (modifier.getID() == ItemAccessor.getItemModifierUUID()) {
-                        damage += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
-                    }
+                        double baseDamage = modifier.getAmount()
+                            + EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
 
-                    final double damageBonus = modifier.getOperation() != 1 && modifier.getOperation() != 2 ? damage : damage * 100.0D;
+                        //#if MC==11202
+                        //$$ baseDamage += mc.player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
+                        //#endif
 
-                    if (damage > 0.0D) {
-                        String target = StatCollector.translateToLocal("attribute.name." + entry.getKey());
-                        String damageString = StatCollector.translateToLocalFormatted(
-                            "attribute.modifier.plus." + modifier.getOperation(),
-                            this.format.format(damageBonus),
-                            target
-                        ).replace(target, "");
-
-                        if (!this.cachedDamageMap.containsKey(damageString) && !this.cachedDamageMap.containsValue(stack)) {
-                            this.cachedDamageMap.put(damageString, stack);
+                        if (baseDamage > 0) {
+                            operation = modifier.getOperation();
+                            damage = operation != 1 && operation != 2 ? baseDamage : baseDamage * 100.0D;
+                            break;
                         }
-
-                        return damageString;
                     }
+                }
+
+                //noinspection ConstantConditions - IntelliJ incorrectly identifies this as a constant condition evaluating to false. It doesn't seem to notice the `damage = ...` statement just a few lines above.
+                if (damage > 0) {
+                    //#if MC==11202
+                    //$$ String s = I18n.translateToLocalFormatted(
+                    //#else
+                    String s = StatCollector.translateToLocalFormatted(
+                    //#endif
+                        "attribute.modifier.plus." + operation,
+                        this.format.format(damage),
+                        ""
+                    );
+                    long end = System.nanoTime();
+                    Patcher.instance.getLogger().info("Calculation took " + (end - start) / 1_000_000.0 + "ms");
+                    return s;
                 }
             }
         }
 
+        long end = System.nanoTime();
+        Patcher.instance.getLogger().info("Calculation took " + (end - start) / 1_000_000.0 + "ms");
         return null;
-        //#endif
     }
 
     /**
