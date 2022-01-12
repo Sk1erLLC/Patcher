@@ -64,6 +64,7 @@ public class GlanceRenderer {
         put(6, "AA");
         put(7, "T");
         put(8, "DS");
+        put(9, "FW"); // frost walker - 1.12 only
         put(16, "SH");
         put(17, "SM");
         put(18, "BoA");
@@ -80,6 +81,7 @@ public class GlanceRenderer {
         put(51, "INF");
         put(61, "LoS");
         put(62, "LU");
+        put(70, "MEN"); // mending - 1.12 only
     }};
 
     /**
@@ -331,27 +333,26 @@ public class GlanceRenderer {
 
     /**
      * Get the enchantments of the currently held item using our short enchantment mapping.
-     * TODO: Make this work with 1.12
      *
      * @param heldItemStack Currently held item.
      * @return Currently held items enchantments.
      */
     private String getEnchantmentString(ItemStack heldItemStack) {
-        //#if MC==11202
-        //$$ return "TODO";
-        //#else
+        StringBuilder builder = new StringBuilder();
+        //#if MC==10809
         Map<Integer, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
-        StringBuilder sb = new StringBuilder();
-
         for (Map.Entry<Integer, Integer> entry : enchantmentMap.entrySet()) {
-            sb.append(ChatColor.BOLD)
-                .append(shortEnchantmentNames.get(entry.getKey()))
+            builder.append(ChatColor.BOLD).append(shortEnchantmentNames.get(entry.getKey()))
+        //#else
+        //$$ Map<Enchantment, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
+        //$$ for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
+        //$$    builder.append(ChatColor.BOLD).append(shortEnchantmentNames.get(Enchantment.getEnchantmentID(entry.getKey())))
+        //#endif
                 .append(" ")
                 .append(entry.getValue())
                 .append(" ");
         }
 
-        return sb.toString().trim();
-        //#endif
+        return builder.toString().trim();
     }
 }
