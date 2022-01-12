@@ -47,8 +47,8 @@ public class ModClassTransformer implements IClassTransformer {
         // so transform it AFTER OptiFine loads.
         //#if MC==10809
         registerTransformer(new EntityRendererTransformer());
-        //#endif
         registerTransformer(new RenderTransformer());
+        //#endif
         registerTransformer(new RendererLivingEntityTransformer());
 
         // PingTag by Powns
