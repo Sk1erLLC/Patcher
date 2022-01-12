@@ -9,7 +9,6 @@ import gg.essential.vigilance.data.PropertyData;
 import gg.essential.vigilance.data.PropertyType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -60,16 +59,22 @@ public class SoundHandler implements IResourceManagerReloadListener {
         for (Entry<ResourceLocation, SoundEventAccessorComposite> entry : soundRegistry.entrySet()) {
             data.computeIfAbsent(entry.getKey(), location -> {
                     String name = getName(location);
+                    //#if MC==10809
                     return ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
-                        //#if MC==10809
                         WordUtils.capitalizeFully(entry.getValue().getSoundCategory().getCategoryName()),
-                        //#else
-                        //$$ "Sound Categories (todo)",
-                        //#endif
                         "Sounds", name, "Sound Multiplier for " + name,
                         100, 0, 200, __ -> {
                         }
                     );
+                    //#else
+                    //$$ String[] category = entry.getValue().getLocation().getResourcePath().split("\\.");
+                    //$$ return ConfigUtil.createAndRegisterConfig(PropertyType.SLIDER,
+                    //$$    WordUtils.capitalizeFully(category[0].replace("_", " ")),
+                    //$$    category.length > 2 ? WordUtils.capitalizeFully(category[1].replace("_", " ")) : "Sounds", name, "Sound Multiplier for " + name,
+                    //$$    100, 0, 200, __ -> {
+                    //$$    }
+                    //$$ );
+                    //#endif
                 }
             );
         }
