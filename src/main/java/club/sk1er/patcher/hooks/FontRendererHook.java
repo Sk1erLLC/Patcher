@@ -265,23 +265,23 @@ public final class FontRendererHook {
 
                 ++messageChar;
             } else {
-                int obfuscationIndex = shadow || this.fontRendererAccessor.isRandomStyle() ? characterDictionary.indexOf(letter) : -1; //save calculation
+                int index = characterDictionary.indexOf(letter);
 
-                if (this.fontRendererAccessor.isRandomStyle() && obfuscationIndex != -1) {
+                if (this.fontRendererAccessor.isRandomStyle() && index != -1) {
                     final float charWidthFloat = getCharWidthFloat(letter);
                     char charIndex;
 
                     do {
-                        obfuscationIndex = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
-                        charIndex = characterDictionary.charAt(obfuscationIndex);
+                        index = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
+                        charIndex = characterDictionary.charAt(index);
                     } while (charWidthFloat != getCharWidthFloat(charIndex));
 
                     letter = charIndex;
                 }
 
                 final boolean unicode = this.fontRenderer.getUnicodeFlag();
-                final float boldWidth = getBoldOffset(obfuscationIndex);
-                final boolean small = (letter == 0 || obfuscationIndex == -1 || unicode) && shadow;
+                final float boldWidth = getBoldOffset(index);
+                final boolean small = (letter == 0 || index == -1 || unicode) && shadow;
 
                 if (small) {
                     this.fontRendererAccessor.setPosX(fontRendererAccessor.getPosX() - boldWidth);
@@ -382,8 +382,8 @@ public final class FontRendererHook {
         style.add(new RenderPair(posX, effectiveWidth, lastRed, lastGreen, lastBlue, lastAlpha));
     }
 
-    private float getBoldOffset(int width) {
-        return width == -1 || fontRenderer.getUnicodeFlag() ? 0.5F : getOptifineBoldOffset();
+    private float getBoldOffset(int index) {
+        return index == -1 || fontRenderer.getUnicodeFlag() ? 0.5F : getOptifineBoldOffset();
     }
 
     private float getOptifineBoldOffset() {
