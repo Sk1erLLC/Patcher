@@ -535,7 +535,7 @@ public final class FontRendererHook {
                 width += characterWidth;
 
                 if (bold && characterWidth > 0) {
-                    width += getBoldOffset(characterDictionary.indexOf(character));
+                    width += getOptifineBoldOffset();
                 }
             }
 
