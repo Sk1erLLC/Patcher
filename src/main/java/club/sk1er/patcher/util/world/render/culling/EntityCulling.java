@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
@@ -193,7 +194,7 @@ public class EntityCulling {
      *
      * @param event {@link RenderLivingEvent.Pre<EntityLivingBase>}
      */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!PatcherConfig.entityCulling || !shouldPerformCulling) {
             return;
