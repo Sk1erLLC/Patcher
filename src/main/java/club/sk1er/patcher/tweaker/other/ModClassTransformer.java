@@ -92,7 +92,7 @@ public class ModClassTransformer implements IClassTransformer {
             registerCommonTransformers();
             registerLSeriesTransformers();
         } else {
-            logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
+            logger.info("User's OptiFine version ({}) does not support any reflection optimizations, none will be applied.", optifineVersion);
         }
     }
 
