@@ -5,11 +5,13 @@ import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.name.NameFetcher
 import gg.essential.api.EssentialAPI
 import gg.essential.api.utils.Multithreading
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.components.*
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
+import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UResolution
 import gg.essential.universal.USound
 import gg.essential.vigilance.gui.VigilancePalette
@@ -23,7 +25,7 @@ import java.net.URL
 import java.util.concurrent.ConcurrentLinkedQueue
 
 object HistoryPopUp {
-    private val window = Window()
+    private val window = Window(ElementaVersion.V1)
     private val fetchers = ConcurrentLinkedQueue<NameFetcher>()
 
     init {
@@ -33,7 +35,7 @@ object HistoryPopUp {
     @SubscribeEvent
     fun render(event: RenderGameOverlayEvent.Post) {
         if (event.type == RenderGameOverlayEvent.ElementType.TEXT && Minecraft.getMinecraft().currentScreen !is ScreenHistory) {
-            window.draw()
+            window.draw(UMatrixStack.Compat.get())
         }
     }
 
