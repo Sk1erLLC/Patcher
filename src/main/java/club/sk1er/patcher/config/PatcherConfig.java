@@ -737,13 +737,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean disableEnchantmentGlint;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
-        description = "Improve cloud rendering performance by better utilizing the GPU.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean gpuCloudRenderer = true;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
         description = "Stop rendering sides of entities that you cannot see.\n" +
             "Being inside an entity will cause that body part to be invisible.\n" +
@@ -1288,7 +1281,7 @@ public class PatcherConfig extends Vigilant {
             Function0<Boolean> minecraft112 = () -> ForgeVersion.mcVersion.equals("1.12.2");
             Arrays.asList(
                 "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
-                "leftHandInFirstPerson", "gpuCloudRenderer", "extendedChatLength", "chatPosition",
+                "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
                 "parallaxFix", "crosshairPerspective", "extendChatBackground"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
         } catch (Exception e) {

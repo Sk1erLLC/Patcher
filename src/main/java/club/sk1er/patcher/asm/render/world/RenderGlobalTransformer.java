@@ -30,14 +30,6 @@ public class RenderGlobalTransformer implements PatcherTransformer {
             String methodName = mapMethodName(classNode, methodNode);
 
             switch (methodName) {
-                //#if MC==10809
-                case "renderClouds":
-                case "func_180447_b": {
-                    methodNode.instructions.insert(patcherCloudRenderer());
-                    break;
-                }
-                //#endif
-
                 case "preRenderDamagedBlocks":
                 case "func_180443_s": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -106,43 +98,6 @@ public class RenderGlobalTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(getPatcherSetting("playerVoidRendering", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFNE, labelNode));
-        return list;
-    }
-
-    private InsnList patcherCloudRenderer() {
-        InsnList list = new InsnList();
-        list.add(
-            new FieldInsnNode(
-                Opcodes.GETSTATIC,
-                "club/sk1er/patcher/Patcher",
-                "instance",
-                "Lclub/sk1er/patcher/Patcher;"));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL,
-                "club/sk1er/patcher/Patcher",
-                "getCloudHandler",
-                "()Lclub/sk1er/patcher/util/world/render/cloud/CloudHandler;",
-                false));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(
-            new FieldInsnNode(
-                Opcodes.GETFIELD,
-                "net/minecraft/client/renderer/RenderGlobal",
-                "field_72773_u", // cloudTickCounter
-                "I"));
-        list.add(new VarInsnNode(Opcodes.FLOAD, 1));
-        list.add(
-            new MethodInsnNode(
-                Opcodes.INVOKEVIRTUAL,
-                "club/sk1er/patcher/util/world/render/cloud/CloudHandler",
-                "renderClouds",
-                "(IF)Z",
-                false));
-        LabelNode ifeq = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
-        list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifeq);
         return list;
     }
 }

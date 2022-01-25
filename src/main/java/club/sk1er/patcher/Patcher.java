@@ -26,13 +26,15 @@ import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
-import club.sk1er.patcher.util.keybind.*;
+import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
+import club.sk1er.patcher.util.keybind.KeybindDropModifier;
+import club.sk1er.patcher.util.keybind.KeybindNameHistory;
+import club.sk1er.patcher.util.keybind.MousePerspectiveKeybindHandler;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.status.ProtocolVersionDetector;
 import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
-import club.sk1er.patcher.util.world.render.cloud.CloudHandler;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
@@ -107,7 +109,6 @@ public class Patcher {
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
 
-    private final CloudHandler cloudHandler = new CloudHandler();
     private final SavesWatcher savesWatcher = new SavesWatcher();
     private final AudioSwitcher audioSwitcher = new AudioSwitcher();
 
@@ -144,7 +145,7 @@ public class Patcher {
         );
 
         registerEvents(
-            this, soundHandler, cloudHandler, dropModifier, audioSwitcher,
+            this, soundHandler, dropModifier, audioSwitcher,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
@@ -430,11 +431,6 @@ public class Patcher {
 
     public Logger getLogger() {
         return logger;
-    }
-
-    @SuppressWarnings("unused")
-    public CloudHandler getCloudHandler() {
-        return cloudHandler;
     }
 
     public KeyBinding getNameHistory() {
