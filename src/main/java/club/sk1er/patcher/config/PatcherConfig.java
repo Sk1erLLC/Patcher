@@ -124,7 +124,7 @@ public class PatcherConfig extends Vigilant {
     public static float fireOverlayHeight;
 
     @Property(
-        type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Opacity",
+        type = PropertyType.PERCENT_SLIDER, name = "Fire Overlay Opacity",
         description = "Change the opacity of the fire overlay.",
         category = "Miscellaneous", subcategory = "Overlays",
         maxF = 1.0F
@@ -141,10 +141,32 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Titles",
-        description = "Stop titles & subtitles from appearing.",
-        category = "Miscellaneous", subcategory = "Overlays"
+        description = "Stop titles from appearing.",
+        category = "Miscellaneous", subcategory = "Overlays", i18nSubcategory = "Titles"
     )
     public static boolean disableTitles;
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Title Scale",
+        description = "Set the scale for titles.",
+        category = "Miscellaneous", subcategory = "Titles"
+    )
+    public static float titleScale = 1.0F;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Automatically Scale Title",
+        description = "Automatically scale titles if the title goes over the screen.",
+        category = "Miscellaneous", subcategory = "Titles"
+    )
+    public static boolean autoTitleScale;
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Title Opacity",
+        description = "Change the opacity of titles.",
+        category = "Miscellaneous", subcategory = "Titles",
+        maxF = 1.0F
+    )
+    public static float titleOpacity = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",
