@@ -49,6 +49,7 @@
 - **Remove Smooth Camera While Zoomed** - Remove the smooth camera effect when using zoom.
 - **Render Hand While Zoomed** - Keep your hand on screen when you zoom in.
 - **Zoom Sensitivity** - Use a custom mouse sensitivity value when zoomed in. This is a percentage of your normal sensitivity.
+- **Dynamic Zoom Sensitivity** - Reduce your mouse sensitivity the more you zoom in.
 - **Smooth Zoom Animation** - Add a smooth animation when you zoom in and out.
 - **Smooth Scroll-to-Zoom Animation** - Add a smooth animation when you scroll in and out while zoomed.
 - **Smooth Zoom Function** - Change the smoothing function used in the smooth zooming animation.
@@ -60,6 +61,7 @@
 - **Fire Overlay Height** - Change the height of the fire overlay.
 - **Fire Overlay Opacity** - Change the opacity of the fire overlay.
 - **Hide Fire Overlay with Fire Resistance** - Hide the fire overlay when you have fire resistance active. The overlay will blink 5 seconds before your fire resistance is about to run out.
+- **Disable Titles** - Stop titles & subtitles from appearing.
 - **Remove Water Overlay** - Remove the water texture overlay when underwater.
 - **Remove Inverted Colors from Crosshair** - Remove the inverted color effect on the crosshair.
 - **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps) *default
@@ -72,11 +74,13 @@
 - **Translate Unknown Roman Numerals** - Generate Roman Numeral from enchantment level instead of using language file. *default
 - **Clean View** - Stop rendering your potion effect particles.
 - **Disable Breaking Particles** - Remove block-breaking particles for visibility.
+- **Disable Lightning Bolts** - Stop lightning bolts from rendering.
 - **Alternate Text Shadow** - Change the text-shadow to only move down rather than move to the side.
 - **Add Text Shadow to Nametags** - Render nametag with shadowed text.
 - **Add Text Shadow to Actionbar** - Render actionbar messages with shadowed text.
 - **Add Background to Actionbar** - Render a background behind the actionbar.
-- **Disable Text shadow** - Remove shadows from text. (Can positively impact performance).
+- **Disable Text Shadow** - Remove shadows from text. (Can positively impact performance).
+- **Left Hand in First Person** - Render the first-person hand on the left of the screen.
 - **Toggle Tab** - Hold tab open without needing to hold down the tab key.
 - **Number Ping** - Show a readable ping number in tab instead of bars.
 - **Windowed Fullscreen** - Implement Windowed Fullscreen in Minecraft, allowing you to drag your mouse outside the window.
@@ -133,10 +137,11 @@
 # Screens
 - **1.11 Chat Length** - Extend the number of characters you can type from 100 to 256 on supported servers. (Supported servers are servers that support 1.11 or above. Some servers may kick you for this despite supporting 1.11 or above) *default
 - **Transparent Chat** - Remove the background from chat. (Can positively impact performance).
-- **Transparent Chat input field** - Remove the background from chat's input field. (Can positively impact performance).
+- **Transparent Chat Input Field** - Remove the background from chat's input field. (Can positively impact performance).
+- **Extend Chat Background** - Extend the chat background all the way to the left of the screen. *default
 - **Compact Chat** - Clean up the chat by stacking duplicate messages (Does not work with Labymod) *default
 - **Consecutive Compact Chat** - Only compact messages if they're consecutive.
-- **Compact Chat time** - Change the amount of time old messages take to stop being compacted. (Measured in seconds)
+- **Compact Chat Time** - Change the amount of time old messages take to stop being compacted. (Measured in seconds)
 - **Remove Blank Messages** - Stop messages with no content from showing up in chat.
 - **Shift Chat** - Keep chat open while sending a message if Shift is held while pressing Enter.
 - **Chat Delay** - Delay chat messages if they're sent within the selected timeframe after the previous message. (Measured in seconds)
@@ -144,6 +149,7 @@
 - **Chat Timestamps** - Add timestamps before a message.
 - **Chat Timestamps Style** - Choose how Chat Timestamps should appear.
 - **Chat Timestamps Format** - Change the time format of Chat Timestamps.
+- **Show Seconds on Timestamps** - Show the seconds on a timestamped message.
 - **Safe Chat Clicks** - Show the command or link that is run/opened on click.
 - **Damage Glance** - View the damage value of the currently held item above your hotbar.
 - **Item Count Glance** - View the total amount of the currently held item above your hotbar.

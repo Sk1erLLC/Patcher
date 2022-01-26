@@ -1253,6 +1253,7 @@ public class PatcherConfig extends Vigilant {
             addDependency("compactChatTime", "compactChat");
             addDependency("timestampsFormat", "timestamps");
             addDependency("timestampsStyle", "timestamps");
+            addDependency("secondsOnTimestamps", "timestamps");
             addDependency("imagePreviewWidth", "imagePreview");
 
             Arrays.asList(
@@ -1261,6 +1262,8 @@ public class PatcherConfig extends Vigilant {
             ).forEach(property -> addDependency(property, "allowFovModifying"));
 
             addDependency("logOptimizerLength", "logOptimizer");
+            addDependency("dynamicZoomSensitivity", "scrollToZoom");
+            addDependency("smoothZoomAnimation", "scrollToZoom");
             addDependency("smoothZoomAlgorithm", "smoothZoomAnimation");
 
             Arrays.asList(
