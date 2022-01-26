@@ -124,7 +124,7 @@ public class PatcherConfig extends Vigilant {
     public static float fireOverlayHeight;
 
     @Property(
-        type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Opacity",
+        type = PropertyType.PERCENT_SLIDER, name = "Fire Overlay Opacity",
         description = "Change the opacity of the fire overlay.",
         category = "Miscellaneous", subcategory = "Overlays",
         maxF = 1.0F
@@ -161,7 +161,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean autoTitleScale;
 
     @Property(
-        type = PropertyType.DECIMAL_SLIDER, name = "Title Opacity",
+        type = PropertyType.PERCENT_SLIDER, name = "Title Opacity",
         description = "Change the opacity of titles.",
         category = "Miscellaneous", subcategory = "Titles",
         maxF = 1.0F
