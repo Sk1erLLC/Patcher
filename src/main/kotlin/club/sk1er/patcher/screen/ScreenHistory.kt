@@ -125,17 +125,17 @@ class ScreenHistory @JvmOverloads constructor(
         height = 100.percent()
     } childOf namesContainer
 
-    private val scrollBar by UIBlock(VigilancePalette.getScrollBar()).constrain {
-        x = 2.5.pixels(true)
-        y = 5.pixels
-        width = 3.pixels
-        height = 100.percent - 10.pixels
-    } childOf namesContainer
-
     private val names by ScrollComponent().constrain {
         x = 15.pixels
         y = 0.pixels(true)
         width = 100.percent - 15.pixels
+        height = 100.percent - 10.pixels
+    } childOf namesContainer
+
+    private val scrollBar by UIBlock(VigilancePalette.getScrollBar()).constrain {
+        x = 2.5.pixels(true)
+        y = 5.pixels
+        width = 3.pixels
         height = 100.percent - 10.pixels
     } childOf namesContainer
 
