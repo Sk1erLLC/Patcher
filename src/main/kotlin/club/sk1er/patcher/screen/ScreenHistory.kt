@@ -139,14 +139,20 @@ class ScreenHistory @JvmOverloads constructor(
         height = 100.percent - 10.pixels
     } childOf namesContainer
 
+    private val nameCount by UIText("", shadow = false).constrain {
+        y = 3.pixels(alignOpposite = true, alignOutside = true)
+        color = VigilancePalette.getDarkText().toConstraint()
+    } childOf namesContainer
+
     init {
-        names.setScrollBarComponent(scrollBar, hideWhenUseless = true, isHorizontal = false)
+        names.setVerticalScrollBarComponent(scrollBar, hideWhenUseless = true)
     }
 
     override fun afterInitialization() {
         nameFetcher.names.addObserver { _, arg ->
             if (arg is ObservableClearEvent<*>) {
                 names.clearChildren()
+                nameCount.setText("")
             }
         }
 
@@ -163,14 +169,17 @@ class ScreenHistory @JvmOverloads constructor(
                 }
                 names.insertChildAt(card, 0)
             } else {
+                val namesSize = nameFetcher.names.size
+                nameCount.setText(if (namesSize <= 1) "$namesSize name" else "$namesSize names")
+
                 nameFetcher.names.forEachIndexed { i, name ->
                     Window.enqueueRenderOperation {
                         val card = NameCardComponent(
-                            if (i == nameFetcher.names.size - 1) VigilancePalette.getAccent() else VigilancePalette.getMidText(),
-                            if (i == nameFetcher.names.size - 1) VigilancePalette.getBrightText() else VigilancePalette.getDarkText(),
+                            if (i == namesSize - 1) VigilancePalette.getAccent() else VigilancePalette.getMidText(),
+                            if (i == namesSize - 1) VigilancePalette.getBrightText() else VigilancePalette.getDarkText(),
                             when (i) {
                                 0 -> "Original"
-                                nameFetcher.names.size - 1 -> "Current"
+                                namesSize - 1 -> "Current"
                                 else -> nameFetcher.getDate(i)
                             },
                             name.name!!
