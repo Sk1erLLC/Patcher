@@ -6,6 +6,7 @@ import club.sk1er.patcher.commands.InventoryScaleCommand;
 import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.commands.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
+import club.sk1er.patcher.config.PatcherParticleConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.EntityRendererHook;
@@ -118,6 +119,7 @@ public class Patcher {
 
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
+    private PatcherParticleConfig patcherParticleConfig;
 
     private boolean loadedGalacticFontRenderer;
 
@@ -131,6 +133,7 @@ public class Patcher {
 
         patcherConfig = PatcherConfig.INSTANCE;
         patcherSoundConfig = new PatcherSoundConfig();
+        patcherParticleConfig = new PatcherParticleConfig();
 
         SoundHandler soundHandler = new SoundHandler();
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
@@ -427,6 +430,10 @@ public class Patcher {
 
     public PatcherSoundConfig getPatcherSoundConfig() {
         return patcherSoundConfig;
+    }
+
+    public PatcherParticleConfig getPatcherParticleConfig() {
+        return patcherParticleConfig;
     }
 
     public Logger getLogger() {

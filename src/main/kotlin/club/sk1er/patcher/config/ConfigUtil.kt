@@ -28,6 +28,14 @@ object ConfigUtil {
         return data
     }
 
+    @JvmStatic
+    fun createConfig(
+        type: PropertyType, category: String, subCategory: String,
+        name: String, description: String
+    ): PropertyAttributesExt {
+        return PropertyAttributesExt(type, name, category, subCategory, description)
+    }
+
     private fun register(data: PropertyData?) {
         Patcher.instance.patcherSoundConfig.registerProperty(data!!)
     }

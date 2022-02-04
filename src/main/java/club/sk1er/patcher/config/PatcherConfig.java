@@ -541,6 +541,15 @@ public class PatcherConfig extends Vigilant {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
 
+    @Property(
+        type = PropertyType.BUTTON, name = "Toggle Every Particle",
+        description = "Open a separate GUI allowing you to toggle each particle's visibility.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static void modifyEveryParticle() {
+        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherParticleConfig().gui()));
+    }
+
     // PERFORMANCE
 
     @Property(

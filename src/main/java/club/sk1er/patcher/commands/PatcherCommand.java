@@ -183,6 +183,11 @@ public class PatcherCommand extends Command {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
 
+    @SubCommand(value = "particles", description = "Open the Particle Configuration GUI.")
+    public void particles() {
+        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherParticleConfig().gui()));
+    }
+
     @SubCommand(value = "fps", description = "Choose what to limit the game's framerate to outside of Minecraft's options. 0 will use your normal framerate.")
     public void fps(@DisplayName("amount") int amount) {
         if (amount < 0) {
