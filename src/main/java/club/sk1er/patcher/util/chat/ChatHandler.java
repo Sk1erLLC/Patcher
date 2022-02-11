@@ -67,14 +67,7 @@ public class ChatHandler {
         //$$ ChatType gameInfoType = ChatType.GAME_INFO;
         //#endif
         if (PatcherConfig.timestamps && !message.getUnformattedText().trim().isEmpty() && type != gameInfoType) {
-            String timestampsPattern = "[hh:mm a]";
-            if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[hh:mm:ss a]";
-            if (PatcherConfig.timestampsFormat == 1) {
-                timestampsPattern = "[HH:mm]";
-                if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[HH:mm:ss]";
-            }
-
-            String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(timestampsPattern));
+            String time = getCurrentTime();
             if (PatcherConfig.timestampsStyle == 0) {
                 ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
                 //#if MC==10809
@@ -331,6 +324,17 @@ public class ChatHandler {
 
     private static String cleanColor(String in) {
         return in.replaceAll("(?i)\\u00A7.", "");
+    }
+
+    public static String getCurrentTime() {
+        String timestampsPattern = "[hh:mm a]";
+        if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[hh:mm:ss a]";
+        if (PatcherConfig.timestampsFormat == 1) {
+            timestampsPattern = "[HH:mm]";
+            if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[HH:mm:ss]";
+        }
+
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(timestampsPattern));
     }
 
     static class ChatEntry {
