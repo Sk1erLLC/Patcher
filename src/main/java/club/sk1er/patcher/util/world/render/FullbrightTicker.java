@@ -5,19 +5,16 @@ import net.minecraft.server.MinecraftServer;
 
 //#if MC==11202
 //$$ import net.minecraft.client.Minecraft;
-//$$ import net.minecraft.world.World;
+//$$ import net.minecraft.server.integrated.IntegratedServer;
 //#endif
 
-@SuppressWarnings("unused")
 public class FullbrightTicker {
 
     public static boolean isFullbright() {
         //#if MC==10809
         MinecraftServer server = MinecraftServer.getServer();
         //#else
-        //$$ World world = Minecraft.getMinecraft().world;
-        //$$ if (world == null) return false;
-        //$$ MinecraftServer server = world.getMinecraftServer();
+        //$$ IntegratedServer server = Minecraft.getMinecraft().getIntegratedServer();
         //#endif
         if (server != null && server.isCallingFromMinecraftThread()) {
             return false;

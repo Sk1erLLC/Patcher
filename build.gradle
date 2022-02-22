@@ -85,7 +85,7 @@ dependencies {
     }
 
     embed "gg.essential:loader-launchwrapper:1.1.3"
-    implementation "gg.essential:essential-${mcVersionStr}-forge:1788"
+    implementation "gg.essential:essential-${mcVersionStr}-forge:1854"
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
         exclude module: 'asm-commons'
@@ -93,8 +93,8 @@ dependencies {
         exclude module: 'asm'
     }
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
-    compileOnly 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
+    compileOnly 'org.spongepowered:mixin:0.8.5-SNAPSHOT'
 
     // Mixin needs these (and depends on them but for some reason that's not enough. FG, did you do that?)
     annotationProcessor 'com.google.code.gson:gson:2.2.4'
@@ -147,7 +147,7 @@ reobfJar.addSecondarySrgFile project.mixinSrg
 jar {
     dependsOn configurations.embed
     from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
-        exclude 'club.sk1er.vigilance.example.ExampleMod', 'dummyThing'
+        exclude 'gg.essential.vigilance.example.ExampleMod', 'dummyThing'
         def i = 0
         filesMatching("META-INF/NOTICE*") { name = "$name.${i++}" }
         filesMatching("META-INF/LICENSE*") { name = "$name.${i++}" }
