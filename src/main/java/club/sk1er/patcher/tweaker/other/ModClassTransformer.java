@@ -93,6 +93,8 @@ public class ModClassTransformer implements IClassTransformer {
         } else if (generations.getMGeneration().contains(optifineVersion) || generations.getFutureGeneration().contains(optifineVersion)) {
             registerCommonTransformers();
             registerLSeriesTransformers();
+        } else if (generations.getGGeneration().contains(optifineVersion)) {
+            registerCommonTransformers();
         } else {
             logger.info("User's OptiFine version ({}) does not support any reflection optimizations, none will be applied.", optifineVersion);
         }
@@ -117,6 +119,7 @@ public class ModClassTransformer implements IClassTransformer {
 //        registerTransformer(new ModelRotationReflectionOptimizer());
 //        registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
 //        registerTransformer(new EntityRendererReflectionOptimizer());
+//        registerTransformer(new WorldVertexBufferUploaderTransformer());
 
         registerTransformer(new LagometerTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
@@ -124,7 +127,6 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new OptiFineHookTransformer());
         registerTransformer(new FullbrightTickerTransformer());
         registerTransformer(new EntityCullingTransformer());
-        registerTransformer(new WorldVertexBufferUploaderTransformer());
     }
 
     private void registerI7Transformers() {

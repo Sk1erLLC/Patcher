@@ -25,17 +25,17 @@ public class OptiFineReflectorScraper {
     private static final Set<String> knownBrokenReflectors = ImmutableSet.of(
         // OptiFine straight up calls these incorrectly and even the reflection throws an error, let's not touch them.
         "ForgeBlock_isBed", "ForgeBlock_getBedDirection",
-        // OptiFine uses "callVoid" to call this even though it's a boolean. Should maybe handle properly in future.
+        // OptiFine uses "callVoid" to call this even though it's a boolean. Should maybe handle properly in the future.
         "FMLCommonHandler_handleServerStarting",
-        // OptiFine calls these with the wrong primitive types, breaking my unboxing. Maybe handle in future.
+        // OptiFine calls these with the wrong primitive types, breaking my unboxing. Maybe handle in the future.
         "ForgeHooksClient_getFOVModifier", "ForgeEventFactory_canEntitySpawn", "ForgeEventFactory_doSpecialSpawn",
         // This is an interface method which I don't yet handle. Should probably scrape info about that.
         "ModContainer_getModId"
     );
 
     public static class ReflectionData {
-        private Set<String> classesToTransform = new HashSet<>();
-        private Map<String, MethodData> reflectorMethodData = new HashMap<>();
+        private final Set<String> classesToTransform = new HashSet<>();
+        private final Map<String, MethodData> reflectorMethodData = new HashMap<>();
 
         public void addClassToTransform(String clazz) {
             classesToTransform.add(clazz);
