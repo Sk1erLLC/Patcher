@@ -105,7 +105,7 @@ public class ReflectionOptimizer implements PatcherTransformer {
     }
 
     private AbstractInsnNode unboxParameter(Type primitiveType) {
-        org.spongepowered.asm.lib.Type type = org.spongepowered.asm.lib.Type.getType(primitiveType.getDescriptor());
+        Type type = Type.getType(primitiveType.getDescriptor());
         return new MethodInsnNode(
             Opcodes.INVOKEVIRTUAL,
             Bytecode.getBoxingType(type),
@@ -116,7 +116,7 @@ public class ReflectionOptimizer implements PatcherTransformer {
     }
 
     private AbstractInsnNode boxReturnValue(Type returnType) {
-        org.spongepowered.asm.lib.Type type = org.spongepowered.asm.lib.Type.getType(returnType.getDescriptor());
+        Type type = Type.getType(returnType.getDescriptor());
         String boxingType = Bytecode.getBoxingType(type);
         return new MethodInsnNode(
             Opcodes.INVOKESTATIC,
