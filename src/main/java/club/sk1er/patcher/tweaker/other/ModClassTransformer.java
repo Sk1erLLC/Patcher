@@ -47,10 +47,11 @@ public class ModClassTransformer implements IClassTransformer {
         MixinEnvironment.getCurrentEnvironment().addTransformerExclusion(getClass().getName());
         // OptiFine loads these classes after we do, overwriting our changes,
         // so transform it AFTER OptiFine loads.
+        //#if MC==10809
         registerTransformer(new EntityRendererTransformer());
         registerTransformer(new RenderTransformer());
+        //#endif
         registerTransformer(new RendererLivingEntityTransformer());
-        registerTransformer(new RenderItemFrameTransformer());
 
         // PingTag by Powns
         registerTransformer(new TagRendererTransformer());
@@ -93,7 +94,7 @@ public class ModClassTransformer implements IClassTransformer {
             registerCommonTransformers();
             registerLSeriesTransformers();
         } else {
-            logger.info("User has either an old OptiFine version, or no OptiFine present. Aborting reflection optimizations.");
+            logger.info("User's OptiFine version ({}) does not support any reflection optimizations, none will be applied.", optifineVersion);
         }
     }
 
@@ -127,7 +128,7 @@ public class ModClassTransformer implements IClassTransformer {
     }
 
     private void registerI7Transformers() {
-        //registerTransformer(new MapGenStructureReflectionOptimizer());
+
     }
 
     private void registerLSeriesTransformers() {

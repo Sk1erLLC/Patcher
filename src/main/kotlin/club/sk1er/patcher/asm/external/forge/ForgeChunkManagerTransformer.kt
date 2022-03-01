@@ -1,7 +1,5 @@
 package club.sk1er.patcher.asm.external.forge
 
-import club.sk1er.hookinjection.injectInstructions
-import club.sk1er.patcher.hooks.ForgeChunkManagerHook
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
@@ -47,15 +45,20 @@ class ForgeChunkManagerTransformer : PatcherTransformer {
 
                 "getPersistentChunksFor" -> {
                     clearInstructions(method)
-                    injectInstructions {
-                        of(ForgeChunkManagerHook::getPersistentChunksFor)
-                        into(method)
-                        param(0)
-                        param {
-                            getstatic("net/minecraftforge/common/ForgeChunkManager", "forcedChunks", Map::class)
-                        }
-                        keepReturns
+                    val (getPersistentChunksFor, _) = assembleBlock {
+                        aload_0
+                        getstatic("net/minecraftforge/common/ForgeChunkManager", "forcedChunks", Map::class)
+                        invokestatic(
+                            getHookClass("ForgeChunkManagerHook"),
+                            "getPersistentChunksFor",
+                            "com/google/common/collect/ImmutableSetMultimap",
+                            "net/minecraft/world/World",
+                            Map::class
+                        )
+                        areturn
                     }
+
+                    method.instructions.insert(getPersistentChunksFor)
                 }
             }
         }

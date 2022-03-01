@@ -7,5 +7,11 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GuiIngameForge.class)
 public interface GuiIngameForgeAccessor {
     @Invoker(remap = false)
-    void callRenderCrosshairs(int width, int height);
+    void callRenderCrosshairs(
+        //#if MC==10809
+        int width, int height
+        //#else
+        //$$ float partialTicks
+        //#endif
+    );
 }

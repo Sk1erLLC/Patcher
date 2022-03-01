@@ -16,6 +16,7 @@ public abstract class EntityLivingBaseMixin_MouseDelayFix extends Entity {
         super(worldIn);
     }
 
+    //#if MC==10809
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "getLook", at = @At("HEAD"), cancellable = true)
     private void patcher$mouseDelayFix(float partialTicks, CallbackInfoReturnable<Vec3> cir) {
@@ -23,4 +24,5 @@ public abstract class EntityLivingBaseMixin_MouseDelayFix extends Entity {
             cir.setReturnValue(super.getLook(partialTicks));
         }
     }
+    //#endif
 }

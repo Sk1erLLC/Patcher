@@ -1,8 +1,11 @@
 package club.sk1er.patcher.screen.render.overlay;
 
+import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.ItemAccessor;
+import club.sk1er.patcher.mixins.accessors.ItemStackAccessor;
 import com.google.common.collect.Multimap;
+import gg.essential.universal.ChatColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
@@ -16,11 +19,17 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+//#if MC==10809
 import net.minecraft.world.WorldSettings;
+//#else
+//$$ import net.minecraft.potion.PotionUtils;
+//$$ import net.minecraft.world.GameType;
+//$$ import net.minecraft.enchantment.Enchantment;
+//$$ import net.minecraft.inventory.EntityEquipmentSlot;
+//$$ import net.minecraft.entity.SharedMonsterAttributes;
+//#endif
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.text.DecimalFormat;
@@ -37,7 +46,6 @@ import java.util.Map;
 public class GlanceRenderer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private final Map<String, ItemStack> cachedDamageMap = new HashMap<>();
     private final DecimalFormat format = new DecimalFormat("#.###");
     private boolean renderingArrows;
     private boolean renderingDamage;
@@ -56,6 +64,7 @@ public class GlanceRenderer {
         put(6, "AA");
         put(7, "T");
         put(8, "DS");
+        put(9, "FW"); // frost walker - 1.12 only
         put(16, "SH");
         put(17, "SM");
         put(18, "BoA");
@@ -72,6 +81,7 @@ public class GlanceRenderer {
         put(51, "INF");
         put(61, "LoS");
         put(62, "LU");
+        put(70, "MEN"); // mending - 1.12 only
     }};
 
     /**
@@ -81,8 +91,15 @@ public class GlanceRenderer {
      */
     @SubscribeEvent
     public void renderDamage(RenderGameOverlayEvent.Post event) {
-        final EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance || player == null || player.isSpectator()) {
+        EntityPlayerSP player = mc.thePlayer;
+        //#if MC==10809
+        RenderGameOverlayEvent.ElementType type = event.type;
+        ScaledResolution res = event.resolution;
+        //#else
+        //$$ RenderGameOverlayEvent.ElementType type = event.getType();
+        //$$ ScaledResolution res = event.getResolution();
+        //#endif
+        if (type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.damageGlance || player == null || player.isSpectator()) {
             return;
         }
 
@@ -97,7 +114,6 @@ public class GlanceRenderer {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
 
-            final ScaledResolution res = event.resolution;
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(attackDamage) >> 1);
             final int y = (res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? -1 : 14) + 9 << 1) + 9;
 
@@ -115,23 +131,41 @@ public class GlanceRenderer {
      */
     @SubscribeEvent
     public void renderItemCount(final RenderGameOverlayEvent.Post event) {
-        final EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance || player == null || player.isSpectator()) {
+        EntityPlayerSP player = mc.thePlayer;
+        //#if MC==10809
+        RenderGameOverlayEvent.ElementType type = event.type;
+        ScaledResolution res = event.resolution;
+        //#else
+        //$$ RenderGameOverlayEvent.ElementType type = event.getType();
+        //$$ ScaledResolution res = event.getResolution();
+        //#endif
+        if (type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.itemCountGlance || player == null || player.isSpectator()) {
             return;
         }
 
-        if (player.getCurrentEquippedItem() != null) {
-            final boolean holdingBow = player.getCurrentEquippedItem().getItem() instanceof ItemBow;
-            final int count = getHeldItemCount(holdingBow);
-            final boolean shouldRenderArrowCount = holdingBow && count > 0;
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (currentItem != null) {
+            // air counts for some reason on 1.12?
+            //#if MC==11202
+            //$$ if (currentItem.getItem() == Items.AIR) return;
+            //#endif
+
+            boolean holdingBow = currentItem.getItem() instanceof ItemBow;
+            int count = getHeldItemCount(holdingBow);
+            boolean shouldRenderArrowCount = holdingBow && count > 0;
             this.renderingArrows = shouldRenderArrowCount;
 
             if (count > 1 || shouldRenderArrowCount) {
-                final int offset = mc.playerController.getCurrentGameType() == WorldSettings.GameType.CREATIVE ? -12 : 0;
-                final ScaledResolution resolution = event.resolution;
+                int offset = mc.playerController.getCurrentGameType() ==
+                    //#if MC==10809
+                    WorldSettings.GameType.CREATIVE
+                    //#else
+                    //$$ GameType.CREATIVE
+                    //#endif
+                    ? -12 : 0;
                 mc.fontRendererObj.drawString(String.valueOf(count),
-                    resolution.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
-                    resolution.getScaledHeight() - 43 - offset,
+                    res.getScaledWidth() - mc.fontRendererObj.getStringWidth(String.valueOf(count)) >> 1,
+                    res.getScaledHeight() - 43 - offset,
                     -1,
                     true);
             }
@@ -146,7 +180,14 @@ public class GlanceRenderer {
     @SubscribeEvent
     public void renderEnchantments(final RenderGameOverlayEvent.Post event) {
         final EntityPlayerSP player = mc.thePlayer;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null || player.isSpectator()) {
+        //#if MC==10809
+        RenderGameOverlayEvent.ElementType type = event.type;
+        ScaledResolution res = event.resolution;
+        //#else
+        //$$ RenderGameOverlayEvent.ElementType type = event.getType();
+        //$$ ScaledResolution res = event.getResolution();
+        //#endif
+        if (type != RenderGameOverlayEvent.ElementType.TEXT || !PatcherConfig.enchantmentsGlance || player == null || player.isSpectator()) {
             return;
         }
 
@@ -159,7 +200,6 @@ public class GlanceRenderer {
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            final ScaledResolution res = event.resolution;
 
             final int x = res.getScaledWidth() - (mc.fontRendererObj.getStringWidth(toDraw) >> 1);
             int y = res.getScaledHeight() - 56 + (mc.playerController.shouldDrawHUD() ? 2 : 14) + 9 << 1;
@@ -175,55 +215,53 @@ public class GlanceRenderer {
         }
     }
 
-    @SubscribeEvent
-    public void clearDamageMap(WorldEvent.Unload event) {
-        if (!this.cachedDamageMap.isEmpty()) {
-            this.cachedDamageMap.clear();
-        }
-    }
-
     /**
-     * Get the currently held items attack damage by searching through the item's lore.
+     * Get the currently held items attack damage by searching through the item's attribute modifiers.
      *
      * @param stack Currently held item.
      * @return If the item has an "x Attack Damage" string in the lore, return the number, otherwise return empty.
      */
     private String getAttackDamageString(ItemStack stack) {
-        if (!this.cachedDamageMap.isEmpty() && this.cachedDamageMap.containsValue(stack)) {
-            for (Map.Entry<String, ItemStack> entry : this.cachedDamageMap.entrySet()) {
-                if (entry.getValue() == stack) {
-                    return entry.getKey();
-                }
-            }
-        }
-
         if (stack != null) {
+            //#if MC==11202
+            //$$ final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+            //#else
             final Multimap<String, AttributeModifier> modifiers = stack.getAttributeModifiers();
+            //#endif
+
             if (!modifiers.isEmpty()) {
+                double damage = 0;
+                int operation = 0;
+
                 for (Map.Entry<String, AttributeModifier> entry : modifiers.entries()) {
                     final AttributeModifier modifier = entry.getValue();
-                    double damage = modifier.getAmount();
-
                     if (modifier.getID() == ItemAccessor.getItemModifierUUID()) {
-                        damage += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
-                    }
+                        double baseDamage = modifier.getAmount()
+                            + EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
 
-                    final double damageBonus = modifier.getOperation() != 1 && modifier.getOperation() != 2 ? damage : damage * 100.0D;
+                        //#if MC==11202
+                        //$$ baseDamage += mc.player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
+                        //#endif
 
-                    if (damage > 0.0D) {
-                        final String target = StatCollector.translateToLocal("attribute.name." + entry.getKey());
-                        final String damageString = StatCollector.translateToLocalFormatted(
-                            "attribute.modifier.plus." + modifier.getOperation(),
-                            this.format.format(damageBonus),
-                            target
-                        ).replace(target, "");
-
-                        if (!this.cachedDamageMap.containsKey(damageString) && !this.cachedDamageMap.containsValue(stack)) {
-                            this.cachedDamageMap.put(damageString, stack);
+                        if (baseDamage > 0) {
+                            operation = modifier.getOperation();
+                            damage = operation != 1 && operation != 2 ? baseDamage : baseDamage * 100.0D;
+                            break;
                         }
-
-                        return damageString;
                     }
+                }
+
+                //noinspection ConstantConditions - IntelliJ incorrectly identifies this as a constant condition evaluating to false. It doesn't seem to notice the `damage = ...` statement just a few lines above.
+                if (damage > 0) {
+                    //#if MC==11202
+                    //$$ return I18n.translateToLocalFormatted(
+                    //#else
+                    return StatCollector.translateToLocalFormatted(
+                    //#endif
+                        "attribute.modifier.plus." + operation,
+                        this.format.format(damage),
+                        ""
+                    );
                 }
             }
         }
@@ -238,8 +276,11 @@ public class GlanceRenderer {
      * @return The amount of the currently held item.
      */
     private int getHeldItemCount(boolean holdingBow) {
-        int id = Item.getIdFromItem(mc.thePlayer.getCurrentEquippedItem().getItem());
-        int data = mc.thePlayer.getCurrentEquippedItem().getItemDamage();
+        ItemStack currentItem = mc.thePlayer.inventory.getCurrentItem();
+        if (currentItem == null) return 0;
+
+        int id = Item.getIdFromItem(currentItem.getItem());
+        int data = currentItem.getItemDamage();
         int count = 0;
 
         if (holdingBow) {
@@ -249,10 +290,10 @@ public class GlanceRenderer {
 
         for (ItemStack itemStack : mc.thePlayer.inventory.mainInventory) {
             if (itemStack != null) {
-                final Item item = itemStack.getItem();
+                Item item = itemStack.getItem();
 
                 if (Item.getIdFromItem(item) == id && itemStack.getItemDamage() == data) {
-                    count += itemStack.stackSize;
+                    count += ((ItemStackAccessor) (Object) itemStack).getStackSize();
                 }
             }
         }
@@ -267,16 +308,21 @@ public class GlanceRenderer {
      * @return Potion duration & name.
      */
     private String getPotionEffectString(ItemStack heldItemStack) {
-        final ItemPotion potion = (ItemPotion) heldItemStack.getItem();
-        final List<PotionEffect> effects = potion.getEffects(heldItemStack);
+        ItemPotion potion = (ItemPotion) heldItemStack.getItem();
+        List<PotionEffect> effects =
+            //#if MC==10809
+            potion.getEffects(heldItemStack);
+            //#else
+            //$$ PotionUtils.getEffectsFromStack(heldItemStack);
+            //#endif
         if (effects == null) return null;
 
-        final StringBuilder potionBuilder = new StringBuilder();
+        StringBuilder potionBuilder = new StringBuilder();
 
         for (PotionEffect entry : effects) {
-            final int duration = entry.getDuration() / 20;
+            int duration = entry.getDuration() / 20;
             potionBuilder
-                .append(EnumChatFormatting.BOLD)
+                .append(ChatColor.BOLD)
                 .append(StatCollector.translateToLocal(entry.getEffectName()))
                 .append(" ")
                 .append(entry.getAmplifier() + 1)
@@ -297,17 +343,21 @@ public class GlanceRenderer {
      * @return Currently held items enchantments.
      */
     private String getEnchantmentString(ItemStack heldItemStack) {
-        final Map<Integer, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
-        final StringBuilder sb = new StringBuilder();
-
+        StringBuilder builder = new StringBuilder();
+        //#if MC==10809
+        Map<Integer, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
         for (Map.Entry<Integer, Integer> entry : enchantmentMap.entrySet()) {
-            sb.append(EnumChatFormatting.BOLD)
-                .append(shortEnchantmentNames.get(entry.getKey()))
+            builder.append(ChatColor.BOLD).append(shortEnchantmentNames.get(entry.getKey()))
+        //#else
+        //$$ Map<Enchantment, Integer> enchantmentMap = EnchantmentHelper.getEnchantments(heldItemStack);
+        //$$ for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
+        //$$    builder.append(ChatColor.BOLD).append(shortEnchantmentNames.get(Enchantment.getEnchantmentID(entry.getKey())))
+        //#endif
                 .append(" ")
                 .append(entry.getValue())
                 .append(" ");
         }
 
-        return sb.toString().trim();
+        return builder.toString().trim();
     }
 }

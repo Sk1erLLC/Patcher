@@ -21,7 +21,7 @@ public class ResourcePackRepositoryHook {
         }
 
         final Set<ResourcePackRepository.Entry> newSet = new LinkedHashSet<>();
-        for (File file : accessor.callGetResourcePackFiles()) {
+        for (File file : accessor.invokeGetResourcePackFiles()) {
             final ResourcePackRepository.Entry entry = repository.new Entry(file);
             final int entryHash = entry.hashCode();
             if (!all.containsKey(entryHash)) {

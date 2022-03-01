@@ -28,19 +28,19 @@ import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
-import club.sk1er.patcher.util.keybind.KeybindChatPeek;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
 import club.sk1er.patcher.util.keybind.KeybindNameHistory;
+import club.sk1er.patcher.util.keybind.MousePerspectiveKeybindHandler;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.status.ProtocolVersionDetector;
 import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
-import club.sk1er.patcher.util.world.render.cloud.CloudHandler;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
+import club.sk1er.patcher.util.world.sound.audioswitcher.AudioSwitcher;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import gg.essential.api.EssentialAPI;
@@ -51,6 +51,7 @@ import gg.essential.api.utils.WebUtil;
 import gg.essential.universal.UDesktop;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.ForgeVersion;
@@ -97,7 +98,7 @@ public class Patcher {
     // betas will be "1.x.x+beta-y" / "1.x.x+branch_beta-y"
     // rcs will be 1.x.x+rc-y
     // extra branches will be 1.x.x+branch-y
-    public static final String VERSION = "1.7.0+beta-3";
+    public static final String VERSION = "1.8.1";
 
     private final Logger logger = LogManager.getLogger("Patcher");
     private final File logsDirectory = new File(Minecraft.getMinecraft().mcDataDir + File.separator + "logs" + File.separator);
@@ -109,12 +110,11 @@ public class Patcher {
     private final Set<String> blacklistedServers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private final File blacklistedServersFile = new File("./config/blacklisted_servers.txt");
 
-    private final CloudHandler cloudHandler = new CloudHandler();
     private final SavesWatcher savesWatcher = new SavesWatcher();
+    private final AudioSwitcher audioSwitcher = new AudioSwitcher();
 
     private KeyBinding dropModifier;
     private KeyBinding nameHistory;
-    private KeyBinding chatPeek;
     private KeyBinding hideScreen, customDebug, clearShaders;
 
     private PatcherConfig patcherConfig;
@@ -126,8 +126,8 @@ public class Patcher {
     public void onInit(FMLInitializationEvent event) {
         registerKeybinds(
             nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
-            chatPeek = new KeybindChatPeek(), hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
-            customDebug = new FunctionKeyChanger.KeybindCustomDebug(), clearShaders = new FunctionKeyChanger.KeybindClearShaders()
+            hideScreen = new FunctionKeyChanger.KeybindHideScreen(), customDebug = new FunctionKeyChanger.KeybindCustomDebug(),
+            clearShaders = new FunctionKeyChanger.KeybindClearShaders()
         );
 
         patcherConfig = PatcherConfig.INSTANCE;
@@ -147,13 +147,14 @@ public class Patcher {
         OptiFineReflectorScraper.registerCommand();
 
         registerEvents(
-            this, soundHandler, cloudHandler, dropModifier,
+            this, soundHandler, dropModifier, audioSwitcher,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
             new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new HUDCaching(), new EntityRendererHook(),
-            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE
+            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE,
+            new MousePerspectiveKeybindHandler()
         );
 
         checkLogs();
@@ -167,7 +168,10 @@ public class Patcher {
     public void onPostInit(FMLPostInitializationEvent event) {
         if (!loadedGalacticFontRenderer) {
             loadedGalacticFontRenderer = true;
-            ((FontRendererExt) Minecraft.getMinecraft().standardGalacticFontRenderer).patcher$getFontRendererHook().create();
+            FontRenderer galacticFontRenderer = Minecraft.getMinecraft().standardGalacticFontRenderer;
+            if (galacticFontRenderer instanceof FontRendererExt) {
+                ((FontRendererExt) galacticFontRenderer).patcher$getFontRendererHook().create();
+            }
         }
     }
 
@@ -185,7 +189,8 @@ public class Patcher {
 
         logger.info("Minecraft started in {} seconds.", time);
 
-        if (ForgeVersion.getVersion().contains("2318")) return;
+        //noinspection ConstantConditions
+        if (!ForgeVersion.mcVersion.equals("1.8.9") || ForgeVersion.getVersion().contains("2318")) return;
         notifications.push("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
             "Click to open the Forge website to download the latest version.", 30, () -> {
             String updateLink = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html";
@@ -222,6 +227,7 @@ public class Patcher {
      *
      * @param event {@link FMLNetworkEvent.ClientConnectedToServerEvent}
      */
+    //#if MC==10809
     @SubscribeEvent
     public void connectToServer(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (event.isLocal) {
@@ -242,6 +248,7 @@ public class Patcher {
 
         GuiChatTransformer.maxChatLength = compatible ? 256 : 100;
     }
+    //#endif
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
@@ -342,6 +349,7 @@ public class Patcher {
         if (PatcherConfig.tabOpacity > 1.0F) PatcherConfig.tabOpacity = 1.0F;
         if (PatcherConfig.imagePreviewWidth > 1.0F) PatcherConfig.imagePreviewWidth = 0.5F;
         if (PatcherConfig.previewScale > 1.0F) PatcherConfig.previewScale = 1.0F;
+        if (PatcherConfig.unfocusedFPSAmount < 15) PatcherConfig.unfocusedFPSAmount = 15;
         if (PatcherConfig.fireOverlayHeight < -0.5F || PatcherConfig.fireOverlayHeight > 1.5F) {
             PatcherConfig.fireOverlayHeight = 0.0F;
         }
@@ -388,6 +396,7 @@ public class Patcher {
             return;
         }
 
+        if (replacedMods == null) return;
         Set<String> replacements = new HashSet<>();
         Set<String> jsonKey = replacedMods.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
         for (ModContainer modContainer : activeModList) {
@@ -426,37 +435,28 @@ public class Patcher {
         return logger;
     }
 
-    @SuppressWarnings("unused")
-    public CloudHandler getCloudHandler() {
-        return cloudHandler;
-    }
-
     public KeyBinding getNameHistory() {
         return nameHistory;
     }
 
-    public KeyBinding getChatPeek() {
-        return chatPeek;
-    }
-
-    @SuppressWarnings("unused")
     public KeyBinding getDropModifier() {
         return dropModifier;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getHideScreen() {
         return hideScreen;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getCustomDebug() {
         return customDebug;
     }
 
-    @SuppressWarnings("unused")
     public KeyBinding getClearShaders() {
         return clearShaders;
+    }
+
+    public AudioSwitcher getAudioSwitcher() {
+        return audioSwitcher;
     }
 
     public void forceSaveConfig() {

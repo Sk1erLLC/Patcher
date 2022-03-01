@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(NetHandlerPlayClient.class)
 public class NetHandlerPlayClientMixin_SignChatSpam {
+    //#if MC==10809
     @Redirect(
         method = "handleUpdateSign",
         slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)),
@@ -18,4 +19,5 @@ public class NetHandlerPlayClientMixin_SignChatSpam {
     private void patcher$removeDebugMessage(EntityPlayerSP instance, IChatComponent component) {
         // No-op
     }
+    //#endif
 }

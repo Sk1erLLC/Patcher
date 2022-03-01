@@ -20,16 +20,23 @@ import java.util.List;
 
 @Mixin(World.class)
 public class WorldMixin_Optimization {
+    //#if MC==10809
     @Shadow @Final public boolean isRemote;
 
     @ModifyVariable(method = "updateEntityWithOptionalForce", at = @At("STORE"), ordinal = 1)
     private boolean patcher$checkIfWorldIsRemoteBeforeForceUpdating(boolean isForced) {
         return isForced && !this.isRemote;
     }
+    //#endif
 
     @Inject(method = "getCollidingBoundingBoxes", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void patcher$filterEntities(Entity entityIn, AxisAlignedBB bb, CallbackInfoReturnable<List<AxisAlignedBB>> cir, List<AxisAlignedBB> list) {
-        if (entityIn instanceof EntityTNTPrimed || entityIn instanceof EntityFallingBlock || entityIn instanceof EntityItem || entityIn instanceof EntityFX) {
+        if (entityIn instanceof EntityTNTPrimed || entityIn instanceof EntityFallingBlock || entityIn instanceof EntityItem
+            // particles aren't entities after 1.9
+            //#if MC==10809
+            || entityIn instanceof EntityFX
+            //#endif
+        ) {
             cir.setReturnValue(list);
         }
     }

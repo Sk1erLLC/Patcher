@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Mixin(TileEntityBannerRenderer.class)
 public class TileEntityBannerRendererMixin_ChestDisplay {
-
+    //#if MC==10809
     @Shadow @Final private static Map<String, TileEntityBannerRenderer.TimedBannerTexture> DESIGNS;
 
     @Shadow @Final private static ResourceLocation BANNERTEXTURES;
@@ -74,4 +74,5 @@ public class TileEntityBannerRendererMixin_ChestDisplay {
 
         return DESIGNS.size() < 256;
     }
+    //#endif
 }

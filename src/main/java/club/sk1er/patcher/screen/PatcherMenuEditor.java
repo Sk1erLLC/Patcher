@@ -6,10 +6,12 @@ import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
+import gg.essential.elementa.ElementaVersion;
 import gg.essential.elementa.components.UIImage;
 import gg.essential.elementa.components.Window;
 import gg.essential.elementa.dsl.ComponentsKt;
 import gg.essential.elementa.dsl.UtilitiesKt;
+import gg.essential.universal.UMatrixStack;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -43,7 +45,7 @@ public class PatcherMenuEditor {
         25, // tab
         72 // return
     };
-    private final Window window = (Window) new Window().addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
+    private final Window window = (Window) new Window(ElementaVersion.V1).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
         uiConstraints.setX(UtilitiesKt.pixels(0, true));
         uiConstraints.setWidth(UtilitiesKt.pixels(200));
         uiConstraints.setHeight(UtilitiesKt.pixels(200));
@@ -62,8 +64,13 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void openMenu(GuiScreenEvent.InitGuiEvent.Post event) {
+        //#if MC==10809
         mcButtonList = event.buttonList;
-        final GuiScreen gui = event.gui;
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ mcButtonList = event.getButtonList();
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
         final int width = gui.width;
         final int height = gui.height;
 
@@ -99,14 +106,26 @@ public class PatcherMenuEditor {
                 }
             }
         } else if (gui instanceof GuiScreenOptionsSounds) {
-            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, height / 6 + 146, 100, 20, "All Sounds"));
-            mcButtonList.add(new GuiButton(refreshSounds, (width >> 1), height / 6 + 146, 100, 20, "Refresh Sounds"));
+            //#if MC==10809
+            int buttonHeight = height / 6 + 146;
+            //#else
+            //$$ int buttonHeight = height / 6 + 190;
+            //#endif
+            mcButtonList.add(new GuiButton(allSounds, (width >> 1) - 100, buttonHeight, 100, 20, "All Sounds"));
+            mcButtonList.add(new GuiButton(refreshSounds, (width >> 1), buttonHeight, 100, 20, "Refresh Sounds"));
         }
     }
 
     @SubscribeEvent
     public void preActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event) {
-        if (event.gui instanceof GuiIngameMenu && event.button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        GuiButton button = event.button;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //$$ GuiButton button = event.getButton();
+        //#endif
+        if (gui instanceof GuiIngameMenu && button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
             if (PatcherConfig.smartDisconnect) {
                 mc.displayGuiScreen(new SmartDisconnectScreen());
                 event.setCanceled(true);
@@ -116,8 +135,13 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void actionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
+        //#if MC==10809
         int buttonId = event.button.id;
         GuiScreen gui = event.gui;
+        //#else
+        //$$ int buttonId = event.getButton().id;
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
         if (gui instanceof GuiIngameMenu && buttonId == serverList) {
             mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
         } else if (gui instanceof GuiScreenOptionsSounds) {
@@ -131,20 +155,25 @@ public class PatcherMenuEditor {
 
     @SubscribeEvent
     public void drawMenu(GuiScreenEvent.DrawScreenEvent.Post event) {
-        if (PatcherConfig.cleanMainMenu && event.gui instanceof GuiMainMenu) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
+        if (PatcherConfig.cleanMainMenu && gui instanceof GuiMainMenu) {
             if (realmsButton != null) {
                 realmsButton.visible = false;
                 realmsButton.enabled = false;
             }
         }
 
-        if (PatcherConfig.openToLanReplacement == 2 && event.gui instanceof GuiIngameMenu) {
+        if (PatcherConfig.openToLanReplacement == 2 && gui instanceof GuiIngameMenu) {
             EssentialConfig config = EssentialAPI.getConfig();
             if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
                 for (GuiButton button : mcButtonList) {
                     if (button != null && button.displayString.equals("Invite Friends")) {
                         button.width = 200;
-                        button.xPosition = (event.gui.width / 2) - 100;
+                        button.xPosition = (gui.width / 2) - 100;
                         break;
                     }
                 }
@@ -155,13 +184,18 @@ public class PatcherMenuEditor {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
         if (tripped && event.phase == TickEvent.Phase.END) {
-            window.draw();
+            window.draw(UMatrixStack.Compat.INSTANCE.get());
         }
     }
 
     @SubscribeEvent
     public void keyboardInput(GuiScreenEvent.KeyboardInputEvent.Post event) {
-        if (event.gui instanceof GuiMainMenu) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
+        if (gui instanceof GuiMainMenu) {
             int key = Keyboard.getEventKey();
             if (Keyboard.isKeyDown(key) && !Keyboard.isRepeatEvent()) {
                 int i = next + 1;

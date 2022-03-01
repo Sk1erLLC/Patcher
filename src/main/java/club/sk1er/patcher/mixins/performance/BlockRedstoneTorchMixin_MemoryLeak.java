@@ -11,5 +11,7 @@ import java.util.WeakHashMap;
 
 @Mixin(BlockRedstoneTorch.class)
 public class BlockRedstoneTorchMixin_MemoryLeak {
+    //#if MC==10809
     @Shadow private static Map<World, List<BlockRedstoneTorch.Toggle>> toggles = new WeakHashMap<>();
+    //#endif
 }

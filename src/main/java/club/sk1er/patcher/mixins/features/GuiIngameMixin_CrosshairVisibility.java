@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GuiIngame.class)
 public class GuiIngameMixin_CrosshairVisibility {
 
+    //#if MC==10809
     @Shadow
     @Final
     protected Minecraft mc;
@@ -23,4 +24,5 @@ public class GuiIngameMixin_CrosshairVisibility {
             cir.setReturnValue(false);
         }
     }
+    //#endif
 }

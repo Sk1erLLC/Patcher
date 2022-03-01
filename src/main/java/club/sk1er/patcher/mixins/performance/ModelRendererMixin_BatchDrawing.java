@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ModelRenderer.class)
 public class ModelRendererMixin_BatchDrawing {
+    //#if MC==10809
     @Shadow private boolean compiled;
 
     private boolean patcher$compiledState;
@@ -37,4 +38,5 @@ public class ModelRendererMixin_BatchDrawing {
             Tessellator.getInstance().draw();
         }
     }
+    //#endif
 }

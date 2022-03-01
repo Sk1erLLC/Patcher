@@ -24,7 +24,11 @@ public class EntityRendering {
 
     @SubscribeEvent
     public void cancelRendering(RenderLivingEvent.Pre<? extends EntityLivingBase> event) {
-        final EntityLivingBase entity = event.entity;
+        //#if MC==10809
+        EntityLivingBase entity = event.entity;
+        //#else
+        //$$ EntityLivingBase entity = event.getEntity();
+        //#endif
         if ((PatcherConfig.disableArmorstands && entity instanceof EntityArmorStand) || (PatcherConfig.disableSemitransparentEntities && entity.isInvisible() && entity instanceof EntityPlayer)) {
             event.setCanceled(true);
         }
@@ -49,12 +53,21 @@ public class EntityRendering {
             return;
         }
 
-        final Entity ridingEntity = mc.thePlayer.ridingEntity;
+        //#if MC==10809
+        Entity ridingEntity = mc.thePlayer.ridingEntity;
+        //#else
+        //$$ Entity ridingEntity = mc.player.getRidingEntity();
+        //#endif
         if (ridingEntity == null) {
             return;
         }
 
-        shouldMakeTransparent = ridingEntity == event.entity;
+        //#if MC==10809
+        EntityLivingBase entity = event.entity;
+        //#else
+        //$$ EntityLivingBase entity = event.getEntity();
+        //#endif
+        shouldMakeTransparent = ridingEntity == entity;
         if (shouldMakeTransparent) {
             GlStateManager.enableBlend();
             GlStateManager.enableAlpha();

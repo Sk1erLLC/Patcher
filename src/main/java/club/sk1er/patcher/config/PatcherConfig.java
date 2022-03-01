@@ -8,6 +8,7 @@ import gg.essential.vigilance.data.Property;
 import gg.essential.vigilance.data.PropertyType;
 import kotlin.jvm.functions.Function0;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeVersion;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -107,14 +108,6 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean nauseaEffect;
 
-    // todo: replace this with the proper way in 1.16 (separate texture, not modifying the vignette)
-    /*@Property(
-        type = PropertyType.SWITCH, name = "Replace Nausea",
-        description = "Replace nausea effect with a solid green overlay",
-        category = "Miscellaneous", subcategory = "Overlays"
-    )
-    public static boolean replaceNausea;*/
-
     @Property(
         type = PropertyType.SWITCH, name = "Disable Achievements",
         description = "Remove achievement notifications.",
@@ -131,12 +124,49 @@ public class PatcherConfig extends Vigilant {
     public static float fireOverlayHeight;
 
     @Property(
-        type = PropertyType.DECIMAL_SLIDER, name = "Fire Overlay Opacity",
+        type = PropertyType.PERCENT_SLIDER, name = "Fire Overlay Opacity",
         description = "Change the opacity of the fire overlay.",
         category = "Miscellaneous", subcategory = "Overlays",
-        minF = 0.0F, maxF = 1.0F
+        maxF = 1.0F
     )
     public static float fireOverlayOpacity = 1.0F;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Hide Fire Overlay with Fire Resistance",
+        description = "Hide the fire overlay when you have fire resistance active.\n" +
+            "The overlay will blink 5 seconds before your fire resistance is about to run out.",
+        category = "Miscellaneous", subcategory = "Overlays"
+    )
+    public static boolean hideFireOverlayWithFireResistance;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Titles",
+        description = "Stop titles from appearing.",
+        category = "Miscellaneous", subcategory = "Overlays", i18nSubcategory = "Titles"
+    )
+    public static boolean disableTitles;
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Title Scale",
+        description = "Set the scale for titles.",
+        category = "Miscellaneous", subcategory = "Titles"
+    )
+    public static float titleScale = 1.0F;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Automatically Scale Title",
+        description = "Automatically scale titles if the title goes over the screen.",
+        category = "Miscellaneous", subcategory = "Titles"
+    )
+    public static boolean autoTitleScale;
+
+    @Property(
+        type = PropertyType.PERCENT_SLIDER, name = "Title Opacity",
+        description = "Change the opacity of titles.",
+        category = "Miscellaneous", subcategory = "Titles",
+        maxF = 1.0F
+    )
+    public static float titleOpacity = 1.0F;
 
     @Property(
         type = PropertyType.SWITCH, name = "FOV Modifier",
@@ -216,7 +246,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.SLIDER, name = "Unfocused FPS Amount",
         description = "Change the maximum FPS when you're not tabbed into the window, saving resources.",
         category = "Miscellaneous", subcategory = "General",
-        min = 1, max = 240
+        min = 15, max = 240
     )
     public static int unfocusedFPSAmount = 60;
 
@@ -229,7 +259,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Show Own Nametag",
-        description = "See your own nametag in third person.",
+        description = "See your nametag in third person.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean showOwnNametag;
@@ -284,6 +314,13 @@ public class PatcherConfig extends Vigilant {
     public static float customZoomSensitivity = 1.0F;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Dynamic Zoom Sensitivity",
+        description = "Reduce your mouse sensitivity the more you zoom in.",
+        category = "Miscellaneous", subcategory = "OptiFine"
+    )
+    public static boolean dynamicZoomSensitivity;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Smooth Zoom Animation",
         description = "Add a smooth animation when you zoom in and out.",
         category = "Miscellaneous", subcategory = "OptiFine"
@@ -314,7 +351,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Simplify FPS Counter",
-        description = "Remove the additions OptiFine L5 and above makes to the debug screen FPS counter.",
+        description = "Remove the extra FPS counter added by OptiFine.",
         category = "Miscellaneous", subcategory = "OptiFine"
     )
     public static boolean normalFpsCounter = true;
@@ -341,22 +378,29 @@ public class PatcherConfig extends Vigilant {
     public static boolean numericalEnchants;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Translate Unknown Roman Numerals",
+        description = "Generate Roman numeral from enchantment level instead of using language file.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean betterRomanNumerals = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Clean View",
-        description = "Stop rendering your own potion effect particles.",
+        description = "Stop rendering your potion effect particles.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean cleanView;
 
     @Property(
         type = PropertyType.SWITCH, name = "Windowed Fullscreen",
-        description = "Implement Windowed Fullscreen in Minecraft allowing you to drag your mouse outside the window.",
+        description = "Implement Windowed Fullscreen in Minecraft, allowing you to drag your mouse outside the window.",
         category = "Miscellaneous", subcategory = "Window"
     )
     public static boolean windowedFullscreen;
 
     @Property(
         type = PropertyType.SWITCH, name = "Instant Fullscreen",
-        description = "Instant switching between full screen and non fullscreen modes.",
+        description = "Instant switching between fullscreen and non-fullscreen modes.",
         category = "Miscellaneous", subcategory = "Window"
     )
     public static boolean instantFullscreen;
@@ -370,10 +414,17 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Breaking Particles",
-        description = "Remove block breaking particles for visibility.",
+        description = "Remove block-breaking particles for visibility.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean disableBlockBreakParticles;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Disable Lightning Bolts",
+        description = "Stop lightning bolts from appearing.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean disableLightningBolts;
 
     @Property(
         type = PropertyType.SWITCH, name = "Log Optimizer",
@@ -406,7 +457,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Alternate Text Shadow",
-        description = "Change the text shadow to only move down rather than moving to the side.",
+        description = "Change the text-shadow to only move down rather than move to the side.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean alternateTextShadow;
@@ -438,6 +489,13 @@ public class PatcherConfig extends Vigilant {
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean disableShadowedText;
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Left Hand in First Person",
+        description = "Render the first-person hand on the left of the screen.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean leftHandInFirstPerson;
 
     @Property(
         type = PropertyType.SWITCH, name = "Better Camera",
@@ -483,13 +541,6 @@ public class PatcherConfig extends Vigilant {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
 
-    @Property(
-        type = PropertyType.SWITCH, name = "Translate Unknown Roman Numerals",
-        description = "Generate Roman numeral from enchantment level instead of using language file",
-        category = "Miscellaneous", subcategory = "Rendering"
-    )
-    public static boolean betterRomanNumerals = true;
-
     // PERFORMANCE
 
     @Property(
@@ -501,14 +552,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Limit Chunk Updates",
-        description = "Limit the amount of chunk updates that happen a second.",
+        description = "Limit the number of chunk updates that happen a second.",
         category = "Performance", subcategory = "World"
     )
     public static boolean limitChunks;
 
     @Property(
         type = PropertyType.SLIDER, name = "Chunk Update Limit",
-        description = "Specify the amount of updates that can happen a second.",
+        description = "Specify the number of updates that can happen a second.",
         category = "Performance", subcategory = "World",
         min = 5, max = 250
     )
@@ -523,7 +574,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Low Animation Tick",
-        description = "Lowers the amount of animations that happen a second from 1000 to 500.",
+        description = "Lowers the number of animations that happen a second from 1000 to 500.",
         category = "Performance", subcategory = "World"
     )
     public static boolean lowAnimationTick = true;
@@ -544,7 +595,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Max Particle Limit",
-        description = "Stop additional particles from appearing when there's too many at once.",
+        description = "Stop additional particles from appearing when there are too many at once.",
         category = "Performance", subcategory = "Particles",
         min = 1, max = 10000
     )
@@ -559,14 +610,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Cache Font Data",
-        description = "Cache font data allowing for it to be reused multiple times before needing recalculation.",
+        description = "Cache font data, allowing for it to be reused multiple times before needing recalculation.",
         category = "Performance", subcategory = "Text Rendering"
     )
     public static boolean cacheFontData = true;
 
     @Property(
         type = PropertyType.SWITCH, name = "Disable Armorstands",
-        description = "Stop armorstands from rendering.\n§cArmorstands are commonly used for NPC nametags. Enabling this will stop those from rendering as well.",
+        description = "Stop armor stands from rendering.\n§cArmor stands are commonly used for NPC nametags. Enabling this will stop those from rendering as well.",
         category = "Performance", subcategory = "Entity Rendering"
     )
     public static boolean disableArmorstands;
@@ -657,7 +708,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SELECTOR, name = "Entity Culling Interval",
-        description = "The amount of time in ms between performing visibility checks for entities.\nShorter periods are more costly toward performance but provide the most accurate information.\nLower values recommended in competitive environments.",
+        description = "The amount of time in ms between performing visibility checks for entities.\nShorter periods are more costly toward performance but provide the most accurate information.\nLower values are recommended in competitive environments.",
         category = "Performance", subcategory = "Culling",
         options = {"50", "25", "10"}
     )
@@ -693,8 +744,8 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Check Armorstand Rules",
-        description = "Don't cull armorstands that have a specific rule assigned to them." +
-            "\nThis will result in a lot of non-occluded armorstands in places like Hypixel Skyblock, " +
+        description = "Don't cull armor stands that have a specific rule assigned to them." +
+            "\nThis will result in a lot of non-occluded armor stands in places like Hypixel Skyblock, " +
             "but will resolve special entities being occluded when they typically shouldn't be.",
         category = "Performance", subcategory = "Culling"
     )
@@ -706,20 +757,6 @@ public class PatcherConfig extends Vigilant {
         category = "Performance", subcategory = "General"
     )
     public static boolean disableEnchantmentGlint;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Optimized Cloud Renderer",
-        description = "Improve cloud rendering performance by better utilizing the GPU.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean gpuCloudRenderer = true;
-
-    @Property(
-        type = PropertyType.SWITCH, name = "Remove Cloud Transparency",
-        description = "Remove transparency from clouds.",
-        category = "Performance", subcategory = "World"
-    )
-    public static boolean removeCloudTransparency;
 
     @Property(
         type = PropertyType.SWITCH, name = "Entity Back-face Culling",
@@ -797,7 +834,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Click Out of Containers",
-        description = "Click outside of a container to close the menu.",
+        description = "Click outside a container to close the menu.",
         category = "Screens", subcategory = "Inventory"
     )
     public static boolean clickOutOfContainers;
@@ -816,7 +853,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Remove Container Background",
-        description = "Remove the dark background inside of a container.",
+        description = "Remove the dark background inside a container.",
         category = "Screens", subcategory = "General"
     )
     public static boolean removeContainerBackground = false;
@@ -852,7 +889,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "1.11 Chat Length",
-        description = "Extend the amount of characters you can type from 100 to 256 on supported servers." +
+        description = "Extend the number of characters you can type from 100 to 256 on supported servers." +
             "\n§eSupported servers are servers that support 1.11 or above." +
             "\n§cSome servers may kick you for this despite supporting 1.11 or above.",
         category = "Screens", subcategory = "Chat"
@@ -874,6 +911,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean transparentChatInputField;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Extend Chat Background",
+        description = "Extend the chat background all the way to the left of the screen.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean extendChatBackground = true;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Tab Height",
         description = "Move the tab overlay down the selected amount of pixels when there's an active bossbar.",
         category = "Screens", subcategory = "Tab"
@@ -890,7 +934,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Compact Chat",
-        description = "Clean up chat by stacking duplicate messages.",
+        description = "Clean up the chat by stacking duplicate messages.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean compactChat = true;
@@ -962,14 +1006,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Protection Percentage",
-        description = "View how much total armor protection you have inside of your inventory.",
+        description = "View how much total armor protection you have inside your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
     public static boolean protectionPercentage;
 
     @Property(
         type = PropertyType.SWITCH, name = "Projectile Protection Percentage",
-        description = "View how much total projectile protection you have inside of your inventory.",
+        description = "View how much total projectile protection you have inside your inventory.",
         category = "Screens", subcategory = "Combat Utilities"
     )
     public static boolean projectileProtectionPercentage;
@@ -989,6 +1033,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean timestamps;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Show Seconds on Timestamps",
+        description = "Show the seconds on a timestamped message.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean secondsOnTimestamps;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Chat Timestamps Format",
         description = "Change the time format of Chat Timestamps.",
         category = "Screens", subcategory = "Chat",
@@ -1006,14 +1057,14 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Clean Main Menu",
-        description = "Remove the Realms button on the main menu as it's useless on 1.8.9.",
+        description = "Remove the Realms button on the main menu as it's useless on older versions.",
         category = "Screens", subcategory = "General"
     )
     public static boolean cleanMainMenu = true;
 
     @Property(
         type = PropertyType.SELECTOR, name = "Open to LAN Replacement",
-        description = "Modify the Open to LAN button to either redirect to the server list, or be removed.",
+        description = "Modify the Open to LAN button to either redirect to the server list or be removed.",
         category = "Screens", subcategory = "General",
         options = {"Default", "Server List", "Remove"}
     )
@@ -1036,7 +1087,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Safe Chat Clicks",
-        description = "Show the command or link that is ran/opened on click. ",
+        description = "Show the command or link that is run/opened on click. ",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean safeChatClicks;
@@ -1080,7 +1131,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SLIDER, name = "Preview Time",
-        description = "Adjust how long the preview should stay on screen before sliding out.\nTime is measured in seconds.",
+        description = "Adjust how long the preview should stay on the screen before sliding out.\nTime is measured in seconds.",
         category = "Screenshots", subcategory = "General",
         min = 1, max = 5
     )
@@ -1155,7 +1206,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "HUD Caching",
-        description = "Reuse frames from the HUD instead of constantly recreating it every frame, as most HUD elements will stay the same for a long amount of time.\n" +
+        description = "Reuse frames from the HUD instead of constantly recreating them every frame, as most HUD elements will stay the same for a long amount of time.\n" +
             "§cThis may cause stuff with animations to feel \"choppy\".",
         category = "Experimental", subcategory = "HUD Caching"
     )
@@ -1176,6 +1227,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean labyModMoment = true;
 
+    @Property(
+        type = PropertyType.TEXT, name = "Selected Audio Device",
+        description = "currently selected audio device, used for AudioSwitcher",
+        category = "hidden", hidden = true
+    )
+    public static String selectedAudioDevice = "";
+
     public static PatcherConfig INSTANCE = new PatcherConfig(); // Needs to be at the bottom or the default values take priority
 
     public PatcherConfig() {
@@ -1195,70 +1253,62 @@ public class PatcherConfig extends Vigilant {
             addDependency("compactChatTime", "compactChat");
             addDependency("timestampsFormat", "timestamps");
             addDependency("timestampsStyle", "timestamps");
+            addDependency("secondsOnTimestamps", "timestamps");
             addDependency("imagePreviewWidth", "imagePreview");
 
             Arrays.asList(
-                "slownessFovModifierFloat",
-                "speedFovModifierFloat",
-                "bowFovModifierFloat",
-                "sprintingFovModifierFloat"
+                "slownessFovModifierFloat", "speedFovModifierFloat",
+                "bowFovModifierFloat", "sprintingFovModifierFloat"
             ).forEach(property -> addDependency(property, "allowFovModifying"));
 
             addDependency("logOptimizerLength", "logOptimizer");
+            addDependency("dynamicZoomSensitivity", "scrollToZoom");
+            addDependency("smoothZoomAnimation", "scrollToZoom");
             addDependency("smoothZoomAlgorithm", "smoothZoomAnimation");
 
             Arrays.asList(
-                "cullingInterval",
-                "smartEntityCulling",
-                "dontCullNametags",
-                "dontCullEntityNametags",
-                "dontCullArmorStandNametags",
-                "checkArmorstandRules"
+                "cullingInterval", "smartEntityCulling", "dontCullNametags",
+                "dontCullEntityNametags", "dontCullArmorStandNametags", "checkArmorstandRules"
             ).forEach(property -> addDependency(property, "entityCulling"));
 
             Arrays.asList(
-                "entityRenderDistance",
-                "playerRenderDistance",
-                "passiveEntityRenderDistance",
-                "hostileEntityRenderDistance"
+                "entityRenderDistance", "playerRenderDistance",
+                "passiveEntityRenderDistance", "hostileEntityRenderDistance"
             ).forEach(property -> addDependency(property, "entityRenderDistanceToggle"));
 
             addDependency("cacheFontData", "optimizedFontRenderer");
             addDependency("chunkUpdateLimit", "limitChunks");
 
             Arrays.asList(
-                "screenshotNoFeedback",
-                "compactScreenshotResponse",
-                "autoCopyScreenshot",
-                "screenshotPreview",
-                "previewTime",
-                "previewAnimationStyle",
-                "previewScale",
-                "favoriteScreenshot",
-                "deleteScreenshot",
-                "uploadScreenshot",
-                "copyScreenshot",
-                "openScreenshotsFolder"
+                "screenshotNoFeedback", "compactScreenshotResponse", "autoCopyScreenshot", "screenshotPreview",
+                "previewTime", "previewAnimationStyle", "previewScale", "favoriteScreenshot",
+                "deleteScreenshot", "uploadScreenshot", "copyScreenshot", "openScreenshotsFolder"
             ).forEach(property -> addDependency(property, "screenshotManager"));
 
             hidePropertyIf("instantFullscreen", () -> !SystemUtils.IS_OS_WINDOWS);
 
+            Function0<Boolean> noOptiFine = () -> ClassTransformer.optifineVersion.equals("NONE");
             Arrays.asList(
-                "scrollToZoom",
-                "normalZoomSensitivity",
-                "customZoomSensitivity",
-                "smoothZoomAnimation",
-                "smoothZoomAnimationWhenScrolling",
-                "smoothZoomAlgorithm",
-                "toggleToZoom",
-                "normalFpsCounter",
-                "useVanillaMetricsRenderer",
-                "renderHandWhenZoomed"
-            ).forEach(property -> hidePropertyIf(property, () -> ClassTransformer.optifineVersion.equals("NONE")));
+                "scrollToZoom", "normalZoomSensitivity", "customZoomSensitivity", "smoothZoomAnimation",
+                "smoothZoomAnimationWhenScrolling", "smoothZoomAlgorithm", "toggleToZoom", "normalFpsCounter",
+                "useVanillaMetricsRenderer", "renderHandWhenZoomed", "smartFullbright", "smartEntityCulling",
+                "dynamicZoomSensitivity"
+            ).forEach(property -> hidePropertyIf(property, noOptiFine));
 
-            final Function0<Boolean> smoothFontDetected = () -> ClassTransformer.smoothFontDetected;
+            Function0<Boolean> smoothFontDetected = () -> ClassTransformer.smoothFontDetected;
             hidePropertyIf("optimizedFontRenderer", smoothFontDetected);
             hidePropertyIf("cacheFontData", smoothFontDetected);
+
+            // these are all already built into the client by 1.12, so no
+            // need to show them in the config menu
+
+            //noinspection ConstantConditions
+            Function0<Boolean> minecraft112 = () -> ForgeVersion.mcVersion.equals("1.12.2");
+            Arrays.asList(
+                "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
+                "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
+                "parallaxFix", "crosshairPerspective", "extendChatBackground"
+            ).forEach(property -> hidePropertyIf(property, minecraft112));
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }

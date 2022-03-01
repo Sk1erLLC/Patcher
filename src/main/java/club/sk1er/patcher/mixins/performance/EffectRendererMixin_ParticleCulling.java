@@ -1,5 +1,6 @@
 package club.sk1er.patcher.mixins.performance;
 
+import club.sk1er.patcher.ducks.EntityFXExt;
 import club.sk1er.patcher.util.world.render.culling.ParticleCulling;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
@@ -19,7 +20,10 @@ public class EffectRendererMixin_ParticleCulling {
             target = "Lnet/minecraft/client/particle/EntityFX;renderParticle(Lnet/minecraft/client/renderer/WorldRenderer;Lnet/minecraft/entity/Entity;FFFFFF)V"
         )
     )
-    private void patcher$cullParticles(EntityFX instance, WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    private void patcher$cullParticles(
+        EntityFX instance, WorldRenderer worldRendererIn, Entity entityIn, float partialTicks,
+        float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ
+    ) {
         if (ParticleCulling.shouldRender(instance)) {
             instance.renderParticle(worldRendererIn, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
@@ -31,8 +35,15 @@ public class EffectRendererMixin_ParticleCulling {
     )
     private EntityFX patcher$checkIfCulled(EntityFX entityFX) {
         if (ParticleCulling.camera != null) {
-            entityFX.distanceWalkedModified = ParticleCulling.camera.isBoundingBoxInFrustum(entityFX.getEntityBoundingBox()) ? 1.0F : -1.0F;
+            ((EntityFXExt) entityFX).patcher$setCullState(ParticleCulling.camera.isBoundingBoxInFrustum(
+                //#if MC==10809
+                entityFX.getEntityBoundingBox()
+                //#else
+                //$$ entityFX.getBoundingBox()
+                //#endif
+            ) ? 1.0F : -1.0F);
         }
+
         return entityFX;
     }
 }

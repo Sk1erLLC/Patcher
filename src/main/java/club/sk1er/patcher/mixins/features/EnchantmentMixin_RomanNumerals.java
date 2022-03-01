@@ -18,10 +18,11 @@ public abstract class EnchantmentMixin_RomanNumerals {
 
     @Inject(method = "getTranslatedName", at = @At("HEAD"), cancellable = true)
     private void patcher$modifyRomanNumerals(int level, CallbackInfoReturnable<String> cir) {
+        String translation = StatCollector.translateToLocal(this.getName()) + " ";
         if (PatcherConfig.numericalEnchants) {
-            cir.setReturnValue(StatCollector.translateToLocal(this.getName()) + " " + level);
+            cir.setReturnValue(translation + level);
         } else if (PatcherConfig.betterRomanNumerals) {
-            cir.setReturnValue(StatCollector.translateToLocal(this.getName()) + " " + RomanNumerals.toRoman(level));
+            cir.setReturnValue(translation + RomanNumerals.toRoman(level));
         }
     }
 }

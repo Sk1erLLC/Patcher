@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(TexturedQuad.class)
 public class TexturedQuadMixin_BatchDraw {
 
+    //#if MC==10809
     @Unique
     private boolean patcher$drawOnSelf;
 
@@ -32,4 +33,5 @@ public class TexturedQuadMixin_BatchDraw {
             tessellator.draw();
         }
     }
+    //#endif
 }

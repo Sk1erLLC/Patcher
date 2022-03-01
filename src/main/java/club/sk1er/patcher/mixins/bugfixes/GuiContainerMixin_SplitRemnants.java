@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GuiContainer.class)
 public abstract class GuiContainerMixin_SplitRemnants extends GuiScreen {
 
+    //#if MC==10809
     @Shadow private int dragSplittingButton;
     @Shadow private int dragSplittingRemnant;
 
@@ -21,4 +22,5 @@ public abstract class GuiContainerMixin_SplitRemnants extends GuiScreen {
             ci.cancel();
         }
     }
+    //#endif
 }

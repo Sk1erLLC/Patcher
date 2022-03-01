@@ -16,6 +16,7 @@ import java.net.UnknownHostException;
 
 public class ProtocolVersionDetector {
 
+    //#if MC==10809
     public static final ProtocolVersionDetector instance = new ProtocolVersionDetector();
 
     public boolean isCompatibleWithVersion(String ip, int version) {
@@ -91,4 +92,5 @@ public class ProtocolVersionDetector {
             INCOMPATIBLE
         }
     }
+    //#endif
 }

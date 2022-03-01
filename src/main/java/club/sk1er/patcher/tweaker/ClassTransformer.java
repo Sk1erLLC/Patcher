@@ -1,6 +1,8 @@
 package club.sk1er.patcher.tweaker;
 
+//#if MC==10809
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
+//#endif
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.ASMModParserTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.MinecraftForgeTransformer;
@@ -16,10 +18,10 @@ import club.sk1er.patcher.asm.external.forge.render.screen.GuiIngameForgeTransfo
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiModListTransformer;
 import club.sk1er.patcher.asm.external.forge.render.screen.GuiUtilsTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.KeyboardTransformer;
+import club.sk1er.patcher.asm.external.lwjgl.LibraryLWJGLOpenALTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsDisplayTransformer;
 import club.sk1er.patcher.asm.external.lwjgl.WindowsKeycodesTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.witherfix.EntityWitherTransformer;
-import club.sk1er.patcher.asm.external.util.ForcePublicTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayClientTransformer;
 import club.sk1er.patcher.asm.network.NetHandlerPlayServerTransformer;
 import club.sk1er.patcher.asm.network.packet.S0EPacketSpawnObjectTransformer;
@@ -27,7 +29,6 @@ import club.sk1er.patcher.asm.network.packet.S34PacketMapsTransformer;
 import club.sk1er.patcher.asm.render.particle.EffectRendererTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiNewChatTransformer;
-import club.sk1er.patcher.asm.render.screen.GuiOverlayDebugTransformer;
 import club.sk1er.patcher.asm.render.screen.GuiPlayerTabOverlayTransformer;
 import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
@@ -43,6 +44,7 @@ import com.google.gson.Gson;
 import gg.essential.universal.UDesktop;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -107,46 +109,48 @@ public class ClassTransformer implements IClassTransformer {
 
             if (!supportedOptiFineVersions.contains(optifineVersion)) {
                 logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
-                this.haltForOptifine("OptiFine " + optifineVersion + " has been detected, which is not supported by Patcher and will crash.\n" +
-                    "Please update to a newer version of OptiFine (i7 and above are supported) before trying to launch.");
+                this.haltForOptifine("Patcher has detected OptiFine " + optifineVersion + ", which is not supported and will crash.\n" +
+                    "Please update to a supported version of OptiFine and try again.\n" +
+                    "Supported versions: " + StringUtils.join(supportedOptiFineVersions, ", "));
                 return;
             }
         } catch (IOException ignored) {
         }
 
+        //#if MC==10809
+        registerTransformer(new GuiNewChatTransformer());
+        registerTransformer(new S0EPacketSpawnObjectTransformer());
+        registerTransformer(new RenderXPOrbTransformer());
+        registerTransformer(new RenderFireballTransformer());
+        registerTransformer(new RenderFishTransformer());
+        registerTransformer(new RenderSnowballTransformer());
+        //#endif
+        registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new RenderPlayerTransformer());
         registerTransformer(new GuiUtilsTransformer());
-        registerTransformer(new GuiNewChatTransformer());
         registerTransformer(new GuiPlayerTabOverlayTransformer());
         registerTransformer(new NetHandlerPlayClientTransformer());
         registerTransformer(new LayerCustomHeadTransformer());
         registerTransformer(new NBTTagCompoundTransformer());
         registerTransformer(new GuiChatTransformer());
-        registerTransformer(new RenderGlobalTransformer());
-        registerTransformer(new S0EPacketSpawnObjectTransformer());
-        registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new VisGraphTransformer());
         registerTransformer(new EffectRendererTransformer());
-        registerTransformer(new GuiOverlayDebugTransformer());
         registerTransformer(new VertexFormatTransformer());
         registerTransformer(new LayerHeldItemTransformer());
-        registerTransformer(new RenderFireballTransformer());
-        registerTransformer(new RenderFishTransformer());
-        registerTransformer(new RenderSnowballTransformer());
         registerTransformer(new NetHandlerPlayServerTransformer());
         registerTransformer(new EntityWitherTransformer());
-        //registerTransformer(new RecipeBookCloningTransformer());
         registerTransformer(new S34PacketMapsTransformer());
         registerTransformer(new RenderWitherTransformer());
+        registerTransformer(new LibraryLWJGLOpenALTransformer());
         if (isDevelopment()) registerTransformer(new InventoryEffectRendererTransformer());
 
         // forge classes
+        //#if MC==10809
         registerTransformer(new ForgeHooksClientTransformer());
         registerTransformer(new GuiModListTransformer());
         registerTransformer(new ModClassLoaderTransformer());
         registerTransformer(new ModelLoaderTransformer());
         registerTransformer(new ForgeChunkManagerTransformer());
-        registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new BlockInfoTransformer());
         registerTransformer(new VertexLighterFlatTransformer());
         registerTransformer(new VertexLighterSmoothAoTransformer());
@@ -155,14 +159,14 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new ASMModParserTransformer());
         registerTransformer(new LightUtilTransformer());
         registerTransformer(new ModContainerFactoryTransformer());
+        //#endif
+        registerTransformer(new GuiIngameForgeTransformer());
         //registerTransformer(new JarDiscovererTransformer());
 
         // lwjgl
         registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new WindowsKeycodesTransformer());
         registerTransformer(new KeyboardTransformer());
-
-        registerTransformer(new ForcePublicTransformer());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -262,7 +266,7 @@ public class ClassTransformer implements IClassTransformer {
     private void fetchSupportedOptiFineVersions() {
         HttpsURLConnection connection = null;
         try {
-            final URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
+            URL optifineVersions = new URL("https://static.sk1er.club/patcher/optifine.txt");
             connection = (HttpsURLConnection) optifineVersions.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
             connection.setConnectTimeout(5000);
@@ -275,7 +279,12 @@ public class ClassTransformer implements IClassTransformer {
             }
         } catch (Exception e) {
             this.logger.error("Failed to read supported OptiFine versions, adding defaults.", e);
-            supportedOptiFineVersions.addAll(Arrays.asList("I7", "L5", "M5", "M6_pre1", "M6"));
+            supportedOptiFineVersions.addAll(Arrays.asList(
+                "I7",
+                "L5",
+                "M5", "M6_pre1", "M6_pre2", "M6",
+                "G5", "G6_pre1", "G6"
+            ));
         } finally {
             if (connection != null) connection.disconnect();
         }
@@ -284,12 +293,12 @@ public class ClassTransformer implements IClassTransformer {
     private void updateOptiFineGenerations() {
         HttpsURLConnection connection = null;
         try {
-            final URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
+            URL optifineGenerations = new URL("https://static.sk1er.club/patcher/optifine_generations.json");
             connection = (HttpsURLConnection) optifineGenerations.openConnection();
             connection.setRequestProperty("User-Agent", "Patcher OptiFine Fetcher");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-            try (final Reader reader = new InputStreamReader(connection.getInputStream())) {
+            try (Reader reader = new InputStreamReader(connection.getInputStream())) {
                 generations = new Gson().fromJson(reader, OptiFineGenerations.class);
             }
         } catch (Exception e) {
@@ -301,8 +310,13 @@ public class ClassTransformer implements IClassTransformer {
             generations.getLGeneration().add("L6");
 
             generations.getMGeneration().add("M5");
-            generations.getMGeneration().add("M6-pre1");
+            generations.getMGeneration().add("M6_pre1");
+            generations.getMGeneration().add("M6_pre2");
             generations.getMGeneration().add("M6");
+
+            generations.getGGeneration().add("G5");
+            generations.getGGeneration().add("G6_pre1");
+            generations.getGGeneration().add("G6");
         } finally {
             if (connection != null) connection.disconnect();
         }

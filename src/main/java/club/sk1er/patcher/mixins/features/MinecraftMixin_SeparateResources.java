@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin_SeparateResources {
 
+    //#if MC==10809
     @Shadow private SoundHandler mcSoundHandler;
     @Shadow private IReloadableResourceManager mcResourceManager;
     @Shadow public abstract void refreshResources();
@@ -24,4 +25,5 @@ public abstract class MinecraftMixin_SeparateResources {
             refreshResources();
         }
     }
+    //#endif
 }

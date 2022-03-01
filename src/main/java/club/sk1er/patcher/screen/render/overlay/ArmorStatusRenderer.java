@@ -3,6 +3,7 @@ package club.sk1er.patcher.screen.render.overlay;
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -13,13 +14,22 @@ import net.minecraft.potion.Potion;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+//#if MC==11202
+//$$ import net.minecraft.init.Enchantments;
+//#endif
+
 public class ArmorStatusRenderer {
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
-    public void onRenderArmor(GuiScreenEvent.DrawScreenEvent e) {
-        if ((PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) && (e.gui instanceof GuiInventory || e.gui instanceof GuiContainerCreative)) {
+    public void onRenderArmor(GuiScreenEvent.DrawScreenEvent event) {
+        //#if MC==10809
+        GuiScreen gui = event.gui;
+        //#else
+        //$$ GuiScreen gui = event.getGui();
+        //#endif
+        if ((PatcherConfig.protectionPercentage || PatcherConfig.projectileProtectionPercentage) && (gui instanceof GuiInventory || gui instanceof GuiContainerCreative)) {
             final String armorValue = getArmorString();
             if (armorValue == null) {
                 return;
@@ -85,16 +95,28 @@ public class ArmorStatusRenderer {
                 }
 
                 if (stack.isItemEnchanted()) {
-                    epf += getEffProtPoints(EnchantmentHelper.getEnchantmentLevel(0, stack));
+                    epf += getEffProtPoints(EnchantmentHelper.getEnchantmentLevel(
+                        //#if MC==10809
+                        0,
+                        //#else
+                        //$$ Enchantments.PROTECTION,
+                        //#endif
+                        stack));
                 }
 
                 if (getProj && stack.isItemEnchanted()) {
-                    epf += getEffProtPoints(EnchantmentHelper.getEnchantmentLevel(4, stack));
+                    epf += getEffProtPoints(EnchantmentHelper.getEnchantmentLevel(
+                        //#if MC==10809
+                        4,
+                        //#else
+                        //$$ Enchantments.PROJECTILE_PROTECTION,
+                        //#endif
+                        stack));
                 }
             }
         }
 
-        epf = (Math.min(epf, 25));
+        epf = Math.min(epf, 25);
         double avgDef = addArmorProtResistance(armor, calcProtection(epf), resistance);
         return roundDouble(avgDef * 100.0);
     }

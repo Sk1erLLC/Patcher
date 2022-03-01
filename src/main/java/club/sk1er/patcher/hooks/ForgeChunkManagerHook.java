@@ -1,5 +1,6 @@
 package club.sk1er.patcher.hooks;
 
+//#if MC==10809
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
 import com.google.common.collect.ImmutableSetMultimap;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -12,6 +13,7 @@ import java.util.Map;
 /**
  * Used in {@link ForgeChunkManagerTransformer#transform(ClassNode, String)}
  */
+@SuppressWarnings("unused")
 public class ForgeChunkManagerHook {
 
     public static ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunksFor(World world, Map<World, ImmutableSetMultimap<ChunkCoordIntPair, Ticket>> forcedChunks) {
@@ -23,3 +25,4 @@ public class ForgeChunkManagerHook {
         return persistentChunks != null ? persistentChunks : ImmutableSetMultimap.of();
     }
 }
+//#endif

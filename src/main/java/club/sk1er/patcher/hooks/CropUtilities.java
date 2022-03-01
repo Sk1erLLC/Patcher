@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 
 @SuppressWarnings("unused")
 public class CropUtilities {
+    //#if MC==10809
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();
 
@@ -68,4 +69,5 @@ public class CropUtilities {
                 : .25F
         );
     }
+    //#endif
 }

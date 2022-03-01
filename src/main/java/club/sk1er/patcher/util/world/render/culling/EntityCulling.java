@@ -23,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
@@ -89,8 +90,12 @@ public class EntityCulling {
 
         return Minecraft.isGuiEnabled()
             && entity != mc.getRenderManager().livingPlayer
-            && ((entity instanceof EntityArmorStand) || !entity.isInvisibleToPlayer(player))
-            && entity.riddenByEntity == null;
+            && ((entity instanceof EntityArmorStand) || !entity.isInvisibleToPlayer(player)) &&
+            //#if MC==10809
+            entity.riddenByEntity == null;
+            //#else
+            //$$ !entity.isBeingRidden();
+            //#endif
     }
 
     public static void drawSelectionBoundingBox(AxisAlignedBB b) {
@@ -166,11 +171,11 @@ public class EntityCulling {
      * @return true if the entity rendering should be skipped
      */
     private static boolean checkEntity(Entity entity) {
-        final OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
+        OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
         if (query.refresh) {
             query.nextQuery = getQuery();
             query.refresh = false;
-            final int mode = SUPPORT_NEW_GL ? GL33.GL_ANY_SAMPLES_PASSED : GL15.GL_SAMPLES_PASSED;
+            int mode = SUPPORT_NEW_GL ? GL33.GL_ANY_SAMPLES_PASSED : GL15.GL_SAMPLES_PASSED;
             GL15.glBeginQuery(mode, query.nextQuery);
             drawSelectionBoundingBox(entity.getEntityBoundingBox()
                 .expand(.2, .2, .2)
@@ -189,17 +194,25 @@ public class EntityCulling {
      *
      * @param event {@link RenderLivingEvent.Pre<EntityLivingBase>}
      */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void shouldRenderEntity(RenderLivingEvent.Pre<EntityLivingBase> event) {
         if (!PatcherConfig.entityCulling || !shouldPerformCulling) {
             return;
         }
 
-        final EntityLivingBase entity = event.entity;
-        final boolean armorstand = entity instanceof EntityArmorStand;
+        //#if MC==10809
+        EntityLivingBase entity = event.entity;
+        //#else
+        //$$ EntityLivingBase entity = event.getEntity();
+        //#endif
+        boolean armorstand = entity instanceof EntityArmorStand;
         if (entity == mc.thePlayer || entity.worldObj != mc.thePlayer.worldObj ||
             (PatcherConfig.checkArmorstandRules && armorstand && ((EntityArmorStand) entity).hasMarker()) ||
-            (entity.isInvisibleToPlayer(mc.thePlayer) && !armorstand)) {
+            (entity.isInvisibleToPlayer(mc.thePlayer) && !armorstand)
+            //#if MC==11202
+            //$$ || entity.isGlowing()
+            //#endif
+        ) {
             return;
         }
 
@@ -212,7 +225,20 @@ public class EntityCulling {
             if ((PatcherConfig.dontCullNametags && entity instanceof EntityPlayer) ||
                 (PatcherConfig.dontCullEntityNametags && !armorstand) ||
                 (PatcherConfig.dontCullArmorStandNametags && armorstand)) {
-                event.renderer.renderName(entity, event.x, event.y, event.z);
+
+                //#if MC==10809
+                double x = event.x;
+                double y = event.y;
+                double z = event.z;
+                RendererLivingEntity<EntityLivingBase> renderer = event.renderer;
+                //#else
+                //$$ double x = event.getX();
+                //$$ double y = event.getY();
+                //$$ double z = event.getZ();
+                //$$ RenderLivingBase<EntityLivingBase> renderer = event.getRenderer();
+                //#endif
+
+                renderer.renderName(entity, x, y, z);
             }
         }
 

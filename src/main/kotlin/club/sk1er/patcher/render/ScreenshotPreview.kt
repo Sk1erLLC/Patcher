@@ -1,12 +1,14 @@
 package club.sk1er.patcher.render
 
 import club.sk1er.patcher.config.PatcherConfig
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.Window
 import gg.essential.elementa.constraints.RelativeConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
+import gg.essential.universal.UMatrixStack
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
@@ -17,15 +19,14 @@ object ScreenshotPreview {
 
     private var currentWindow: Window? = null
 
-    @Suppress("DEPRECATION")
     @SubscribeEvent
     fun renderScreenshot(event: RenderGameOverlayEvent.Post) {
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return
-        this.currentWindow?.draw()
+        this.currentWindow?.draw(UMatrixStack.Compat.get())
     }
 
     fun newCapture(image: BufferedImage) {
-        this.currentWindow = Window()
+        this.currentWindow = Window(ElementaVersion.V1)
         this.instantiateComponents(image)
     }
 

@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(BlockCrops.class)
 public abstract class BlockCropsMixin_CropHeight extends BlockBush {
 
+    //#if MC==10809
     @Override
     public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
         CropUtilities.updateCropsMaxY(worldIn, pos, worldIn.getBlockState(pos).getBlock());
@@ -24,4 +25,5 @@ public abstract class BlockCropsMixin_CropHeight extends BlockBush {
         CropUtilities.updateCropsMaxY(worldIn, pos, worldIn.getBlockState(pos).getBlock());
         return super.collisionRayTrace(worldIn, pos, start, end);
     }
+    //#endif
 }

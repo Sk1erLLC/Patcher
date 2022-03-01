@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Mixin(FluidRegistry.class)
 public class FluidRegistryMixin_Optimization {
+    //#if MC==10809
     @Shadow(remap = false) static Set<Fluid> bucketFluids;
 
     /**
@@ -21,4 +22,5 @@ public class FluidRegistryMixin_Optimization {
     public static Set<Fluid> getBucketFluids() {
         return Collections.unmodifiableSet(bucketFluids);
     }
+    //#endif
 }

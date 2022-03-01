@@ -23,6 +23,7 @@ public class GameSettingsMixin_MipmapSlider implements GameSettingsExt {
         }
     }
 
+    //#if MC==10809
     @Redirect(
         method = "setOptionFloatValue",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;scheduleResourcesRefresh()Lcom/google/common/util/concurrent/ListenableFuture;")
@@ -31,4 +32,5 @@ public class GameSettingsMixin_MipmapSlider implements GameSettingsExt {
         patcher$needsResourceRefresh = true;
         return null;
     }
+    //#endif
 }

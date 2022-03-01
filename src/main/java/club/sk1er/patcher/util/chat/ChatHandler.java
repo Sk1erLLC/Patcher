@@ -20,7 +20,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+//#if MC==11202
+//$$ import net.minecraft.util.text.ChatType;
+//#endif
 
 @SuppressWarnings("unused")
 public class ChatHandler {
@@ -29,30 +40,50 @@ public class ChatHandler {
     private static final Map<Integer, Set<ChatLine>> messagesForHash = new HashMap<>();
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
+    private static final String chatTimestampRegex = "^(?:\\[\\d\\d:\\d\\d(:\\d\\d)?(?: AM| PM|)]|<\\d\\d:\\d\\d>) ";
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     public static int currentMessageHash = -1;
     private int ticks;
 
+    //#if MC==10809
     @SubscribeEvent
     public void renderChat(RenderGameOverlayEvent.Chat event) {
         if (event.type == RenderGameOverlayEvent.ElementType.CHAT && PatcherConfig.chatPosition) {
             event.posY -= 12;
         }
     }
+    //#endif
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatMessage(ClientChatReceivedEvent event) {
-        if (PatcherConfig.timestamps && !event.message.getUnformattedText().trim().isEmpty() && event.type != 2) {
-            final String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(PatcherConfig.timestampsFormat == 0 ? "[hh:mm a]" : "[HH:mm]"));
+        //#if MC==10809
+        IChatComponent message = event.message;
+        int type = event.type;
+        int gameInfoType = 2;
+        //#else
+        //$$ ITextComponent message = event.getMessage();
+        //$$ ChatType type = event.getType();
+        //$$ ChatType gameInfoType = ChatType.GAME_INFO;
+        //#endif
+        if (PatcherConfig.timestamps && !message.getUnformattedText().trim().isEmpty() && type != gameInfoType) {
+            String time = getCurrentTime();
             if (PatcherConfig.timestampsStyle == 0) {
-                final ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
+                ChatComponentIgnored component = new ChatComponentIgnored(ChatColor.GRAY + "[" + time + "] " + ChatColor.RESET);
+                //#if MC==10809
                 component.appendSibling(event.message);
                 event.message = component;
+                //#else
+                //$$ component.appendSibling(event.getMessage());
+                //$$ event.setMessage(component);
+                //#endif
             } else if (PatcherConfig.timestampsStyle == 1) {
                 LinkedList<IChatComponent> queue = new LinkedList<>();
+                //#if MC==10809
                 queue.add(event.message);
+                //#else
+                //$$ queue.add(event.getMessage());
+                //#endif
 
                 while (!queue.isEmpty()) {
                     IChatComponent component = queue.remove();
@@ -80,7 +111,7 @@ public class ChatHandler {
     public void tick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             if (ticks++ >= 12000) {
-                final long time = System.currentTimeMillis();
+                long time = System.currentTimeMillis();
                 for (Map.Entry<Integer, ChatEntry> entry : chatMessageMap.entrySet()) {
                     if ((time - entry.getValue().lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
                         messagesForHash.remove(entry.getKey());
@@ -94,8 +125,13 @@ public class ChatHandler {
 
     @SubscribeEvent
     public void setChatMessageMap(ClientChatReceivedEvent event) {
-        final String message = cleanColor(event.message.getFormattedText()).trim();
-        if (message.isEmpty() && PatcherConfig.removeBlankMessages) {
+        //#if MC==10809
+        IChatComponent message = event.message;
+        //#else
+        //$$ ITextComponent message = event.getMessage();
+        //#endif
+        String clearMessage = cleanColor(message.getFormattedText()).trim();
+        if (clearMessage.isEmpty() && PatcherConfig.removeBlankMessages) {
             event.setCanceled(true);
         }
     }
@@ -105,28 +141,28 @@ public class ChatHandler {
         ticks = 0;
     }
 
-    public static boolean appendMessageCounter(IChatComponent chatComponent, boolean refresh) {
+    public static void appendMessageCounter(IChatComponent chatComponent, boolean refresh) {
         if ((Loader.isModLoaded("hychat") || Loader.isModLoaded("labymod")) || !PatcherConfig.compactChat) {
-            return true;
+            return;
         }
 
         if (!refresh) {
-            final String message = cleanColor(chatComponent.getFormattedText()).trim();
+            String message = cleanColor(chatComponent.getFormattedText()).trim();
             if (message.isEmpty() || isDivider(message)) {
-                return true;
+                return;
             }
 
             currentMessageHash = getChatComponentHash(chatComponent);
-            final long currentTime = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
 
             if (!chatMessageMap.containsKey(currentMessageHash)) {
                 chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
             } else {
-                final ChatEntry entry = chatMessageMap.get(currentMessageHash);
+                ChatEntry entry = chatMessageMap.get(currentMessageHash);
                 if ((currentTime - entry.lastSeenMessageMillis) > (PatcherConfig.compactChatTime * 1000L)) {
                     chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                 } else {
-                    final boolean deleted = deleteMessageByHash(currentMessageHash);
+                    boolean deleted = deleteMessageByHash(currentMessageHash);
                     if (!deleted) {
                         chatMessageMap.put(currentMessageHash, new ChatEntry(1, currentTime));
                     } else {
@@ -137,10 +173,8 @@ public class ChatHandler {
                 }
             }
 
-            return true;
         }
 
-        return true;
     }
 
     public static void setChatLine_addToList(ChatLine line) {
@@ -254,7 +288,7 @@ public class ChatHandler {
     }
 
     private static int getChatComponentHash(IChatComponent chatComponent) {
-        final List<Integer> siblingHashes = new ArrayList<>();
+        List<Integer> siblingHashes = new ArrayList<>();
         for (IChatComponent sibling : chatComponent.getSiblings()) {
             if (!(sibling instanceof ChatComponentIgnored) && sibling instanceof ChatComponentStyle) {
                 siblingHashes.add(getChatComponentHash(sibling));
@@ -265,8 +299,8 @@ public class ChatHandler {
             return Objects.hash(siblingHashes);
         }
 
-        final String unformattedText = chatComponent.getUnformattedText();
-        final String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
+        String unformattedText = chatComponent.getUnformattedText();
+        String cleanedMessage = unformattedText.replaceAll(chatTimestampRegex, "").trim();
         return Objects.hash(cleanedMessage, siblingHashes, getChatStyleHash(chatComponent.getChatStyle()));
     }
 
@@ -290,6 +324,17 @@ public class ChatHandler {
 
     private static String cleanColor(String in) {
         return in.replaceAll("(?i)\\u00A7.", "");
+    }
+
+    public static String getCurrentTime() {
+        String timestampsPattern = "[hh:mm a]";
+        if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[hh:mm:ss a]";
+        if (PatcherConfig.timestampsFormat == 1) {
+            timestampsPattern = "[HH:mm]";
+            if (PatcherConfig.secondsOnTimestamps) timestampsPattern = "[HH:mm:ss]";
+        }
+
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(timestampsPattern));
     }
 
     static class ChatEntry {

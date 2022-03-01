@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityPlayerSP.class)
 public class EntityPlayerSPMixin_NauseaEffect extends AbstractClientPlayer {
-    @Shadow public float timeInPortal;
-
-    @Shadow public float prevTimeInPortal;
-
     public EntityPlayerSPMixin_NauseaEffect(World worldIn, GameProfile playerProfile) {
         super(worldIn, playerProfile);
     }
+
+    //#if MC==10809
+    @Shadow public float timeInPortal;
+    @Shadow public float prevTimeInPortal;
 
     @Override
     public void removePotionEffectClient(int potionId) {
@@ -28,4 +28,5 @@ public class EntityPlayerSPMixin_NauseaEffect extends AbstractClientPlayer {
 
         super.removePotionEffectClient(potionId);
     }
+    //#endif
 }

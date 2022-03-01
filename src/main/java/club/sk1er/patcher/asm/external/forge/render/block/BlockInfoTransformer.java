@@ -39,14 +39,6 @@ public class BlockInfoTransformer implements PatcherTransformer {
         MethodNode updateFlatLighting = new MethodNode(Opcodes.ACC_PUBLIC, "updateFlatLighting", "()V", null, null);
         updateFlatLighting.instructions.add(updateFlatLighting());
         classNode.methods.add(updateFlatLighting);
-
-        for (MethodNode method : classNode.methods) {
-            if (method.name.equals("updateLightMatrix")) {
-                clearInstructions(method);
-                method.instructions.insert(useFasterLightMatrix());
-                break;
-            }
-        }
     }
 
     private InsnList updateFlatLighting() {
@@ -59,32 +51,6 @@ public class BlockInfoTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "blockPos", "Lnet/minecraft/util/BlockPos;"));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("BlockInfoHook"), "updateFlatLighting",
             "(Lnet/minecraft/block/Block;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/util/BlockPos;)V", false));
-        list.add(new InsnNode(Opcodes.RETURN));
-        return list;
-    }
-
-    private InsnList useFasterLightMatrix() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "blockPos", "Lnet/minecraft/util/BlockPos;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "world", "Lnet/minecraft/world/IBlockAccess;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "block", "Lnet/minecraft/block/Block;"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "translucent", "[[[Z"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "s", "[[[I"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "b", "[[[I"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "ao", "[[[F"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "skyLight", "[[[[F"));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, owner, "blockLight", "[[[[F"));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, getHookClass("BlockInfoHook"), "updateLightMatrix",
-            "(Lnet/minecraft/util/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/block/Block;[[[Z[[[I[[[I[[[F[[[[F[[[[F)V", false));
         list.add(new InsnNode(Opcodes.RETURN));
         return list;
     }

@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class OverlayHandler {
 
     private boolean toggledTab;
-    public static boolean toggledChat;
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
@@ -24,16 +23,17 @@ public class OverlayHandler {
     }
 
     @SubscribeEvent
-    public void tickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) toggledChat = Patcher.instance.getChatPeek().isKeyDown();
-    }
-
-    @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        //#if MC==10809
+        RenderGameOverlayEvent.ElementType type = event.type;
+        ScaledResolution res = event.resolution;
+        //#else
+        //$$ RenderGameOverlayEvent.ElementType type = event.getType();
+        //$$ ScaledResolution res = event.getResolution();
+        //#endif
+        if (type != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        final ScaledResolution resolution = new ScaledResolution(mc);
-        final int scaledWidth = resolution.getScaledWidth();
+        final int scaledWidth = res.getScaledWidth();
 
         final Scoreboard scoreboard = mc.theWorld.getScoreboard();
         final ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(0);

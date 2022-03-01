@@ -11,7 +11,7 @@ import java.util.List;
 @Mixin(ResourcePackRepository.class)
 public interface ResourcePackRepositoryAccessor {
     @Invoker
-    List<File> callGetResourcePackFiles();
+    List<File> invokeGetResourcePackFiles();
 
     @Accessor
     void setRepositoryEntriesAll(List<ResourcePackRepository.Entry> entries);

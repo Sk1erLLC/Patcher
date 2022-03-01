@@ -1,14 +1,17 @@
 package club.sk1er.patcher.mixins.performance;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Map;
 
 @Mixin(FontRenderer.class)
 public class FontRendererMixin_Optimization implements FontRendererExt {
@@ -16,13 +19,16 @@ public class FontRendererMixin_Optimization implements FontRendererExt {
     @Unique
     private final FontRendererHook patcher$fontRendererHook = new FontRendererHook((FontRenderer) (Object) this);
 
-    /**
-     * @author asbyth
-     * @reason Use a string width cache
-     */
-    @Overwrite
-    public int getStringWidth(String text) {
-        return this.patcher$fontRendererHook.getStringWidth(text);
+    @Inject(method = "getStringWidth", at = @At("HEAD"), cancellable = true)
+    public void getStringWidth(String text, CallbackInfoReturnable<Integer> cir) {
+        if (PatcherConfig.optimizedFontRenderer) {
+            cir.setReturnValue(this.patcher$fontRendererHook.getStringWidth(text));
+        } else {
+            Map<String, Integer> cache = this.patcher$fontRendererHook.getEnhancedFontRenderer().getStringWidthCache();
+            if (cache.size() != 0) {
+                cache.clear();
+            }
+        }
     }
 
     @Inject(method = "renderStringAtPos", at = @At("HEAD"), cancellable = true)

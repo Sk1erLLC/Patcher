@@ -15,6 +15,10 @@ public class OptiFineGenerations {
     @SerializedName("mGeneration")
     private final Set<String> mGeneration = new HashSet<>();
 
+    // 1.12
+    @SerializedName("gGeneration")
+    private final Set<String> gGeneration = new HashSet<>();
+
     @SerializedName("futureGeneration")
     private final Set<String> futureGeneration = new HashSet<>();
 
@@ -28,6 +32,10 @@ public class OptiFineGenerations {
 
     public Set<String> getMGeneration() {
         return mGeneration;
+    }
+
+    public Set<String> getGGeneration() {
+        return gGeneration;
     }
 
     public Set<String> getFutureGeneration() {

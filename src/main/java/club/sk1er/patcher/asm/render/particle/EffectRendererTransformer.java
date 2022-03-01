@@ -57,7 +57,7 @@ public class EffectRendererTransformer implements PatcherTransformer {
         // unnecessary but just for compatibility
         list.add(new LdcInsnNode(0.017453292F));
         list.add(new VarInsnNode(Opcodes.FSTORE, 3));
-        // da real fix
+        // actual fix for mc-74764
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178808_b", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 4));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178803_d", "()F", false));

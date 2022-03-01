@@ -16,6 +16,7 @@ import java.util.*;
 
 @Mixin(SoundManager.class)
 public abstract class SoundManagerMixin_DuplicatedSounds {
+    //#if MC==10809
     @Shadow public abstract boolean isSoundPlaying(ISound sound);
 
     @Shadow @Final private Map<String, ISound> playingSounds;
@@ -46,4 +47,5 @@ public abstract class SoundManagerMixin_DuplicatedSounds {
     private void patcher$clearPausedSounds(CallbackInfo ci) {
         patcher$pausedSounds.clear();
     }
+    //#endif
 }

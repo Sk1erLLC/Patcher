@@ -9,7 +9,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TileEntitySkullRenderer.class)
 public class TileEntitySkullRendererMixin_CancelRender {
-    @Inject(method = "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntitySkull;DDDFI)V", at = @At("HEAD"), cancellable = true)
+
+    private final String patcher$renderTileEntityAtDesc =
+        //#if MC==10809
+        "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntitySkull;DDDFI)V";
+        //#else
+        //$$ "renderTileEntityAt(Lnet/minecraft/tileentity/TileEntitySkull;DDDFIF)V";
+        //#endif
+
+    @Inject(method = patcher$renderTileEntityAtDesc, at = @At("HEAD"), cancellable = true)
     private void patcher$cancelRendering(CallbackInfo ci) {
         if (PatcherConfig.disableSkulls) {
             ci.cancel();

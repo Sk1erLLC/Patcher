@@ -12,6 +12,10 @@ import net.minecraft.util.MathHelper;
 
 import java.util.Deque;
 
+//#if MC==11202
+//$$ import net.minecraft.util.text.ChatType;
+//#endif
+
 @SuppressWarnings("unused")
 public class GuiNewChatHook {
 
@@ -67,11 +71,19 @@ public class GuiNewChatHook {
     }
 
     public static void processChatMessage(S02PacketChat packet, IChatComponent message) {
+        //#if MC==10809
         if (packet.getType() == 0) {
             queueMessage(message);
         } else if (packet.getType() == 1) {
             mc.ingameGUI.getChatGUI().printChatMessage(message);
         }
+        //#else
+        //$$ if (packet.getType() == ChatType.CHAT) {
+        //$$     queueMessage(message);
+        //$$ } else if (packet.getType() == ChatType.SYSTEM) {
+        //$$     mc.ingameGUI.getChatGUI().printChatMessage(message);
+        //$$ }
+        //#endif
     }
 
     private static long getChatDelayMillis() {

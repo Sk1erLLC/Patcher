@@ -74,6 +74,7 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                             methodNode.instructions.remove(next);
                         }
                     } else if (next instanceof TypeInsnNode) {
+                        //#if MC==10809
                         if (next.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode) next).desc.equals("net/minecraft/entity/EntityLivingBase")) {
                             LabelNode node = null; //Find label
                             while ((next = next.getNext()) != null) {
@@ -116,11 +117,11 @@ public class RendererLivingEntityTransformer implements CommonTransformer {
                                 }
                             }
                         }
+                        //#endif
                     }
                 }
             } else if (methodName.equals("renderName") || methodName.equals("func_177067_a")) {
                 makeNametagTransparent(methodNode);
-                makeNametagShadowed(methodNode);
             } else if (methodName.equals("rotateCorpse") || methodName.equals("func_77043_a")) {
                 final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                 while (iterator.hasNext()) {

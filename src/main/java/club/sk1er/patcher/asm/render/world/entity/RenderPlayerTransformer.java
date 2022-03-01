@@ -38,34 +38,27 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
+            MethodInsnNode disableBlend = new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", false);
             switch (methodName) {
+                //#if MC==10809
                 case "renderRightArm":
                 case "func_177138_b": {
-                    final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
-
+                    ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
                     while (iterator.hasNext()) {
                         final AbstractInsnNode node = iterator.next();
 
-                        if (node instanceof MethodInsnNode) {
-                            if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
-                                final String methodInsnName = mapMethodNameFromNode(node);
-                                if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
-                                    methodNode.instructions.insertBefore(node.getNext(), enableBlend());
-                                }
-                            }
-                        } else if (node instanceof FieldInsnNode && node.getOpcode() == Opcodes.PUTFIELD) {
-                            final String methodInsnName = mapFieldNameFromNode(node);
-                            if (methodInsnName.equals("swingProgress") || methodInsnName.equals("field_78095_p")) {
-                                for (int i = 0; i < 5; i++) {
-                                    methodNode.instructions.remove(node.getNext());
-                                }
-
-                                methodNode.instructions.insertBefore(node.getNext(), newArmLogic());
+                        if (node instanceof MethodInsnNode && node.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            String methodInsnName = mapMethodNameFromNode(node);
+                            if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
+                                methodNode.instructions.insertBefore(node.getNext(), enableBlend());
                             }
                         }
                     }
 
-                    methodNode.instructions.insertBefore(methodNode.instructions.getLast().getPrevious(), new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", false));
+                    methodNode.instructions.insertBefore(
+                        methodNode.instructions.getLast().getPrevious(),
+                        disableBlend
+                    );
                     break;
                 }
 
@@ -79,7 +72,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
                         if (next instanceof MethodInsnNode) {
                             final String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("doRender") || methodInsnName.equals("func_76986_a")) {
-                                methodNode.instructions.insertBefore(next.getNext(), new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", false));
+                                methodNode.instructions.insertBefore(next.getNext(), disableBlend);
                             } else if (methodInsnName.equals("setModelVisibilities") || methodInsnName.equals("func_177137_d")) {
                                 methodNode.instructions.insertBefore(next.getNext(), enableBlend());
                             }
@@ -88,6 +81,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
 
                     break;
                 }
+                //#endif
 
                 case "func_177137_d":
                 case "setModelVisibilities": {
@@ -128,18 +122,6 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.ICONST_1));
         list.add(new InsnNode(Opcodes.ICONST_0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179120_a", "(IIII)V", false));
-        return list;
-    }
-
-
-    private InsnList newArmLogic() {
-        InsnList list = new InsnList();
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new VarInsnNode(Opcodes.ALOAD, 3));
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new InsnNode(Opcodes.DUP_X1));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelPlayer", "field_78117_n", "Z"));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/model/ModelPlayer", "field_78093_q", "Z"));
         return list;
     }
 }

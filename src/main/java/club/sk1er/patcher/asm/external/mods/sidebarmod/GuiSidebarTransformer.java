@@ -18,16 +18,16 @@ public class GuiSidebarTransformer implements PatcherTransformer {
     public void transform(ClassNode classNode, String name) {
         for (MethodNode method : classNode.methods) {
             if (method.name.equals("drawSidebar")) {
-                final ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                ListIterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
-                    final AbstractInsnNode next = iterator.next();
+                    AbstractInsnNode next = iterator.next();
                     if (next instanceof LdcInsnNode && ((LdcInsnNode) next).cst.equals(553648127)) {
                         ((LdcInsnNode) next).cst = -1;
                     }
                 }
-            }
 
-            break;
+                break;
+            }
         }
     }
 }

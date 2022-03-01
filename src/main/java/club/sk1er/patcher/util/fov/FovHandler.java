@@ -1,6 +1,7 @@
 package club.sk1er.patcher.util.fov;
 
 import club.sk1er.patcher.config.PatcherConfig;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -10,6 +11,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+//#if MC==11202
+//$$ import net.minecraft.init.MobEffects;
+//$$ import net.minecraft.potion.Potion;
+//#endif
 
 /**
  * Allow for multiplying the FOV status for certain states that drastically change FOV.
@@ -42,31 +48,55 @@ public class FovHandler {
 
         float base = 1.0F;
 
-        if (event.entity.isSprinting()) {
+        //#if MC==10809
+        EntityPlayer entity = event.entity;
+        ItemStack item = entity.getItemInUse();
+        int useDuration = entity.getItemInUseDuration();
+        //#else
+        //$$ EntityPlayer entity = event.getEntity();
+        //$$ ItemStack item = entity.getActiveItemStack();
+        //$$ int useDuration = entity.getItemInUseMaxCount();
+        //#endif
+        if (entity.isSprinting()) {
             base += 0.15000000596046448 * PatcherConfig.sprintingFovModifierFloat;
         }
 
-        final ItemStack item = event.entity.getItemInUse();
         if (item != null && item.getItem() == Items.bow) {
-            final int duration = (int) Math.min(event.entity.getItemInUseDuration(), MAX_BOW_TICKS);
-            final float modifier = MODIFIER_BY_TICK.get(duration);
+            int duration = (int) Math.min(useDuration, MAX_BOW_TICKS);
+            float modifier = MODIFIER_BY_TICK.get(duration);
             base -= modifier * PatcherConfig.bowFovModifierFloat;
         }
 
-        final Collection<PotionEffect> effects = event.entity.getActivePotionEffects();
+        Collection<PotionEffect> effects = entity.getActivePotionEffects();
         if (!effects.isEmpty()) {
-            for (final PotionEffect effect : effects) {
-                if (effect.getPotionID() == 1) {
+            for (PotionEffect effect : effects) {
+                //#if MC==10809
+                int potionID = effect.getPotionID();
+                if (potionID == 1) {
                     base += MODIFIER_SPEED * (effect.getAmplifier() + 1) * PatcherConfig.speedFovModifierFloat;
                 }
 
-                if (effect.getPotionID() == 2) {
+                if (potionID == 2) {
                     base += MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifierFloat;
                 }
+                //#else
+                //$$ Potion potion = effect.getPotion();
+                //$$ if (potion == MobEffects.SPEED) {
+                //$$    base += MODIFIER_SPEED * (effect.getAmplifier() + 1) * PatcherConfig.speedFovModifierFloat;
+                //$$ }
+                //$$
+                //$$ if (potion == MobEffects.SLOWNESS) {
+                //$$    base += MODIFIER_SLOWNESS * (effect.getAmplifier() + 1) * PatcherConfig.slownessFovModifierFloat;
+                //$$ }
+                //#endif
             }
         }
 
+        //#if MC==10809
         event.newfov = base;
+        //#else
+        //$$ event.setNewfov(base);
+        //#endif
     }
 
     // Input the current state and modifier.

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GlStateManagerMixin_HUDCaching {
     private static boolean blendEnabled;
 
-    @Inject(method = "blendFunc", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "blendFunc(II)V", at = @At("HEAD"), cancellable = true)
     private static void patcher$blendFunc(int srcFactor, int dstFactor, CallbackInfo ci) {
         if (HUDCaching.renderingCacheOverride) {
             OpenGlHelper.glBlendFunc(srcFactor, dstFactor, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -21,7 +21,7 @@ public class GlStateManagerMixin_HUDCaching {
         }
     }
 
-    @Inject(method = "tryBlendFuncSeparate", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tryBlendFuncSeparate(IIII)V", at = @At("HEAD"), cancellable = true)
     private static void patcher$tryBlendFuncSeparate(int srcFactor, int dstFactor, int srcFactorAlpha, int dstFactorAlpha, CallbackInfo ci) {
         if (HUDCaching.renderingCacheOverride && dstFactorAlpha != GL11.GL_ONE_MINUS_SRC_ALPHA) {
             OpenGlHelper.glBlendFunc(srcFactor, dstFactor, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);

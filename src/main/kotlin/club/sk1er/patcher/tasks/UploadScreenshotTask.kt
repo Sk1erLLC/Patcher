@@ -5,12 +5,12 @@ import club.sk1er.patcher.coroutines.MCDispatchers
 import club.sk1er.patcher.imgur.Imgur
 import club.sk1er.patcher.util.chat.ChatUtilities
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots
+import gg.essential.universal.ChatColor
+import gg.essential.universal.wrappers.message.UTextComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
-import net.minecraft.util.ChatComponentText
-import net.minecraft.util.EnumChatFormatting
 import java.io.File
 
 object UploadScreenshotTask {
@@ -23,7 +23,7 @@ object UploadScreenshotTask {
 
                 MCDispatchers.PATCHER_SCOPE.launch(Dispatchers.IO) {
                     val link = client.upload(file)
-                    val message = ChatComponentText("${AsyncScreenshots.prefix}${EnumChatFormatting.GREEN}Screenshot was uploaded to $link.")
+                    val message = UTextComponent("${AsyncScreenshots.prefix}${ChatColor.GREEN}Screenshot was uploaded to $link.")
                     message.chatStyle.chatClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, link)
                     Minecraft.getMinecraft().thePlayer.addChatComponentMessage(message)
                 }

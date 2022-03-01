@@ -20,13 +20,13 @@ public class EntityRendererMixin_ZoomTweaks {
             instance.smoothCamera = value;
         }
         ZoomHook.resetZoomState();
-        EntityRendererHook.reduceSensitivity();
+        EntityRendererHook.reduceSensitivityWhenZoomStarts();
     }
 
     @Dynamic("OptiFine")
     @ModifyConstant(method = "getFOVModifier", constant = @Constant(floatValue = 4f))
     private float patcher$handleScrollZoom(float originalDivisor) {
-        return ZoomHook.getScrollZoomModifier();
+        return EntityRendererHook.lastZoomModifier = ZoomHook.getScrollZoomModifier();
     }
 
     @Dynamic("OptiFine")
@@ -49,9 +49,8 @@ public class EntityRendererMixin_ZoomTweaks {
     @Dynamic("OptiFine")
     @ModifyVariable(method = "getFOVModifier", name = "f", at = @At(value = "FIELD", target = "Lnet/optifine/reflect/Reflector;ForgeHooksClient_getFOVModifier:Lnet/optifine/reflect/ReflectorMethod;", opcode = Opcodes.GETSTATIC, ordinal = 0, remap = false))
     private float patcher$handleSmoothZoom(float f) {
-        if (PatcherConfig.smoothZoomAnimation) {
-            f *= ZoomHook.getSmoothZoomModifier();
-        }
-        return f;
+        float modifier = PatcherConfig.smoothZoomAnimation ? ZoomHook.getSmoothZoomModifier() : 1f;
+        EntityRendererHook.reduceSensitivityDynamically(modifier);
+        return f * modifier;
     }
 }

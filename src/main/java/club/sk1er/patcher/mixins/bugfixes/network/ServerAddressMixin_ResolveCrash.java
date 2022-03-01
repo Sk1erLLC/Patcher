@@ -12,6 +12,7 @@ import java.net.IDN;
 public class ServerAddressMixin_ResolveCrash {
     @Shadow @Final private String ipAddress;
 
+    //#if MC==10809
     /**
      * @author LlamaLad7
      * @reason Fix crash - MC-89698
@@ -24,4 +25,5 @@ public class ServerAddressMixin_ResolveCrash {
             return "";
         }
     }
+    //#endif
 }

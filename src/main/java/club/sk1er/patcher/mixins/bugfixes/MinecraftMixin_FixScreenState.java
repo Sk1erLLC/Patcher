@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin_FixScreenState {
 
+    //#if MC==10809
     @Shadow
     private boolean fullscreen;
 
@@ -22,4 +23,5 @@ public class MinecraftMixin_FixScreenState {
             Display.setResizable(true);
         }
     }
+    //#endif
 }

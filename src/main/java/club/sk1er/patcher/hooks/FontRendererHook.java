@@ -17,13 +17,11 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public final class FontRendererHook {
 
@@ -84,6 +82,14 @@ public final class FontRendererHook {
         for (int i = 0; i < 256; i++) {
             try (final InputStream stream = mc.getResourceManager().getResource(new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", i))).getInputStream()) {
                 bufferedImage.getGraphics().drawImage(ImageIO.read(stream), i / 16 * texSheetDim, i % 16 * texSheetDim, null);
+                if (i == 0x0d) {
+                    try (final InputStream sustream = FontRendererHook.class.getResourceAsStream("/assets/patcher/font_glyph_data.bin")) {
+                        Graphics2D graphics = bufferedImage.createGraphics();
+                        graphics.setComposite(AlphaComposite.Src);
+                        graphics.drawImage(ImageIO.read(Objects.requireNonNull(sustream)), 0x9DE % 16 * 16 /* 224 */, (i % 16 * texSheetDim) + (0x9DE / 16 - 16 /* 141 */), null);
+                        fontRendererAccessor.getGlyphWidth()[0xD9E] = 14;
+                    }
+                }
             } catch (Exception ignored) {
             }
         }
@@ -144,7 +150,6 @@ public final class FontRendererHook {
         this.fontRendererAccessor.setPosX(0.0f);
 
         float red = this.fontRendererAccessor.getRed();
-        // Blue and green mappings are mixed up
         float green = this.fontRendererAccessor.getGreen();
         float blue = this.fontRendererAccessor.getBlue();
         float alpha = this.fontRendererAccessor.getAlpha();
@@ -260,23 +265,23 @@ public final class FontRendererHook {
 
                 ++messageChar;
             } else {
-                int obfuscationIndex = shadow || this.fontRendererAccessor.isRandomStyle() ? characterDictionary.indexOf(letter) : 0; //save calculation
+                int index = characterDictionary.indexOf(letter);
 
-                if (this.fontRendererAccessor.isRandomStyle() && obfuscationIndex != -1) {
+                if (this.fontRendererAccessor.isRandomStyle() && index != -1) {
                     final float charWidthFloat = getCharWidthFloat(letter);
                     char charIndex;
 
                     do {
-                        obfuscationIndex = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
-                        charIndex = characterDictionary.charAt(obfuscationIndex);
+                        index = this.fontRenderer.fontRandom.nextInt(characterDictionary.length());
+                        charIndex = characterDictionary.charAt(index);
                     } while (charWidthFloat != getCharWidthFloat(charIndex));
 
                     letter = charIndex;
                 }
 
                 final boolean unicode = this.fontRenderer.getUnicodeFlag();
-                final float boldWidth = getBoldOffset(obfuscationIndex);
-                final boolean small = (letter == 0 || obfuscationIndex == -1 || unicode) && shadow;
+                final float boldWidth = getBoldOffset(index);
+                final boolean small = (letter == 0 || index == -1 || unicode) && shadow;
 
                 if (small) {
                     this.fontRendererAccessor.setPosX(fontRendererAccessor.getPosX() - boldWidth);
@@ -377,8 +382,8 @@ public final class FontRendererHook {
         style.add(new RenderPair(posX, effectiveWidth, lastRed, lastGreen, lastBlue, lastAlpha));
     }
 
-    private float getBoldOffset(int width) {
-        return width == -1 || fontRenderer.getUnicodeFlag() ? 0.5F : getOptifineBoldOffset();
+    private float getBoldOffset(int index) {
+        return index == -1 || fontRenderer.getUnicodeFlag() ? 0.5F : getOptifineBoldOffset();
     }
 
     private float getOptifineBoldOffset() {
@@ -493,15 +498,7 @@ public final class FontRendererHook {
             return 0;
         }
 
-        final Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
-        if (!PatcherConfig.optimizedFontRenderer) {
-            if (stringWidthCache.size() != 0) {
-                stringWidthCache.clear();
-            }
-
-            return getUncachedWidth(text);
-        }
-
+        Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
         if (stringWidthCache.size() > 5000) {
             stringWidthCache.clear();
         }
@@ -538,12 +535,16 @@ public final class FontRendererHook {
                 width += characterWidth;
 
                 if (bold && characterWidth > 0) {
-                    width += getBoldOffset(characterDictionary.indexOf(character));
+                    width += getOptifineBoldOffset();
                 }
             }
 
             return (int) width;
         }
+    }
+
+    public EnhancedFontRenderer getEnhancedFontRenderer() {
+        return enhancedFontRenderer;
     }
 
     static class RenderPair {
