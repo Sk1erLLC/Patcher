@@ -61,7 +61,6 @@
 - **Fire Overlay Height** - Change the height of the fire overlay.
 - **Fire Overlay Opacity** - Change the opacity of the fire overlay.
 - **Hide Fire Overlay with Fire Resistance** - Hide the fire overlay when you have fire resistance active. The overlay will blink 5 seconds before your fire resistance is about to run out.
-- **Disable Titles** - Stop titles & subtitles from appearing.
 - **Remove Water Overlay** - Remove the water texture overlay when underwater.
 - **Remove Inverted Colors from Crosshair** - Remove the inverted color effect on the crosshair.
 - **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps) *default
@@ -83,6 +82,10 @@
 - **Left Hand in First Person** - Render the first-person hand on the left of the screen.
 - **Toggle Tab** - Hold tab open without needing to hold down the tab key.
 - **Number Ping** - Show a readable ping number in tab instead of bars.
+- **Disable Titles** - Stop titles from appearing.
+- **Title Scale** - Set the scale for titles.
+- **Automatically Scale Title** - Automatically scale titles if the title goes over the screen.
+- **Title Opacity** - Change the opacity of titles.
 - **Windowed Fullscreen** - Implement Windowed Fullscreen in Minecraft, allowing you to drag your mouse outside the window.
 - **Instant Fullscreen** - Instant switching between fullscreen and non-fullscreen modes.
 
@@ -127,8 +130,6 @@
 - **Chunk Update Limit** - Specify the number of updates that can happen a second.
 - **Low Animation Tick** - Lowers the number of animations that happen a second from 1000 to 500. *default
 - **Batch Model Rendering** - Render models in a single draw call. *default
-- **Optimized Cloud Renderer** - Improve cloud rendering performance by better utilizing the GPU. *default
-- **Remove Cloud Transparency** - Remove transparency from clouds.
 
 </details>
 <details>
