@@ -18,6 +18,7 @@ import gg.essential.universal.ChatColor;
 import gg.essential.universal.wrappers.message.UTextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatComponentText;
@@ -45,11 +46,11 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
-    public void names(@DisplayName("name") Optional<String> name) {
-        boolean emptyName = !name.isPresent();
+    public void names(@DisplayName("name") Optional<EntityPlayer> player) {
+        boolean emptyName = !player.isPresent();
 
         if (PatcherConfig.nameHistoryStyle == 0) {
-            GuiUtil.open(name
+            GuiUtil.open(player.map(EntityPlayer::getName)
                 .map(username -> new ScreenHistory(username, false))
                 .orElseGet(() -> new ScreenHistory(mc.getSession().getUsername(), false))
             );
@@ -61,7 +62,7 @@ public class PatcherCommand extends Command {
 
             NameFetcher nameFetcher = new NameFetcher();
             ChatUtilities.sendNotification("Name History", "Fetching usernames...");
-            nameFetcher.execute(name.get());
+            nameFetcher.execute(player.get().getName());
 
             Multithreading.schedule(() -> {
                 ChatComponentText message = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------" + ChatColor.RESET + '\n');
@@ -87,7 +88,7 @@ public class PatcherCommand extends Command {
                 return;
             }
 
-            HistoryPopUp.INSTANCE.addPopUp(name.get());
+            HistoryPopUp.INSTANCE.addPopUp(player.get().getName());
         }
     }
 
