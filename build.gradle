@@ -171,7 +171,7 @@ jar {
 
 compileKotlin {
     kotlinOptions {
-        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn', '-Xno-param-assertions']
+        freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn', '-Xno-param-assertions', '-Xjvm-default=all-compatibility']
     }
 }
 

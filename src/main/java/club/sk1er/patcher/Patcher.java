@@ -1,10 +1,7 @@
 package club.sk1er.patcher;
 
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
-import club.sk1er.patcher.commands.DeleteNameHistoryCommand;
-import club.sk1er.patcher.commands.InventoryScaleCommand;
-import club.sk1er.patcher.commands.PatcherCommand;
-import club.sk1er.patcher.commands.PatcherSoundsCommand;
+import club.sk1er.patcher.commands.*;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.ducks.FontRendererExt;
@@ -143,6 +140,7 @@ public class Patcher {
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
             new AsyncScreenshots.ScreenshotsFolder(), new DeleteNameHistoryCommand()
         );
+        EssentialAPI.getCommandRegistry().registerParser(PatcherPlayer.class, new PatcherPlayerArgumentParser());
 
         registerEvents(
             this, soundHandler, dropModifier, audioSwitcher,

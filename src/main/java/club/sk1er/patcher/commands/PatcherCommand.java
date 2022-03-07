@@ -45,12 +45,13 @@ public class PatcherCommand extends Command {
     }
 
     @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
-    public void names(@DisplayName("name") Optional<String> name) {
-        boolean emptyName = !name.isPresent();
+    public void names(@DisplayName("name") Optional<PatcherPlayer> player) {
+        boolean emptyName = !player.isPresent();
+        String name = player.map(PatcherPlayer::getName).orElse("");
 
         if (PatcherConfig.nameHistoryStyle == 0) {
-            GuiUtil.open(name
-                .map(username -> new ScreenHistory(username, false))
+            GuiUtil.open(player
+                .map(it -> new ScreenHistory(it.getName(), false))
                 .orElseGet(() -> new ScreenHistory(mc.getSession().getUsername(), false))
             );
         } else if (PatcherConfig.nameHistoryStyle == 1) {
@@ -61,7 +62,7 @@ public class PatcherCommand extends Command {
 
             NameFetcher nameFetcher = new NameFetcher();
             ChatUtilities.sendNotification("Name History", "Fetching usernames...");
-            nameFetcher.execute(name.get());
+            nameFetcher.execute(name);
 
             Multithreading.schedule(() -> {
                 ChatComponentText message = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------" + ChatColor.RESET + '\n');
@@ -87,7 +88,7 @@ public class PatcherCommand extends Command {
                 return;
             }
 
-            HistoryPopUp.INSTANCE.addPopUp(name.get());
+            HistoryPopUp.INSTANCE.addPopUp(name);
         }
     }
 
