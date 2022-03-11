@@ -1099,6 +1099,13 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean smartDisconnect;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Confirm Quit",
+        description = "Prevent closing the game through the Quit Game button without confirmation.",
+        category = "Screens", subcategory = "General"
+    )
+    public static boolean confirmQuit;
+
     // SCREENSHOTS
 
     @Property(

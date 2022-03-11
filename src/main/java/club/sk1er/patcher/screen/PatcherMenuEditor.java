@@ -4,6 +4,7 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
+import club.sk1er.patcher.screen.quit.ConfirmQuitScreen;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
 import gg.essential.elementa.ElementaVersion;
@@ -125,11 +126,12 @@ public class PatcherMenuEditor {
         //$$ GuiScreen gui = event.getGui();
         //$$ GuiButton button = event.getButton();
         //#endif
-        if (gui instanceof GuiIngameMenu && button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning()) {
-            if (PatcherConfig.smartDisconnect) {
-                mc.displayGuiScreen(new SmartDisconnectScreen());
-                event.setCanceled(true);
-            }
+        if (gui instanceof GuiIngameMenu && button.displayString.equals(I18n.format("menu.disconnect")) && !mc.isIntegratedServerRunning() && PatcherConfig.smartDisconnect) {
+            mc.displayGuiScreen(new SmartDisconnectScreen(gui));
+            event.setCanceled(true);
+        } else if (gui instanceof GuiMainMenu && button.displayString.equals(I18n.format("menu.quit")) && PatcherConfig.confirmQuit) {
+            mc.displayGuiScreen(new ConfirmQuitScreen(gui));
+            event.setCanceled(true);
         }
     }
 

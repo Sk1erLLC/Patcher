@@ -10,6 +10,12 @@ import java.io.IOException;
 
 public class SmartDisconnectScreen extends GuiScreen {
 
+    private final GuiScreen parentScreen;
+
+    public SmartDisconnectScreen(GuiScreen parentScreen) {
+        this.parentScreen = parentScreen;
+    }
+
     @Override
     public void initGui() {
         this.buttonList.add(new GuiButton(0, (width >> 1) - 100, (height >> 1), 100, 20, "Disconnect"));
@@ -58,7 +64,7 @@ public class SmartDisconnectScreen extends GuiScreen {
                 break;
 
             case 2:
-                this.mc.displayGuiScreen(new GuiIngameMenu());
+                this.mc.displayGuiScreen(this.parentScreen);
                 break;
         }
 
@@ -68,7 +74,7 @@ public class SmartDisconnectScreen extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_ESCAPE) {
-            this.mc.displayGuiScreen(new GuiIngameMenu());
+            this.mc.displayGuiScreen(this.parentScreen);
         }
 
         super.keyTyped(typedChar, keyCode);
