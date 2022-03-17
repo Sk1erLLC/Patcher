@@ -22,7 +22,9 @@ import gg.essential.elementa.utils.ObservableClearEvent
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.UKeyboard
 import gg.essential.universal.UMinecraft
+import gg.essential.universal.USound
 import gg.essential.vigilance.gui.VigilancePalette
+import gg.essential.vigilance.utils.onLeftClick
 import java.awt.Color
 import java.util.*
 
@@ -49,6 +51,16 @@ class ScreenHistory @JvmOverloads constructor(
         height = FillConstraint()
         color = VigilancePalette.getBackground().toConstraint()
     } effect OutlineEffect(VigilancePalette.getDivider(), 1.0f) childOf blockContainer
+
+    private val exitMenu by UIImage.ofResourceCached("/assets/essential/textures/cancel_10x10.png").constrain {
+        x = 5.pixels(alignOpposite = true)
+        y = 5.pixels()
+        height = 10.pixels()
+        width = 10.pixels()
+    }.onLeftClick {
+        USound.playButtonPress()
+        displayScreen(null)
+    } childOf informationContainer
 
     private val contentContainer by UIContainer().constrain {
         x = CenterConstraint()
