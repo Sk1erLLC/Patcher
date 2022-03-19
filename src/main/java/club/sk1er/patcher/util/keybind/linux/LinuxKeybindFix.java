@@ -2,17 +2,19 @@ package club.sk1er.patcher.util.keybind.linux;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 
-//#if MC==10809
-import net.minecraftforge.client.event.GuiScreenEvent;
+//#if MC==11202
+//$$ import net.minecraft.inventory.ClickType;
 //#endif
 
 public class LinuxKeybindFix {
@@ -54,25 +56,32 @@ public class LinuxKeybindFix {
         }
     }
 
-    //#if MC==10809
     @SubscribeEvent
     public void onGuiPress(GuiScreenEvent.KeyboardInputEvent.Pre event) {
-        if (SystemUtils.IS_OS_LINUX && PatcherConfig.KeyboardLayout == 1 && event.gui instanceof GuiContainer && mc.thePlayer != null
+        //#if MC==10809
+        GuiScreen guiScreen = event.gui;
+        //#else
+        //$$ GuiScreen guiScreen = event.getGui();
+        //#endif
+        if (SystemUtils.IS_OS_LINUX && PatcherConfig.KeyboardLayout == 1 && guiScreen instanceof GuiContainer && mc.thePlayer != null
             && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
             char charPressed = Keyboard.getEventCharacter();
-            GuiContainer gui = (GuiContainer) event.gui;
+            GuiContainer gui = (GuiContainer) guiScreen;
             Slot slot = gui.getSlotUnderMouse();
             if (slot != null && azertyTriggers.containsKey(charPressed)) {
                 mc.playerController.windowClick(
                     gui.inventorySlots.windowId,
                     slot.slotNumber,
                     azertyTriggers.get(charPressed),
+                    //#if MC==10809
                     2,
-                    event.gui.mc.thePlayer
+                    //#else
+                    //$$ ClickType.SWAP,
+                    //#endif
+                    mc.thePlayer
                 );
                 event.setCanceled(true);
             }
         }
     }
-//#endif
 }
