@@ -74,10 +74,11 @@ public class PatcherConfig extends Vigilant {
     @Property(
         type = PropertyType.SELECTOR, name = "Keyboard layout",
         description = "The layout of your keyboard, used to fix input bugs accordingly.",
-        category = "Miscellaneous", subcategory = "Linux", hidden = !SystemUtils.IS_OS_LINUX,
-        options = ["QWERTY", "AZERTY"]
+        category = "Bug Fixes", subcategory = "Linux",
+        options = {"QWERTY", "AZERTY"}
     )
-    public static int KeyboardLayout = 0
+    public static int KeyboardLayout = 0;
+
 
     // MISCELLANEOUS
 
@@ -1324,6 +1325,8 @@ public class PatcherConfig extends Vigilant {
                 "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
                 "parallaxFix", "crosshairPerspective", "extendChatBackground"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
+
+            hidePropertyIf("KeyboardLayout", () -> !SystemUtils.IS_OS_LINUX);
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }

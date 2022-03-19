@@ -1,10 +1,19 @@
 package club.sk1er.patcher.util.keybind.linux;
 
+import club.sk1er.patcher.config.PatcherConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
 import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.input.Keyboard;
+
+import java.util.HashMap;
+
+//#if MC==10809
+import net.minecraftforge.client.event.GuiScreenEvent;
+//#endif
 
 public class LinuxKeybindFix {
 
@@ -37,26 +46,27 @@ public class LinuxKeybindFix {
                 }
             } else {
                 char charPressed = Keyboard.getEventCharacter();
-                if (triggers.containsKey(charPressed)) {
-                    int i = triggers.get(charPressed);
+                if (azertyTriggers.containsKey(charPressed)) {
+                    int i = azertyTriggers.get(charPressed);
                     if (mc.gameSettings.keyBindsHotbar[i].getKeyCode() == i + 2) mc.thePlayer.inventory.currentItem = i;
                 }
             }
         }
     }
 
+    //#if MC==10809
     @SubscribeEvent
     public void onGuiPress(GuiScreenEvent.KeyboardInputEvent.Pre event) {
-        if (PatcherConfig.KeyboardLayout == 1 && event.gui instanceof GuiContainer && mc.thePlayer != null && Keyboard.isCreated()
-            && Keyboard.getEventKeyState()) {
+        if (SystemUtils.IS_OS_LINUX && PatcherConfig.KeyboardLayout == 1 && event.gui instanceof GuiContainer && mc.thePlayer != null
+            && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
             char charPressed = Keyboard.getEventCharacter();
             GuiContainer gui = (GuiContainer) event.gui;
             Slot slot = gui.getSlotUnderMouse();
-            if (slot != null && triggers.containsKey(charPressed)) {
+            if (slot != null && azertyTriggers.containsKey(charPressed)) {
                 mc.playerController.windowClick(
                     gui.inventorySlots.windowId,
                     slot.slotNumber,
-                    triggers.get(charPressed),
+                    azertyTriggers.get(charPressed),
                     2,
                     event.gui.mc.thePlayer
                 );
@@ -64,4 +74,5 @@ public class LinuxKeybindFix {
             }
         }
     }
+//#endif
 }
