@@ -72,7 +72,7 @@ public class PatcherConfig extends Vigilant {
     public static boolean fixedAlexArms = true;
 
     @Property(
-        type = PropertyType.SELECTOR, name = "Keyboard layout",
+        type = PropertyType.SELECTOR, name = "Keyboard Layout",
         description = "The layout of your keyboard, used to fix input bugs accordingly.",
         category = "Bug Fixes", subcategory = "Linux",
         options = {"QWERTY", "AZERTY"}
