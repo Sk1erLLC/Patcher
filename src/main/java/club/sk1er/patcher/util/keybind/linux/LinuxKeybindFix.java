@@ -35,7 +35,7 @@ public class LinuxKeybindFix {
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
         if (SystemUtils.IS_OS_LINUX && mc.thePlayer != null && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
-            if (PatcherConfig.KeyboardLayout == 0) {
+            if (PatcherConfig.keyboardLayout == 0) {
                 final int eventKey = Keyboard.getEventKey();
                 switch (eventKey) {
                     case 145:
@@ -63,7 +63,7 @@ public class LinuxKeybindFix {
         //#else
         //$$ GuiScreen guiScreen = event.getGui();
         //#endif
-        if (SystemUtils.IS_OS_LINUX && PatcherConfig.KeyboardLayout == 1 && guiScreen instanceof GuiContainer && mc.thePlayer != null
+        if (SystemUtils.IS_OS_LINUX && PatcherConfig.keyboardLayout == 1 && guiScreen instanceof GuiContainer && mc.thePlayer != null
             && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
             char charPressed = Keyboard.getEventCharacter();
             GuiContainer gui = (GuiContainer) guiScreen;

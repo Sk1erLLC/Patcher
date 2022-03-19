@@ -77,7 +77,7 @@ public class PatcherConfig extends Vigilant {
         category = "Bug Fixes", subcategory = "Linux",
         options = {"QWERTY", "AZERTY"}
     )
-    public static int KeyboardLayout = 0;
+    public static int keyboardLayout = 0;
 
 
     // MISCELLANEOUS
@@ -1326,7 +1326,7 @@ public class PatcherConfig extends Vigilant {
                 "parallaxFix", "crosshairPerspective", "extendChatBackground"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
 
-            hidePropertyIf("KeyboardLayout", () -> !SystemUtils.IS_OS_LINUX);
+            hidePropertyIf("keyboardLayout", () -> !SystemUtils.IS_OS_LINUX);
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }
