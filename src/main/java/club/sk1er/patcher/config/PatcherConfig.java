@@ -71,6 +71,15 @@ public class PatcherConfig extends Vigilant {
     )
     public static boolean fixedAlexArms = true;
 
+    @Property(
+        type = PropertyType.SELECTOR, name = "Keyboard Layout",
+        description = "The layout of your keyboard, used to fix input bugs accordingly.",
+        category = "Bug Fixes", subcategory = "Linux",
+        options = {"QWERTY", "AZERTY"}
+    )
+    public static int keyboardLayout = 0;
+
+
     // MISCELLANEOUS
 
     @Property(
@@ -1316,6 +1325,8 @@ public class PatcherConfig extends Vigilant {
                 "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
                 "parallaxFix", "crosshairPerspective", "extendChatBackground"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
+
+            hidePropertyIf("keyboardLayout", () -> !SystemUtils.IS_OS_LINUX);
         } catch (Exception e) {
             Patcher.instance.getLogger().error("Failed to access property.", e);
         }
