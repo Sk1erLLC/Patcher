@@ -1,23 +1,16 @@
 pluginManagement {
     repositories {
-        mavenLocal()
         gradlePluginPortal()
         mavenCentral()
-        google()
-        maven("https://jitpack.io")
         maven("https://maven.fabricmc.net")
-        flatDir {
-                dirs=setOf(file("../../libs"))
-        }
+        maven("https://maven.architectury.dev/")
+        maven("https://maven.minecraftforge.net")
+        maven("https://repo.essential.gg/repository/maven-public")
     }
-    resolutionStrategy {
-        eachPlugin {
-            when (requested.id.id) {
-                "com.replaymod.preprocess" -> {
-                    useModule("com.github.replaymod:preprocessor:${requested.version}")
-                }
-            }
-        }
+    plugins {
+        id("gg.essential.loom") version "0.10.0.2"
+        val egtVersion = "0.1.6"
+        id("gg.essential.multi-version.root") version egtVersion
     }
 }
 
@@ -30,7 +23,7 @@ listOf(
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle"
+        buildFileName = "../../build.gradle.kts"
     }
 
 }
