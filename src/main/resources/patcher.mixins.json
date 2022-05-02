@@ -7,7 +7,6 @@
     "conformVisibility": true
   },
   "client": [
-    "accessors.AbstractClientPlayerAccessor",
     "accessors.BlockAccessor",
     "accessors.EntityArrowAccessor",
     "accessors.FontRendererAccessor",
