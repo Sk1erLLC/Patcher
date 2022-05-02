@@ -49,6 +49,7 @@ public class S34PacketMapsTransformer implements PatcherTransformer {
     public static InsnList checkMapBytesLength() {
         InsnList list = new InsnList();
 
+        LabelNode checkSize = new LabelNode();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(
             Opcodes.GETFIELD,
@@ -56,11 +57,16 @@ public class S34PacketMapsTransformer implements PatcherTransformer {
             "field_179741_h",
             "[B"
         ));
-        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
-        LabelNode ifne = new LabelNode();
-        list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
+        list.add(new InsnNode(Opcodes.DUP));
+        list.add(new JumpInsnNode(Opcodes.IFNONNULL, checkSize));
         list.add(new InsnNode(Opcodes.RETURN));
-        list.add(ifne);
+
+        list.add(checkSize);
+        list.add(new InsnNode(Opcodes.ARRAYLENGTH));
+        LabelNode _continue = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFNE, _continue));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(_continue);
 
         return list;
     }
