@@ -6,6 +6,11 @@ plugins {
     id("gg.essential.defaults")
 }
 
+val modGroup: String by project
+val modBaseName: String by project
+group = modGroup
+base.archivesName.set("$modBaseName-${platform.mcVersionStr}")
+
 val accessTransformerName = "patcher1${platform.mcMinor}_at.cfg"
 
 loom {
