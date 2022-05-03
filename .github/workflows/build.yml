@@ -36,4 +36,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - run: ./gradlew --no-daemon setupCiWorkspace build
+      - run: ./gradlew --no-daemon build

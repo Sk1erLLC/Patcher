@@ -4,6 +4,7 @@ import club.sk1er.patcher.tweaker.ClassTransformer
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer
 import codes.som.anthony.koffee.assembleBlock
 import codes.som.anthony.koffee.insns.jvm.*
+import codes.som.anthony.koffee.types.TypeLike
 import org.lwjgl.opengl.GL11
 import org.objectweb.asm.tree.ClassNode
 import java.nio.ByteBuffer
@@ -22,7 +23,7 @@ class WorldVertexBufferUploaderTransformer : PatcherTransformer {
     }
 
     private val worldRenderer = "net/minecraft/client/renderer/WorldRenderer"
-    private val vertexFormat = "net/minecraft/client/renderer/vertex/VertexFormat"
+    private val vertexFormat: TypeLike = "net/minecraft/client/renderer/vertex/VertexFormat"
     private val vertexFormatElement = "net/minecraft/client/renderer/vertex/VertexFormatElement"
     private val oldOptifine = ClassTransformer.optifineVersion == "I7"
     private val sVertexBuilder = if (oldOptifine) "shadersmod/client/SVertexBuilder" else "net/optifine/shaders/SVertexBuilder"
@@ -69,7 +70,7 @@ class WorldVertexBufferUploaderTransformer : PatcherTransformer {
         checkcast(vertexFormatElement)
         astore(7)
         aload(7)
-        invokevirtual(vertexFormatElement, "func_177375_c", "$vertexFormatElement\$EnumUsage")
+        invokevirtual(vertexFormatElement, "func_177375_c", "$vertexFormatElement\$EnumUsage" as TypeLike)
         aload(2)
         iload(6)
         iload(3)
@@ -120,7 +121,7 @@ class WorldVertexBufferUploaderTransformer : PatcherTransformer {
         checkcast(vertexFormatElement)
         astore(9)
         aload(9)
-        invokevirtual(vertexFormatElement, "func_177375_c", "$vertexFormatElement\$EnumUsage")
+        invokevirtual(vertexFormatElement, "func_177375_c", "$vertexFormatElement\$EnumUsage" as TypeLike)
         aload_2
         iload(7)
         iload_3
