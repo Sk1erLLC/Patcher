@@ -53,10 +53,7 @@ import org.objectweb.asm.tree.FieldNode;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -109,7 +106,7 @@ public class ClassTransformer implements IClassTransformer {
 
             if (!supportedOptiFineVersions.contains(optifineVersion)) {
                 logger.info("User has outdated OptiFine. (version: OptiFine-{})", optifineVersion);
-                this.haltForOptifine("Patcher has detected OptiFine " + optifineVersion + ", which is not supported and will crash.\n" +
+                this.haltForOptiFine("Patcher has detected OptiFine " + optifineVersion + ", which is not supported and will crash.\n" +
                     "Please update to a supported version of OptiFine and try again.\n" +
                     "Supported versions: " + StringUtils.join(supportedOptiFineVersions, ", "));
                 return;
@@ -228,12 +225,18 @@ public class ClassTransformer implements IClassTransformer {
         return createTransformer(transformedName, bytes, transformerMap, logger);
     }
 
-    private void haltForOptifine(String message) {
+    private void haltForOptiFine(String message) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        JFrame frame = new JFrame();
+        frame.setUndecorated(true);
+        frame.setAlwaysOnTop(true);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         JButton openOptifine = new JButton("Open OptiFine Website");
         openOptifine.addMouseListener(new MouseAdapter() {
@@ -259,7 +262,7 @@ public class ClassTransformer implements IClassTransformer {
         });
 
         Object[] options = {openOptifine, close};
-        JOptionPane.showOptionDialog(null, message, "Launch Aborted", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+        JOptionPane.showOptionDialog(frame, message, "Launch Aborted", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
         PatcherTweaker.invokeExit();
     }
 
