@@ -79,6 +79,12 @@ public class PatcherConfig extends Vigilant {
     )
     public static int keyboardLayout = 0;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Vanilla Glass Panes",
+        description = "Reverts a Forge change causing Glass Panes and Iron Bars to connect where they shouldn't. Fixes some lagbacks.",
+        category = "Bug Fixes", subcategory = "Forge"
+    )
+    public static boolean vanillaGlassPanes;
 
     // MISCELLANEOUS
 
@@ -1259,6 +1265,7 @@ public class PatcherConfig extends Vigilant {
         Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
+        registerListener("paneConnectFix", reloadWorld);
 
         try {
             addDependency("smartFullbright", "fullbright");
