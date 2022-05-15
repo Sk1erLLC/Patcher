@@ -79,6 +79,12 @@ public class PatcherConfig extends Vigilant {
     )
     public static int keyboardLayout = 0;
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Vanilla Glass Panes",
+        description = "Reverts a Forge change causing Glass Panes and Iron Bars to connect where they shouldn't.",
+        category = "Bug Fixes", subcategory = "Forge"
+    )
+    public static boolean vanillaGlassPanes;
 
     // MISCELLANEOUS
 
@@ -1259,6 +1265,7 @@ public class PatcherConfig extends Vigilant {
         Consumer<Object> reloadWorld = renderer -> Minecraft.getMinecraft().renderGlobal.loadRenderers();
         registerListener("fullbright", reloadWorld);
         registerListener("removeGroundFoliage", reloadWorld);
+        registerListener("vanillaGlassPanes", reloadWorld);
 
         try {
             addDependency("smartFullbright", "fullbright");
@@ -1323,7 +1330,7 @@ public class PatcherConfig extends Vigilant {
             Arrays.asList(
                 "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
                 "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
-                "parallaxFix", "crosshairPerspective", "extendChatBackground"
+                "parallaxFix", "crosshairPerspective", "extendChatBackground", "vanillaGlassPanes"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
 
             hidePropertyIf("keyboardLayout", () -> !SystemUtils.IS_OS_LINUX);

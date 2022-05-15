@@ -82,6 +82,7 @@
     "bugfixes.crashes.ServerListEntryNormalMixin_ResolveCrash",
     "bugfixes.crashes.ServerSelectionListMixin_ResolveCrash",
     "bugfixes.crashes.WorldRendererMixin_ResolveCrash",
+    "bugfixes.forge.BlockPaneMixin_VanillaPanes",
     "bugfixes.forge.ClientCommandHandlerMixin_CaseCommands",
     "bugfixes.modelfixes.ModelPlayerMixin_FixedTransformations",
     "bugfixes.modelfixes.ModelSkeletonMixin_FixedHeldItemTransformations",
