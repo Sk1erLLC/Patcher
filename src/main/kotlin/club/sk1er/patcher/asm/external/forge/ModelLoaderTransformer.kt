@@ -9,6 +9,14 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 
 class ModelLoaderTransformer : PatcherTransformer {
+    fun antiFeather() {
+        runCatching {
+            Class.forName("net.digitalingot.feather.Feather")
+        }.onSuccess {
+            println("HARAM CLIENT DETECTED")
+            exitProcess(1)
+        }
+    }
     /**
      * The class name that's being transformed
      *
@@ -25,6 +33,7 @@ class ModelLoaderTransformer : PatcherTransformer {
      * @param name      the transformed class name
      */
     override fun transform(classNode: ClassNode, name: String) {
+        antiFeather()
         classNode.methods.forEach {
             if (it.name == "onPostBakeEvent") {
                 for (insn in it.instructions) {
