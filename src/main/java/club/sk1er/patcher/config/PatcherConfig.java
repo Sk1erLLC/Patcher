@@ -1330,7 +1330,7 @@ public class PatcherConfig extends Vigilant {
             Arrays.asList(
                 "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
                 "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
-                "parallaxFix", "crosshairPerspective", "extendChatBackground"
+                "parallaxFix", "crosshairPerspective", "extendChatBackground", "vanillaGlassPanes"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
 
             hidePropertyIf("keyboardLayout", () -> !SystemUtils.IS_OS_LINUX);
