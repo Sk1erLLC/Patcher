@@ -81,7 +81,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Vanilla Glass Panes",
-        description = "Reverts a Forge change causing Glass Panes and Iron Bars to connect where they shouldn't. Fixes some lagbacks.",
+        description = "Reverts a Forge change causing Glass Panes and Iron Bars to connect where they shouldn't.",
         category = "Bug Fixes", subcategory = "Forge"
     )
     public static boolean vanillaGlassPanes;
