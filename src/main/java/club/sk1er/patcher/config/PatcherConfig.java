@@ -1095,7 +1095,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Image Preview Width",
-        description = "The % of screen width to be used for image preview.",
+        description = "The %% of screen width to be used for image preview.",
         category = "Screens", subcategory = "Image Preview"
     )
     public static float imagePreviewWidth = 0.50F;
