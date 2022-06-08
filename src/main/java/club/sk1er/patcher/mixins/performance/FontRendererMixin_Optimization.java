@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
-@Mixin(FontRenderer.class)
+@Mixin(value = FontRenderer.class, priority = 1100)
 public class FontRendererMixin_Optimization implements FontRendererExt {
 
     @Unique
