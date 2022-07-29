@@ -1125,10 +1125,10 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Screenshot Manager",
-        description = "Change the way screenshotting works as a whole, creating a whole new process to screenshotting such as uploading to Imgur, copying to clipboard, etc.",
+        description = "Change the way screenshotting works as a whole, creating a whole new process to screenshotting such as uploading to Imgur, copying to clipboard, etc.\n§cEssential's Screenshot Manager must be disabled for this to work.",
         category = "Screenshots", subcategory = "General"
     )
-    public static boolean screenshotManager = true;
+    public static boolean screenshotManager = false;
 
     @Property(
         type = PropertyType.SWITCH, name = "No Feedback",
