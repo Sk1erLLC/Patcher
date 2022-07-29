@@ -43,8 +43,10 @@ val embed by configurations.creating
 configurations.implementation.get().extendsFrom(embed)
 
 dependencies {
-    compileOnly("gg.essential:essential-$platform:2666")
+    compileOnly("gg.essential:essential-$platform:4246+g8be73312c")
     embed("gg.essential:loader-launchwrapper:1.1.3")
+
+    implementation("com.github.KevinPriv:MojangAPI:8bbc473e88")
 
     compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
 }
