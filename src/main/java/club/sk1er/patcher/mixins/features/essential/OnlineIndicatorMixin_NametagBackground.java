@@ -5,19 +5,22 @@ import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
 @Mixin(targets = "gg.essential.handlers.OnlineIndicator")
 public class OnlineIndicatorMixin_NametagBackground {
 
     @Dynamic("Essential")
-    @ModifyArg(
-        method = "drawNametagIndicator", remap = false,
-        at = @At(value = "INVOKE", target = "Lgg/essential/universal/UGraphics;color(IIII)Lgg/essential/universal/UGraphics;"),
-        index = 3
+    @Inject(
+        method = "getTextBackgroundOpacity", remap = false,
+        at = @At("HEAD"),
+        cancellable = true
     )
-    private static int patcher$removeBackground(int alpha) {
-        return PatcherConfig.disableNametagBoxes ? 0 : alpha;
+    private static void patcher$removeBackground(CallbackInfoReturnable<Integer> cir) {
+        if (PatcherConfig.disableNametagBoxes) {
+            cir.setReturnValue(0);
+        }
     }
 }
