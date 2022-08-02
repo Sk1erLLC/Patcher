@@ -94,14 +94,12 @@ public class PatcherMenuEditor {
             }
         } else if (gui instanceof GuiIngameMenu) {
             if (!mc.isSingleplayer() && PatcherConfig.openToLanReplacement > 0) {
-                EssentialConfig config = EssentialAPI.getConfig();
-                int buttonWidth = config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS() ? 98 : 200;
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
                 if (PatcherConfig.openToLanReplacement == 1) {
                     mcButtonList.add(new GuiButton(serverList,
                         (width >> 1) - 100, (height >> 2) + 56,
-                        buttonWidth, 20,
+                        200, 20,
                         "Server List"
                     ));
                 }
