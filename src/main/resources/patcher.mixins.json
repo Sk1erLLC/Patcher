@@ -36,6 +36,7 @@
     "bugfixes.ContainerMixin_PlaySound",
     "bugfixes.EntityLivingBaseMixin_MouseDelayFix",
     "bugfixes.EntityMixin_FixedBrightness",
+    "bugfixes.EntityMixin_SneakFix",
     "bugfixes.EntityMixin_SprintParticles",
     "bugfixes.EntityRendererMixin_PolygonOffset",
     "bugfixes.EntityXPOrbMixin_AdjustHeight",
