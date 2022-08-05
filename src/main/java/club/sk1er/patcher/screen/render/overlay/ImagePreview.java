@@ -2,7 +2,6 @@ package club.sk1er.patcher.screen.render.overlay;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
-import com.google.common.collect.Sets;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.utils.Multithreading;
 import gg.essential.api.utils.TrustedHostsUtil;
@@ -28,7 +27,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Set;
 
 public class ImagePreview {
 
@@ -39,34 +37,35 @@ public class ImagePreview {
     private int width = 100;
     private int height = 100;
 
-    private final Set<String> trustedHosts = Sets.newHashSet(
-        "cdn.discordapp.com", "media.discordapp.net",
-        "i.badlion.net",
-        "i.imgur.com", "imgur.com",
-        "sk1er.exposed", "inv.wtf", "i.inv.wtf",
-        "i.redd.it",
-        "pbs.twimg.com"
-    );
-
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !PatcherConfig.imagePreview) return;
-
-        IChatComponent chatComponent = mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
-        if (chatComponent == null) return;
-
-        ChatStyle chatStyle = chatComponent.getChatStyle();
-        ClickEvent chatClickEvent = chatStyle.getChatClickEvent();
-        if (chatStyle.getChatClickEvent() != null && chatClickEvent.getAction() == ClickEvent.Action.OPEN_URL) {
-            handle(chatClickEvent.getValue());
+        final IChatComponent chatComponent = mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
+        if (chatComponent != null) {
+            final ChatStyle chatStyle = chatComponent.getChatStyle();
+            final ClickEvent chatClickEvent = chatStyle.getChatClickEvent();
+            if (chatStyle.getChatClickEvent() != null && chatClickEvent.getAction() == ClickEvent.Action.OPEN_URL) {
+                handle(chatClickEvent.getValue());
+            }
         }
     }
 
     private void handle(String value) {
         try {
-            URL url = new URL(value);
-            String host = url.getHost();
-            if (!this.isHostTrusted(host)) return;
+            final URL url = new URL(value);
+            final String host = url.getHost();
+            boolean found = false;
+
+            for (TrustedHostsUtil.TrustedHost trustedHost : EssentialAPI.getTrustedHostsUtil().getTrustedHosts()) {
+                for (String domain : trustedHost.getDomains()) {
+                    if (host.equalsIgnoreCase(domain)) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) return;
         } catch (MalformedURLException e) {
             return;
         }
@@ -78,7 +77,7 @@ public class ImagePreview {
         }
 
         if (value.contains("imgur.com/")) {
-            String[] split = value.split("/");
+            final String[] split = value.split("/");
             value = String.format("https://i.imgur.com/%s.png", split[split.length - 1]);
         }
 
@@ -93,7 +92,7 @@ public class ImagePreview {
         }
 
         if (this.image != null) {
-            DynamicTexture dynamicTexture = new DynamicTexture(image);
+            final DynamicTexture dynamicTexture = new DynamicTexture(image);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             dynamicTexture.updateDynamicTexture();
             this.tex = dynamicTexture.getGlTextureId();
@@ -104,19 +103,19 @@ public class ImagePreview {
 
         if (tex != -1) {
             GlStateManager.pushMatrix();
-            ScaledResolution scaledResolution = new ScaledResolution(mc);
-            int scaleFactor = scaledResolution.getScaleFactor();
-            float inverseScale = 1 / (float) scaleFactor;
-            GlStateManager.scale(inverseScale, inverseScale, inverseScale);
+            final ScaledResolution scaledResolution = new ScaledResolution(mc);
+            final int scaleFactor = scaledResolution.getScaleFactor();
+            final float i = 1 / ((float) scaleFactor);
+            GlStateManager.scale(i, i, i);
             GlStateManager.enableTexture2D();
             GlStateManager.bindTexture(tex);
             GlStateManager.color(1, 1, 1, 1);
+            float aspectRatio = width / (float) height;
             float scaleWidth = scaledResolution.getScaledWidth() * scaleFactor;
 
             if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) scaleWidth *= PatcherConfig.imagePreviewWidth;
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) scaleWidth = this.width;
 
-            float aspectRatio = width / (float) height;
             float maxWidth = scaleWidth;
             float height = maxWidth / aspectRatio;
 
@@ -162,26 +161,5 @@ public class ImagePreview {
         } finally {
             if (connection != null) connection.disconnect();
         }
-    }
-
-    private boolean isHostTrusted(String host) {
-        for (String trustedHost : this.trustedHosts) {
-            if (host.equalsIgnoreCase(trustedHost)) {
-                return true;
-            }
-        }
-
-        // Essential's Trusted Host can be added to by people through Friend Messages, which can include some
-        // domains that we may not know or have in our trustedHosts set, so if ours fails to catch the domain
-        // then it should attempt to go through Essential as well.
-        for (TrustedHostsUtil.TrustedHost trustedHost : EssentialAPI.getTrustedHostsUtil().getTrustedHosts()) {
-            for (String domain : trustedHost.getDomains()) {
-                if (host.equalsIgnoreCase(domain)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
