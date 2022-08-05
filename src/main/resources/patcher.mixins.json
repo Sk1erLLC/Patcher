@@ -93,6 +93,7 @@
     "bugfixes.network.LazyLoadBaseMixin_RaceCondition",
     "bugfixes.network.NetHandlerPlayClientMixin_ResourceExploitFix",
     "bugfixes.network.NetHandlerPlayClientMixin_SignChatSpam",
+    "bugfixes.network.PacketThreadUtilMixin_LogSpam",
     "bugfixes.network.ServerAddressMixin_ResolveCrash",
     "bugfixes.network.ServerListMixin_ResolveNpe",
     "bugfixes.network.packet.EntityPacketsMixin_ResolveNpe",
