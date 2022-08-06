@@ -18,6 +18,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.commons.io.IOUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -27,12 +28,17 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ImagePreview {
+    private final Pattern OGP_IMAGE_REGEX = Pattern.compile("<meta property=\"(?:og:image|twitter:image)\" content=\"(?<url>.+?)\".*?/?>");
+    private final Pattern IMG_TAG_REGEX = Pattern.compile("<img.*?src=\"(?<url>.+?)\".*?>");
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private BufferedImage image;
     private String loaded;
+
     private int tex = -1;
     private int width = 100;
     private int height = 100;
@@ -148,12 +154,34 @@ public class ImagePreview {
             connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
+            connection.setInstanceFollowRedirects(true);
             connection.addRequestProperty("User-Agent", "Patcher Image Previewer");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
 
             try (InputStream stream = connection.getInputStream()) {
+                if (connection.getHeaderField("Content-Type").contains("text/html")) {
+                    String body = IOUtils.toString(stream);
+                    String imageURL = "";
+                    Matcher matcher;
+                    if ((matcher = OGP_IMAGE_REGEX.matcher(body)).find()) {
+                        imageURL = matcher.group("url");
+                    } else if ((matcher = IMG_TAG_REGEX.matcher(body)).find()) {
+                        imageURL = matcher.group("url");
+                    }
+                    if (imageURL.startsWith("/")) {
+                        URL urlObj = new URL(url);
+                        imageURL = urlObj.getProtocol() + "://" + urlObj.getHost() + imageURL;
+                    }
+
+                    if (!imageURL.isEmpty()) {
+                        loadUrl(imageURL);
+                        connection.disconnect();
+                        return;
+                    }
+                }
+
                 image = TextureUtil.readBufferedImage(stream);
             }
         } catch (Exception e) {
