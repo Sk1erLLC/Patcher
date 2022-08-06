@@ -22,8 +22,12 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,6 +40,8 @@ public class ImagePreview {
     private int tex = -1;
     private int width = 100;
     private int height = 100;
+    private static final Pattern ogpImageRegex = Pattern.compile("<meta property=\"(?:og:image|twitter:image)\" content=\"(?<url>.+?)\".*?/?>");
+    private static final Pattern imgTagRegex = Pattern.compile("<img.*?src=\"(?<url>.+?)\".*?>");
 
     @SubscribeEvent
     public void renderTickEvent(TickEvent.RenderTickEvent event) {
@@ -148,10 +154,37 @@ public class ImagePreview {
             connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(true);
+            connection.setInstanceFollowRedirects(true);
             connection.addRequestProperty("User-Agent", "Patcher Image Previewer");
             connection.setReadTimeout(15000);
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
+
+            if (connection.getHeaderField("Content-Type").contains("text/html")) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String currentLine, imageURL = "";
+                Matcher matcher = null;
+                while ((currentLine = reader.readLine()) != null) {
+                    if (currentLine.contains("og:image") || currentLine.contains("twitter:image"))
+                        matcher = ogpImageRegex.matcher(currentLine);
+                    else if (currentLine.contains("<img ")) matcher = imgTagRegex.matcher(currentLine);
+                    if (matcher != null && matcher.find()) {
+                        try {
+                            imageURL = matcher.group("url");
+                            if (imageURL.startsWith("/")) {
+                                URL urlObj = new URL(url);
+                                imageURL = urlObj.getProtocol() + "://" + urlObj.getHost() + imageURL;
+                            }
+                            break;
+                        } catch (Exception ignored) {}
+                    }
+                    matcher = null;
+                }
+
+                if (imageURL != null && !imageURL.isEmpty()) loadUrl(imageURL);
+                connection.disconnect();
+                return;
+            }
 
             try (InputStream stream = connection.getInputStream()) {
                 image = TextureUtil.readBufferedImage(stream);
