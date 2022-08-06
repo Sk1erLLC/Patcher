@@ -160,28 +160,28 @@ public class ImagePreview {
             connection.setConnectTimeout(15000);
             connection.setDoOutput(true);
 
-            if (connection.getHeaderField("Content-Type").contains("text/html")) {
-                String body = IOUtils.toString(connection.getInputStream());
-                String imageURL = "";
-                Matcher matcher;
-                if ((matcher = OGP_IMAGE_REGEX.matcher(body)).find()) {
-                    imageURL = matcher.group("url");
-                } else if ((matcher = IMG_TAG_REGEX.matcher(body)).find()) {
-                    imageURL = matcher.group("url");
-                }
-                if (imageURL.startsWith("/")) {
-                    URL urlObj = new URL(url);
-                    imageURL = urlObj.getProtocol() + "://" + urlObj.getHost() + imageURL;
-                }
-
-                if (!imageURL.isEmpty()) {
-                    loadUrl(imageURL);
-                    connection.disconnect();
-                    return;
-                }
-            }
-
             try (InputStream stream = connection.getInputStream()) {
+                if (connection.getHeaderField("Content-Type").contains("text/html")) {
+                    String body = IOUtils.toString(stream);
+                    String imageURL = "";
+                    Matcher matcher;
+                    if ((matcher = OGP_IMAGE_REGEX.matcher(body)).find()) {
+                        imageURL = matcher.group("url");
+                    } else if ((matcher = IMG_TAG_REGEX.matcher(body)).find()) {
+                        imageURL = matcher.group("url");
+                    }
+                    if (imageURL.startsWith("/")) {
+                        URL urlObj = new URL(url);
+                        imageURL = urlObj.getProtocol() + "://" + urlObj.getHost() + imageURL;
+                    }
+
+                    if (!imageURL.isEmpty()) {
+                        loadUrl(imageURL);
+                        connection.disconnect();
+                        return;
+                    }
+                }
+
                 image = TextureUtil.readBufferedImage(stream);
             }
         } catch (Exception e) {
