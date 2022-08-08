@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class LinuxKeybindFix {
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private static final HashMap<Integer, HashMap> triggers = new HashMap<Integer, HashMap>() {{
+    private static final HashMap<Integer, HashMap<Character, Integer>> triggers = new HashMap<Integer, HashMap<Character, Integer>>() {{
         put(1, new HashMap<Character, Integer>() {{ // FR AZERTY
             put('&', 0);
             put('é', 1);
