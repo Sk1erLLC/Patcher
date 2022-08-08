@@ -31,7 +31,7 @@ public class LinuxKeybindFix {
             put('è', 6);
             put('_', 7);
             put('ç', 8);
-        }})
+        }});
         put(2, new HashMap<Character, Integer>() {{ // BE AZERTY
             put('&', 0);
             put('é', 1);
