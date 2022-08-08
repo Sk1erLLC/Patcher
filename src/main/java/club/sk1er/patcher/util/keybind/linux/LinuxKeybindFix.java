@@ -43,7 +43,7 @@ public class LinuxKeybindFix {
             put('!', 7);
             put('ç', 8);
         }});
-    }}
+    }};
 
     @SubscribeEvent
     public void onKeyPress(InputEvent.KeyInputEvent event) {
