@@ -21,18 +21,7 @@ public class LinuxKeybindFix {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private static final HashMap<Integer, HashMap<Character, Integer>> triggers = new HashMap<Integer, HashMap<Character, Integer>>() {{
-        put(1, new HashMap<Character, Integer>() {{ // FR AZERTY
-            put('&', 0);
-            put('é', 1);
-            put('"', 2);
-            put('\'', 3);
-            put('(', 4);
-            put('-', 5);
-            put('è', 6);
-            put('_', 7);
-            put('ç', 8);
-        }});
-        put(2, new HashMap<Character, Integer>() {{ // BE AZERTY
+        put(1, new HashMap<Character, Integer>() {{ // BE AZERTY
             put('&', 0);
             put('é', 1);
             put('"', 2);
@@ -41,6 +30,17 @@ public class LinuxKeybindFix {
             put('§', 5);
             put('è', 6);
             put('!', 7);
+            put('ç', 8);
+        }});
+        put(2, new HashMap<Character, Integer>() {{ // FR AZERTY
+            put('&', 0);
+            put('é', 1);
+            put('"', 2);
+            put('\'', 3);
+            put('(', 4);
+            put('-', 5);
+            put('è', 6);
+            put('_', 7);
             put('ç', 8);
         }});
     }};
