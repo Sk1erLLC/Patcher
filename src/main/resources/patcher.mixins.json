@@ -28,6 +28,7 @@
     "accessors.RenderManagerAccessor",
     "accessors.ResourcePackRepositoryAccessor",
     "accessors.SoundHandlerAccessor",
+    "accessors.SoundManagerAccessor",
     "accessors.SoundRegistryAccessor",
     "accessors.WorldRendererAccessor",
     "bugfixes.BlockFluidRendererMixin_FixStitching",
