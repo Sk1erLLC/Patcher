@@ -55,7 +55,12 @@ public class SoundHandler implements IResourceManagerReloadListener {
             previousActive = active;
             if (!previousActive) {
                 SoundManager soundManager = ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager();
-                previousVolume = ((SoundManagerAccessor) soundManager).callGetSoundCategoryVolume(SoundCategory.MASTER);
+                previousVolume = ((SoundManagerAccessor) soundManager)
+                    //#if MC < 11200
+                    .invokeGetSoundCategoryVolume(SoundCategory.MASTER);
+                    //#else
+                    //$$ .invokeGetVolume(SoundCategory.MASTER);
+                    //#endif
                 if (previousVolume == 0f) return;
                 soundManager.setSoundCategoryVolume(SoundCategory.MASTER, PatcherConfig.unfocusedSounds * previousVolume);
             } else {

@@ -13,6 +13,7 @@ net.minecraft.server.MinecraftServer applyServerIconToResponse() net.minecraft.s
 net.minecraft.client.renderer.chunk.VisGraph floodFill() net.minecraft.client.renderer.chunk.VisGraph func_178604_a()
 net.minecraft.client.renderer.chunk.VisGraph addEdges() net.minecraft.client.renderer.chunk.VisGraph func_178610_a()
 net.minecraft.client.particle.ParticleManager tickParticleList() net.minecraft.client.particle.EffectRenderer updateEffectAlphaLayer()
+net.minecraft.client.audio.SoundManager setVolume() net.minecraft.client.audio.SoundManager setSoundCategoryVolume()
 
 net.minecraft.init.MobEffects POISON net.minecraft.potion.Potion poison
 net.minecraft.init.MobEffects WITHER net.minecraft.potion.Potion wither
@@ -57,3 +58,4 @@ net.minecraft.client.particle.Particle net.minecraft.client.particle.EntityFX
 net.minecraft.client.gui.advancements.GuiAdvancement net.minecraft.client.gui.achievement.GuiAchievement
 net.minecraft.client.gui.GuiWorldSelection net.minecraft.client.gui.GuiSelectWorld
 net.minecraft.pathfinding.NodeProcessor net.minecraft.world.pathfinder.NodeProcessor
+net.minecraft.util.SoundCategory net.minecraft.client.audio.SoundCategory

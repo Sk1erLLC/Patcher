@@ -8,5 +8,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(SoundManager.class)
 public interface SoundManagerAccessor {
     @Invoker
-    float callGetSoundCategoryVolume(SoundCategory category);
+    //#if MC < 11200
+    float invokeGetSoundCategoryVolume(SoundCategory category);
+    //#else
+    //$$ float invokeGetVolume(SoundCategory category);
+    //#endif
 }
