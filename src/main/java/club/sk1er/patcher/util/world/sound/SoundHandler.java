@@ -44,20 +44,20 @@ public class SoundHandler implements IResourceManagerReloadListener {
         }
     }
 
-    private boolean focused = Display.isActive();
+    private boolean previousActive = Display.isActive();
     private float previousVolume = 0f;
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
         boolean active = Display.isActive();
-        if (active != focused) {
-            focused = active;
-            if (!focused) {
+        if (active != previousActive) {
+            previousActive = active;
+            if (!previousActive) {
                 SoundManager soundManager = ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager();
                 previousVolume = ((SoundManagerAccessor) soundManager).callGetSoundCategoryVolume(SoundCategory.MASTER);
                 if (previousVolume == 0f) return;
-                soundManager.setSoundCategoryVolume(SoundCategory.MASTER, PatcherConfig.unfocusedSounds);
+                soundManager.setSoundCategoryVolume(SoundCategory.MASTER, PatcherConfig.unfocusedSounds * previousVolume);
             } else {
                 ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager().setSoundCategoryVolume(SoundCategory.MASTER, previousVolume);
                 previousVolume = 0f;
