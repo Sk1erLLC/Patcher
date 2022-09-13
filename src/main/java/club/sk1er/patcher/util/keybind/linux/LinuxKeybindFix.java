@@ -20,16 +20,29 @@ import java.util.HashMap;
 public class LinuxKeybindFix {
 
     private final Minecraft mc = Minecraft.getMinecraft();
-    private static final HashMap<Character, Integer> azertyTriggers = new HashMap<Character, Integer>() {{
-        put('&', 0);
-        put('é', 1);
-        put('"', 2);
-        put('\'', 3);
-        put('(', 4);
-        put('§', 5);
-        put('è', 6);
-        put('!', 7);
-        put('ç', 8);
+    private static final HashMap<Integer, HashMap<Character, Integer>> triggers = new HashMap<Integer, HashMap<Character, Integer>>() {{
+        put(1, new HashMap<Character, Integer>() {{ // BE AZERTY
+            put('&', 0);
+            put('é', 1);
+            put('"', 2);
+            put('\'', 3);
+            put('(', 4);
+            put('§', 5);
+            put('è', 6);
+            put('!', 7);
+            put('ç', 8);
+        }});
+        put(2, new HashMap<Character, Integer>() {{ // FR AZERTY
+            put('&', 0);
+            put('é', 1);
+            put('"', 2);
+            put('\'', 3);
+            put('(', 4);
+            put('-', 5);
+            put('è', 6);
+            put('_', 7);
+            put('ç', 8);
+        }});
     }};
 
     @SubscribeEvent
@@ -48,8 +61,8 @@ public class LinuxKeybindFix {
                 }
             } else {
                 char charPressed = Keyboard.getEventCharacter();
-                if (azertyTriggers.containsKey(charPressed)) {
-                    int i = azertyTriggers.get(charPressed);
+                if (triggers.get(PatcherConfig.keyboardLayout).containsKey(charPressed)) {
+                    int i = triggers.get(PatcherConfig.keyboardLayout).get(charPressed);
                     if (mc.gameSettings.keyBindsHotbar[i].getKeyCode() == i + 2) mc.thePlayer.inventory.currentItem = i;
                 }
             }
@@ -63,16 +76,16 @@ public class LinuxKeybindFix {
         //#else
         //$$ GuiScreen guiScreen = event.getGui();
         //#endif
-        if (SystemUtils.IS_OS_LINUX && PatcherConfig.keyboardLayout == 1 && guiScreen instanceof GuiContainer && mc.thePlayer != null
+        if (SystemUtils.IS_OS_LINUX && PatcherConfig.keyboardLayout != 0 && guiScreen instanceof GuiContainer && mc.thePlayer != null
             && Keyboard.isCreated() && Keyboard.getEventKeyState()) {
             char charPressed = Keyboard.getEventCharacter();
             GuiContainer gui = (GuiContainer) guiScreen;
             Slot slot = gui.getSlotUnderMouse();
-            if (slot != null && azertyTriggers.containsKey(charPressed)) {
+            if (slot != null && triggers.get(PatcherConfig.keyboardLayout).containsKey(charPressed)) {
                 mc.playerController.windowClick(
                     gui.inventorySlots.windowId,
                     slot.slotNumber,
-                    azertyTriggers.get(charPressed),
+                    triggers.get(PatcherConfig.keyboardLayout).get(charPressed),
                     //#if MC==10809
                     2,
                     //#else
