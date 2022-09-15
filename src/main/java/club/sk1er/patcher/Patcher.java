@@ -394,12 +394,10 @@ public class Patcher {
 
         if (replacedMods == null) return;
         Set<String> replacements = new HashSet<>();
-        Set<String> jsonKey = replacedMods.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
+        Set<String> modids = replacedMods.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toSet());
         for (ModContainer modContainer : activeModList) {
-            for (String modid : jsonKey) {
-                if (modContainer.getModId().contains(modid) && !replacements.contains(modid)) {
-                    replacements.add(modContainer.getName());
-                }
+            if (modids.contains(modContainer.getModId())) {
+                replacements.add(modContainer.getName());
             }
         }
 
