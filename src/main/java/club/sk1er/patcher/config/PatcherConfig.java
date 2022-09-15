@@ -266,6 +266,14 @@ public class PatcherConfig extends Vigilant {
     public static int unfocusedFPSAmount = 60;
 
     @Property(
+        type = PropertyType.NUMBER, name = "Custom FPS Limit",
+        description = "Change the maximum FPS to a value that Minecraft doesn't normally allow for. Setting this to 0 will go back to the value set in Minecraft.",
+        category = "Miscellaneous", subcategory = "General",
+        max = Integer.MAX_VALUE
+    )
+    public static int customFpsLimit = 0;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Ground Foliage",
         description = "Stop plants/flowers from rendering.",
         category = "Miscellaneous", subcategory = "Blocks", triggerActionOnInitialization = false
@@ -1235,12 +1243,6 @@ public class PatcherConfig extends Vigilant {
     public static boolean hudCaching;
 
     // HIDDEN
-
-    @Property(
-        type = PropertyType.NUMBER, name = "Custom FPS Limit",
-        category = "hidden", hidden = true
-    )
-    public static int customFpsLimit = 0;
 
     @Property(
         type = PropertyType.SWITCH, name = "LabyMod Moment",
