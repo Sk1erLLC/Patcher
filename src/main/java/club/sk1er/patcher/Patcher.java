@@ -8,7 +8,6 @@ import club.sk1er.patcher.ducks.FontRendererExt;
 import club.sk1er.patcher.hooks.EntityRendererHook;
 import club.sk1er.patcher.hooks.MinecraftHook;
 import club.sk1er.patcher.mixins.features.network.packet.C01PacketChatMessageMixin_ExtendedChatLength;
-import club.sk1er.patcher.render.HistoryPopUp;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.screen.PatcherMenuEditor;
 import club.sk1er.patcher.screen.render.caching.HUDCaching;
@@ -25,7 +24,6 @@ import club.sk1er.patcher.util.enhancement.ReloadListener;
 import club.sk1er.patcher.util.fov.FovHandler;
 import club.sk1er.patcher.util.keybind.FunctionKeyChanger;
 import club.sk1er.patcher.util.keybind.KeybindDropModifier;
-import club.sk1er.patcher.util.keybind.KeybindNameHistory;
 import club.sk1er.patcher.util.keybind.MousePerspectiveKeybindHandler;
 import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
@@ -34,7 +32,6 @@ import club.sk1er.patcher.util.world.SavesWatcher;
 import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
-import club.sk1er.patcher.util.world.render.entity.NameHistoryTracer;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
 import club.sk1er.patcher.util.world.sound.audioswitcher.AudioSwitcher;
 import com.google.gson.JsonObject;
@@ -109,9 +106,7 @@ public class Patcher {
     private final SavesWatcher savesWatcher = new SavesWatcher();
     private final AudioSwitcher audioSwitcher = new AudioSwitcher();
 
-    private KeyBinding dropModifier;
-    private KeyBinding nameHistory;
-    private KeyBinding hideScreen, customDebug, clearShaders;
+    private KeyBinding dropModifier, hideScreen, customDebug, clearShaders;
 
     private PatcherConfig patcherConfig;
     private PatcherSoundConfig patcherSoundConfig;
@@ -121,8 +116,9 @@ public class Patcher {
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
         registerKeybinds(
-            nameHistory = new KeybindNameHistory(), dropModifier = new KeybindDropModifier(),
-            hideScreen = new FunctionKeyChanger.KeybindHideScreen(), customDebug = new FunctionKeyChanger.KeybindCustomDebug(),
+            dropModifier = new KeybindDropModifier(),
+            hideScreen = new FunctionKeyChanger.KeybindHideScreen(),
+            customDebug = new FunctionKeyChanger.KeybindCustomDebug(),
             clearShaders = new FunctionKeyChanger.KeybindClearShaders()
         );
 
@@ -138,7 +134,7 @@ public class Patcher {
             new PatcherCommand(), new PatcherSoundsCommand(), new InventoryScaleCommand(),
             new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
-            new AsyncScreenshots.ScreenshotsFolder(), new DeleteNameHistoryCommand()
+            new AsyncScreenshots.ScreenshotsFolder()
         );
         EssentialAPI.getCommandRegistry().registerParser(PatcherPlayer.class, new PatcherPlayerArgumentParser());
 
@@ -146,10 +142,10 @@ public class Patcher {
             this, soundHandler, dropModifier, audioSwitcher,
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
-            new ArmorStatusRenderer(), new NameHistoryTracer(), new PatcherMenuEditor(),
-            new ImagePreview(), new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
+            new ArmorStatusRenderer(), new PatcherMenuEditor(), new ImagePreview(),
+            new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new HUDCaching(), new EntityRendererHook(),
-            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE, HistoryPopUp.INSTANCE,
+            MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
             new MousePerspectiveKeybindHandler()
         );
 
@@ -427,10 +423,6 @@ public class Patcher {
 
     public Logger getLogger() {
         return logger;
-    }
-
-    public KeyBinding getNameHistory() {
-        return nameHistory;
     }
 
     public KeyBinding getDropModifier() {

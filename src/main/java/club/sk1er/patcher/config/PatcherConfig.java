@@ -841,14 +841,6 @@ public class PatcherConfig extends Vigilant {
     // SCREENS
 
     @Property(
-        type = PropertyType.SELECTOR, name = "Name History Style",
-        description = "Choose how Name History should appear.",
-        category = "Screens", subcategory = "General",
-        options = {"Open in a GUI", "Send in chat", "Popup in the top-right"}
-    )
-    public static int nameHistoryStyle = 2;
-
-    @Property(
         type = PropertyType.SWITCH, name = "Inventory Position",
         description = "Stop potion effects from shifting your inventory to the right.",
         category = "Screens", subcategory = "Inventory"

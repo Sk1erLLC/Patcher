@@ -2,10 +2,7 @@ package club.sk1er.patcher.commands;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
-import club.sk1er.patcher.render.HistoryPopUp;
-import club.sk1er.patcher.screen.ScreenHistory;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import club.sk1er.patcher.util.name.NameFetcher;
 import gg.essential.api.commands.Command;
 import gg.essential.api.commands.DefaultHandler;
 import gg.essential.api.commands.DisplayName;
@@ -13,20 +10,11 @@ import gg.essential.api.commands.Greedy;
 import gg.essential.api.commands.Options;
 import gg.essential.api.commands.SubCommand;
 import gg.essential.api.utils.GuiUtil;
-import gg.essential.api.utils.Multithreading;
-import gg.essential.universal.ChatColor;
-import gg.essential.universal.wrappers.message.UTextComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class PatcherCommand extends Command {
@@ -42,54 +30,6 @@ public class PatcherCommand extends Command {
     @DefaultHandler
     public void handle() {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
-    }
-
-    @SubCommand(value = "name", aliases = {"names", "namehistory"}, description = "Fetch someones past usernames.")
-    public void names(@DisplayName("name") Optional<PatcherPlayer> player) {
-        boolean emptyName = !player.isPresent();
-        String name = player.map(PatcherPlayer::getName).orElse("");
-
-        if (PatcherConfig.nameHistoryStyle == 0) {
-            GuiUtil.open(player
-                .map(it -> new ScreenHistory(it.getName(), false))
-                .orElseGet(() -> new ScreenHistory(mc.getSession().getUsername(), false))
-            );
-        } else if (PatcherConfig.nameHistoryStyle == 1) {
-            if (emptyName) {
-                ChatUtilities.sendNotification("Name History", "Username cannot be empty.");
-                return;
-            }
-
-            NameFetcher nameFetcher = new NameFetcher();
-            ChatUtilities.sendNotification("Name History", "Fetching usernames...");
-            nameFetcher.execute(name);
-
-            Multithreading.schedule(() -> {
-                ChatComponentText message = new ChatComponentText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------" + ChatColor.RESET + '\n');
-                for (String usernames : nameFetcher.getNames()) {
-                    message.appendText(ChatColor.GRAY + usernames + '\n');
-                }
-
-                message.appendText(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + "------------------------");
-
-                UTextComponent deleteMessage = new UTextComponent('\n' + ChatColor.YELLOW.toString() + ChatColor.BOLD + "Delete Message");
-                ChatStyle style = deleteMessage.getChatStyle();
-                style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new UTextComponent(ChatColor.GRAY + "This will only delete the most recent name history message.")));
-                style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/$deletenamehistory"));
-                message.appendSibling(deleteMessage);
-
-                randomChatMessageId = new Random().nextInt(randomBound);
-                mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(message, randomChatMessageId);
-                nameFetcher.getNames().clear();
-            }, 2, TimeUnit.SECONDS);
-        } else if (PatcherConfig.nameHistoryStyle == 2) {
-            if (emptyName) {
-                ChatUtilities.sendNotification("Name History", "Username cannot be empty.");
-                return;
-            }
-
-            HistoryPopUp.INSTANCE.addPopUp(name);
-        }
     }
 
     @SubCommand(value = "blacklist", description = "Tell the client that you don't want to use the 1.11+ chat length on the specified server IP.")

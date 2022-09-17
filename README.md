@@ -157,7 +157,6 @@
 - **Enchantment Glance** - View the enchantments of the currently held item above your hotbar.
 - **Protection Percentage** - View how much total armor protection you have inside your inventory.
 - **Projectile Protection Percentage** - View how much total projectile protection you have inside your inventory.
-- **Name History Style** - Choose how Name History should appear.
 - **Container Backgrounds** - Remove the dark background inside a container.
 - **Container Opacity** - Change the opacity of supported containers. Includes Chests & Survival inventory.
 - **GUI Crosshair** - Stop rendering the crosshair when in a GUI.
