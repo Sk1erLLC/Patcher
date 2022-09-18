@@ -28,6 +28,11 @@ import java.util.Map.Entry;
 
 public class SoundHandler implements IResourceManagerReloadListener {
 
+    public SoundHandler() {
+        this.previousActive = Display.isActive();
+        handleFocusChange();
+    }
+
     private final Map<ResourceLocation, PropertyData> data = new HashMap<>();
 
     @SubscribeEvent
@@ -44,8 +49,8 @@ public class SoundHandler implements IResourceManagerReloadListener {
         }
     }
 
-    private boolean previousActive = Display.isActive();
-    private float previousVolume = 0f;
+    private boolean previousActive;
+    private float previousVolume = -1f;
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
@@ -53,20 +58,19 @@ public class SoundHandler implements IResourceManagerReloadListener {
         boolean active = Display.isActive();
         if (active != previousActive) {
             previousActive = active;
-            if (!previousActive) {
-                SoundManager soundManager = ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager();
-                previousVolume = ((SoundManagerAccessor) soundManager)
-                    //#if MC < 11200
-                    .invokeGetSoundCategoryVolume(SoundCategory.MASTER);
-                    //#else
-                    //$$ .invokeGetVolume(SoundCategory.MASTER);
-                    //#endif
-                if (previousVolume == 0f) return;
-                soundManager.setSoundCategoryVolume(SoundCategory.MASTER, PatcherConfig.unfocusedSounds * previousVolume);
-            } else {
-                ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager().setSoundCategoryVolume(SoundCategory.MASTER, previousVolume);
-                previousVolume = 0f;
-            }
+            handleFocusChange();
+        }
+    }
+
+    private void handleFocusChange() {
+        if (!previousActive) {
+            SoundManager soundManager = ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager();
+            previousVolume = Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.MASTER);
+            if (previousVolume == -1f) return;
+            soundManager.setSoundCategoryVolume(SoundCategory.MASTER, PatcherConfig.unfocusedSounds * previousVolume);
+        } else {
+            ((SoundHandlerAccessor) Minecraft.getMinecraft().getSoundHandler()).getSndManager().setSoundCategoryVolume(SoundCategory.MASTER, previousVolume);
+            previousVolume = -1f;
         }
     }
 
