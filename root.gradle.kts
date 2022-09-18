@@ -5,7 +5,11 @@ plugins {
     id("gg.essential.multi-version.root")
 }
 
-version = versionFromBuildIdAndBranch()
+// normal versions will be "1.x.x"
+// betas will be "1.x.x+beta-y" / "1.x.x+branch_beta-y"
+// rcs will be 1.x.x+rc-y
+// extra branches will be 1.x.x+branch-y
+version = "1.8.4"
 
 preprocess {
     "1.12.2"(11202, "srg") {
