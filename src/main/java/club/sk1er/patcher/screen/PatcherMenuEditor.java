@@ -93,7 +93,7 @@ public class PatcherMenuEditor {
                 }
             }
         } else if (gui instanceof GuiIngameMenu) {
-            if (!mc.isSingleplayer() && PatcherConfig.openToLanReplacement > 0) {
+            if (mc.getCurrentServerData() != null && PatcherConfig.openToLanReplacement > 0) {
                 mcButtonList.get(4).visible = false;
                 mcButtonList.get(4).enabled = false;
                 if (PatcherConfig.openToLanReplacement == 1) {
