@@ -88,6 +88,7 @@
 - **Title Opacity** - Change the opacity of titles.
 - **Windowed Fullscreen** - Implement Windowed Fullscreen in Minecraft, allowing you to drag your mouse outside the window.
 - **Instant Fullscreen** - Instant switching between fullscreen and non-fullscreen modes.
+- **Natural Capes** - Changes some physics in capes to fix rotation bugs and look more natural.
 
 </details>
 <details>

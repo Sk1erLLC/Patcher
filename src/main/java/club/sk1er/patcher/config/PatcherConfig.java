@@ -564,6 +564,13 @@ public class PatcherConfig extends Vigilant {
         GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
     }
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Natural Capes",
+        description = "Changes some physics in capes to fix rotation bugs and look more natural.",
+        category = "Miscellaneous", subcategory = "Rendering"
+    )
+    public static boolean naturalCapes;
+
     // PERFORMANCE
 
     @Property(
