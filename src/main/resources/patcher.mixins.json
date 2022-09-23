@@ -142,6 +142,7 @@
     "features.GuiScreenServerListMixin_FakeServerListDirectConnect",
     "features.InventoryPlayerTransformer_HotbarScrolling",
     "features.LayerArrowMixin_CancelRender",
+    "features.LayerCapeMixin_NaturalCapes",
     "features.LayerWitherAuraMixin_DisableWhenInvisible",
     "features.MinecraftMixin_BetterKeybindHandling",
     "features.MinecraftMixin_CustomDebugKeys",
