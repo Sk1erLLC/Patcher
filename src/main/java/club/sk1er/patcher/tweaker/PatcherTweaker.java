@@ -11,6 +11,11 @@ import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.RegexFilter;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -100,6 +105,42 @@ public class PatcherTweaker implements IFMLLoadingPlugin {
 
         if (!lwjglUnlock) {
             System.out.println("Failed to unlock LWJGL, several fixes will not work.");
+        }
+
+        silenceLog4j();
+    }
+
+    private void silenceLog4j() {
+        try {
+            Logger logger = ((LoggerContext)LogManager.getContext(Launch.class.getClassLoader(), false)).getLogger("LaunchWrapper");
+
+            // because archloom updates log4j, we must support both log4j 2.0-beta9 and 2.8.1
+            RegexFilter filter = null;
+            for (Method method : RegexFilter.class.getMethods()) {
+                if (method.getName().equals("createFilter")) {
+                    if (method.getParameterCount() == 5) {
+                        filter = (RegexFilter) method.invoke(null,
+                            "The jar file .* has a security seal for path .*, but that path is defined and not secure",
+                            null, false, Filter.Result.DENY, Filter.Result.NEUTRAL);
+                    } else if (method.getParameterCount() == 4) {
+                        filter = (RegexFilter) method.invoke(null,
+                            "The jar file .* has a security seal for path .*, but that path is defined and not secure",
+                            "false", "deny", "neutral");
+                    } else {
+                        throw new IllegalStateException("Unknown createFilter arity " + method);
+                    }
+                    break;
+                }
+            }
+
+            if (filter == null) {
+                throw new IllegalStateException("Couldn't find createFilter method");
+            }
+
+            logger.addFilter(filter);
+        } catch (Exception e) {
+            System.out.println("Failed to silence log4j");
+            e.printStackTrace();
         }
     }
 
