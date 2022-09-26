@@ -34,7 +34,7 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
     private void patcher$modifyTitle(int l, int age, float opacity, CallbackInfo ci) {
         float titleScale = PatcherConfig.titleScale;
         if (PatcherConfig.autoTitleScale) {
-            float width = fontrenderer.getStringWidth(displayedTitle) * 4.0F;
+            final float width = fontrenderer.getStringWidth(displayedTitle) * 4.0F;
             if (width > UResolution.getScaledWidth()) {
                 titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
             }
@@ -45,7 +45,7 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
     private void patcher$modifySubtitle(int l, int age, float opacity, CallbackInfo ci) {
         float titleScale = PatcherConfig.titleScale;
         if (PatcherConfig.autoTitleScale) {
-            float width = fontrenderer.getStringWidth(displayedSubTitle) * 2.0F;
+            final float width = fontrenderer.getStringWidth(displayedSubTitle) * 2.0F;
             if (width > UResolution.getScaledWidth()) {
                 titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
             }
@@ -53,13 +53,8 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
         GlStateManager.scale(titleScale, titleScale, titleScale);
     }
 
-    @ModifyConstant(method = "renderTitle", constant = @Constant(intValue = 255))
+    @ModifyConstant(method = "renderTitle", constant = @Constant(intValue = 255, ordinal = 1))
     private int patcher$modifyOpacity(int constant) {
         return (int) (PatcherConfig.titleOpacity * 255);
-    }
-
-    @ModifyConstant(method = "renderTitle", constant = @Constant(floatValue = 255.0F))
-    private float patcher$modifyOpacity(float constant) {
-        return PatcherConfig.titleOpacity * 255;
     }
 }
