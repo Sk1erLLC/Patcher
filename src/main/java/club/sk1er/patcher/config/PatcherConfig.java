@@ -566,7 +566,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Natural Capes",
-        description = "Render capes more naturally",
+        description = "Changes some physics in capes to fix rotation bugs and look more natural.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean naturalCapes;
