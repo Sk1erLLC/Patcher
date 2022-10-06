@@ -919,6 +919,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean transparentChat;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Transparent Chat When Closed",
+        description = "Remove the background from chat, only when the chat is closed.\n§eCan positively impact performance.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean transparentChatOnlyWhenClosed;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Transparent Chat Input Field",
         description = "Remove the background from chat's input field.\n§eCan positively impact performance.",
         category = "Screens", subcategory = "Chat"
@@ -1272,6 +1279,7 @@ public class PatcherConfig extends Vigilant {
             addDependency("timestampsStyle", "timestamps");
             addDependency("secondsOnTimestamps", "timestamps");
             addDependency("imagePreviewWidth", "imagePreview");
+            addDependency("transparentChatOnlyWhenClosed", "transparentChat");
 
             Arrays.asList(
                 "slownessFovModifierFloat", "speedFovModifierFloat",
