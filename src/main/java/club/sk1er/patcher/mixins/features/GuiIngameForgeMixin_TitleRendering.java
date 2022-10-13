@@ -34,7 +34,7 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
     private void patcher$modifyTitle(int l, int age, float opacity, CallbackInfo ci) {
         float titleScale = PatcherConfig.titleScale;
         if (PatcherConfig.autoTitleScale) {
-            final float width = fontrenderer.getStringWidth(displayedTitle) * 4.0F;
+            float width = fontrenderer.getStringWidth(displayedTitle) * 4.0F;
             if (width > UResolution.getScaledWidth()) {
                 titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
             }
@@ -45,7 +45,7 @@ public class GuiIngameForgeMixin_TitleRendering extends GuiIngame {
     private void patcher$modifySubtitle(int l, int age, float opacity, CallbackInfo ci) {
         float titleScale = PatcherConfig.titleScale;
         if (PatcherConfig.autoTitleScale) {
-            final float width = fontrenderer.getStringWidth(displayedSubTitle) * 2.0F;
+            float width = fontrenderer.getStringWidth(displayedSubTitle) * 2.0F;
             if (width > UResolution.getScaledWidth()) {
                 titleScale = (UResolution.getScaledWidth() / width) * PatcherConfig.titleScale;
             }
