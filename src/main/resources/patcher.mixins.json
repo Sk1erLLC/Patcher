@@ -74,7 +74,6 @@
     "bugfixes.TileEntityRendererDispatcherMixin_EnableLighting",
     "bugfixes.TileEntitySkullRendererMixin_EnableBlending",
     "bugfixes.VertexBufferMixin_ResolveLockups",
-    "bugfixes.WorldMixin_SkyColor",
     "bugfixes.WorldMixin_SkyHeight",
     "bugfixes.crashes.EntityLivingBaseMixin_ResolveCrash",
     "bugfixes.crashes.GameSettingsMixin_ResolveCrash",
