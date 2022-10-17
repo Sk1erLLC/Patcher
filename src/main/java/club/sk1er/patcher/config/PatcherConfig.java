@@ -72,6 +72,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean fixedAlexArms = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Fix Actionbar Overlap",
+        description = "Prevents the actionbar text from rendering above the armor/health bar.",
+        category = "Bug Fixes", subcategory = "Rendering"
+    )
+    public static boolean fixActionbarOverlap;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Keyboard Layout",
         description = "The layout of your keyboard, used to fix input bugs accordingly.",
         category = "Bug Fixes", subcategory = "Linux",
