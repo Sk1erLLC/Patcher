@@ -14,7 +14,6 @@ public abstract class GuiNewChatMixin_TransparentChat extends Gui {
     @Shadow
     public abstract boolean getChatOpen();
 
-    @SuppressWarnings("unused")
     @WrapWithCondition(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;drawRect(IIIII)V", ordinal = 0))
     private boolean patcher$transparentChat(int left, int top, int right, int bottom, int color) {
         if (PatcherConfig.transparentChat) {

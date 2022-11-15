@@ -919,8 +919,8 @@ public class PatcherConfig extends Vigilant {
     public static boolean transparentChat;
 
     @Property(
-        type = PropertyType.SWITCH, name = "Transparent Chat When Closed",
-        description = "Remove the background from chat, only when the chat is closed.\n§eCan positively impact performance.",
+        type = PropertyType.SWITCH, name = "Chat Background When Open",
+        description = "Add back the background when chat is open.",
         category = "Screens", subcategory = "Chat"
     )
     public static boolean transparentChatOnlyWhenClosed;
