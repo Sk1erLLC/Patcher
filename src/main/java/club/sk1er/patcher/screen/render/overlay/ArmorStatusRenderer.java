@@ -23,7 +23,7 @@ public class ArmorStatusRenderer {
     private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent
-    public void onRenderArmor(GuiScreenEvent.DrawScreenEvent event) {
+    public void onRenderArmor(GuiScreenEvent.DrawScreenEvent.Post event) {
         //#if MC==10809
         GuiScreen gui = event.gui;
         //#else
