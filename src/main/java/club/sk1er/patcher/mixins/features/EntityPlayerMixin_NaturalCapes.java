@@ -29,15 +29,15 @@ public abstract class EntityPlayerMixin_NaturalCapes extends EntityMixin_Natural
     public double chasingPosZ;
 
     @ModifyVariable(method = "onUpdate", ordinal = 3, at = @At("STORE"))
-    public double onUpdate(double ori) {
+    public double patcher$replaceMaxClampValue(double original) {
         if (PatcherConfig.naturalCapes) {
-            return 999999.0D;
+            return Double.MAX_VALUE;
         }
-        return ori;
+        return original;
     }
 
     @Override
-    protected void setPositionAndRotation$head(double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
+    protected void patcher$overrideMethod(double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
         if (PatcherConfig.naturalCapes) {
             this.prevChasingPosY = this.chasingPosY = y;
             this.prevChasingPosZ = this.chasingPosZ = z;
