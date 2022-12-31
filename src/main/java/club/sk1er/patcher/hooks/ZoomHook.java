@@ -1,7 +1,7 @@
 package club.sk1er.patcher.hooks;
 
+import cc.polyfrost.oneconfig.libs.elementa.constraints.animation.Animations;
 import club.sk1er.patcher.config.PatcherConfig;
-import gg.essential.elementa.constraints.animation.Animations;
 import org.lwjgl.input.Mouse;
 
 public class ZoomHook {
@@ -81,7 +81,7 @@ public class ZoomHook {
         return 1f;
     }
 
-    private static float calculateZoomEasing(float x) {
+    private static float calculateZoomEasing(float x) { // todo we should add static methods for our animations too
         switch (PatcherConfig.smoothZoomAlgorithm) {
             case 0:
                 return Animations.IN_OUT_QUAD.getValue(x);

@@ -1,8 +1,7 @@
 package club.sk1er.patcher.screen.quit;
 
-import gg.essential.universal.ChatColor;
+import cc.polyfrost.oneconfig.libs.universal.ChatColor;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;

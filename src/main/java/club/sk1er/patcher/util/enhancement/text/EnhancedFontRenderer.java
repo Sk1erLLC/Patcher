@@ -1,9 +1,9 @@
 package club.sk1er.patcher.util.enhancement.text;
 
+import cc.polyfrost.oneconfig.libs.caffeine.cache.Cache;
+import cc.polyfrost.oneconfig.libs.caffeine.cache.Caffeine;
 import club.sk1er.patcher.util.enhancement.Enhancement;
 import club.sk1er.patcher.util.enhancement.hash.StringHash;
-import gg.essential.lib.caffeine.cache.Cache;
-import gg.essential.lib.caffeine.cache.Caffeine;
 import net.minecraft.client.renderer.GLAllocation;
 
 import java.util.ArrayList;

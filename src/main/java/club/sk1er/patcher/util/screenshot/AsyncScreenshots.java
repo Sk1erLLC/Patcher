@@ -1,15 +1,15 @@
 package club.sk1er.patcher.util.screenshot;
 
+import cc.polyfrost.oneconfig.utils.Multithreading;
+import cc.polyfrost.oneconfig.utils.commands.annotations.Command;
+import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.render.ScreenshotPreview;
 import club.sk1er.patcher.tasks.UploadScreenshotTask;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import gg.essential.api.commands.Command;
-import gg.essential.api.commands.DefaultHandler;
-import gg.essential.api.utils.Multithreading;
-import gg.essential.universal.ChatColor;
-import gg.essential.universal.UDesktop;
+import cc.polyfrost.oneconfig.libs.universal.ChatColor;
+import cc.polyfrost.oneconfig.libs.universal.UDesktop;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.event.ClickEvent;
@@ -176,31 +176,24 @@ public class AsyncScreenshots implements Runnable {
         }
     }
 
-    public static class ScreenshotsFolder extends Command {
-
-        public ScreenshotsFolder() {
-            super("$openfolder", true, true);
-        }
-
-        @DefaultHandler
+    @Command("$openfolder")
+    public static class ScreenshotsFolder {
+        @Main
         public void handle() {
             try {
                 UDesktop.open(new File("./screenshots"));
             } catch (Exception e) {
                 ChatUtilities.sendMessage("Unfortunately, we were unable to open the screenshots folder. " +
-                    "Contact the support Discord at https://sk1er.club/support if this issue persists.");
+                    "Contact the support Discord at https://polyfrost.cc/discord if this issue persists.");
             }
         }
     }
 
-    public static class FavoriteScreenshot extends Command {
-
-        public FavoriteScreenshot() {
-            super("$favorite", true, true);
-        }
+    @Command("$favorite")
+    public static class FavoriteScreenshot {
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
-        @DefaultHandler
+        @Main
         public void handle() {
             try {
                 final File favoritedScreenshots = getTimestampedPNGFileForDirectory(new File("./favorite_screenshots"));
@@ -218,12 +211,9 @@ public class AsyncScreenshots implements Runnable {
         }
     }
 
-    public static class DeleteScreenshot extends Command {
-        public DeleteScreenshot() {
-            super("$delete", true, true);
-        }
-
-        @DefaultHandler
+    @Command("$delete")
+    public static class DeleteScreenshot {
+        @Main
         public void handle() {
             try {
                 if (screenshot.exists() && screenshot.delete()) {
@@ -238,25 +228,18 @@ public class AsyncScreenshots implements Runnable {
         }
     }
 
-    public static class UploadScreenshot extends Command {
-
-        public UploadScreenshot() {
-            super("$upload", true, true);
-        }
-
-        @DefaultHandler
+    @Command("$upload")
+    public static class UploadScreenshot {
+        @Main
         public void handle() {
             UploadScreenshotTask.INSTANCE.execute(screenshot);
         }
     }
 
-    public static class CopyScreenshot extends Command {
+    @Command("$copyss")
+    public static class CopyScreenshot {
 
-        public CopyScreenshot() {
-            super("$copyss", true, true);
-        }
-
-        @DefaultHandler
+        @Main
         public void handle() {
             try {
                 copyScreenshot(true);

@@ -1,7 +1,7 @@
 package club.sk1er.patcher.screen.disconnect;
 
 import club.sk1er.patcher.mixins.accessors.GuiMultiplayerAccessor;
-import gg.essential.universal.ChatColor;
+import cc.polyfrost.oneconfig.libs.universal.ChatColor;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.multiplayer.ServerData;
 import org.lwjgl.input.Keyboard;

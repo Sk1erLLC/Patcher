@@ -1,9 +1,9 @@
-import gg.essential.gradle.util.noServerRunConfigs
+import cc.polyfrost.gradle.util.noServerRunConfigs
 
 plugins {
     kotlin("jvm")
-    id("gg.essential.multi-version")
-    id("gg.essential.defaults")
+    id("cc.polyfrost.multi-version")
+    id("cc.polyfrost.defaults")
 }
 
 val modGroup: String by project
@@ -15,38 +15,54 @@ val accessTransformerName = "patcher1${platform.mcMinor}_at.cfg"
 
 loom {
     noServerRunConfigs()
-    forge {
-        accessTransformer(rootProject.file("src/main/resources/$accessTransformerName"))
-    }
     mixin {
         defaultRefmapName.set("patcher.mixins.refmap.json")
     }
+    if (project.platform.isForge) {
+        forge {
+            accessTransformer(rootProject.file("src/main/resources/$accessTransformerName"))
+        }
+    }
     launchConfigs {
         getByName("client") {
-            property("fml.coreMods.load", "club.sk1er.patcher.tweaker.PatcherTweaker")
             property("patcher.debugBytecode", "true")
             property("mixin.debug.verbose", "true")
             property("mixin.debug.export", "true")
             property("mixin.dumpTargetOnFailure", "true")
-            arg("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
-            arg("--mixin", "patcher.mixins.json")
+            if (project.platform.isForge) {
+                property("fml.coreMods.load", "club.sk1er.patcher.tweaker.PatcherTweaker")
+                arg("--tweakClass", "cc.polyfrost.oneconfigwrapper.OneConfigWrapper")
+                arg("--mixin", "patcher.mixins.json")
+            }
         }
     }
 }
 
+sourceSets {
+    val dummy by creating
+    main {
+        compileClasspath += dummy.output
+    }
+}
+
+
 repositories {
-    maven("https://repo.essential.gg/repository/maven-public/")
-    maven("https://repo.spongepowered.org/repository/maven-public/")
+    maven("https://repo.polyfrost.cc/releases")
 }
 
 val embed by configurations.creating
 configurations.implementation.get().extendsFrom(embed)
 
 dependencies {
-    compileOnly("gg.essential:essential-$platform:4246+g8be73312c")
-    embed("gg.essential:loader-launchwrapper:1.1.3")
-
-    compileOnly("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+    compileOnly("cc.polyfrost:oneconfig-$platform:0.1.0-alpha+")
+    embed("cc.polyfrost:elementa-$platform:+") {
+        isTransitive = false
+    }
+    embed("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-alpha+")
+    embed("com.github.videogame-hacker:Koffee:88ba1b0") {
+        isTransitive = false
+    }
+    compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
 }
 
 tasks.compileKotlin {
@@ -68,7 +84,7 @@ tasks.jar {
         "FMLAT" to accessTransformerName,
         "FMLCorePluginContainsFMLMod" to "Yes, yes it does",
         "Main-Class" to "club.sk1er.container.ContainerMessage",
-        "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
+        "TweakClass" to "cc.polyfrost.oneconfigwrapper.OneConfigWrapper",
         "TweakOrder" to "0",
         "MixinConfigs" to "patcher.mixins.json"
     ))

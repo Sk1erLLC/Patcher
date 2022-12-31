@@ -5,14 +5,14 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import club.sk1er.patcher.screen.quit.ConfirmQuitScreen;
+import cc.polyfrost.oneconfig.libs.elementa.ElementaVersion;
+import cc.polyfrost.oneconfig.libs.elementa.components.UIImage;
+import cc.polyfrost.oneconfig.libs.elementa.components.Window;
+import cc.polyfrost.oneconfig.libs.elementa.dsl.ComponentsKt;
+import cc.polyfrost.oneconfig.libs.elementa.dsl.UtilitiesKt;
+import cc.polyfrost.oneconfig.libs.universal.UMatrixStack;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
-import gg.essential.elementa.ElementaVersion;
-import gg.essential.elementa.components.UIImage;
-import gg.essential.elementa.components.Window;
-import gg.essential.elementa.dsl.ComponentsKt;
-import gg.essential.elementa.dsl.UtilitiesKt;
-import gg.essential.universal.UMatrixStack;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -46,7 +46,7 @@ public class PatcherMenuEditor {
         25, // tab
         72 // return
     };
-    private final Window window = (Window) new Window(ElementaVersion.V1).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
+    private final Window window = (Window) new Window(ElementaVersion.V2).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
         uiConstraints.setX(UtilitiesKt.pixels(0, true));
         uiConstraints.setWidth(UtilitiesKt.pixels(200));
         uiConstraints.setHeight(UtilitiesKt.pixels(200));
@@ -146,7 +146,7 @@ public class PatcherMenuEditor {
             mc.displayGuiScreen(new FakeMultiplayerMenu(gui));
         } else if (gui instanceof GuiScreenOptionsSounds) {
             if (buttonId == allSounds) {
-                mc.displayGuiScreen(Patcher.instance.getPatcherSoundConfig().gui());
+                Patcher.instance.getPatcherSoundConfig().openGui();
             } else if (buttonId == refreshSounds) {
                 mc.getSoundHandler().onResourceManagerReload(mc.getResourceManager());
             }
@@ -167,7 +167,7 @@ public class PatcherMenuEditor {
             }
         }
 
-        if (PatcherConfig.openToLanReplacement == 2 && gui instanceof GuiIngameMenu) {
+        if (PatcherConfig.openToLanReplacement == 2 && gui instanceof GuiIngameMenu && Patcher.instance.isEssential()) {
             EssentialConfig config = EssentialAPI.getConfig();
             if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
                 for (GuiButton button : mcButtonList) {

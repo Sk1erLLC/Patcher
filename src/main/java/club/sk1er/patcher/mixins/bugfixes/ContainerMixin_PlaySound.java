@@ -1,6 +1,6 @@
 package club.sk1er.patcher.mixins.bugfixes;
 
-import gg.essential.universal.USound;
+import cc.polyfrost.oneconfig.libs.universal.USound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;

@@ -1,39 +1,28 @@
 package club.sk1er.patcher.commands;
 
+import cc.polyfrost.oneconfig.utils.commands.annotations.*;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.util.chat.ChatUtilities;
-import gg.essential.api.commands.Command;
-import gg.essential.api.commands.DefaultHandler;
-import gg.essential.api.commands.DisplayName;
-import gg.essential.api.commands.Greedy;
-import gg.essential.api.commands.Options;
-import gg.essential.api.commands.SubCommand;
-import gg.essential.api.utils.GuiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-
-import java.util.Objects;
-import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-public class PatcherCommand extends Command {
+@Command("patcher")
+public class PatcherCommand {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final int randomBound = 85673;
     public static int randomChatMessageId;
 
-    public PatcherCommand() {
-        super("patcher");
+    @Main
+    private static void handle() {
+        Patcher.instance.getPatcherConfig().openGui();
     }
 
-    @DefaultHandler
-    public void handle() {
-        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherConfig().gui()));
-    }
-
-    @SubCommand(value = "blacklist", description = "Tell the client that you don't want to use the 1.11+ chat length on the specified server IP.")
-    public void blacklist(@Greedy @DisplayName("ip") String ip) {
+    @SubCommand(description = "Tell the client that you don't want to use the 1.11+ chat length on the specified server IP.")
+    public void blacklist(@Greedy @Description("ip") String ip) {
         String status = Patcher.instance.addOrRemoveBlacklist(ip) ? "&cnow" : "&ano longer";
         ChatUtilities.sendNotification(
             "Server Blacklist",
@@ -42,8 +31,8 @@ public class PatcherCommand extends Command {
         Patcher.instance.saveBlacklistedServers();
     }
 
-    @SubCommand(value = "fov", description = "Change your FOV to a custom value.")
-    public void fov(@DisplayName("amount") float amount) {
+    @SubCommand(description = "Change your FOV to a custom value.")
+    public void fov(@Description("amount") float amount) {
         if (amount <= 0) {
             ChatUtilities.sendNotification("FOV Changer", "Changing your FOV to or below 0 is disabled due to game-breaking visual bugs.");
             return;
@@ -60,8 +49,8 @@ public class PatcherCommand extends Command {
         mc.gameSettings.saveOptions();
     }
 
-    @SubCommand(value = "scale", aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independent of your GUI scale.")
-    public void scale(@Options({"help", "off", "none", "small", "normal", "large", "auto", "0", "1", "2", "3", "4", "5"}) String argument) {
+    @SubCommand(aliases = {"invscale", "inventoryscale"}, description = "Change the scale of your inventory independent of your GUI scale.")
+    public void scale(@Description(autoCompletesTo = {"help", "off", "none", "small", "normal", "large", "auto", "0", "1", "2", "3", "4", "5"}) String argument) {
         if (argument.equalsIgnoreCase("help")) {
             ChatUtilities.sendMessage("             &eInventory Scale", false);
             ChatUtilities.sendMessage("&7Usage: /inventoryscale <scaling>", false);
@@ -111,21 +100,21 @@ public class PatcherCommand extends Command {
         Patcher.instance.forceSaveConfig();
     }
 
-    @SubCommand(value = "sendcoords", description = "Send your current coordinates in chat. Anything after 'sendcoords' will be put at the end of the message.")
-    public void sendCoords(@DisplayName("additional information") @Greedy Optional<String> message) {
+    @SubCommand(description = "Send your current coordinates in chat. Anything after 'sendcoords' will be put at the end of the message.")
+    public void sendcoords(@Description("additional information") @Greedy @Nullable String message) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         player.sendChatMessage("x: " + (int) player.posX + ", y: " + (int) player.posY + ", z: " + (int) player.posZ +
             // might be an issue if they provide a long message?
-            " " + message.orElse(""));
+            " " + ((message == null) ? "" : message));
     }
 
-    @SubCommand(value = "sounds", description = "Open the Sound Configuration GUI.")
+    @SubCommand(description = "Open the Sound Configuration GUI.")
     public void sounds() {
-        GuiUtil.open(Objects.requireNonNull(Patcher.instance.getPatcherSoundConfig().gui()));
+        Patcher.instance.getPatcherSoundConfig().openGui();
     }
 
-    @SubCommand(value = "fps", description = "Choose what to limit the game's framerate to outside of Minecraft's options. 0 will use your normal framerate.")
-    public void fps(@DisplayName("amount") int amount) {
+    @SubCommand(description = "Choose what to limit the game's framerate to outside of Minecraft's options. 0 will use your normal framerate.")
+    public void fps(@Description("amount") int amount) {
         if (amount < 0) {
             ChatUtilities.sendNotification("Custom FPS Limiter", "You cannot set your framerate to a negative number.");
             return;

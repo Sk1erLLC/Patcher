@@ -2,7 +2,7 @@ package club.sk1er.patcher.util.world.sound.audioswitcher;
 
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
-import gg.essential.api.EssentialAPI;
+import cc.polyfrost.oneconfig.utils.Notifications;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -67,7 +67,7 @@ public class AudioSwitcher {
                 try {
                     this.mc.getSoundHandler().onResourceManagerReload(this.mc.getResourceManager());
                 } catch (Exception e) {
-                    EssentialAPI.getNotifications().push("Patcher", "Failed to reinitialize OpenAL.");
+                    Notifications.INSTANCE.send("Patcher", "Failed to reinitialize OpenAL.");
                     Patcher.instance.getLogger().error("Failed to reinitialize OpenAL.", e);
                 }
 

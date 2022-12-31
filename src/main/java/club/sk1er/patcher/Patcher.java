@@ -1,7 +1,11 @@
 package club.sk1er.patcher;
 
+import cc.polyfrost.oneconfig.libs.universal.UDesktop;
+import cc.polyfrost.oneconfig.utils.NetworkUtils;
+import cc.polyfrost.oneconfig.utils.Notifications;
+import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
-import club.sk1er.patcher.commands.*;
+import club.sk1er.patcher.commands.PatcherCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.ducks.FontRendererExt;
@@ -34,14 +38,6 @@ import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
 import club.sk1er.patcher.util.world.sound.audioswitcher.AudioSwitcher;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import gg.essential.api.EssentialAPI;
-import gg.essential.api.commands.Command;
-import gg.essential.api.gui.Notifications;
-import gg.essential.api.utils.Multithreading;
-import gg.essential.api.utils.WebUtil;
-import gg.essential.universal.UDesktop;
-import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -62,22 +58,12 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION, clientSideOnly = true)
@@ -112,6 +98,8 @@ public class Patcher {
 
     private boolean loadedGalacticFontRenderer;
 
+    private boolean isEssential;
+
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
         registerKeybinds(
@@ -122,7 +110,7 @@ public class Patcher {
         );
 
         patcherConfig = PatcherConfig.INSTANCE;
-        patcherSoundConfig = new PatcherSoundConfig();
+        patcherSoundConfig = new PatcherSoundConfig(null, null);
 
         SoundHandler soundHandler = new SoundHandler();
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
@@ -130,12 +118,11 @@ public class Patcher {
         resourceManager.registerReloadListener(new ReloadListener());
 
         registerCommands(
-            new PatcherCommand(), new PatcherSoundsCommand(), new InventoryScaleCommand(),
+            new PatcherCommand(),
             new AsyncScreenshots.FavoriteScreenshot(), new AsyncScreenshots.DeleteScreenshot(),
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
             new AsyncScreenshots.ScreenshotsFolder()
         );
-        EssentialAPI.getCommandRegistry().registerParser(PatcherPlayer.class, new PatcherPlayerArgumentParser());
 
         registerEvents(
             this, soundHandler, dropModifier, audioSwitcher,
@@ -164,42 +151,41 @@ public class Patcher {
                 ((FontRendererExt) galacticFontRenderer).patcher$getFontRendererHook().create();
             }
         }
+        isEssential = Loader.isModLoaded("essential");
     }
 
     @EventHandler
     public void onLoadComplete(FMLLoadCompleteEvent event) {
         List<ModContainer> activeModList = Loader.instance().getActiveModList();
-        Notifications notifications = EssentialAPI.getNotifications();
+        Notifications notifications = Notifications.INSTANCE;
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
 
         long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
         if (PatcherConfig.startupNotification) {
-            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
+            notifications.send("Minecraft Startup", "Minecraft started in " + time + " seconds.");
         }
 
         logger.info("Minecraft started in {} seconds.", time);
 
         //noinspection ConstantConditions
         if (!ForgeVersion.mcVersion.equals("1.8.9") || ForgeVersion.getVersion().contains("2318")) return;
-        notifications.push("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
-            "Click to open the Forge website to download the latest version.", 30, () -> {
+        notifications.send("Patcher", "Outdated Forge has been detected (" + ForgeVersion.getVersion() + "). " +
+            "Click to open the Forge website to download the latest version.", 30000f, () -> {
             String updateLink = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html";
             try {
                 UDesktop.browse(URI.create(updateLink));
             } catch (Exception openException) {
                 this.logger.error("Failed to open Forge website.", openException);
-                notifications.push("Patcher", "Failed to open Forge website. Link is now copied to your clipboard.");
+                notifications.send("Patcher", "Failed to open Forge website. Link is now copied to your clipboard.");
                 try {
                     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(updateLink), null);
                 } catch (Exception clipboardException) {
                     // there is no hope
                     this.logger.error("Failed to copy Forge website to clipboard.", clipboardException);
-                    notifications.push("Patcher", "Failed to copy Forge website to clipboard.");
+                    notifications.send("Patcher", "Failed to copy Forge website to clipboard.");
                 }
             }
-
-            return Unit.INSTANCE;
         });
     }
 
@@ -272,9 +258,9 @@ public class Patcher {
         }
     }
 
-    private void registerCommands(Command... commands) {
-        for (Command command : commands) {
-            EssentialAPI.getCommandRegistry().registerCommand(command);
+    private void registerCommands(Object... commands) {
+        for (Object command : commands) {
+            CommandManager.register(command);
         }
     }
 
@@ -353,24 +339,24 @@ public class Patcher {
             String modId = container.getModId();
             String baseMessage = container.getName() + " has been detected. ";
             if (PatcherConfig.entityCulling && modId.equals("enhancements")) {
-                notifications.push("Patcher", baseMessage + "Entity Culling is now disabled.");
+                notifications.send("Patcher", baseMessage + "Entity Culling is now disabled.");
                 PatcherConfig.entityCulling = false;
             }
 
             if ((modId.equals("labymod") || modId.equals("enhancements")) || modId.equals("hychat")) {
                 if (PatcherConfig.compactChat) {
-                    notifications.push("Patcher", baseMessage + "Compact Chat is now disabled.");
+                    notifications.send("Patcher", baseMessage + "Compact Chat is now disabled.");
                     PatcherConfig.compactChat = false;
                 }
 
                 if (PatcherConfig.chatPosition) {
-                    notifications.push("Patcher", baseMessage + "Chat Position is now disabled.");
+                    notifications.send("Patcher", baseMessage + "Chat Position is now disabled.");
                     PatcherConfig.chatPosition = false;
                 }
             }
 
             if (PatcherConfig.optimizedFontRenderer && modId.equals("smoothfont")) {
-                notifications.push("Patcher", baseMessage + "Optimized Font Renderer is now disabled.");
+                notifications.send("Patcher", baseMessage + "Optimized Font Renderer is now disabled.");
                 PatcherConfig.optimizedFontRenderer = false;
             }
         }
@@ -380,10 +366,10 @@ public class Patcher {
 
     private void detectReplacements(List<ModContainer> activeModList, Notifications notifications) {
         JsonObject replacedMods;
-        try {
-            replacedMods = this.readDuplicateModsJson().get();
+        try { // todo: replaced an async thing but i think its fine because get() pauses the game thread anyways i think???
+            replacedMods = NetworkUtils.getJsonElement("https://static.sk1er.club/patcher/duplicate_mods.json").getAsJsonObject();
         } catch (Exception e) {
-            logger.error("Failed to fetch list of replaced mods.", e);
+            logger.error("Failed to fetch list of replaced mods at \"https://static.sk1er.club/patcher/duplicate_mods.json\".", e);
             return;
         }
 
@@ -398,18 +384,9 @@ public class Patcher {
 
         if (!replacements.isEmpty()) {
             for (String replacement : replacements) {
-                notifications.push("Patcher", replacement + " can be removed as it is replaced by Patcher.", 6f);
+                notifications.send("Patcher", replacement + " can be removed as it is replaced by Patcher.", 6f);
             }
         }
-    }
-
-    private CompletableFuture<JsonObject> readDuplicateModsJson() {
-        String url = "https://static.sk1er.club/patcher/duplicate_mods.json";
-        return CompletableFuture.supplyAsync(() -> new JsonParser().parse(Objects.requireNonNull(WebUtil.fetchString(url))).getAsJsonObject(), Multithreading.getPool())
-            .exceptionally((error) -> {
-                logger.error("Failed to fetch {}: {}", url, error);
-                return null;
-            });
     }
 
     public PatcherConfig getPatcherConfig() {
@@ -445,7 +422,10 @@ public class Patcher {
     }
 
     public void forceSaveConfig() {
-        this.patcherConfig.markDirty();
-        this.patcherConfig.writeData();
+        this.patcherConfig.save();
+    }
+
+    public boolean isEssential() {
+        return isEssential;
     }
 }

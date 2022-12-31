@@ -1,7 +1,7 @@
 package club.sk1er.patcher.mixins.features.levelhead;
 
 import club.sk1er.patcher.config.PatcherConfig;
-import gg.essential.universal.wrappers.UPlayer;
+import cc.polyfrost.oneconfig.libs.universal.wrappers.UPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;

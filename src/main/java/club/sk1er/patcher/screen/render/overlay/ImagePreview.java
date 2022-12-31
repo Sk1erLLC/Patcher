@@ -1,9 +1,9 @@
 package club.sk1er.patcher.screen.render.overlay;
 
+import cc.polyfrost.oneconfig.utils.Multithreading;
 import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import gg.essential.api.EssentialAPI;
-import gg.essential.api.utils.Multithreading;
 import gg.essential.api.utils.TrustedHostsUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -57,23 +57,25 @@ public class ImagePreview {
     }
 
     private void handle(String value) {
-        try {
-            final URL url = new URL(value);
-            final String host = url.getHost();
-            boolean found = false;
+        if (Patcher.instance.isEssential()) {
+            try {
+                final URL url = new URL(value);
+                final String host = url.getHost();
+                boolean found = false;
 
-            for (TrustedHostsUtil.TrustedHost trustedHost : EssentialAPI.getTrustedHostsUtil().getTrustedHosts()) {
-                for (String domain : trustedHost.getDomains()) {
-                    if (host.equalsIgnoreCase(domain)) {
-                        found = true;
-                        break;
+                for (TrustedHostsUtil.TrustedHost trustedHost : EssentialAPI.getTrustedHostsUtil().getTrustedHosts()) {
+                    for (String domain : trustedHost.getDomains()) {
+                        if (host.equalsIgnoreCase(domain)) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (!found) return;
-        } catch (MalformedURLException e) {
-            return;
+                if (!found) return;
+            } catch (MalformedURLException e) {
+                return;
+            }
         }
 
         if (!value.startsWith("http")) {
