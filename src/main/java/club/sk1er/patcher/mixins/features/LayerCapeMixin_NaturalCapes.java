@@ -9,15 +9,20 @@ import net.minecraft.util.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LayerCape.class)
 public class LayerCapeMixin_NaturalCapes {
-    public AbstractClientPlayer entityLivingBaseIn;
-    private float height;
-    private float swing;
-    private float swingSides;
+    @Unique
+    private AbstractClientPlayer patcher$entityLivingBaseIn;
+    @Unique
+    private float patcher$height;
+    @Unique
+    private float patcher$swing;
+    @Unique
+    private float patcher$swingSides;
 
     @Final
     @Shadow
@@ -39,7 +44,7 @@ public class LayerCapeMixin_NaturalCapes {
         at = @At(value = "HEAD")
     )
     public void patcher$setEntityLivingBaseIn(AbstractClientPlayer entityLivingBaseIn, float f, float g, float partialTicks, float h, float i, float j, float scale, CallbackInfo ci) {
-        this.entityLivingBaseIn = entityLivingBaseIn;
+        this.patcher$entityLivingBaseIn = entityLivingBaseIn;
     }
 
     @Redirect(
@@ -50,11 +55,11 @@ public class LayerCapeMixin_NaturalCapes {
         if (PatcherConfig.naturalCapes) {
             float y1 = 0.00F;
             float z1 = 0.125F;
-            if (this.entityLivingBaseIn.isSneaking()) {
+            if (this.patcher$entityLivingBaseIn.isSneaking()) {
                 z1 = 0.027F;
                 y1 = 0.05F;
             }
-            if (this.entityLivingBaseIn.getCurrentArmor(2) != null) {
+            if (this.patcher$entityLivingBaseIn.getCurrentArmor(2) != null) {
                 z1 += 0.032;
 
             }
@@ -70,7 +75,7 @@ public class LayerCapeMixin_NaturalCapes {
         at = @At(value = "STORE")
     )
     public float patcher$setHeight(float ori) {
-        height = ori;
+        patcher$height = ori;
         return ori;
     }
 
@@ -80,7 +85,7 @@ public class LayerCapeMixin_NaturalCapes {
         at = @At(value = "STORE")
     )
     public float patcher$setSwing(float ori) {
-        swing = ori;
+        patcher$swing = ori;
         return ori;
     }
 
@@ -90,7 +95,7 @@ public class LayerCapeMixin_NaturalCapes {
         at = @At(value = "STORE")
     )
     public float patcher$setSwingSides(float ori) {
-        swingSides = ori;
+        patcher$swingSides = ori;
         return ori;
     }
 
@@ -101,10 +106,10 @@ public class LayerCapeMixin_NaturalCapes {
     )
     public void patcher$replaceCapeRotations(AbstractClientPlayer entityLivingBaseIn, float f, float g, float partialTicks, float h, float i, float j, float scale, CallbackInfo ci) {
         if (PatcherConfig.naturalCapes) {
-            float v = (float) ((swingSides / 2) / Math.sqrt(2 + (Math.pow((swingSides - 10) / 60, 2))));
+            float v = (float) ((patcher$swingSides / 2) / Math.sqrt(2 + (Math.pow((patcher$swingSides - 10) / 60, 2))));
             float min = entityLivingBaseIn.isSneaking() ? (entityLivingBaseIn.getCurrentArmor(2) != null || entityLivingBaseIn.getCurrentArmor(3) != null) ? 41.0F : 35.0F : 5.0F;
 
-            float angle1 = MathHelper.clamp_float((swing / ((float) Math.sqrt(6 + (Math.pow(swing / 150, 2))))), min, 130.0F) + height;
+            float angle1 = MathHelper.clamp_float((patcher$swing / ((float) Math.sqrt(6 + (Math.pow(patcher$swing / 150, 2))))), min, 130.0F) + patcher$height;
             float angle2 = MathHelper.clamp_float(v, -50.0F, 65.0F);
             float angle3 = MathHelper.clamp_float(-v, -50.0F, 65.0F);
 
