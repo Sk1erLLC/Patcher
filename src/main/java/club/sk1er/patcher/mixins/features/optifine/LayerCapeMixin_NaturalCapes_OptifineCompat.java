@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(LayerCape.class)
-public class LayerCapeMixin_NaturalCapes_OptifineCompact {
+public class LayerCapeMixin_NaturalCapes_OptifineCompat {
     @Dynamic("Optifine")
     @ModifyConstant(
         method = "doRenderLayer(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V",
