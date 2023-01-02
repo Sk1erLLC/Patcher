@@ -94,6 +94,13 @@ public class PatcherConfig extends Config {
     )
     public static boolean fixedAlexArms = true;
 
+    @Switch(
+        name = "Fix Actionbar Overlap",
+        description = "Prevents the actionbar text from rendering above the armor/health bar.",
+        category = "Bug Fixes", subcategory = "Rendering"
+    )
+    public static boolean fixActionbarOverlap;
+
     @Dropdown(
         name = "Keyboard Layout",
         description = "The layout of your keyboard, used to fix input bugs accordingly.",
