@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Block.class)
 public abstract class BlockMixin_VanillaSlabChests implements BlockExt {
+    //#if MC<11200
     @Shadow
     public abstract String getRegistryName();
 
@@ -27,4 +28,5 @@ public abstract class BlockMixin_VanillaSlabChests implements BlockExt {
         }
         return isSideSolid(world, pos, side);
     }
+    //#endif
 }
