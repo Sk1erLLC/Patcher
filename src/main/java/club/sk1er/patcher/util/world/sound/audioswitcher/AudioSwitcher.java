@@ -77,7 +77,7 @@ public class AudioSwitcher {
     }
 
     @SubscribeEvent
-    public void drawScreen(GuiScreenEvent.DrawScreenEvent event) {
+    public void drawScreen(GuiScreenEvent.DrawScreenEvent.Post event) {
         //#if MC==10809
         GuiScreen gui = event.gui;
         //#else

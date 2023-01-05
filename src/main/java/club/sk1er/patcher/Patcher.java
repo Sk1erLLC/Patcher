@@ -29,7 +29,6 @@ import club.sk1er.patcher.util.keybind.linux.LinuxKeybindFix;
 import club.sk1er.patcher.util.screenshot.AsyncScreenshots;
 import club.sk1er.patcher.util.status.ProtocolVersionDetector;
 import club.sk1er.patcher.util.world.SavesWatcher;
-import club.sk1er.patcher.util.world.WorldHandler;
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import club.sk1er.patcher.util.world.render.entity.EntityRendering;
 import club.sk1er.patcher.util.world.sound.SoundHandler;
@@ -143,7 +142,7 @@ public class Patcher {
             new OverlayHandler(), new EntityRendering(), new FovHandler(),
             new ChatHandler(), new GlanceRenderer(), new EntityCulling(),
             new ArmorStatusRenderer(), new PatcherMenuEditor(), new ImagePreview(),
-            new WorldHandler(), new TitleFix(), new LinuxKeybindFix(),
+            new TitleFix(), new LinuxKeybindFix(),
             new MetricsRenderer(), new HUDCaching(), new EntityRendererHook(),
             MinecraftHook.INSTANCE, ScreenshotPreview.INSTANCE,
             new MousePerspectiveKeybindHandler()
