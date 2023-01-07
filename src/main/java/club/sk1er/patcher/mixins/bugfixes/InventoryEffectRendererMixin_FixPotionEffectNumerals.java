@@ -14,7 +14,8 @@ public class InventoryEffectRendererMixin_FixPotionEffectNumerals {
 
     @ModifyExpressionValue(
         method = "drawActivePotionEffects",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/potion/PotionEffect;getAmplifier()I", ordinal = 0))
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/potion/PotionEffect;getAmplifier()I", ordinal = 0)
+    )
     private int patcher$skipOriginalCode(int amplifier) {
         if (PatcherConfig.betterRomanNumerals) {
             this.patcher$potionAmplifierLevel = amplifier;
@@ -26,10 +27,10 @@ public class InventoryEffectRendererMixin_FixPotionEffectNumerals {
     @ModifyExpressionValue(
         method = "drawActivePotionEffects",
         at =
-        @At(
-            value = "INVOKE",
+        @At(value = "INVOKE",
             target = "Lnet/minecraft/client/resources/I18n;format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
-            ordinal = 1))
+            ordinal = 1)
+    )
     private String patcher$addRomanNumeral(String string) {
         if (PatcherConfig.betterRomanNumerals) {
             if (this.patcher$potionAmplifierLevel > 0) {
@@ -39,4 +40,5 @@ public class InventoryEffectRendererMixin_FixPotionEffectNumerals {
         }
         return string;
     }
+
 }
