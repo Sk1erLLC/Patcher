@@ -57,6 +57,7 @@
     "bugfixes.GuiScreenResourcePacksMixin_ChangeTextPosition",
     "bugfixes.GuiScreenResourcePacksMixin_ClearHandles",
     "bugfixes.GuiVideoSettingsMixin_MipmapSlider",
+    "bugfixes.InventoryEffectRendererMixin_FixPotionEffectNumerals",
     "bugfixes.LayerArrowMixin_FixedBrightness",
     "bugfixes.LayerCreeperChargeMixin_FixDepth",
     "bugfixes.LayerSpiderEyesMixin_FixDepth",
