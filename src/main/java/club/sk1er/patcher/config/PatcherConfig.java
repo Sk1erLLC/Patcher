@@ -409,7 +409,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Translate Unknown Roman Numerals",
-        description = "Generate Roman numeral from enchantment and potion level instead of using language file.",
+        description = "Generate Roman numeral from enchantment and potion levels instead of using language file.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean betterRomanNumerals = true;
