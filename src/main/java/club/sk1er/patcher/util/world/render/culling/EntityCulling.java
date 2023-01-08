@@ -54,6 +54,7 @@ public class EntityCulling {
     private static final boolean SUPPORT_NEW_GL = GLContext.getCapabilities().OpenGL33;
     public static boolean shouldPerformCulling = false;
     private int destroyTimer;
+    public static boolean renderingSpawnerEntity = false;
 
     /**
      * Used for checking if the entities' nametag can be rendered if the user still wants
@@ -169,6 +170,7 @@ public class EntityCulling {
      * @return true if the entity rendering should be skipped
      */
     private static boolean checkEntity(Entity entity) {
+        if (renderingSpawnerEntity) return false;
         OcclusionQuery query = queries.computeIfAbsent(entity.getUniqueID(), OcclusionQuery::new);
         if (query.refresh) {
             query.nextQuery = getQuery();
