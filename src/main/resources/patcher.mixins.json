@@ -85,8 +85,6 @@
     "bugfixes.crashes.WorldRendererMixin_ResolveCrash",
     "bugfixes.forge.BlockPaneMixin_VanillaPanes",
     "bugfixes.forge.ClientCommandHandlerMixin_CaseCommands",
-    "bugfixes.forge.BlockChestMixin_VanillaSlabChests",
-    "bugfixes.forge.BlockMixin_VanillaSlabChests",
     "bugfixes.modelfixes.ModelPlayerMixin_FixedTransformations",
     "bugfixes.modelfixes.ModelSkeletonMixin_FixedHeldItemTransformations",
     "bugfixes.modelfixes.ModelVillagerMixin_ResolveRobeHeight",
