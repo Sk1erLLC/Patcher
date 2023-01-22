@@ -454,7 +454,7 @@ public class PatcherConfig extends Config {
 
     @Switch(
         name = "Translate Unknown Roman Numerals",
-        description = "Generate Roman numeral from enchantment level instead of using language file.",
+        description = "Generate Roman numeral from enchantment and potion levels instead of using language file.",
         category = "Miscellaneous", subcategory = "Rendering"
     )
     public static boolean betterRomanNumerals = true;
