@@ -54,7 +54,7 @@ public class LayerCapeMixin_NaturalCapes {
                 z1 = 0.027F;
                 y1 = 0.05F;
             }
-            if (this.entityLivingBaseIn.getCurrentArmor(2) != null) {
+            if (this.entityLivingBaseIn.inventory.armorItemInSlot(2) != null) {
                 z1 += 0.032;
 
             }
@@ -102,7 +102,7 @@ public class LayerCapeMixin_NaturalCapes {
     public void patcher$replaceCapeRotations(AbstractClientPlayer entityLivingBaseIn, float f, float g, float partialTicks, float h, float i, float j, float scale, CallbackInfo ci) {
         if (PatcherConfig.naturalCapes) {
             float v = (float) ((swingSides / 2) / Math.sqrt(2 + (Math.pow((swingSides - 10) / 60, 2))));
-            float min = entityLivingBaseIn.isSneaking() ? (entityLivingBaseIn.getCurrentArmor(2) != null || entityLivingBaseIn.getCurrentArmor(3) != null) ? 41.0F : 35.0F : 5.0F;
+            float min = entityLivingBaseIn.isSneaking() ? (entityLivingBaseIn.inventory.armorItemInSlot(2) != null || entityLivingBaseIn.inventory.armorItemInSlot(3) != null) ? 41.0F : 35.0F : 5.0F;
 
             float angle1 = MathHelper.clamp_float((swing / ((float) Math.sqrt(6 + (Math.pow(swing / 150, 2))))), min, 130.0F) + height;
             float angle2 = MathHelper.clamp_float(v, -50.0F, 65.0F);
