@@ -935,6 +935,14 @@ public class PatcherConfig extends Config {
     public static int playerRenderDistance = 64;
 
     @Slider(
+        name = "Tile Entity Render Distance",
+        description = "Stop rendering tile entities outside of a specified radius.",
+        category = "Performance", subcategory = "Entity Rendering",
+        min = 1, max = 64
+    )
+    public static int tileEntityRenderDistance = 64;
+
+    @Slider(
         name = "Passive Entity Render Distance",
         description = "Stop rendering passive entities outside of a specified radius.",
         category = "Performance", subcategory = "Entity Rendering",

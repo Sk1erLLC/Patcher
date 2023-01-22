@@ -167,6 +167,7 @@
     "features.ScreenShotHelperMixin_ScreenshotManager",
     "features.TileEntityEnchantmentTableRendererMixin_CancelRender",
     "features.TileEntityEndPortalRendererMixins_CancelRender",
+    "features.TileEntityMixin_RenderDistance",
     "features.TileEntitySkullRendererMixin_CancelRender",
     "features.containeropacity.GuiChestMixin_ContainerOpacity",
     "features.containeropacity.GuiInventoryMixin_ContainerOpacity",
