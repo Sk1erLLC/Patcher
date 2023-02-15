@@ -156,6 +156,7 @@
     "features.RenderEntityItemMixin_StaticItems",
     "features.RenderEntityItemMixin_UnstackedItems",
     "features.RendererLivingEntityMixin_NametagRendering",
+    "features.RenderFishMixin_CleanProjectiles",
     "features.RenderItemFrameMixin_CancelRender",
     "features.RenderItemFrameMixin_NametagBackground",
     "features.RenderItemFrameMixin_NametagShadow",
