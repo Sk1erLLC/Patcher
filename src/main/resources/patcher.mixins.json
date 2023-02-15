@@ -161,6 +161,7 @@
     "features.RenderItemFrameMixin_NametagShadow",
     "features.RenderLightningBoltMixin_CancelRender",
     "features.RenderManagerMixin_CancelArrowRender",
+    "features.RenderSnowballMixin_CleanProjectiles",
     "features.ScreenShotHelperMixin_ScreenshotManager",
     "features.TileEntityEnchantmentTableRendererMixin_CancelRender",
     "features.TileEntityEndPortalRendererMixins_CancelRender",
