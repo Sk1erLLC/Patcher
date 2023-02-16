@@ -18,8 +18,8 @@ public class GuiIngameForgeMixin_ActionbarText {
 
     @Redirect(
         method = "renderRecordOverlay",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I"),
-        remap = false
+        remap = false,
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;drawString(Ljava/lang/String;III)I", remap = true)
     )
     private int patcher$drawCustomActionbarText(FontRenderer instance, String text, int x, int y, int color) {
         return GuiIngameForgeHook.drawActionbarText(text, color);
@@ -27,9 +27,9 @@ public class GuiIngameForgeMixin_ActionbarText {
 
     @ModifyArg(
         method = "renderRecordOverlay",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V"),
-        index = 1,
-        remap = false
+        remap = false,
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;translate(FFF)V", remap = true),
+        index = 1
     )
     private float patcher$fixOverlappingActionbarText(float y) {
         return PatcherConfig.fixActionbarOverlap && 68 < left_height ? y + 68f - left_height : y;
