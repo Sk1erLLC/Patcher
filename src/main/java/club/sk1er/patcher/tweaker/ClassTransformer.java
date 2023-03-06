@@ -119,8 +119,6 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new S0EPacketSpawnObjectTransformer());
         registerTransformer(new RenderXPOrbTransformer());
         registerTransformer(new RenderFireballTransformer());
-        registerTransformer(new RenderFishTransformer());
-        registerTransformer(new RenderSnowballTransformer());
         //#endif
         registerTransformer(new RenderGlobalTransformer());
         registerTransformer(new RenderPlayerTransformer());
