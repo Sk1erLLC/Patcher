@@ -4,6 +4,7 @@ import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.FontRendererAccessor;
 import club.sk1er.patcher.mixins.accessors.GlStateManagerAccessor;
+import club.sk1er.patcher.optifine.OptiFineFontRendererHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.hash.StringHash;
 import club.sk1er.patcher.util.enhancement.text.CachedString;
@@ -225,12 +226,13 @@ public final class FontRendererHook {
                         styleIndex += 16;
                     }
 
-                    final int currentColorIndex = fontRendererAccessor.getColorCode()[styleIndex];
-                    this.fontRendererAccessor.setTextColor(currentColorIndex);
+                    int currentColor = fontRendererAccessor.getColorCode()[styleIndex];
+                    currentColor = OptiFineFontRendererHandler.getTextColor(styleIndex, currentColor);
+                    this.fontRendererAccessor.setTextColor(currentColor);
 
-                    final float colorRed = (float) (currentColorIndex >> 16) / 255.0F;
-                    final float colorGreen = (float) (currentColorIndex >> 8 & 255) / 255.0F;
-                    final float colorBlue = (float) (currentColorIndex & 255) / 255.0F;
+                    final float colorRed = (float) (currentColor >> 16) / 255.0F;
+                    final float colorGreen = (float) (currentColor >> 8 & 255) / 255.0F;
+                    final float colorBlue = (float) (currentColor & 255) / 255.0F;
 
                     GlStateManager.color(colorRed, colorGreen, colorBlue, alpha);
 

@@ -24,6 +24,8 @@
     "accessors.KeyBindingAccessor",
     "accessors.MinecraftAccessor",
     "accessors.MinecraftForgeClientAccessor",
+    "accessors.optifine.ConfigAccessor",
+    "accessors.optifine.CustomColorsAccessor",
     "accessors.PositionedSoundAccessor",
     "accessors.RenderManagerAccessor",
     "accessors.ResourcePackRepositoryAccessor",
