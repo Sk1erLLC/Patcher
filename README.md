@@ -11,6 +11,7 @@
 - **Player Void Rendering** - Resolve the black box around the player while in the void. *default
 - **Alex Arm Position** - Resolve Alex-model arms being shifted down further than Steve-model arms. *default
 - **Resource Exploit Fix** - Resolve an exploit in 1.8 allowing servers to look through directories. *default
+- **Forge Chest Behavior** - Resolve forge changing vanilla chest behavior. *default
 </details>
 <details>
   <summary>Experimental</summary>
@@ -66,11 +67,11 @@
 - **Fullbright** - Remove lighting updates, increasing visibility. (Can positively impact performance. May conflict with minimaps) *default
 - **Smart Fullbright** - Automatically Disable the Fullbright Effect when using OptiFine Shaders. (Requires Fullbright) *default
 - **Show Own Nametag** - See your nametag in third person.
-- **Clean Projectiles** - Show projectiles 2 ticks after they're shot up to stop them from obstructing your view.
+- **Clean Projectiles** - Show projectiles 2 ticks after they're shot up to stop them from obstructing your view. (Includes eggs, snowballs, and fishing hooks)
 - **Ridden Horse Opacity** - Change the opacity of the horse you're currently riding for visibility.
 - **Hide Aura on Invisible Withers** - Don't render the aura around a wither when it is invisible.
 - **Numerical Enchantments** - Use readable numbers instead of Roman numerals on enchants.
-- **Translate Unknown Roman Numerals** - Generate Roman Numeral from enchantment level instead of using language file. *default
+- **Translate Unknown Roman Numerals** - Generate Roman Numeral from enchantment/potion level instead of using language file. *default
 - **Clean View** - Stop rendering your potion effect particles.
 - **Disable Breaking Particles** - Remove block-breaking particles for visibility.
 - **Disable Lightning Bolts** - Stop lightning bolts from rendering.
@@ -88,6 +89,7 @@
 - **Title Opacity** - Change the opacity of titles.
 - **Windowed Fullscreen** - Implement Windowed Fullscreen in Minecraft, allowing you to drag your mouse outside the window.
 - **Instant Fullscreen** - Instant switching between fullscreen and non-fullscreen modes.
+- **Fix Action Bar Overlap** - Prevents action bar text from overlapping with armor or health bars.
 
 </details>
 <details>
@@ -97,9 +99,9 @@
 - **Entity Culling** - Check to see if an entity is visible to the player before attempting to render them. *default
 - **Entity Culling Interval** - The amount of time in ms between occlusion checks for entities. Shorter periods are more costly toward performance but provide the most accurate information. Lower values are recommended in competitive environments.
 - **Smart Entity Culling** - Disable Entity Culling effect when using OptiFine shaders. (Due to the way OptiFine shaders work, we are unable to make Entity Culling compatible). *default
-- **Don't Cull Player Nametags** - Continue to render Player Nametags when the entity is being occluded.
-- **Don't Cull Entity Nametags** - Continue to render Entity Nametags when the entity is being occluded.
-- **Don't Cull Armorstand Nametags** - Continue to render Armorstand Nametags when the entity is being occluded.
+- **Don't Cull Player Nametags** - Continue to render Player Nametags when the entity is being occluded. *default
+- **Don't Cull Entity Nametags** - Continue to render Entity Nametags when the entity is being occluded. *default
+- **Don't Cull Armorstand Nametags** - Continue to render Armorstand Nametags when the entity is being occluded. *default
 - **Check Armorstand Rules** - Don't cull armor stands that have a specific rule assigned to them. This will result in a lot of non-occluded armor stands in places like Hypixel Skyblock, but will resolve special entities being occluded when they typically shouldn't be.
 - **Entity Back-face Culling** - Stop rendering sides of entities that you cannot see. Being inside an entity will cause that body part to be invisible. (Some models may have a transparent face and will cause the back face to not show, such as Wither Skeletons.)
 - **Player Back-face Culling** - Stop rendering sides of players that you cannot see. Being inside a player will cause that body part to be invisible.
@@ -191,6 +193,37 @@
 - **Preview Time** - Adjust how long the preview should stay on the screen before sliding out. time is measured in seconds.
 - **Preview Animation** - Select an animation style for the screenshot preview.
 - **Preview Scale** - Change the scale of the preview.
+
+</details>
+<br><br>
+<details>
+    <summary>Replacement Mods</summary>
+
+# Replacement Mods
+
+Patcher reproduces the functionality of these mods and as such, they are no longer needed.
+
+This list may not always be up-to-date. To view an updated list, click [here](https://static.sk1er.club/patcher/duplicate_mods.json)
+- **Case Commands**
+- **Command Patcher**
+- **Compact Chat**
+- **Cross Chat**
+- **Item Optimizations**
+- **MouseBindFix**
+- **Resource Exploit Fix**
+- **Windowed Fullscreen** (sk1er_fullscreen)
+- **Clean View**
+- **MemoryFix**
+- **MouseDelayFix**
+- **NoCloseMyChat**
+- **Vanilla Enhancements**
+- **PortalInputFix**
+- **BetterScaledGUI**
+- **Void Chat**
+- **Fullbright**
+- **InputFix**
+- **HUDCaching**
+- **NoScroll**
 
 </details>
 
