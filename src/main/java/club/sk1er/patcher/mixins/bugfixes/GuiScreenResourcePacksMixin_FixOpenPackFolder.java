@@ -18,8 +18,10 @@ public class GuiScreenResourcePacksMixin_FixOpenPackFolder {
             value = "INVOKE",
             target = "Lnet/minecraft/client/resources/ResourcePackRepository;getDirResourcepacks()Ljava/io/File;",
             shift = At.Shift.BY,
-            by = 2),
-        cancellable = true)
+            by = 2
+        ),
+        cancellable = true
+    )
     private void patcher$fixFolderOpening(CallbackInfo ci) {
         if (UDesktop.open(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks())) {
             ci.cancel();
