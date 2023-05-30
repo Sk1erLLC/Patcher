@@ -17,8 +17,7 @@ public class GuiScreenResourcePacksMixin_FixOpenPackFolder {
         @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/resources/ResourcePackRepository;getDirResourcepacks()Ljava/io/File;",
-            shift = At.Shift.BY,
-            by = 2
+            shift = At.Shift.AFTER
         ),
         cancellable = true
     )
