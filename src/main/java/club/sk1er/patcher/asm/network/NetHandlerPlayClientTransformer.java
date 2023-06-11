@@ -2,10 +2,11 @@ package club.sk1er.patcher.asm.network;
 
 import club.sk1er.patcher.asm.network.packet.S0EPacketSpawnObjectTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.ListIterator;
+
+import static org.objectweb.asm.Opcodes.*;
 
 public class NetHandlerPlayClientTransformer implements PatcherTransformer {
 
@@ -38,6 +39,11 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                     break;
                 //#endif
 
+                case "func_147237_a":
+                case "handleSpawnPlayer":
+                    this.fixHandleSpawnPlayerNPE(methodNode);
+                    break;
+
                 case "func_147240_a":
                 case "handleCustomPayload": {
                     ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
@@ -45,7 +51,7 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
                     while (iterator.hasNext()) {
                         AbstractInsnNode next = iterator.next();
 
-                        if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+                        if (next instanceof MethodInsnNode && next.getOpcode() == INVOKEVIRTUAL) {
                             String methodInsnName = mapMethodNameFromNode(next);
                             if (methodInsnName.equals("release")) {
                                 LabelNode ifeq = new LabelNode();
@@ -61,10 +67,29 @@ public class NetHandlerPlayClientTransformer implements PatcherTransformer {
         }
     }
 
+    private void fixHandleSpawnPlayerNPE(MethodNode methodNode) {
+        final ListIterator<AbstractInsnNode> iterator = methodNode.instructions.iterator();
+        while (iterator.hasNext()) {
+            final AbstractInsnNode insnNode = iterator.next();
+            if (insnNode instanceof MethodInsnNode && insnNode.getOpcode() == INVOKEVIRTUAL) {
+                String methodInsnName = mapMethodNameFromNode(insnNode);
+                if (methodInsnName.equals("getPlayerInfo") || methodInsnName.equals("func_175102_a")) {
+                    final InsnList list = new InsnList();
+                    list.add(new InsnNode(DUP));
+                    LabelNode label = new LabelNode();
+                    list.add(new JumpInsnNode(IFNONNULL, label));
+                    list.add(new InsnNode(RETURN));
+                    list.add(label);
+                    methodNode.instructions.insert(insnNode, list);
+                }
+            }
+        }
+    }
+
     public static InsnList createList(LabelNode ifeq) {
         InsnList list = new InsnList();
-        list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(ICONST_0));
+        list.add(new JumpInsnNode(IFEQ, ifeq));
         return list;
     }
 }
