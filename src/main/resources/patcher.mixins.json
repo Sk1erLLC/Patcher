@@ -68,6 +68,7 @@
     "bugfixes.MinecraftMixin_FixScreenState",
     "bugfixes.MinecraftMixin_ForeignKeyboards",
     "bugfixes.MinecraftMixin_PersistentShaders",
+    "bugfixes.NetHandlerPlayClient_FixHandleSpawnPlayerNPE",
     "bugfixes.RenderPlayerMixin_ArmPosition",
     "bugfixes.ScoreboardMixin_FixLogSpam",
     "bugfixes.SoundManagerMixin_DuplicatedSounds",
