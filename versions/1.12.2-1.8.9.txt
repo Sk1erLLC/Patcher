@@ -41,6 +41,7 @@ net.minecraft.network.play.server.SPacketEntityHeadLook net.minecraft.network.pl
 net.minecraft.network.play.server.SPacketEntityStatus net.minecraft.network.play.server.S19PacketEntityStatus
 net.minecraft.network.play.server.SPacketCloseWindow net.minecraft.network.play.server.S2EPacketCloseWindow
 net.minecraft.network.play.server.SPacketCustomPayload net.minecraft.network.play.server.S3FPacketCustomPayload
+net.minecraft.network.play.server.SPacketSpawnPlayer net.minecraft.network.play.server.S0CPacketSpawnPlayer
 net.minecraft.network.status.client.CPacketServerQuery net.minecraft.network.status.client.C00PacketServerQuery
 net.minecraft.network.status.server.SPacketServerInfo net.minecraft.network.status.server.S00PacketServerInfo
 net.minecraft.network.status.server.SPacketPong net.minecraft.network.status.server.S01PacketPong
