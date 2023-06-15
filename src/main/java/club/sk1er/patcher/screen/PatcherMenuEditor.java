@@ -166,19 +166,6 @@ public class PatcherMenuEditor {
                 realmsButton.enabled = false;
             }
         }
-
-        if (PatcherConfig.openToLanReplacement == 2 && gui instanceof GuiIngameMenu) {
-            EssentialConfig config = EssentialAPI.getConfig();
-            if (config.getOpenToFriends() && config.getEssentialFull() && EssentialAPI.getOnboardingData().hasAcceptedEssentialTOS()) {
-                for (GuiButton button : mcButtonList) {
-                    if (button != null && button.displayString.equals("Invite Friends")) {
-                        button.width = 200;
-                        button.xPosition = (gui.width / 2) - 100;
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     @SubscribeEvent
