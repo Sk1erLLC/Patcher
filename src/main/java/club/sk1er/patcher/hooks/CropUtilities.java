@@ -46,6 +46,8 @@ public class CropUtilities {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D)
     };
 
+    public static final AxisAlignedBB CACTUS_BOX = new AxisAlignedBB(0.0625, 0.0, 0.0625, 0.9375, 1.0, 0.9375);
+
     public static void updateCropsMaxY(World world, BlockPos pos, Block block) {
         final IBlockState blockState = world.getBlockState(pos);
         final Integer ageValue = blockState.getValue(BlockCrops.AGE);
@@ -67,6 +69,17 @@ public class CropUtilities {
             PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
                 ? NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
                 : .25F
+        );
+    }
+
+    public static void updateCactusBox(Block block) {
+        block.setBlockBounds(
+            (float) CACTUS_BOX.minX,
+            (float) CACTUS_BOX.minY,
+            (float) CACTUS_BOX.minZ,
+            (float) CACTUS_BOX.maxX,
+            (float) CACTUS_BOX.maxY,
+            (float) CACTUS_BOX.maxZ
         );
     }
     //#endif
