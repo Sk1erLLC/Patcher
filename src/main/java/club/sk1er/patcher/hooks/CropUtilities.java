@@ -1,12 +1,8 @@
 package club.sk1er.patcher.hooks;
 
-import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.BlockAccessor;
-import gg.essential.api.EssentialAPI;
-import gg.essential.api.utils.MinecraftUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -14,8 +10,6 @@ import net.minecraft.world.World;
 @SuppressWarnings("unused")
 public class CropUtilities {
     //#if MC==10809
-    private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final MinecraftUtils minecraftUtils = EssentialAPI.getMinecraftUtil();
 
     public static final AxisAlignedBB[] CARROT_POTATO_BOX = {
         new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.125D, 1.0D),
@@ -52,23 +46,16 @@ public class CropUtilities {
         final IBlockState blockState = world.getBlockState(pos);
         final Integer ageValue = blockState.getValue(BlockCrops.AGE);
         BlockAccessor accessor = (BlockAccessor) block;
-        if (PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())) {
-            accessor.setMaxY(
-                blockState.getBlock() instanceof BlockPotato || blockState.getBlock() instanceof BlockCarrot
-                    ? CARROT_POTATO_BOX[ageValue].maxY
-                    : WHEAT_BOX[ageValue].maxY
-            );
-            return;
-        }
-
-        accessor.setMaxY(0.25F);
+        accessor.setMaxY(
+            blockState.getBlock() instanceof BlockPotato || blockState.getBlock() instanceof BlockCarrot
+                ? CARROT_POTATO_BOX[ageValue].maxY
+                : WHEAT_BOX[ageValue].maxY
+        );
     }
 
     public static void updateWartMaxY(World world, BlockPos pos, Block block) {
         ((BlockAccessor) block).setMaxY(
-            PatcherConfig.futureHitBoxes && (minecraftUtils.isHypixel() || mc.isIntegratedServerRunning())
-                ? NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
-                : .25F
+            NETHER_WART_BOX[world.getBlockState(pos).getValue(BlockNetherWart.AGE)].maxY
         );
     }
 
