@@ -12,8 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
 public class BlockMixin_CropHitbox {
+    //#if MC==10809
     @Inject(method = "collisionRayTrace", at = @At("HEAD"))
     public void collisionRayTrace(World worldIn, BlockPos pos, Vec3 start, Vec3 end, CallbackInfoReturnable<MovingObjectPosition> cir) {
 
     }
+    //#endif
 }
