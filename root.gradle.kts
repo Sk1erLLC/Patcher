@@ -1,7 +1,7 @@
 import gg.essential.gradle.util.versionFromBuildIdAndBranch
 
 plugins {
-    kotlin("jvm") version "1.6.0" apply false
+    kotlin("jvm") version "1.8.22" apply false
     id("gg.essential.multi-version.root")
 }
 

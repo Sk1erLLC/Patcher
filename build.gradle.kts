@@ -21,15 +21,15 @@ loom {
     mixin {
         defaultRefmapName.set("patcher.mixins.refmap.json")
     }
-    launchConfigs {
+    runConfigs {
         getByName("client") {
             property("fml.coreMods.load", "club.sk1er.patcher.tweaker.PatcherTweaker")
             property("patcher.debugBytecode", "true")
             property("mixin.debug.verbose", "true")
             property("mixin.debug.export", "true")
             property("mixin.dumpTargetOnFailure", "true")
-            arg("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
-            arg("--mixin", "patcher.mixins.json")
+            programArgs("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
+            programArgs("--mixin", "patcher.mixins.json")
         }
     }
 }
