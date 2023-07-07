@@ -24,7 +24,7 @@ public class NBTTagStringMixin_DataCache {
      * @author asbyth
      * @reason Utilize data cache
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public String toString() {
         if (this.patcher$dataCache == null) {
             this.patcher$dataCache = "\"" + this.data.replace("\"", "\\\"") + "\"";
