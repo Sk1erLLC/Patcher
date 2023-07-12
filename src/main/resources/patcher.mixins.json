@@ -58,6 +58,7 @@
     "bugfixes.GuiScreenOptionsSoundsMixin_PacketSpam",
     "bugfixes.GuiScreenResourcePacksMixin_ChangeTextPosition",
     "bugfixes.GuiScreenResourcePacksMixin_ClearHandles",
+    "bugfixes.GuiScreenResourcePacksMixin_FixOpenPackFolder",
     "bugfixes.GuiVideoSettingsMixin_MipmapSlider",
     "bugfixes.InventoryEffectRendererMixin_FixPotionEffectNumerals",
     "bugfixes.LayerArrowMixin_FixedBrightness",
