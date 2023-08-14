@@ -14,7 +14,7 @@ public class BlockChestMixin_VanillaSlabChests {
     //#if MC<11200
     @Redirect(method = "isBelowSolidBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isSideSolid(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z"))
     public boolean patcher$isBelowSolidBlock(World instance, BlockPos blockPos, EnumFacing enumFacing, boolean b) {
-        return ((BlockExt) instance.getBlockState(blockPos.up()).getBlock()).patcher$doesSideBlockChestOpening(instance, blockPos, enumFacing);
+        return ((BlockExt) instance.getBlockState(blockPos).getBlock()).patcher$doesSideBlockChestOpening(instance, blockPos, enumFacing);
     }
     //#endif
 }
