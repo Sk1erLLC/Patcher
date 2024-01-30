@@ -549,6 +549,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean removeViewBobbing;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Remove Vertical Bobbing",
+        description = "While using View Bobbing, remove the vertical bobbing like in 1.14+.",
+        category = "Miscellaneous", subcategory = "General"
+    )
+    public static boolean removeVerticalViewBobbing;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Remove Map Bobbing",
         description = "While using View Bobbing, remove the hand bobbing when holding a map.",
         category = "Miscellaneous", subcategory = "General"
