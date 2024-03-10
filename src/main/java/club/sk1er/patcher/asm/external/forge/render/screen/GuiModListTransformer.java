@@ -41,7 +41,7 @@ public class GuiModListTransformer implements PatcherTransformer {
                     // auto-closing stream
                     if (next instanceof MethodInsnNode && ((MethodInsnNode) next).name.equals("read")) {
                         ((MethodInsnNode) next).owner = "net/minecraft/client/renderer/texture/TextureUtil";
-                        ((MethodInsnNode) next).name = "func_177053_a"; // readBufferedImage
+                        ((MethodInsnNode) next).name = isDevelopment() ? "readBufferedImage" : "func_177053_a";
                         ((MethodInsnNode) next).desc = "(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;";
                         break;
                     }

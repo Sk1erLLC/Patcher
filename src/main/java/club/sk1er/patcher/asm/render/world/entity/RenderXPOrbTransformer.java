@@ -66,7 +66,7 @@ public class RenderXPOrbTransformer implements PatcherTransformer {
         list.add(new InsnNode(Opcodes.FCONST_0));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
             "net/minecraft/client/renderer/GlStateManager",
-            "func_179109_b", // translate
+            isDevelopment() ? "translate" : "func_179109_b",
             "(FFF)V",
             false));
         return list;

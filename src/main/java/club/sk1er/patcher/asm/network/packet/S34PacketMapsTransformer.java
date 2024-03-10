@@ -46,7 +46,7 @@ public class S34PacketMapsTransformer implements PatcherTransformer {
         }
     }
 
-    public static InsnList checkMapBytesLength() {
+    public InsnList checkMapBytesLength() {
         InsnList list = new InsnList();
 
         LabelNode checkSize = new LabelNode();
@@ -54,7 +54,7 @@ public class S34PacketMapsTransformer implements PatcherTransformer {
         list.add(new FieldInsnNode(
             Opcodes.GETFIELD,
             "net/minecraft/network/play/server/S34PacketMaps",
-            "field_179741_h",
+            isDevelopment() ? "mapDataBytes" : "field_179741_h",
             "[B"
         ));
         list.add(new InsnNode(Opcodes.DUP));

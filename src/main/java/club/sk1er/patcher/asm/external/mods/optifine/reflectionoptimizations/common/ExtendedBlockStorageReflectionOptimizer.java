@@ -16,7 +16,7 @@ public class ExtendedBlockStorageReflectionOptimizer implements PatcherTransform
     public void transform(ClassNode classNode, String name) {
         for (MethodNode methodNode : classNode.methods) {
             final String methodName = mapMethodName(classNode, methodNode);
-            if (methodName.equals("func_177484_a")) {
+            if (methodName.equals("set") || methodName.equals("func_177484_a")) {
                 final InsnList instructions = methodNode.instructions;
                 final Iterator<AbstractInsnNode> iterator = instructions.iterator();
                 while (iterator.hasNext()) {

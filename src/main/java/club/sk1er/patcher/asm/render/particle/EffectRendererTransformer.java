@@ -58,15 +58,15 @@ public class EffectRendererTransformer implements PatcherTransformer {
         list.add(new LdcInsnNode(0.017453292F));
         list.add(new VarInsnNode(Opcodes.FSTORE, 3));
         // actual fix for mc-74764
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178808_b", "()F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", isDevelopment() ? "getRotationX" : "func_178808_b", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 4));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178803_d", "()F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", isDevelopment() ? "getRotationZ" : "func_178803_d", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 5));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178805_e", "()F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", isDevelopment() ? "getRotationYZ" : "func_178805_e", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 6));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178807_f", "()F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", isDevelopment() ? "getRotationXY" : "func_178807_f", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 7));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", "func_178809_c", "()F", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/ActiveRenderInfo", isDevelopment() ? "getRotationXZ" : "func_178809_c", "()F", false));
         list.add(new VarInsnNode(Opcodes.FSTORE, 8));
         return list;
     }
