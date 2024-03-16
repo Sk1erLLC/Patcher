@@ -1122,6 +1122,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean safeChatClicks;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Safe Chat Clicks History",
+        description = "Adds commands sent from clicking chat messages to the chat history.",
+        category = "Screens", subcategory = "Chat"
+    )
+    public static boolean safeChatClicksHistory;
+
+    @Property(
         type = PropertyType.SWITCH, name = "Smart Disconnect",
         description = "Choose between disconnecting or relogging when clicking the disconnect button.\n§eOnly works on Multiplayer servers.",
         category = "Screens", subcategory = "General"
@@ -1310,6 +1317,8 @@ public class PatcherConfig extends Vigilant {
 
             addDependency("cacheFontData", "optimizedFontRenderer");
             addDependency("chunkUpdateLimit", "limitChunks");
+
+            addDependency("safeChatClicksHistory", "safeChatClicks");
 
             Arrays.asList(
                 "screenshotNoFeedback", "compactScreenshotResponse", "autoCopyScreenshot", "screenshotPreview",
