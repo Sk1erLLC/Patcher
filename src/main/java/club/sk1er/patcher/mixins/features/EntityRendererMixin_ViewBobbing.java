@@ -2,6 +2,7 @@ package club.sk1er.patcher.mixins.features;
 
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.hooks.EntityRendererHook;
+import gg.essential.lib.mixinextras.injector.WrapWithCondition;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.settings.GameSettings;
 import org.spongepowered.asm.mixin.Dynamic;
@@ -24,5 +25,10 @@ public class EntityRendererMixin_ViewBobbing {
     @Redirect(method = "setupCameraTransform", at = @At(value = "FIELD", target = "Lnet/minecraft/client/settings/GameSettings;viewBobbing:Z", ordinal = 0))
     private boolean patcher$viewBobbing(GameSettings instance) {
         return instance.viewBobbing && !PatcherConfig.removeViewBobbing;
+    }
+
+    @WrapWithCondition(method = "setupViewBobbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;rotate(FFFF)V", ordinal = 2))
+    public boolean patcher$verticalViewBobbing(float angle, float x, float y, float z) {
+        return !PatcherConfig.removeVerticalViewBobbing;
     }
 }
