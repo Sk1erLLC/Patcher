@@ -21,6 +21,6 @@ public class InventoryScaleCommand extends Command {
     @Nullable
     @Override
     public Set<Alias> getCommandAliases() {
-        return Collections.singleton(new Alias("inventoryscale"));
+        return Collections.singleton(new Alias("inventoryscale", true));
     }
 }
