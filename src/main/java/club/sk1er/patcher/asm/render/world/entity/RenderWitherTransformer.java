@@ -45,7 +45,7 @@ public class RenderWitherTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.FLOAD, 3));
         list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/Math", "abs", "(F)F", false));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/RenderWither",  isDevelopment() ? "shadowSize" : "field_76989_e", "F"));
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/entity/RenderWither", "field_76989_e", "F"));
         return list;
     }
 }

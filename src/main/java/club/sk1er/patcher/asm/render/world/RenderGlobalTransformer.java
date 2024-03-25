@@ -76,12 +76,12 @@ public class RenderGlobalTransformer implements PatcherTransformer {
                             if (next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                                 if (methodInsnName.equals("getClosestDistance") || methodInsnName.equals("func_177729_b")) {
                                     methodNode.instructions.insertBefore(next.getPrevious().getPrevious().getPrevious(),
-                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "disableFog" : "func_179106_n", "()V", false));
+                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179106_n", "()V", false));
                                 }
                             } else if (next.getOpcode() == Opcodes.INVOKESTATIC) {
                                 if ((methodInsnName.equals("depthMask") || methodInsnName.equals("func_179132_a")) && next.getPrevious().getOpcode() == Opcodes.ICONST_1) {
                                     methodNode.instructions.insert(next,
-                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager",  isDevelopment() ? "enableFog" : "func_179127_m", "()V", false)
+                                        new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179127_m", "()V", false)
                                     );
                                 }
                             }

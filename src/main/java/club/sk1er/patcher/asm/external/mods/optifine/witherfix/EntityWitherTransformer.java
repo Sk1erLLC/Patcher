@@ -45,7 +45,7 @@ public class EntityWitherTransformer implements PatcherTransformer {
     private InsnList checkVisibility() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/boss/EntityWither", isDevelopment() ? "isInvisible" : "func_82150_aj", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/boss/EntityWither", "func_82150_aj", "()Z", false));
         LabelNode ifeq = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new InsnNode(Opcodes.RETURN));

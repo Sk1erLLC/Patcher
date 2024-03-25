@@ -48,8 +48,8 @@ public class EntityRendererReflectionOptimizer implements PatcherTransformer {
     private InsnList optimizeReflection() {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", isDevelopment() ? "mc" : "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", isDevelopment() ? "currentScreen" : "field_71462_r", "Lnet/minecraft/client/gui/GuiScreen;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/EntityRenderer", "field_78531_r", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", "field_71462_r", "Lnet/minecraft/client/gui/GuiScreen;"));
         list.add(new VarInsnNode(Opcodes.ILOAD, 8));
         list.add(new VarInsnNode(Opcodes.ILOAD, 9));
         list.add(new VarInsnNode(Opcodes.FLOAD, 1));

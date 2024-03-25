@@ -158,15 +158,15 @@ public class GuiChatTransformer implements PatcherTransformer {
         LabelNode ifne = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", isDevelopment() ? "mc" : "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "field_146297_k", "Lnet/minecraft/client/Minecraft;"));
         list.add(new InsnNode(Opcodes.ACONST_NULL));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", isDevelopment() ? "displayGuiScreen" : "func_147108_a", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "func_147108_a", "(Lnet/minecraft/client/gui/GuiScreen;)V", false));
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
         list.add(ifne);
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", isDevelopment() ? "inputField" : "field_146415_a", "Lnet/minecraft/client/gui/GuiTextField;"));
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/gui/GuiChat", "field_146415_a", "Lnet/minecraft/client/gui/GuiTextField;"));
         list.add(new LdcInsnNode(""));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiTextField", isDevelopment() ? "setText" : "func_146180_a", "(Ljava/lang/String;)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiTextField", "func_146180_a", "(Ljava/lang/String;)V", false));
         list.add(new JumpInsnNode(Opcodes.GOTO, gotoInsn));
         list.add(ifeq);
         return list;
@@ -180,16 +180,16 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
             "net/minecraft/client/gui/GuiChat",
-            isDevelopment() ? "inputField" : "field_146415_a",
+            "field_146415_a", // inputField
             "Lnet/minecraft/client/gui/GuiTextField;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
             "net/minecraft/client/gui/GuiChat",
-            isDevelopment() ? "defaultInputFieldText" : "field_146409_v",
+            "field_146409_v", // defaultInputFieldText
             "Ljava/lang/String;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/client/gui/GuiTextField",
-            isDevelopment() ? "setText" : "func_146180_a",
+            "func_146180_a", // setText
             "(Ljava/lang/String;)V",
             false));
         LabelNode gotoInsn = new LabelNode();
@@ -198,12 +198,12 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
             "net/minecraft/client/gui/GuiChat",
-            isDevelopment() ? "inputField" : "field_146415_a",
+            "field_146415_a", // inputField
             "Lnet/minecraft/client/gui/GuiTextField;"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 2));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/client/gui/GuiTextField",
-            isDevelopment() ? "setText" : "func_146180_a",
+            "func_146180_a", // setText
             "(Ljava/lang/String;)V",
             false));
         list.add(gotoInsn);
@@ -215,7 +215,7 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
             "net/minecraft/client/gui/GuiChat",
-            isDevelopment() ? "inputField" : "field_146415_a",
+            "field_146415_a", // inputField
             "Lnet/minecraft/client/gui/GuiTextField;"));
         LabelNode ifnull = new LabelNode();
         list.add(new JumpInsnNode(Opcodes.IFNULL, ifnull));
@@ -232,11 +232,11 @@ public class GuiChatTransformer implements PatcherTransformer {
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new FieldInsnNode(Opcodes.GETFIELD,
             "net/minecraft/client/gui/GuiChat",
-            isDevelopment() ? "inputField" : "field_146415_a",
+            "field_146415_a", // inputField
             "Lnet/minecraft/client/gui/GuiTextField;"));
         list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
             "net/minecraft/client/gui/GuiTextField",
-            isDevelopment() ? "getText" : "func_146179_b",
+            "func_146179_b", // getText
             "()Ljava/lang/String;",
             false));
         LabelNode gotoInsn2 = new LabelNode();
@@ -251,7 +251,7 @@ public class GuiChatTransformer implements PatcherTransformer {
     private InsnList getOption(LabelNode ifne) {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/gui/GuiChat", isDevelopment() ? "isShiftKeyDown" : "func_146272_n", "()Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/gui/GuiChat", "func_146272_n", "()Z", false));
         list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/gui/GuiChat", "holdingShift", "Z"));
         list.add(getPatcherSetting("transparentChatInputField", "Z"));
         list.add(new JumpInsnNode(Opcodes.IFNE, ifne));

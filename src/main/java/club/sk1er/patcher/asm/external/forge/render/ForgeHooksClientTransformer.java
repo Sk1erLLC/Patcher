@@ -38,7 +38,7 @@ public class ForgeHooksClientTransformer implements PatcherTransformer {
                     if (next instanceof MethodInsnNode && next.getOpcode() == Opcodes.INVOKEVIRTUAL) {
                         final String methodInsnName = mapMethodNameFromNode(next);
                         if (methodInsnName.equals("getY") || methodInsnName.equals("func_177956_o")) {
-                            ((MethodInsnNode) next).name = isDevelopment() ? "getZ" : "func_177952_p";
+                            ((MethodInsnNode) next).name = "func_177952_p"; // getZ
                             break;
                         }
                     }

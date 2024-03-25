@@ -38,7 +38,7 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            MethodInsnNode disableBlend = new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "disableBlend" : "func_179084_k", "()V", false);
+            MethodInsnNode disableBlend = new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179084_k", "()V", false);
             switch (methodName) {
                 //#if MC==10809
                 case "renderRightArm":
@@ -110,18 +110,18 @@ public class RenderPlayerTransformer implements PatcherTransformer {
         InsnList list = new InsnList();
         list.add(new VarInsnNode(Opcodes.ALOAD, 1));
         list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/entity/player/EnumPlayerModelParts", "HAT", "Lnet/minecraft/entity/player/EnumPlayerModelParts;"));
-        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/AbstractClientPlayer", isDevelopment() ? "func_175148_a" : "isWearing", "(Lnet/minecraft/entity/player/EnumPlayerModelParts;)Z", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/AbstractClientPlayer", "func_175148_a", "(Lnet/minecraft/entity/player/EnumPlayerModelParts;)Z", false));
         return list;
     }
 
-    public InsnList enableBlend() {
+    public static InsnList enableBlend() {
         InsnList list = new InsnList();
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "enableBlend" : "func_179147_l", "()V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179147_l", "()V", false));
         list.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_SRC_ALPHA));
         list.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_ONE_MINUS_SRC_ALPHA));
         list.add(new InsnNode(Opcodes.ICONST_1));
         list.add(new InsnNode(Opcodes.ICONST_0));
-        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "tryBlendFuncSeparate" : "func_179120_a", "(IIII)V", false));
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179120_a", "(IIII)V", false));
         return list;
     }
 }

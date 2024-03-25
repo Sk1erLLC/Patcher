@@ -34,14 +34,14 @@ public class GuiUtilsTransformer implements PatcherTransformer {
                             }
                         }
                     } else if (next instanceof VarInsnNode && next.getOpcode() == Opcodes.ISTORE && ((VarInsnNode) next).var == 17) {
-                        methodNode.instructions.insert(next, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "disableDepth" : "func_179097_i", "()V", false));
+                        methodNode.instructions.insert(next, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179097_i", "()V", false));
                     }
                 }
 
                 methodNode.instructions.insert(getMoveForward());
                 methodNode.instructions.insertBefore(
                     methodNode.instructions.getLast().getPrevious(),
-                    new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "popMatrix" : "func_179121_F", "()V", false)
+                    new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179121_F", "()V", false)
                 );
             }
         }
@@ -49,11 +49,11 @@ public class GuiUtilsTransformer implements PatcherTransformer {
 
     private InsnList getMoveForward() {
         InsnList insnList = new InsnList();
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "pushMatrix" : "func_179094_E", "()V", false));
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179094_E", "()V", false));
         insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(0F));
         insnList.add(new LdcInsnNode(-1F));
-        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", isDevelopment() ? "translate" : "func_179109_b", "(FFF)V", false));
+        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", "func_179109_b", "(FFF)V", false));
         return insnList;
     }
 }

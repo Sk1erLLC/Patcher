@@ -64,15 +64,15 @@ public class InventoryEffectRendererTransformer implements PatcherTransformer {
         list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", isDevelopment() ? "width" : "field_146294_l",
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_146294_l", // width
             "I"));
         list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", isDevelopment() ? "xSize" : "field_146999_f",
+        list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_146999_f", // xSize
             "I"));
         list.add(new InsnNode(Opcodes.ISUB));
         list.add(new InsnNode(Opcodes.ICONST_2));
         list.add(new InsnNode(Opcodes.IDIV));
-        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", isDevelopment() ? "guiLeft" : "field_147003_i",
+        list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/InventoryEffectRenderer", "field_147003_i", // guiLeft
             "I"));
         list.add(new InsnNode(Opcodes.RETURN));
         list.add(ifeq);
