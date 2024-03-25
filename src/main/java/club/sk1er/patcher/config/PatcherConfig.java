@@ -1325,8 +1325,6 @@ public class PatcherConfig extends Vigilant {
             addDependency("cacheFontData", "optimizedFontRenderer");
             addDependency("chunkUpdateLimit", "limitChunks");
 
-            addDependency("safeChatClicksHistory", "safeChatClicks");
-
             Arrays.asList(
                 "screenshotNoFeedback", "compactScreenshotResponse", "autoCopyScreenshot", "screenshotPreview",
                 "previewTime", "previewAnimationStyle", "previewScale", "favoriteScreenshot",
