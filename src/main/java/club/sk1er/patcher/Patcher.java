@@ -80,7 +80,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-@Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION, clientSideOnly = true)
+@Mod(modid = "patcher", name = "Patcher", version = Patcher.VERSION, clientSideOnly = true, guiFactory = "club.sk1er.patcher.config.DummyForgeConfig")
 public class Patcher {
 
     @Mod.Instance("patcher")
