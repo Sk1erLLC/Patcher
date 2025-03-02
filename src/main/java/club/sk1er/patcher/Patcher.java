@@ -17,7 +17,6 @@ import club.sk1er.patcher.screen.render.overlay.ImagePreview;
 import club.sk1er.patcher.screen.render.overlay.OverlayHandler;
 import club.sk1er.patcher.screen.render.overlay.metrics.MetricsRenderer;
 import club.sk1er.patcher.screen.render.title.TitleFix;
-import club.sk1er.patcher.tweaker.PatcherTweaker;
 import club.sk1er.patcher.util.chat.ChatHandler;
 import club.sk1er.patcher.util.enhancement.EnhancementManager;
 import club.sk1er.patcher.util.enhancement.ReloadListener;
@@ -172,13 +171,6 @@ public class Patcher {
         Notifications notifications = EssentialAPI.getNotifications();
         this.detectIncompatibilities(activeModList, notifications);
         this.detectReplacements(activeModList, notifications);
-
-        long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime) / 1000L;
-        if (PatcherConfig.startupNotification) {
-            notifications.push("Minecraft Startup", "Minecraft started in " + time + " seconds.");
-        }
-
-        logger.info("Minecraft started in {} seconds.", time);
 
         //noinspection ConstantConditions
         if (!ForgeVersion.mcVersion.equals("1.8.9") || ForgeVersion.getVersion().contains("2318")) return;

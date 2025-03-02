@@ -5,6 +5,7 @@ import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.GuiMainMenuAccessor;
 import club.sk1er.patcher.screen.disconnect.SmartDisconnectScreen;
 import club.sk1er.patcher.screen.quit.ConfirmQuitScreen;
+import club.sk1er.patcher.tweaker.PatcherTweaker;
 import gg.essential.api.EssentialAPI;
 import gg.essential.api.config.EssentialConfig;
 import gg.essential.elementa.ElementaVersion;
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class PatcherMenuEditor {
     private boolean tripped = false;
+    private boolean isFirstLaunch = true;
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final int[] sequence = new int[]{
@@ -76,6 +78,14 @@ public class PatcherMenuEditor {
         final int height = gui.height;
 
         if (gui instanceof GuiMainMenu) {
+            if (isFirstLaunch) {
+                long time = (System.currentTimeMillis() - PatcherTweaker.clientLoadTime);
+                if (PatcherConfig.startupNotification) {
+                    EssentialAPI.getNotifications().push("Minecraft Startup", "Minecraft started in " + time / 1000L + " seconds.");
+                }
+                Patcher.instance.getLogger().info("Minecraft started in {}ms.", time);
+                isFirstLaunch = false;
+            }
             if (PatcherConfig.cleanMainMenu) {
                 realmsButton = ((GuiMainMenuAccessor) gui).getRealmsButton();
                 for (GuiButton button : mcButtonList) {
