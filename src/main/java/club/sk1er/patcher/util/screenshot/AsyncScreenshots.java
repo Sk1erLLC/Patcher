@@ -204,13 +204,12 @@ public class AsyncScreenshots implements Runnable {
         public void handle() {
             try {
                 final File favoritedScreenshots = getTimestampedPNGFileForDirectory(new File("./favorite_screenshots"));
-                screenshot.delete();
-
                 if (!favoritedScreenshots.exists()) {
                     favoritedScreenshots.mkdirs();
                 }
 
                 ImageIO.write(image, "png", favoritedScreenshots);
+                screenshot.delete();
                 ChatUtilities.sendNotification("Screenshot Manager", "&e" + screenshot.getName() + " has been favorited.");
             } catch (Throwable e) {
                 ChatUtilities.sendNotification("Screenshot Manager", "&cFailed to favorite screenshot, maybe the file was moved/deleted?");
