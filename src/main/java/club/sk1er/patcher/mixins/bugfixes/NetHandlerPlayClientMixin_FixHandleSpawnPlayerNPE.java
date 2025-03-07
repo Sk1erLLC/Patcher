@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.UUID;
 
 @Mixin(NetHandlerPlayClient.class)
-public abstract class NetHandlerPlayClient_FixHandleSpawnPlayerNPE {
+public abstract class NetHandlerPlayClientMixin_FixHandleSpawnPlayerNPE {
 
     @Shadow
     public abstract NetworkPlayerInfo getPlayerInfo(UUID p_175102_1_);

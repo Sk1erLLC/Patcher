@@ -16,7 +16,7 @@ public class GuiScreenServerListMixin_FakeServerListDirectConnect {
     @Shadow @Final private GuiScreen field_146303_a;
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
-    private void disconnectIfNecessary(GuiButton button, CallbackInfo ci) {
+    private void patcher$disconnectIfNecessary(GuiButton button, CallbackInfo ci) {
         if (button.enabled && button.id == 0 && this.field_146303_a instanceof FakeMultiplayerMenu) {
             FakeMultiplayerMenu parentScreen = (FakeMultiplayerMenu) this.field_146303_a;
             parentScreen.performDisconnection();

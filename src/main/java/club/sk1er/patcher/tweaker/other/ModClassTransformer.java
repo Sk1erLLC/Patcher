@@ -2,7 +2,16 @@ package club.sk1er.patcher.tweaker.other;
 
 import club.sk1er.patcher.asm.external.mods.essential.EssentialModelRendererTransformer;
 import club.sk1er.patcher.asm.external.mods.levelhead.LevelheadAboveHeadRenderTransformer;
-import club.sk1er.patcher.asm.external.mods.optifine.*;
+import club.sk1er.patcher.asm.external.mods.optifine.EntityCullingTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.EntityRendererTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.FullbrightTickerTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.GuiDetailSettingsOFTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.LagometerTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.OptiFineHookTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.OptifineFontRendererTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.RandomEntitiesTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.RenderTransformer;
+import club.sk1er.patcher.asm.external.mods.optifine.RendererLivingEntityTransformer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.BakedQuadReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.EntityRendererReflectionOptimizer;
 import club.sk1er.patcher.asm.external.mods.optifine.reflectionoptimizations.common.ExtendedBlockStorageReflectionOptimizer;

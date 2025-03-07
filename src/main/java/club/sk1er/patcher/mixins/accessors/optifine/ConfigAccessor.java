@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(targets = "Config")
 public interface ConfigAccessor {
     @Dynamic("OptiFine")
-    @Invoker
+    @Invoker(remap = false)
     static boolean invokeIsCustomColors() {
         throw new AssertionError("Mixin did not inject");
     }

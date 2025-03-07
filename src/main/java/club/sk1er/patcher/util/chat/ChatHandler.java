@@ -230,6 +230,9 @@ public class ChatHandler {
             if (toRemove.contains(chatLine)) {
                 chatLinesWrapped.remove(index);
                 index--;
+                if (mc.ingameGUI.getChatGUI().getChatOpen()) {
+                    mc.ingameGUI.getChatGUI().scroll(-1);
+                }
 
                 if (index <= 0 || index >= chatLinesWrapped.size()) {
                     continue;

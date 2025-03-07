@@ -1,6 +1,5 @@
 package club.sk1er.patcher.screen.render.overlay;
 
-import club.sk1er.patcher.Patcher;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.ItemAccessor;
 import club.sk1er.patcher.mixins.accessors.ItemStackAccessor;

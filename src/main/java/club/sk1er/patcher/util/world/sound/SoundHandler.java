@@ -4,7 +4,6 @@ import club.sk1er.patcher.config.ConfigUtil;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.mixins.accessors.PositionedSoundAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundHandlerAccessor;
-import club.sk1er.patcher.mixins.accessors.SoundManagerAccessor;
 import club.sk1er.patcher.mixins.accessors.SoundRegistryAccessor;
 import gg.essential.vigilance.data.PropertyData;
 import gg.essential.vigilance.data.PropertyType;

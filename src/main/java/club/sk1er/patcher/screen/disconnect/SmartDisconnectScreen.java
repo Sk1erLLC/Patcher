@@ -2,7 +2,10 @@ package club.sk1er.patcher.screen.disconnect;
 
 import club.sk1er.patcher.mixins.accessors.GuiMultiplayerAccessor;
 import gg.essential.universal.ChatColor;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import org.lwjgl.input.Keyboard;
 

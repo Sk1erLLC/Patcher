@@ -1,6 +1,10 @@
 package club.sk1er.patcher.mixins.features;
 
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ServerListEntryLanScan;
+import net.minecraft.client.gui.ServerSelectionList;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

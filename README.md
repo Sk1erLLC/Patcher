@@ -4,7 +4,7 @@
   <summary>Bug Fixes</summary>
 
 # Bug Fixes
-- **Keep Shaders on Perspective change** - Resolve Vanilla shaders being cleared when changing perspective. *default
+- **Keep Shaders on Perspective Change** - Resolve Vanilla shaders being cleared when changing perspective. *default
 - **Parallax Fix** - Resolve the camera being too far back, seemingly making your eyes be in the back of your head. (Currently makes the F3 crosshair disappear.) **[MC-1846](https://bugs.mojang.com/browse/MC-1846)**.
 - **Culling Fix** - Resolve false negatives in frustum culling, creating invisible chunks in some cases. (Can negatively impact performance.) **[MC-63020](https://bugs.mojang.com/browse/MC-63020)** & **[MC-70850](https://bugs.mojang.com/browse/MC-70850)**
 - **Layers In Tab** - Resolve players sometimes not having a hat layer in Tab. *default
@@ -41,9 +41,10 @@
 - **Log Optimizer** - Delete all files in the logs folder, as these can usually take up a lot of space. (These files are not recoverable once deleted)
 - **Log Optimizer Amount** - Choose how many days old a file must be before being deleted.
 - **Better Camera** - Stop tall grass, plants, reeds, etc. from affecting your FOV as done in 1.14+. *default
-- **Better F1** - Hide nametags when in F1 mode. *default
+- **Better F1** - Hide nametags when in F1 mode.
 - **Remove Screen Bobbing** - While using View Bobbing, only remove the view aspect but have the hand still bounce around.
 - **Remove Map Bobbing** - While using View Bobbing, remove the hand bobbing when holding a map.
+- **Remove Vertical Bobbing** - While using View Bobbing, remove the vertical bobbing like in 1.14+.
 - **Static Items** - Stop items from bobbing up and down when dropped on the ground.
 - **Modify Every Sound** - Open a separate GUI allowing you to mute or amplify individual sounds.
 - **Zoom Adjustment** - Scroll when using OptiFine's zoom to adjust the zoom level. *default
@@ -154,6 +155,7 @@
 - **Chat Timestamps Format** - Change the time format of Chat Timestamps.
 - **Show Seconds on Timestamps** - Show the seconds on a timestamped message.
 - **Safe Chat Clicks** - Show the command or link that is run/opened on click.
+- **Safe Chat Clicks History** - Adds commands sent from clicking chat messages to the chat history.
 - **Damage Glance** - View the damage value of the currently held item above your hotbar.
 - **Item Count Glance** - View the total amount of the currently held item above your hotbar.
 - **Enchantment Glance** - View the enchantments of the currently held item above your hotbar.

@@ -54,7 +54,7 @@ public class ForgeHooksClientMixin_InventoryScale {
         }
     }
 
-    @ModifyVariable(method = "drawScreen", at = @At("HEAD"), ordinal = 0, remap = false)
+    @ModifyVariable(method = "drawScreen", at = @At("HEAD"), ordinal = 0, remap = false, argsOnly = true)
     private static int patcher$modifyX(int mouseX) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer != null && mc.currentScreen instanceof GuiContainer) {
@@ -66,7 +66,7 @@ public class ForgeHooksClientMixin_InventoryScale {
         return mouseX;
     }
 
-    @ModifyVariable(method = "drawScreen", at = @At("HEAD"), ordinal = 1, remap = false)
+    @ModifyVariable(method = "drawScreen", at = @At("HEAD"), ordinal = 1, remap = false, argsOnly = true)
     private static int patcher$modifyY(int mouseY) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer != null && mc.currentScreen instanceof GuiContainer) {

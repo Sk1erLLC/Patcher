@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(Block.class)
 public abstract class BlockMixin_VanillaSlabChests implements BlockExt {
     //#if MC<11200
-    @Shadow
+    @Shadow(remap = false)
     public abstract String getRegistryName();
 
     @Shadow
     public abstract boolean isNormalCube();
 
-    @Shadow
+    @Shadow(remap = false)
     public abstract boolean isSideSolid(IBlockAccess par1, BlockPos par2, EnumFacing par3);
 
     public boolean patcher$doesSideBlockChestOpening(IBlockAccess world, BlockPos pos, EnumFacing side) {

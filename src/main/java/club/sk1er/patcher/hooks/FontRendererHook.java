@@ -18,11 +18,16 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 public final class FontRendererHook {
 
@@ -230,9 +235,9 @@ public final class FontRendererHook {
                     currentColor = OptiFineFontRendererHandler.getTextColor(styleIndex, currentColor);
                     this.fontRendererAccessor.setTextColor(currentColor);
 
-                    final float colorRed = (float) (currentColor >> 16) / 255.0F;
-                    final float colorGreen = (float) (currentColor >> 8 & 255) / 255.0F;
-                    final float colorBlue = (float) (currentColor & 255) / 255.0F;
+                    final float colorRed = (currentColor >> 16) / 255.0F;
+                    final float colorGreen = (currentColor >> 8 & 255) / 255.0F;
+                    final float colorBlue = (currentColor & 255) / 255.0F;
 
                     GlStateManager.color(colorRed, colorGreen, colorBlue, alpha);
 
@@ -417,17 +422,17 @@ public final class FontRendererHook {
         final float uvWidth = smallCharWidth * regularCharDim / 128;
 
         GL11.glTexCoord2f(characterX / fontTexWidth, characterY / fontTexHeight);
-        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + (float) italicStyle, this.fontRendererAccessor.getPosY());
+        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + italicStyle, this.fontRendererAccessor.getPosY());
 
         GL11.glTexCoord2f(characterX / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
-        GL11.glVertex2f(this.fontRendererAccessor.getPosX() - (float) italicStyle, this.fontRendererAccessor.getPosY() + 7.99F);
+        GL11.glVertex2f(this.fontRendererAccessor.getPosX() - italicStyle, this.fontRendererAccessor.getPosY() + 7.99F);
 
         final int offset = regularCharDim / 128;
         GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, (characterY + uvHeight) / fontTexHeight);
-        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + smallCharWidth - 1.0F - (float) italicStyle, this.fontRendererAccessor.getPosY() + 7.99F);
+        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + smallCharWidth - 1.0F - italicStyle, this.fontRendererAccessor.getPosY() + 7.99F);
 
         GL11.glTexCoord2f((characterX + uvWidth - offset) / fontTexWidth, characterY / fontTexHeight);
-        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + smallCharWidth - 1.0F + (float) italicStyle, this.fontRendererAccessor.getPosY());
+        GL11.glVertex2f(this.fontRendererAccessor.getPosX() + smallCharWidth - 1.0F + italicStyle, this.fontRendererAccessor.getPosY());
 
         return charWidth;
     }

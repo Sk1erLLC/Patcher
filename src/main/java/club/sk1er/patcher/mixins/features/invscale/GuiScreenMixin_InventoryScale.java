@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GuiScreen.class)
 public class GuiScreenMixin_InventoryScale {
 
-    @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 0)
+    @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private int patcher$modifyScreenWidth(int width) {
         if (Minecraft.getMinecraft().thePlayer != null && ((Object) this) instanceof GuiContainer) {
             int desiredScale = PatcherConfig.getInventoryScale();
@@ -30,7 +30,7 @@ public class GuiScreenMixin_InventoryScale {
         return width;
     }
 
-    @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 1)
+    @ModifyVariable(method = "setWorldAndResolution", at = @At("HEAD"), ordinal = 1, argsOnly = true)
     private int patcher$modifyScreenHeight(int height) {
         if (Minecraft.getMinecraft().thePlayer != null && ((Object) this) instanceof GuiContainer) {
             int desiredScale = PatcherConfig.getInventoryScale();

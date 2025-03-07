@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(BlockChest.class)
 public class BlockChestMixin_VanillaSlabChests {
     //#if MC<11200
-    @Redirect(method = "isBelowSolidBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isSideSolid(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z"))
+    @Redirect(method = "isBelowSolidBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isSideSolid(Lnet/minecraft/util/BlockPos;Lnet/minecraft/util/EnumFacing;Z)Z", remap = false))
     public boolean patcher$isBelowSolidBlock(World instance, BlockPos blockPos, EnumFacing enumFacing, boolean b) {
         return ((BlockExt) instance.getBlockState(blockPos).getBlock()).patcher$doesSideBlockChestOpening(instance, blockPos, enumFacing);
     }

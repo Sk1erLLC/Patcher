@@ -46,7 +46,7 @@ public class PatcherMenuEditor {
         25, // tab
         72 // return
     };
-    private final Window window = (Window) new Window(ElementaVersion.V1).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
+    private final Window window = (Window) new Window(ElementaVersion.V2).addChild(ComponentsKt.constrain(UIImage.ofResourceCached("/patcher.png"), uiConstraints -> {
         uiConstraints.setX(UtilitiesKt.pixels(0, true));
         uiConstraints.setWidth(UtilitiesKt.pixels(200));
         uiConstraints.setHeight(UtilitiesKt.pixels(200));

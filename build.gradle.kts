@@ -39,7 +39,7 @@ repositories {
     maven("https://repo.spongepowered.org/repository/maven-public/")
 }
 
-val embed by configurations.creating
+val embed: Configuration by configurations.creating
 configurations.implementation.get().extendsFrom(embed)
 
 dependencies {

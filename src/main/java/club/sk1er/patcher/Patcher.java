@@ -1,7 +1,9 @@
 package club.sk1er.patcher;
 
 import club.sk1er.patcher.asm.render.screen.GuiChatTransformer;
-import club.sk1er.patcher.commands.*;
+import club.sk1er.patcher.commands.InventoryScaleCommand;
+import club.sk1er.patcher.commands.PatcherCommand;
+import club.sk1er.patcher.commands.PatcherSoundsCommand;
 import club.sk1er.patcher.config.PatcherConfig;
 import club.sk1er.patcher.config.PatcherSoundConfig;
 import club.sk1er.patcher.ducks.FontRendererExt;
@@ -62,8 +64,6 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -135,7 +135,6 @@ public class Patcher {
             new AsyncScreenshots.UploadScreenshot(), new AsyncScreenshots.CopyScreenshot(),
             new AsyncScreenshots.ScreenshotsFolder()
         );
-        EssentialAPI.getCommandRegistry().registerParser(PatcherPlayer.class, new PatcherPlayerArgumentParser());
 
         registerEvents(
             this, soundHandler, dropModifier, audioSwitcher,
@@ -191,7 +190,7 @@ public class Patcher {
                 this.logger.error("Failed to open Forge website.", openException);
                 notifications.push("Patcher", "Failed to open Forge website. Link is now copied to your clipboard.");
                 try {
-                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(updateLink), null);
+                    UDesktop.setClipboardString(updateLink);
                 } catch (Exception clipboardException) {
                     // there is no hope
                     this.logger.error("Failed to copy Forge website to clipboard.", clipboardException);
@@ -405,7 +404,7 @@ public class Patcher {
 
         if (!replacements.isEmpty()) {
             for (String replacement : replacements) {
-                notifications.push("Patcher", replacement + " can be removed as it is replaced by Patcher.", 6f);
+                notifications.push("Patcher", replacement + " can be removed as it is replaced by Patcher.", 6);
             }
         }
     }

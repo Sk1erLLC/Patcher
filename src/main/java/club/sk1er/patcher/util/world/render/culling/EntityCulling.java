@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Used for stopping entities from rendering if they are not visible to the player
  * <p>
- * Subsequent entity on entity occlusion derived from https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+ * Subsequent entity on entity occlusion derived from <a href="https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection">en.wikipedia.org/wiki/Line–plane intersection</a>
  */
 public class EntityCulling {
 
@@ -151,7 +151,7 @@ public class EntityCulling {
 
             EssentialAPI.getNotifications().push("Patcher",
                 "Entity Culling has been disabled as your computer is too old and does not support the technology behind it.\n" +
-                    "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message", () -> {
+                    "If you believe this is a mistake, please contact us at https://sk1er.club/support-discord or click this message.", () -> {
                     try {
                         UDesktop.browse(new URI("https://sk1er.club/support-discord"));
                     } catch (URISyntaxException e) {

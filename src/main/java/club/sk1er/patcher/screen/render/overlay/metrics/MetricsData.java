@@ -24,7 +24,7 @@ public class MetricsData {
 
     public int scaleSampleTo(long time, int multiplier, int counter) {
         final double sample = (double) time / (double) (1000000000L / counter);
-        return (int) (sample * (double) multiplier);
+        return (int) (sample * multiplier);
     }
 
     public int wrapIndex(int index) {

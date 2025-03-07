@@ -16,7 +16,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 @SuppressWarnings("unused")
 public class MinecraftHook {

@@ -885,7 +885,7 @@ public class PatcherConfig extends Vigilant {
         description = "Remove the dark background inside a container.",
         category = "Screens", subcategory = "General"
     )
-    public static boolean removeContainerBackground = false;
+    public static boolean removeContainerBackground;
 
     @Property(
         type = PropertyType.PERCENT_SLIDER, name = "Container Opacity",
@@ -1156,7 +1156,7 @@ public class PatcherConfig extends Vigilant {
         description = "Change the way screenshotting works as a whole, creating a whole new process to screenshotting such as uploading to Imgur, copying to clipboard, etc.\n§cEssential's Screenshot Manager must be disabled for this to work.",
         category = "Screenshots", subcategory = "General"
     )
-    public static boolean screenshotManager = false;
+    public static boolean screenshotManager;
 
     @Property(
         type = PropertyType.SWITCH, name = "No Feedback",

@@ -26,7 +26,7 @@ object ScreenshotPreview {
     }
 
     fun newCapture(image: BufferedImage) {
-        this.currentWindow = Window(ElementaVersion.V1)
+        this.currentWindow = Window(ElementaVersion.V2)
         this.instantiateComponents(image)
     }
 

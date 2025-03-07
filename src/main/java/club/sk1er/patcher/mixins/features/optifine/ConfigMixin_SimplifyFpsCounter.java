@@ -23,7 +23,7 @@ public class ConfigMixin_SimplifyFpsCounter {
     )
     private static void patcher$simplifyFpsCounter(CallbackInfo ci, int fps, String updates, int renderersActive, int entities, int tileEntities) {
         if (PatcherConfig.normalFpsCounter) {
-            final String fpsStr = "" + fps + " fps, C: " + renderersActive + ", E: " + entities + "+" + tileEntities + ", U: " + updates;
+            final String fpsStr = fps + " fps, C: " + renderersActive + ", E: " + entities + "+" + tileEntities + ", U: " + updates;
             Minecraft.getMinecraft().fontRendererObj.drawString(fpsStr, 2, 2, -2039584);
             ci.cancel();
         }

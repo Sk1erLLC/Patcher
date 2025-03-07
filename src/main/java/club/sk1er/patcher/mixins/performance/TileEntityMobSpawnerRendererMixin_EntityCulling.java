@@ -2,7 +2,6 @@ package club.sk1er.patcher.mixins.performance;
 
 import club.sk1er.patcher.util.world.render.culling.EntityCulling;
 import net.minecraft.client.renderer.tileentity.TileEntityMobSpawnerRenderer;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TileEntityMobSpawnerRendererMixin_EntityCulling {
     //#if MC<11200
     private static final String patcher$renderEntity = "Lnet/minecraft/client/renderer/entity/RenderManager;renderEntityWithPosYaw(Lnet/minecraft/entity/Entity;DDDFF)Z";
-    //#else if MC >=11200
+    //#elseif MC >=11200
     //$$ private static final String patcher$renderEntity = "Lnet/minecraft/client/renderer/entity/RenderManager;doRenderEntity(Lnet/minecraft/entity/Entity;DDDFFZ)V";
     //#endif
 
