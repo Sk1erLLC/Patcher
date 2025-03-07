@@ -1099,6 +1099,13 @@ public class PatcherConfig extends Vigilant {
     public static boolean cleanMainMenu = true;
 
     @Property(
+        type = PropertyType.SWITCH, name = "Clean Options Menu",
+        description = "Remove the twitch broadcast button on the options menu.",
+        category = "Screens", subcategory = "General"
+    )
+    public static boolean cleanOptionsMenu = true;
+
+    @Property(
         type = PropertyType.SELECTOR, name = "Open to LAN Replacement",
         description = "Modify the Open to LAN button to either redirect to the server list or be removed.",
         category = "Screens", subcategory = "General",
@@ -1352,8 +1359,8 @@ public class PatcherConfig extends Vigilant {
             Function0<Boolean> minecraft112 = () -> ForgeVersion.mcVersion.equals("1.12.2");
             Arrays.asList(
                 "resourceExploitFix", "newKeybindHandling", "separateResourceLoading", "futureHitBoxes",
-                "leftHandInFirstPerson", "extendedChatLength", "chatPosition",
-                "parallaxFix", "crosshairPerspective", "extendChatBackground", "vanillaGlassPanes"
+                "leftHandInFirstPerson", "extendedChatLength", "chatPosition", "parallaxFix",
+                "crosshairPerspective", "extendChatBackground", "cleanOptionsMenu", "vanillaGlassPanes"
             ).forEach(property -> hidePropertyIf(property, minecraft112));
 
             hidePropertyIf("keyboardLayout", () -> !SystemUtils.IS_OS_LINUX);

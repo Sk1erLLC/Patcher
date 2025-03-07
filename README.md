@@ -164,6 +164,7 @@
 - **GUI Crosshair** - Stop rendering the crosshair when in a GUI.
 - **Startup Notification** - Notify how long the game took to start. *default
 - **Clean Main Menu** - Remove the Realms button on the main menu as it's useless on 1.8.9. *default
+- **Clean Options Menu** - Remove the twitch broadcast button on the options menu. *default
 - **Open to LAN Replacement** - Modify the Open to LAN button to either redirect to the server list or be removed.
 - **Smart Disconnect -** Choose between disconnecting or relogging when clicking the disconnect button. (Only works on multiplayer servers)
 - **Image Preview** - Preview image links when hovering over a supported URL. Press shift to use fullscreen and Control to render in native image resolution. (Currently supported: Imgur, Discord, Badlion screenshots)
