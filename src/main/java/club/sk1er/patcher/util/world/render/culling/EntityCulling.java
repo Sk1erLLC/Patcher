@@ -259,14 +259,22 @@ public class EntityCulling {
         long delay = 0;
         switch (PatcherConfig.cullingInterval) {
             case 0: {
-                delay = 50;
+                delay = 250;
                 break;
             }
             case 1: {
-                delay = 25;
+                delay = 100;
                 break;
             }
             case 2: {
+                delay = 50;
+                break;
+            }
+            case 3: {
+                delay = 25;
+                break;
+            }
+            case 4: {
                 delay = 10;
                 break;
             }

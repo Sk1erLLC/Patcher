@@ -30,7 +30,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
-        description = "Resolve the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
+        description = "Resolve the camera being too far back, seemingly making your eyes be in the back of your head.\n " +
             "§cCurrently makes the F3 crosshair disappear.",
         category = "Bug Fixes", subcategory = "General"
     )
@@ -611,7 +611,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Low Animation Tick",
-        description = "Lowers the number of animations that happen a second from 1000 to 500.",
+        description = "Lowers the number of animations that happen a second from 1000 to 20.",
         category = "Performance", subcategory = "World"
     )
     public static boolean lowAnimationTick = true;
@@ -747,7 +747,7 @@ public class PatcherConfig extends Vigilant {
         type = PropertyType.SELECTOR, name = "Entity Culling Interval",
         description = "The amount of time in ms between performing visibility checks for entities.\nShorter periods are more costly toward performance but provide the most accurate information.\nLower values are recommended in competitive environments.",
         category = "Performance", subcategory = "Culling",
-        options = {"50", "25", "10"}
+        options = {"250", "100", "50", "25", "10"}
     )
     public static int cullingInterval = 0;
 

@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class WorldClientMixin_AnimationTick {
     @ModifyConstant(method = "doVoidFogParticles", constant = @Constant(intValue = 1000))
     private int patcher$lowerTickCount(int original) {
-        return PatcherConfig.lowAnimationTick ? 100 : original;
+        return PatcherConfig.lowAnimationTick ? 20 : original;
     }
 }
