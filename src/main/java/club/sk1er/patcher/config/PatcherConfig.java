@@ -30,8 +30,7 @@ public class PatcherConfig extends Vigilant {
 
     @Property(
         type = PropertyType.SWITCH, name = "Parallax Fix",
-        description = "Resolve the camera being too far back, seemingly making your eyes be in the back of your head.\n" +
-            "§cCurrently makes the F3 crosshair disappear.",
+        description = "Resolve the camera being too far back, seemingly making your eyes be in the back of your head.",
         category = "Bug Fixes", subcategory = "General"
     )
     public static boolean parallaxFix;
