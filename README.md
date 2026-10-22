@@ -5,7 +5,7 @@
 
 # Bug Fixes
 - **Keep Shaders on Perspective change** - Resolve Vanilla shaders being cleared when changing perspective. *default
-- **Parallax Fix** - Resolve the camera being too far back, seemingly making your eyes be in the back of your head. (Currently makes the F3 crosshair disappear.) **[MC-1846](https://bugs.mojang.com/browse/MC-1846)**.
+- **Parallax Fix** - Resolve the camera being too far back, seemingly making your eyes be in the back of your head. **[MC-1846](https://bugs.mojang.com/browse/MC-1846)**.
 - **Culling Fix** - Resolve false negatives in frustum culling, creating invisible chunks in some cases. (Can negatively impact performance.) **[MC-63020](https://bugs.mojang.com/browse/MC-63020)** & **[MC-70850](https://bugs.mojang.com/browse/MC-70850)**
 - **Layers In Tab** - Resolve players sometimes not having a hat layer in Tab. *default
 - **Player Void Rendering** - Resolve the black box around the player while in the void. *default
